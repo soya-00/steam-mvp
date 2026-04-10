@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STEAM Stories - Design Thinking for Girls</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f8f7f5;
+      color: #2c2c2a;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    }
+
+    .header {
+      padding: 1.5rem;
+      border-bottom: 0.5px solid #e5e3df;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .header-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f4d9a6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-top: 0.5px solid #e5e3df;
+      padding: 0.5rem 0;
+      gap: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.75rem 0;
+      cursor: pointer;
+      color: #888780;
+      font-size: 12px;
+      transition: color 0.2s;
+      border: none;
+      background: none;
+    }
+
+    .nav-item.active {
+      color: #d4a574;
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    /* HOME PAGE */
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-header h2 {
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .calendar-day {
+      text-align: center;
+      font-size: 12px;
+      color: #888780;
+      padding: 4px 0;
+    }
+
+    .calendar-date {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .calendar-date.today {
+      background: #f4d9a6;
+      font-weight: 500;
+      color: #2c2c2a;
+    }
+
+    .calendar-date:hover {
+      background: #f0f0ed;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 1.5rem 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title a {
+      font-size: 13px;
+      color: #888780;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, #f4d9a6 0%, #f0c899 100%);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+      color: #5f5e5a;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #3c3c3a;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: #5f5e5a;
+    }
+
+    .feature-card.pastels-blue {
+      background: linear-gradient(135deg, #d4e8f7 0%, #c8dff0 100%);
+      color: #185fa5;
+    }
+
+    .feature-card.pastels-blue h3 {
+      color: #0c447c;
+    }
+
+    .feature-card.pastels-blue p {
+      color: #185fa5;
+    }
+
+    .feature-card.pastels-pink {
+      background: linear-gradient(135deg, #f4c0d1 0%, #f0add2 100%);
+      color: #993556;
+    }
+
+    .feature-card.pastels-pink h3 {
+      color: #72243e;
+    }
+
+    .feature-card.pastels-pink p {
+      color: #993556;
+    }
+
+    /* EXPLORE PAGE */
+    .story-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .story-card {
+      border: 0.5px solid #e5e3df;
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .story-card:hover {
+      border-color: #d4a574;
+      background: #fffcf9;
+    }
+
+    .story-card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #2c2c2a;
+    }
+
+    .story-card-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 13px;
+      color: #888780;
+    }
+
+    .story-card-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* STORY PAGE */
+    .story-header {
+      background: linear-gradient(135deg, #d4e8f7 0%, #c8dff0 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      margin-left: -1.5rem;
+      margin-right: -1.5rem;
+      margin-top: -1.5rem;
+      padding-left: 1.5rem;
+      width: calc(100% + 3rem);
+    }
+
+    .story-header h2 {
+      font-size: 20px;
+      font-weight: 500;
+      color: #0c447c;
+      margin-bottom: 0.5rem;
+    }
+
+    .story-header p {
+      font-size: 14px;
+      color: #185fa5;
+    }
+
+    .story-content {
+      background: #fffcf9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      border-left: 4px solid #f4d9a6;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #5f5e5a;
+    }
+
+    .questions-section {
+      margin-top: 2rem;
+    }
+
+    .question-tier {
+      margin-bottom: 1.5rem;
+    }
+
+    .tier-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #888780;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .tier-label.tier1 { color: #185fa5; }
+    .tier-label.tier2 { color: #993556; }
+    .tier-label.tier3 { color: #3b6d11; }
+    .tier-label.tier4 { color: #854f0b; }
+
+    .question {
+      background: white;
+      border: 0.5px solid #e5e3df;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 14px;
+      color: #5f5e5a;
+      line-height: 1.7;
+    }
+
+    .answer-area {
+      background: #fffcf9;
+      border: 0.5px solid #e5e3df;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .answer-area textarea {
+      width: 100%;
+      min-height: 80px;
+      border: 0.5px solid #d3d1c7;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: inherit;
+      font-size: 13px;
+      resize: none;
+    }
+
+    .answer-area textarea:focus {
+      outline: none;
+      border-color: #f4d9a6;
+      box-shadow: 0 0 0 2px rgba(244, 217, 166, 0.2);
+    }
+
+    .btn {
+      background: white;
+      border: 0.5px solid #d3d1c7;
+      color: #2c2c2a;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      border-color: #f4d9a6;
+      background: #fffcf9;
+    }
+
+    .btn.primary {
+      background: #f4d9a6;
+      border-color: #f4d9a6;
+      color: #2c2c2a;
+      font-weight: 500;
+    }
+
+    .btn.primary:hover {
+      background: #f0c899;
+      border-color: #f0c899;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-group button {
+      flex: 1;
+    }
+
+    /* JOURNAL PAGE */
+    .journal-header {
+      background: linear-gradient(135deg, #f4c0d1 0%, #f0add2 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      color: #72243e;
+    }
+
+    .journal-header h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+
+    .journal-letter {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #72243e;
+      font-style: italic;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: #f1f0ed;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #888780;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 500;
+      color: #2c2c2a;
+    }
+
+    .entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .entry {
+      border: 0.5px solid #e5e3df;
+      border-radius: 8px;
+      padding: 1rem;
+      background: white;
+    }
+
+    .entry-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 0.75rem;
+    }
+
+    .entry-date {
+      font-size: 12px;
+      color: #888780;
+    }
+
+    .entry-level {
+      font-size: 11px;
+      background: #f1f0ed;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #5f5e5a;
+    }
+
+    .entry-story {
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c2c2a;
+      margin-bottom: 0.5rem;
+    }
+
+    .entry-response {
+      font-size: 13px;
+      color: #5f5e5a;
+      line-height: 1.6;
+    }
+
+    /* PROFILE PAGE */
+    .profile-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c2c2a;
+      margin-bottom: 0.75rem;
+    }
+
+    .profile-section select,
+    .profile-section input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 0.5px solid #d3d1c7;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .profile-section select:focus,
+    .profile-section input:focus {
+      outline: none;
+      border-color: #f4d9a6;
+      box-shadow: 0 0 0 2px rgba(244, 217, 166, 0.2);
+    }
+
+    .success-msg {
+      background: #eaf3de;
+      color: #3b6d11;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .success-msg.show {
+      display: block;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        max-width: 600px;
+        border: 0.5px solid #e5e3df;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <h1>STEAM Stories</h1>
+    <div class="header-avatar">👩‍🔬</div>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div class="content">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="home">
+      <div class="calendar-header">
+        <h2>Hi, Maria</h2>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 0.5rem;">
+          <div class="calendar-day">Mon</div>
+          <div class="calendar-day">Tue</div>
+          <div class="calendar-day">Wed</div>
+          <div class="calendar-day">Thu</div>
+          <div class="calendar-day">Fri</div>
+          <div class="calendar-day">Sat</div>
+          <div class="calendar-day">Sun</div>
+        </div>
+        <div class="calendar-grid">
+          <div class="calendar-date">7</div>
+          <div class="calendar-date">8</div>
+          <div class="calendar-date">9</div>
+          <div class="calendar-date today">10</div>
+          <div class="calendar-date">11</div>
+          <div class="calendar-date">12</div>
+          <div class="calendar-date">13</div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>My Stories</span>
+        <a onclick="switchPage('explore')">See all</a>
+      </div>
+
+      <div class="feature-card" onclick="switchPage('explore')">
+        <h3>Start a new story</h3>
+        <p>Explore problem-solving through design thinking</p>
+      </div>
+
+      <div class="section-title">Quick Moments</div>
+      <div class="feature-card pastels-blue" onclick="switchPage('journal')">
+        <h3>View my journal</h3>
+        <p>See your thinking evolution</p>
+      </div>
+    </div>
+
+    <!-- EXPLORE PAGE -->
+    <div class="page" id="explore">
+      <h2 style="margin-bottom: 1.5rem; font-size: 20px; font-weight: 500;">Choose a story</h2>
+      
+      <div class="story-list" id="storyList"></div>
+    </div>
+
+    <!-- STORY PAGE -->
+    <div class="page" id="story">
+      <button class="btn" onclick="switchPage('explore')" style="margin-bottom: 1rem;">← Back</button>
+      
+      <div class="story-header">
+        <h2 id="storyTitle">Story Title</h2>
+        <p id="storyCharacter">By Character Name</p>
+      </div>
+
+      <p style="font-size: 13px; color: #888780; margin-bottom: 1rem;" id="storyContext"></p>
+
+      <div class="story-content" id="storyBody"></div>
+
+      <div class="questions-section" id="questionsContainer"></div>
+
+      <div class="btn-group">
+        <button class="btn" onclick="switchPage('explore')">Explore more</button>
+        <button class="btn primary" onclick="saveAndViewJournal()">Save & View Journal</button>
+      </div>
+    </div>
+
+    <!-- JOURNAL PAGE -->
+    <div class="page" id="journal">
+      <h2 style="margin-bottom: 1rem; font-size: 20px; font-weight: 500;">Your Thinking Portfolio</h2>
+      
+      <div class="journal-header">
+        <h3>Teacher's Note</h3>
+        <p class="journal-letter">
+          "Maria, I'm impressed by how you approach problems. You ask thoughtful questions and aren't afraid to challenge assumptions. Keep developing this mindset—it's the foundation of great design thinking." — Ms. Linh
+        </p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Stories Explored</div>
+          <div class="stat-number" id="totalStories">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Insights Recorded</div>
+          <div class="stat-number" id="totalAnswers">0</div>
+        </div>
+      </div>
+
+      <h3 style="font-size: 15px; font-weight: 500; margin-bottom: 1rem;">Your Entries</h3>
+      <div class="entries-list" id="entriesList">
+        <p style="color: #888780; text-align: center; padding: 2rem;">No entries yet. Start exploring stories!</p>
+      </div>
+
+      <button class="btn" onclick="switchPage('home')" style="margin-top: 1.5rem; width: 100%;">Back to home</button>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div class="page" id="profile">
+      <h2 style="margin-bottom: 1.5rem; font-size: 20px; font-weight: 500;">Your Profile</h2>
+
+      <div class="profile-section">
+        <label>Name</label>
+        <input type="text" id="userName" placeholder="Enter your name" value="Maria">
+      </div>
+
+      <div class="profile-section">
+        <label>Grade Level</label>
+        <select id="userGrade">
+          <option value="cap2">Secondary (Cấp 2) - Age 11-14</option>
+          <option value="cap3" selected>High School (Cấp 3) - Age 15-17</option>
+        </select>
+      </div>
+
+      <div class="profile-section">
+        <label>Interested in</label>
+        <select>
+          <option>Engineering & Design</option>
+          <option>Science & Research</option>
+          <option>Technology & AI</option>
+          <option>All of the above</option>
+        </select>
+      </div>
+
+      <button class="btn primary" onclick="saveProfile()" style="width: 100%; margin-top: 1rem;">Save Profile</button>
+      <div class="success-msg" id="profileSuccess">Profile saved!</div>
+
+      <button class="btn" onclick="switchPage('home')" style="margin-top: 1rem; width: 100%;">Back to home</button>
+    </div>
+
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="nav">
+    <button class="nav-item active" onclick="switchPage('home')">
+      <div class="nav-icon">🏠</div>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('explore')">
+      <div class="nav-icon">🔍</div>
+      <span>Explore</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('journal')">
+      <div class="nav-icon">📓</div>
+      <span>Journal</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('profile')">
+      <div class="nav-icon">👤</div>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  // SAMPLE DATA - Easy to swap with real Vietnamese STEAM stories
+  const stories = [
+    {
+      id: 1,
+      title: "Building a Water Filter System",
+      character: "Linh, Chemical Engineer",
+      context: "Age 16 | Working on rural water accessibility",
+      grade: "both",
+      story: `Linh moved to a rural village and realized many families didn't have clean water. She started experimenting with local materials—sand, charcoal, and gravel—to design a simple filtration system. At first, it didn't work. She tested dozens of combinations, talked to community members about what they needed, and eventually created a filter that removed 80% of impurities using materials villagers could find themselves.`,
+      questions: {
+        cap2: [
+          { tier: 1, text: "Have you ever solved a problem without realizing you were using design thinking?", hint: "Think about a time you fixed something that was broken." },
+          { tier: 2, text: "If you were Linh, who would be affected by your water filter decision?", hint: "Think about all the people who might use this filter." },
+          { tier: 3, text: "What's the most impossible material you could imagine using for a filter?", hint: "Be creative—there are no wrong answers!" },
+          { tier: 4, text: "What did you learn about how you think when solving problems?", hint: "Reflect on your own thinking process." }
+        ],
+        cap3: [
+          { tier: 1, text: "How is Linh's approach to filtration an example of systems thinking?", hint: "Consider the relationships between materials, contamination, and community needs." },
+          { tier: 2, text: "What stakeholders should Linh have consulted before deploying the filter?", hint: "Think about engineers, users, environmental impact." },
+          { tier: 3, text: "Use SCAMPER: Could you Substitute, Combine, or Adapt existing water treatment technology for rural contexts?", hint: "Focus on one SCAMPER dimension." },
+          { tier: 4, text: "How has your understanding of design thinking evolved through this story?", hint: "Compare this to how you thought about problems before." }
+        ]
+      }
+    },
+    {
+      id: 2,
+      title: "Designing an App for Local Markets",
+      character: "Hoa, UX Designer & Entrepreneur",
+      context: "Age 18 | Created marketplace app for street vendors",
+      grade: "both",
+      story: `Hoa noticed that street food vendors in her city struggled to reach customers and manage inventory. She decided to design an app, but faced a challenge: many vendors were older and not tech-savvy. Instead of building what she *thought* they needed, Hoa spent weeks interviewing vendors, observing how they worked, and even working a shift in a noodle stall. She realized the app needed to be simple, show photos (not just text), and let vendors manage orders on paper if they wanted. The result was an app that actually got used because it respected how vendors worked.`,
+      questions: {
+        cap2: [
+          { tier: 1, text: "What problem was Hoa trying to solve? Why is this problem important?", hint: "Think about what street vendors struggle with." },
+          { tier: 2, text: "Why did Hoa spend time working in a noodle stall? What did she learn?", hint: "This is about understanding other people's experiences." },
+          { tier: 3, text: "What's a completely different way to help street vendors that no one else has thought of?", hint: "No idea is too wild!" },
+          { tier: 4, text: "What surprised you most about how Hoa approached this problem?", hint: "Reflect on what you didn't expect." }
+        ],
+        cap3: [
+          { tier: 1, text: "Analyze the system: How are street vendors, customers, and the app interconnected?", hint: "Draw mental connections between all parts." },
+          { tier: 2, text: "Who are all the stakeholders in this problem? Why did Hoa's choice to interview vendors matter?", hint: "Go beyond vendors—think customers, city officials, etc." },
+          { tier: 3, text: "Apply SCAMPER: How could you Reverse the app's function? (Instead of vendors selling, what if...?)", hint: "Push yourself to think inversely." },
+          { tier: 4, text: "What principles of empathy in design do you now understand differently?", hint: "Connect this to your own design thinking growth." }
+        ]
+      }
+    },
+    {
+      id: 3,
+      title: "Coding a Tool for Student Safety",
+      character: "Thu, Software Engineer & Student Advocate",
+      context: "Age 17 | Built safety app after witnessing harassment",
+      grade: "both",
+      story: `Thu saw a friend get harassed while walking home from school. Instead of staying silent, she taught herself to code and built a simple app that lets students share unsafe locations and alert friends in real-time. The app isn't fancy—just pins on a map and a group chat feature. But it started a conversation in her school about safety, and the local government noticed her work. Now she's being asked to help design a city-wide student safety system.`,
+      questions: {
+        cap2: [
+          { tier: 1, text: "What made Thu decide to use coding to solve this problem?", hint: "Think about why she didn't just talk to teachers or parents." },
+          { tier: 2, text: "Who would use Thu's app? What do they care about most?", hint: "Think about the needs of different groups." },
+          { tier: 3, text: "Imagine you're designing this app. What feature would make students actually use it?", hint: "Think about what would make YOU want to use it." },
+          { tier: 4, text: "How did your thinking about technology and social problems change?", hint: "Did you realize code could solve real-world issues?" }
+        ],
+        cap3: [
+          { tier: 1, text: "What systems are involved in this problem? (Trust, visibility, communication...)", hint: "Think about how these systems interact." },
+          { tier: 2, text: "Beyond students, who else is a stakeholder? How might their interests differ?", hint: "Consider parents, teachers, police, city planners." },
+          { tier: 3, text: "SCAMPER challenge: How could you Combine this app with other safety tools? Or Eliminate a feature that creates new problems?", hint: "Think about unintended consequences." },
+          { tier: 4, text: "What does this story reveal about your own potential to create change?", hint: "Reflect on your agency and capability." }
+        ]
+      }
+    }
+  ];
+
+  // APP STATE
+  let appState = {
+    currentUser: localStorage.getItem('userName') || 'Maria',
+    userGrade: localStorage.getItem('userGrade') || 'cap3',
+    entries: JSON.parse(localStorage.getItem('entries')) || []
+  };
+
+  let currentStoryId = null;
+
+  // PAGE NAVIGATION
+  function switchPage(pageName) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
+    document.getElementById(pageName).classList.add('active');
+    event.target.closest('.nav-item')?.classList.add('active');
+
+    if (pageName === 'explore') renderExplore();
+    if (pageName === 'journal') renderJournal();
+  }
+
+  // RENDER EXPLORE PAGE
+  function renderExplore() {
+    const storyList = document.getElementById('storyList');
+    storyList.innerHTML = stories.map(s => `
+      <div class="story-card" onclick="selectStory(${s.id})">
+        <h3>${s.title}</h3>
+        <div class="story-card-meta">
+          <span>📍 ${s.character}</span>
+          <span>${s.context}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // SELECT & RENDER STORY
+  function selectStory(id) {
+    currentStoryId = id;
+    const story = stories.find(s => s.id === id);
+    
+    document.getElementById('storyTitle').textContent = story.title;
+    document.getElementById('storyCharacter').textContent = 'By ' + story.character;
+    document.getElementById('storyContext').textContent = story.context;
+    document.getElementById('storyBody').textContent = story.story;
+
+    const questions = story.questions[appState.userGrade] || story.questions.cap2;
+    const questionsHtml = questions.map((q, idx) => `
+      <div class="question-tier">
+        <div class="tier-label tier${q.tier}">Level ${q.tier}: ${['Understand', 'Empathize', 'Create', 'Reflect'][q.tier-1]}</div>
+        <div class="question">${q.text}</div>
+        <div class="answer-area">
+          <textarea placeholder="Your reflection..." id="answer-${idx}"></textarea>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('questionsContainer').innerHTML = questionsHtml;
+    switchPage('story');
+  }
+
+  // SAVE & VIEW JOURNAL
+  function saveAndViewJournal() {
+    const questions = stories.find(s => s.id === currentStoryId).questions[appState.userGrade];
+    const story = stories.find(s => s.id === currentStoryId);
+
+    const answers = questions.map((q, idx) => {
+      const textarea = document.getElementById(`answer-${idx}`);
+      return textarea.value.trim();
+    }).filter(a => a);
+
+    if (answers.length === 0) {
+      alert('Please answer at least one question before saving.');
+      return;
+    }
+
+    const entry = {
+      storyId: currentStoryId,
+      storyTitle: story.title,
+      date: new Date().toLocaleDateString(),
+      grade: appState.userGrade,
+      answers: answers
+    };
+
+    appState.entries.push(entry);
+    localStorage.setItem('entries', JSON.stringify(appState.entries));
+
+    switchPage('journal');
+  }
+
+  // RENDER JOURNAL
+  function renderJournal() {
+    const totalStories = new Set(appState.entries.map(e => e.storyId)).size;
+    const totalAnswers = appState.entries.reduce((sum, e) => sum + e.answers.length, 0);
+
+    document.getElementById('totalStories').textContent = totalStories;
+    document.getElementById('totalAnswers').textContent = totalAnswers;
+
+    const entriesList = document.getElementById('entriesList');
+    if (appState.entries.length === 0) {
+      entriesList.innerHTML = '<p style="color: #888780; text-align: center; padding: 2rem;">No entries yet. Start exploring stories!</p>';
+      return;
+    }
+
+    entriesList.innerHTML = appState.entries.map((e, idx) => `
+      <div class="entry">
+        <div class="entry-meta">
+          <div>
+            <div class="entry-story">${e.storyTitle}</div>
+            <div class="entry-date">${e.date}</div>
+          </div>
+          <div class="entry-level">${e.grade === 'cap2' ? 'Cấp 2' : 'Cấp 3'}</div>
+        </div>
+        <div class="entry-response">${e.answers[0]}</div>
+      </div>
+    `).join('');
+  }
+
+  // SAVE PROFILE
+  function saveProfile() {
+    const name = document.getElementById('userName').value;
+    const grade = document.getElementById('userGrade').value;
+    
+    appState.currentUser = name;
+    appState.userGrade = grade;
+    
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userGrade', grade);
+    
+    document.querySelector('.header h1').textContent = `Hi, ${name}`;
+    
+    const msg = document.getElementById('profileSuccess');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2000);
+  }
+
+  // INIT
+  window.addEventListener('load', () => {
+    document.querySelector('.header h1').textContent = `Hi, ${appState.currentUser}`;
+    document.getElementById('userName').value = appState.currentUser;
+    document.getElementById('userGrade').value = appState.userGrade;
+  });
+</script>
+
+</body>
+</html>
