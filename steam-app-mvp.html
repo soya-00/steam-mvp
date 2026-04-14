@@ -1,922 +1,724 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STEAM Stories - Design Thinking for Girls</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: #f8f7f5;
-      color: #2c2c2a;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      background: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 20px rgba(0,0,0,0.08);
-    }
-
-    .header {
-      padding: 1.5rem;
-      border-bottom: 0.5px solid #e5e3df;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header h1 {
-      font-size: 18px;
-      font-weight: 500;
-    }
-
-    .header-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #f4d9a6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .content {
-      flex: 1;
-      padding: 1.5rem;
-      overflow-y: auto;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .nav {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      border-top: 0.5px solid #e5e3df;
-      padding: 0.5rem 0;
-      gap: 0;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0.75rem 0;
-      cursor: pointer;
-      color: #888780;
-      font-size: 12px;
-      transition: color 0.2s;
-      border: none;
-      background: none;
-    }
-
-    .nav-item.active {
-      color: #d4a574;
-    }
-
-    .nav-icon {
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    /* HOME PAGE */
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .calendar-header h2 {
-      font-size: 24px;
-      font-weight: 400;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      margin-bottom: 2rem;
-    }
-
-    .calendar-day {
-      text-align: center;
-      font-size: 12px;
-      color: #888780;
-      padding: 4px 0;
-    }
-
-    .calendar-date {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-
-    .calendar-date.today {
-      background: #f4d9a6;
-      font-weight: 500;
-      color: #2c2c2a;
-    }
-
-    .calendar-date:hover {
-      background: #f0f0ed;
-    }
-
-    .section-title {
-      font-size: 18px;
-      font-weight: 500;
-      margin: 1.5rem 0 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .section-title a {
-      font-size: 13px;
-      color: #888780;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .feature-card {
-      background: linear-gradient(135deg, #f4d9a6 0%, #f0c899 100%);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s;
-      color: #5f5e5a;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .feature-card h3 {
-      font-size: 16px;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: #3c3c3a;
-    }
-
-    .feature-card p {
-      font-size: 13px;
-      color: #5f5e5a;
-    }
-
-    .feature-card.pastels-blue {
-      background: linear-gradient(135deg, #d4e8f7 0%, #c8dff0 100%);
-      color: #185fa5;
-    }
-
-    .feature-card.pastels-blue h3 {
-      color: #0c447c;
-    }
-
-    .feature-card.pastels-blue p {
-      color: #185fa5;
-    }
-
-    .feature-card.pastels-pink {
-      background: linear-gradient(135deg, #f4c0d1 0%, #f0add2 100%);
-      color: #993556;
-    }
-
-    .feature-card.pastels-pink h3 {
-      color: #72243e;
-    }
-
-    .feature-card.pastels-pink p {
-      color: #993556;
-    }
-
-    /* EXPLORE PAGE */
-    .story-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .story-card {
-      border: 0.5px solid #e5e3df;
-      border-radius: 12px;
-      padding: 1rem;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .story-card:hover {
-      border-color: #d4a574;
-      background: #fffcf9;
-    }
-
-    .story-card h3 {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: #2c2c2a;
-    }
-
-    .story-card-meta {
-      display: flex;
-      gap: 1rem;
-      font-size: 13px;
-      color: #888780;
-    }
-
-    .story-card-meta span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* STORY PAGE */
-    .story-header {
-      background: linear-gradient(135deg, #d4e8f7 0%, #c8dff0 100%);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      margin-left: -1.5rem;
-      margin-right: -1.5rem;
-      margin-top: -1.5rem;
-      padding-left: 1.5rem;
-      width: calc(100% + 3rem);
-    }
-
-    .story-header h2 {
-      font-size: 20px;
-      font-weight: 500;
-      color: #0c447c;
-      margin-bottom: 0.5rem;
-    }
-
-    .story-header p {
-      font-size: 14px;
-      color: #185fa5;
-    }
-
-    .story-content {
-      background: #fffcf9;
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1.5rem 0;
-      border-left: 4px solid #f4d9a6;
-      font-size: 14px;
-      line-height: 1.8;
-      color: #5f5e5a;
-    }
-
-    .questions-section {
-      margin-top: 2rem;
-    }
-
-    .question-tier {
-      margin-bottom: 1.5rem;
-    }
-
-    .tier-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: #888780;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.5rem;
-    }
-
-    .tier-label.tier1 { color: #185fa5; }
-    .tier-label.tier2 { color: #993556; }
-    .tier-label.tier3 { color: #3b6d11; }
-    .tier-label.tier4 { color: #854f0b; }
-
-    .question {
-      background: white;
-      border: 0.5px solid #e5e3df;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      font-size: 14px;
-      color: #5f5e5a;
-      line-height: 1.7;
-    }
-
-    .answer-area {
-      background: #fffcf9;
-      border: 0.5px solid #e5e3df;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .answer-area textarea {
-      width: 100%;
-      min-height: 80px;
-      border: 0.5px solid #d3d1c7;
-      border-radius: 6px;
-      padding: 0.75rem;
-      font-family: inherit;
-      font-size: 13px;
-      resize: none;
-    }
-
-    .answer-area textarea:focus {
-      outline: none;
-      border-color: #f4d9a6;
-      box-shadow: 0 0 0 2px rgba(244, 217, 166, 0.2);
-    }
-
-    .btn {
-      background: white;
-      border: 0.5px solid #d3d1c7;
-      color: #2c2c2a;
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-
-    .btn:hover {
-      border-color: #f4d9a6;
-      background: #fffcf9;
-    }
-
-    .btn.primary {
-      background: #f4d9a6;
-      border-color: #f4d9a6;
-      color: #2c2c2a;
-      font-weight: 500;
-    }
-
-    .btn.primary:hover {
-      background: #f0c899;
-      border-color: #f0c899;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
-    }
-
-    .btn-group button {
-      flex: 1;
-    }
-
-    /* JOURNAL PAGE */
-    .journal-header {
-      background: linear-gradient(135deg, #f4c0d1 0%, #f0add2 100%);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      color: #72243e;
-    }
-
-    .journal-header h3 {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      opacity: 0.9;
-    }
-
-    .journal-letter {
-      font-size: 13px;
-      line-height: 1.7;
-      color: #72243e;
-      font-style: italic;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: #f1f0ed;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: #888780;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-number {
-      font-size: 24px;
-      font-weight: 500;
-      color: #2c2c2a;
-    }
-
-    .entries-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .entry {
-      border: 0.5px solid #e5e3df;
-      border-radius: 8px;
-      padding: 1rem;
-      background: white;
-    }
-
-    .entry-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 0.75rem;
-    }
-
-    .entry-date {
-      font-size: 12px;
-      color: #888780;
-    }
-
-    .entry-level {
-      font-size: 11px;
-      background: #f1f0ed;
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #5f5e5a;
-    }
-
-    .entry-story {
-      font-size: 13px;
-      font-weight: 500;
-      color: #2c2c2a;
-      margin-bottom: 0.5rem;
-    }
-
-    .entry-response {
-      font-size: 13px;
-      color: #5f5e5a;
-      line-height: 1.6;
-    }
-
-    /* PROFILE PAGE */
-    .profile-section {
-      margin-bottom: 1.5rem;
-    }
-
-    .profile-section label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: #2c2c2a;
-      margin-bottom: 0.75rem;
-    }
-
-    .profile-section select,
-    .profile-section input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 0.5px solid #d3d1c7;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-
-    .profile-section select:focus,
-    .profile-section input:focus {
-      outline: none;
-      border-color: #f4d9a6;
-      box-shadow: 0 0 0 2px rgba(244, 217, 166, 0.2);
-    }
-
-    .success-msg {
-      background: #eaf3de;
-      color: #3b6d11;
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      font-size: 13px;
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .success-msg.show {
-      display: block;
-    }
-
-    @media (min-width: 768px) {
-      .container {
-        max-width: 600px;
-        border: 0.5px solid #e5e3df;
-      }
-    }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <!-- HEADER -->
-  <div class="header">
-    <h1>STEAM Stories</h1>
-    <div class="header-avatar">👩‍🔬</div>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--color-background-tertiary);color:var(--color-text-primary);line-height:1.6}
+.app{max-width:480px;margin:0 auto;background:var(--color-background-primary);min-height:600px;display:flex;flex-direction:column;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.hdr{padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;justify-content:space-between;align-items:center}
+.hdr-title{font-size:16px;font-weight:500}
+.hdr-av{width:34px;height:34px;border-radius:50%;background:#f4d9a6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#854f0b;cursor:pointer}
+.content{flex:1;padding:1.25rem;overflow-y:auto;max-height:520px}
+.page{display:none}.page.active{display:block}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:0.5px solid var(--color-border-tertiary);padding:4px 0}
+.nav-item{display:flex;flex-direction:column;align-items:center;padding:8px 0;cursor:pointer;color:var(--color-text-secondary);font-size:10px;border:none;background:none;transition:color 0.2s;gap:3px}
+.nav-item.active{color:#ba7517}
+.nav-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.btn{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-primary);padding:0.6rem 1rem;border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;transition:all 0.2s;font-family:inherit}
+.btn:hover{background:var(--color-background-secondary)}
+.btn.primary{background:#f4d9a6;border-color:#f0c899;color:#412402;font-weight:500}
+.btn.primary:hover{background:#f0c899}
+.btn.danger{background:var(--color-background-danger);border-color:var(--color-border-danger);color:var(--color-text-danger)}
+.btn-row{display:flex;gap:8px;margin-top:1rem}
+.btn-row button{flex:1}
+.input-field{width:100%;padding:0.65rem 0.85rem;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;font-family:inherit;background:var(--color-background-primary);color:var(--color-text-primary)}
+.input-field:focus{outline:none;border-color:#f4d9a6;box-shadow:0 0 0 2px rgba(244,217,166,0.25)}
+textarea.input-field{resize:vertical;min-height:80px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.125rem;margin-bottom:10px}
+.card:hover{border-color:#d4a574;cursor:pointer}
+.sec-title{font-size:15px;font-weight:500;margin:1.25rem 0 0.75rem;display:flex;justify-content:space-between;align-items:center}
+.sec-title a{font-size:12px;color:var(--color-text-secondary);cursor:pointer;text-decoration:none}
+.tag{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.tag.amber{background:#faeeda;color:#633806}
+.tag.blue{background:#e6f1fb;color:#0c447c}
+.tag.pink{background:#fbeaf0;color:#72243e}
+.tag.green{background:#eaf3de;color:#27500a}
+.tag.teal{background:#e1f5ee;color:#085041}
+.tag.purple{background:#eeedfe;color:#3c3489}
+.meta-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.meta-txt{font-size:12px;color:var(--color-text-secondary)}
+.feature-band{border-radius:var(--border-radius-lg);padding:1.125rem;margin-bottom:10px;cursor:pointer;transition:opacity 0.2s}
+.feature-band:hover{opacity:0.9}
+.feature-band h3{font-size:14px;font-weight:500;margin-bottom:4px}
+.feature-band p{font-size:12px}
+.band-amber{background:#faeeda;color:#633806}.band-amber h3{color:#412402}.band-amber p{color:#854f0b}
+.band-blue{background:#e6f1fb;color:#185fa5}.band-blue h3{color:#0c447c}.band-blue p{color:#185fa5}
+.band-pink{background:#fbeaf0;color:#993556}.band-pink h3{color:#72243e}.band-pink p{color:#993556}
+.band-green{background:#eaf3de;color:#3b6d11}.band-green h3{color:#27500a}.band-green p{color:#3b6d11}
+.band-teal{background:#e1f5ee;color:#0f6e56}.band-teal h3{color:#085041}.band-teal p{color:#0f6e56}
+.story-img{width:100%;height:160px;object-fit:cover;border-radius:var(--border-radius-md);margin-bottom:0.75rem;display:block}
+.story-body{background:var(--color-background-secondary);padding:1rem;border-radius:var(--border-radius-md);margin:1rem 0;border-left:3px solid #f4d9a6;font-size:13px;line-height:1.8;color:var(--color-text-secondary)}
+.tip-box{background:#faeeda;border:0.5px solid #f0c899;border-radius:var(--border-radius-md);padding:1rem;margin:0.75rem 0;display:none}
+.tip-box.visible{display:block}
+.tip-img{width:100%;height:120px;object-fit:cover;border-radius:var(--border-radius-md);margin-bottom:0.75rem}
+.tip-text{font-size:13px;color:#412402;line-height:1.7;font-style:italic}
+.q-tier{margin-bottom:1.25rem}
+.tier-lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.tier-lbl.t1{color:#185fa5}.tier-lbl.t2{color:#993556}.tier-lbl.t3{color:#3b6d11}.tier-lbl.t4{color:#854f0b}
+.q-text{font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:8px;padding:0.75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.stat{background:var(--color-background-secondary);padding:0.875rem;border-radius:var(--border-radius-md);text-align:center}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.stat-num{font-size:22px;font-weight:500}
+.entry-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.875rem;margin-bottom:10px;background:var(--color-background-primary)}
+.entry-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.entry-story-title{font-size:13px;font-weight:500}
+.entry-date{font-size:11px;color:var(--color-text-secondary)}
+.entry-resp{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.journal-banner{background:#fbeaf0;border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:1.25rem}
+.journal-banner h3{font-size:12px;font-weight:500;color:#72243e;margin-bottom:4px}
+.journal-banner p{font-size:12px;color:#993556;font-style:italic;line-height:1.6}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.25rem 0}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;border-radius:var(--border-radius-lg);z-index:100}
+.modal-box{background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:1.25rem;width:85%;border:0.5px solid var(--color-border-tertiary)}
+.portfolio-card{background:#faeeda;border-radius:var(--border-radius-md);padding:1rem;margin-bottom:1rem}
+.portfolio-card .pc-name{font-size:14px;font-weight:500;color:#412402}
+.portfolio-card .pc-stats{font-size:12px;color:#854f0b;margin-top:4px}
+.link-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:0.6rem 0.85rem;font-size:12px;color:var(--color-text-secondary);font-family:monospace;margin-bottom:0.75rem;word-break:break-all}
+.copy-confirm{font-size:12px;color:#3b6d11;display:none;margin-bottom:0.75rem}
+.copy-confirm.show{display:block}
+.login-wrap{display:flex;flex-direction:column;align-items:center;padding:2rem 1.25rem}
+.login-logo{width:52px;height:52px;background:#faeeda;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.login-title{font-size:18px;font-weight:500;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:2rem;text-align:center}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:1.5rem}
+.role-card{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1rem;cursor:pointer;text-align:center;transition:all 0.2s;background:var(--color-background-primary)}
+.role-card:hover,.role-card.selected{border-color:#d4a574;background:#fffcf9}
+.role-card svg{display:block;margin:0 auto 8px}
+.role-card .rc-title{font-size:13px;font-weight:500}
+.role-card .rc-sub{font-size:11px;color:var(--color-text-secondary)}
+.name-step{width:100%;display:none}
+.name-step.show{display:block}
+.code-box{background:#e6f1fb;border:0.5px solid #b5d4f4;border-radius:var(--border-radius-md);padding:0.75rem 1rem;margin:0.75rem 0;text-align:center}
+.code-val{font-size:22px;font-weight:500;color:#0c447c;letter-spacing:3px;font-family:monospace}
+.code-lbl{font-size:11px;color:#185fa5;margin-top:2px}
+.student-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:0.5px solid var(--color-border-tertiary);cursor:pointer}
+.student-row:last-child{border-bottom:none}
+.student-av{width:30px;height:30px;border-radius:50%;background:#faeeda;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#854f0b;flex-shrink:0}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--color-text-secondary);font-size:13px;cursor:pointer;padding:0;margin-bottom:1rem;font-family:inherit}
+.assess-saved{background:#eaf3de;border:0.5px solid #c0dd97;border-radius:var(--border-radius-md);padding:0.6rem 0.875rem;font-size:12px;color:#27500a;display:none;margin-top:8px}
+.assess-saved.show{display:block}
+
+/* RESOURCES PAGE */
+.res-hero{background:#eeedfe;border-radius:var(--border-radius-lg);padding:1.125rem;margin-bottom:1.25rem}
+.res-hero h3{font-size:14px;font-weight:500;color:#26215c;margin-bottom:4px}
+.res-hero p{font-size:12px;color:#534ab7}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.topic-card{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:0.875rem 0.75rem;cursor:pointer;text-align:center;transition:all 0.2s;background:var(--color-background-primary)}
+.topic-card:hover{border-color:#d4a574}
+.topic-card.selected{border-width:1.5px}
+.topic-card.sel-design{border-color:#ba7517;background:#faeeda}
+.topic-card.sel-code{border-color:#185fa5;background:#e6f1fb}
+.topic-card.sel-eng{border-color:#0f6e56;background:#e1f5ee}
+.topic-card.sel-sci{border-color:#3b6d11;background:#eaf3de}
+.topic-card.sel-ai{border-color:#534ab7;background:#eeedfe}
+.topic-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.topic-name{font-size:12px;font-weight:500}
+.topic-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.search-wrap{position:relative;margin-bottom:1.25rem}
+.search-wrap input{padding-left:2.25rem}
+.search-icon{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);pointer-events:none}
+.res-section{margin-bottom:1.5rem}
+.res-section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.res-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.875rem;margin-bottom:8px;background:var(--color-background-primary);text-decoration:none;display:block;transition:border-color 0.2s,background 0.2s;cursor:pointer}
+.res-card:hover{border-color:#d4a574;background:var(--color-background-secondary)}
+.res-card-top{display:flex;align-items:flex-start;gap:10px}
+.res-platform{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.res-platform.coursera{background:#0056d2}
+.res-platform.youtube{background:#ff0000}
+.res-title{font-size:13px;font-weight:500;line-height:1.4;flex:1}
+.res-meta{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+.res-chip{font-size:10px;padding:2px 7px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.res-free{background:#eaf3de;color:#27500a}
+.no-results{text-align:center;padding:2rem 1rem;color:var(--color-text-secondary);font-size:13px}
+</style>
+
+<div class="app" id="app" style="position:relative">
+
+<div id="loginScreen">
+<div class="login-wrap">
+  <div class="login-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="5" fill="#ba7517"/><path d="M4 24c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="#ba7517" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+  </div>
+  <div class="login-title">STEAM Stories</div>
+  <div class="login-sub">Học tư duy thiết kế qua những câu chuyện truyền cảm hứng</div>
+  <div class="role-grid">
+    <div class="role-card" id="roleStudent" onclick="selectRole('student')">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4L2 10l12 6 12-6-12-6z" fill="#185fa5"/><path d="M2 10v8" stroke="#185fa5" stroke-width="1.5" stroke-linecap="round"/><path d="M7 13v6c0 2.761 3.134 5 7 5s7-2.239 7-5v-6" stroke="#185fa5" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="rc-title">Học sinh</div><div class="rc-sub">Khám phá câu chuyện</div>
+    </div>
+    <div class="role-card" id="roleTeacher" onclick="selectRole('teacher')">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="20" height="14" rx="2" stroke="#993556" stroke-width="1.5" fill="none"/><path d="M10 20v3M18 20v3M7 23h14" stroke="#993556" stroke-width="1.5" stroke-linecap="round"/><path d="M9 13l3 3 7-7" stroke="#993556" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="rc-title">Giáo viên</div><div class="rc-sub">Xem và nhận xét</div>
+    </div>
+  </div>
+  <div class="name-step" id="nameStep">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px" id="nameLabel">Tên của bạn</div>
+    <input class="input-field" id="loginName" placeholder="Nhập tên..." style="margin-bottom:10px">
+    <div id="classCodeWrap" style="display:none">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px">Mã lớp học (nếu có)</div>
+      <input class="input-field" id="loginClassCode" placeholder="Ví dụ: STEAM01" style="margin-bottom:10px">
+    </div>
+    <button class="btn primary" onclick="doLogin()" style="width:100%">Vào học →</button>
+  </div>
+</div>
+</div>
+
+<div id="mainApp" style="display:none;flex-direction:column;height:100%">
+  <div class="hdr">
+    <div class="hdr-title" id="hdrTitle">STEAM Stories</div>
+    <div class="hdr-av" id="hdrAv" onclick="switchPage('profile')">M</div>
   </div>
 
-  <!-- CONTENT AREA -->
-  <div class="content">
+  <div class="content" id="mainContent">
 
-    <!-- HOME PAGE -->
     <div class="page active" id="home">
-      <div class="calendar-header">
-        <h2>Hi, Maria</h2>
+      <div style="font-size:20px;font-weight:500;margin-bottom:1.25rem" id="homeGreet">Chào, Maria!</div>
+      <div class="sec-title"><span>Câu chuyện của tôi</span><a onclick="switchPage('explore')">Xem tất cả</a></div>
+      <div class="feature-band band-amber" onclick="switchPage('explore')">
+        <h3>Bắt đầu câu chuyện mới</h3>
+        <p>Khám phá tư duy thiết kế qua những câu chuyện thực tế</p>
       </div>
-
-      <div style="margin-bottom: 1rem;">
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 0.5rem;">
-          <div class="calendar-day">Mon</div>
-          <div class="calendar-day">Tue</div>
-          <div class="calendar-day">Wed</div>
-          <div class="calendar-day">Thu</div>
-          <div class="calendar-day">Fri</div>
-          <div class="calendar-day">Sat</div>
-          <div class="calendar-day">Sun</div>
-        </div>
-        <div class="calendar-grid">
-          <div class="calendar-date">7</div>
-          <div class="calendar-date">8</div>
-          <div class="calendar-date">9</div>
-          <div class="calendar-date today">10</div>
-          <div class="calendar-date">11</div>
-          <div class="calendar-date">12</div>
-          <div class="calendar-date">13</div>
-        </div>
+      <div class="sec-title">Nhanh chóng</div>
+      <div class="feature-band band-blue" onclick="switchPage('journal')">
+        <h3>Xem nhật ký của tôi</h3>
+        <p>Theo dõi sự phát triển tư duy</p>
       </div>
-
-      <div class="section-title">
-        <span>My Stories</span>
-        <a onclick="switchPage('explore')">See all</a>
+      <div class="feature-band band-teal" onclick="switchPage('resources')">
+        <h3>Tài nguyên học tập</h3>
+        <p>Khoá học Coursera & video YouTube được chọn lọc</p>
       </div>
-
-      <div class="feature-card" onclick="switchPage('explore')">
-        <h3>Start a new story</h3>
-        <p>Explore problem-solving through design thinking</p>
-      </div>
-
-      <div class="section-title">Quick Moments</div>
-      <div class="feature-card pastels-blue" onclick="switchPage('journal')">
-        <h3>View my journal</h3>
-        <p>See your thinking evolution</p>
+      <div class="feature-band band-pink" onclick="showShareModal()">
+        <h3>Chia sẻ hồ sơ học tập</h3>
+        <p>Gửi link hồ sơ của bạn cho giáo viên</p>
       </div>
     </div>
 
-    <!-- EXPLORE PAGE -->
     <div class="page" id="explore">
-      <h2 style="margin-bottom: 1.5rem; font-size: 20px; font-weight: 500;">Choose a story</h2>
-      
-      <div class="story-list" id="storyList"></div>
+      <div style="font-size:18px;font-weight:500;margin-bottom:1.25rem">Chọn câu chuyện</div>
+      <div id="storyList"></div>
     </div>
 
-    <!-- STORY PAGE -->
     <div class="page" id="story">
-      <button class="btn" onclick="switchPage('explore')" style="margin-bottom: 1rem;">← Back</button>
-      
-      <div class="story-header">
-        <h2 id="storyTitle">Story Title</h2>
-        <p id="storyCharacter">By Character Name</p>
+      <button class="back-btn" onclick="switchPage('explore')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Quay lại
+      </button>
+      <img id="storyImg" class="story-img" src="" alt="">
+      <div style="margin-bottom:0.5rem">
+        <div style="font-size:17px;font-weight:500" id="storyTitle"></div>
+        <div class="meta-row"><span class="meta-txt" id="storyChar"></span><span class="tag amber" id="storyCtx"></span></div>
       </div>
-
-      <p style="font-size: 13px; color: #888780; margin-bottom: 1rem;" id="storyContext"></p>
-
-      <div class="story-content" id="storyBody"></div>
-
-      <div class="questions-section" id="questionsContainer"></div>
-
-      <div class="btn-group">
-        <button class="btn" onclick="switchPage('explore')">Explore more</button>
-        <button class="btn primary" onclick="saveAndViewJournal()">Save & View Journal</button>
+      <div class="story-body" id="storyBody"></div>
+      <button class="btn" onclick="toggleTip()" style="margin-bottom:0.75rem;display:flex;align-items:center;gap:6px;font-size:12px">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#ba7517" stroke-width="1.2"/><path d="M7 4v3.5l2 2" stroke="#ba7517" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Gợi ý truyền cảm hứng
+      </button>
+      <div class="tip-box" id="tipBox">
+        <img id="tipImg" class="tip-img" src="" alt="">
+        <div class="tip-text" id="tipText"></div>
+      </div>
+      <div id="questionsContainer"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="switchPage('explore')">Khám phá thêm</button>
+        <button class="btn primary" onclick="saveAndGoJournal()">Lưu & Xem nhật ký</button>
       </div>
     </div>
 
-    <!-- JOURNAL PAGE -->
     <div class="page" id="journal">
-      <h2 style="margin-bottom: 1rem; font-size: 20px; font-weight: 500;">Your Thinking Portfolio</h2>
-      
-      <div class="journal-header">
-        <h3>Teacher's Note</h3>
-        <p class="journal-letter">
-          "Maria, I'm impressed by how you approach problems. You ask thoughtful questions and aren't afraid to challenge assumptions. Keep developing this mindset—it's the foundation of great design thinking." — Ms. Linh
-        </p>
+      <div style="font-size:18px;font-weight:500;margin-bottom:1rem">Hồ sơ tư duy</div>
+      <div class="journal-banner" id="teacherNoteBox" style="display:none">
+        <h3>Nhận xét của giáo viên</h3>
+        <p id="teacherNoteText"></p>
       </div>
-
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Stories Explored</div>
-          <div class="stat-number" id="totalStories">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Insights Recorded</div>
-          <div class="stat-number" id="totalAnswers">0</div>
-        </div>
+        <div class="stat"><div class="stat-lbl">Câu chuyện đã khám phá</div><div class="stat-num" id="totalStories">0</div></div>
+        <div class="stat"><div class="stat-lbl">Suy nghĩ đã ghi lại</div><div class="stat-num" id="totalAnswers">0</div></div>
       </div>
-
-      <h3 style="font-size: 15px; font-weight: 500; margin-bottom: 1rem;">Your Entries</h3>
-      <div class="entries-list" id="entriesList">
-        <p style="color: #888780; text-align: center; padding: 2rem;">No entries yet. Start exploring stories!</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+        <div style="font-size:14px;font-weight:500">Các bài ghi</div>
+        <button class="btn" style="font-size:12px;padding:4px 10px" onclick="showShareModal()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="display:inline;vertical-align:middle;margin-right:4px"><circle cx="10" cy="3" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.2"/><circle cx="3" cy="6.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M8 3.9L5 5.6M5 7.4L8 9.1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          Chia sẻ hồ sơ
+        </button>
       </div>
-
-      <button class="btn" onclick="switchPage('home')" style="margin-top: 1.5rem; width: 100%;">Back to home</button>
+      <div id="entriesList"><p style="color:var(--color-text-secondary);text-align:center;padding:2rem;font-size:13px">Chưa có bài ghi. Hãy bắt đầu khám phá câu chuyện!</p></div>
     </div>
 
-    <!-- PROFILE PAGE -->
+    <!-- RESOURCES PAGE -->
+    <div class="page" id="resources">
+      <div style="font-size:18px;font-weight:500;margin-bottom:1rem">Tài nguyên học tập</div>
+      <div class="res-hero">
+        <h3>Bạn muốn tiếp tục học gì?</h3>
+        <p>Chọn chủ đề bên dưới hoặc tìm kiếm để khám phá khoá học và video được chọn lọc</p>
+      </div>
+      <div class="topic-grid" id="topicGrid"></div>
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="var(--color-text-secondary)" stroke-width="1.3"/><path d="M10.5 10.5L14 14" stroke="var(--color-text-secondary)" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="input-field" id="resSearch" placeholder="Tìm kiếm: ví dụ 'lập trình Python', 'AI cho người mới'..." oninput="filterResources()">
+      </div>
+      <div id="resResults"></div>
+    </div>
+
     <div class="page" id="profile">
-      <h2 style="margin-bottom: 1.5rem; font-size: 20px; font-weight: 500;">Your Profile</h2>
-
-      <div class="profile-section">
-        <label>Name</label>
-        <input type="text" id="userName" placeholder="Enter your name" value="Maria">
+      <div style="font-size:18px;font-weight:500;margin-bottom:1.25rem">Hồ sơ của bạn</div>
+      <div style="margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:500;margin-bottom:6px">Tên</div>
+        <input class="input-field" id="profileName" value="">
       </div>
-
-      <div class="profile-section">
-        <label>Grade Level</label>
-        <select id="userGrade">
-          <option value="cap2">Secondary (Cấp 2) - Age 11-14</option>
-          <option value="cap3" selected>High School (Cấp 3) - Age 15-17</option>
+      <div style="margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:500;margin-bottom:6px">Lớp học</div>
+        <select class="input-field" id="profileGrade">
+          <option value="cap2">THCS (Cấp 2) — 11–14 tuổi</option>
+          <option value="cap3">THPT (Cấp 3) — 15–17 tuổi</option>
         </select>
       </div>
-
-      <div class="profile-section">
-        <label>Interested in</label>
-        <select>
-          <option>Engineering & Design</option>
-          <option>Science & Research</option>
-          <option>Technology & AI</option>
-          <option>All of the above</option>
-        </select>
+      <div style="margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:500;margin-bottom:6px">Mã lớp</div>
+        <input class="input-field" id="profileClassCode" placeholder="Nhập mã lớp của bạn" value="">
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Giáo viên sẽ cấp mã lớp cho bạn</div>
       </div>
+      <button class="btn primary" onclick="saveProfile()" style="width:100%">Lưu hồ sơ</button>
+      <div id="profileSaved" style="font-size:12px;color:#3b6d11;display:none;margin-top:8px">Đã lưu!</div>
+      <hr class="divider">
+      <button class="btn danger" onclick="doLogout()" style="width:100%;font-size:13px">Đăng xuất</button>
+    </div>
 
-      <button class="btn primary" onclick="saveProfile()" style="width: 100%; margin-top: 1rem;">Save Profile</button>
-      <div class="success-msg" id="profileSuccess">Profile saved!</div>
+    <div class="page" id="teacherHome">
+      <div style="font-size:20px;font-weight:500;margin-bottom:1.25rem" id="teacherGreet">Chào, Cô Linh!</div>
+      <div class="code-box">
+        <div class="code-val" id="teacherCode">—</div>
+        <div class="code-lbl">Mã lớp của bạn — chia sẻ với học sinh</div>
+      </div>
+      <div class="sec-title">Học sinh trong lớp</div>
+      <div id="studentList"><p style="font-size:13px;color:var(--color-text-secondary);padding:1rem 0">Chưa có học sinh nào tham gia.</p></div>
+    </div>
 
-      <button class="btn" onclick="switchPage('home')" style="margin-top: 1rem; width: 100%;">Back to home</button>
+    <div class="page" id="teacherStudentView">
+      <button class="back-btn" onclick="switchPage('teacherHome')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Quay lại
+      </button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem">
+        <div class="student-av" id="tvAv" style="width:38px;height:38px;font-size:14px"></div>
+        <div><div style="font-size:15px;font-weight:500" id="tvName"></div><div style="font-size:12px;color:var(--color-text-secondary)" id="tvMeta"></div></div>
+      </div>
+      <div id="tvEntries"></div>
+      <hr class="divider">
+      <div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:6px">Ghi nhận xét cho học sinh</div>
+        <textarea class="input-field" id="assessInput" placeholder="Nhận xét về quá trình tư duy của học sinh..." style="min-height:90px"></textarea>
+        <button class="btn primary" onclick="saveAssessment()" style="margin-top:8px">Lưu nhận xét</button>
+        <div class="assess-saved" id="assessSaved">Đã lưu nhận xét!</div>
+      </div>
     </div>
 
   </div>
 
-  <!-- FOOTER NAV -->
-  <div class="nav">
-    <button class="nav-item active" onclick="switchPage('home')">
-      <div class="nav-icon">🏠</div>
-      <span>Home</span>
+  <div class="nav" id="studentNav">
+    <button class="nav-item active" onclick="switchPage('home')" data-page="home">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 8L9 3l6 5v7a1 1 0 01-1 1H4a1 1 0 01-1-1V8z" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M7 15v-5h4v5" stroke="currentColor" stroke-width="1.4"/></svg></div>
+      <span>Trang chủ</span>
     </button>
-    <button class="nav-item" onclick="switchPage('explore')">
-      <div class="nav-icon">🔍</div>
-      <span>Explore</span>
+    <button class="nav-item" onclick="switchPage('explore')" data-page="explore">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M12.5 12.5L16 16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span>Khám phá</span>
     </button>
-    <button class="nav-item" onclick="switchPage('journal')">
-      <div class="nav-icon">📓</div>
-      <span>Journal</span>
+    <button class="nav-item" onclick="switchPage('resources')" data-page="resources">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 4h12M3 8h8M3 12h10M3 16h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span>Tài nguyên</span>
     </button>
-    <button class="nav-item" onclick="switchPage('profile')">
-      <div class="nav-icon">👤</div>
-      <span>Profile</span>
+    <button class="nav-item" onclick="switchPage('journal')" data-page="journal">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="2" width="12" height="14" rx="2" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M6 7h6M6 10h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <span>Nhật ký</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('profile')" data-page="profile">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 16c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span>Hồ sơ</span>
+    </button>
+  </div>
+
+  <div class="nav" id="teacherNav" style="display:none">
+    <button class="nav-item active" onclick="switchPage('teacherHome')" data-page="teacherHome" style="grid-column:span 2">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M6 14v2M12 14v2M4 16h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <span>Lớp học</span>
+    </button>
+    <button class="nav-item" onclick="switchPage('profile')" data-page="profile" style="grid-column:span 2">
+      <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 16c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span>Hồ sơ</span>
     </button>
   </div>
 </div>
 
+<div id="shareModal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;border-radius:var(--border-radius-lg);z-index:100">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.875rem">
+      <div style="font-size:15px;font-weight:500">Chia sẻ hồ sơ học tập</div>
+      <button style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary)" onclick="closeShareModal()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="portfolio-card">
+      <div class="pc-name" id="pcName">Maria</div>
+      <div class="pc-stats" id="pcStats">0 câu chuyện · 0 suy nghĩ</div>
+      <div style="font-size:11px;color:#854f0b;margin-top:6px">STEAM Stories · Hồ sơ tư duy thiết kế</div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">Link hồ sơ của bạn</div>
+    <div class="link-box" id="shareLink">https://steamstories.vn/portfolio/maria-abc123</div>
+    <div class="copy-confirm" id="copyConfirm">Đã sao chép link!</div>
+    <div class="btn-row">
+      <button class="btn" onclick="closeShareModal()">Đóng</button>
+      <button class="btn primary" onclick="copyLink()">Sao chép link</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
 <script>
-  // SAMPLE DATA - Easy to swap with real Vietnamese STEAM stories
-  const stories = [
-    {
-      id: 1,
-      title: "Building a Water Filter System",
-      character: "Linh, Chemical Engineer",
-      context: "Age 16 | Working on rural water accessibility",
-      grade: "both",
-      story: `Linh moved to a rural village and realized many families didn't have clean water. She started experimenting with local materials—sand, charcoal, and gravel—to design a simple filtration system. At first, it didn't work. She tested dozens of combinations, talked to community members about what they needed, and eventually created a filter that removed 80% of impurities using materials villagers could find themselves.`,
-      questions: {
-        cap2: [
-          { tier: 1, text: "Have you ever solved a problem without realizing you were using design thinking?", hint: "Think about a time you fixed something that was broken." },
-          { tier: 2, text: "If you were Linh, who would be affected by your water filter decision?", hint: "Think about all the people who might use this filter." },
-          { tier: 3, text: "What's the most impossible material you could imagine using for a filter?", hint: "Be creative—there are no wrong answers!" },
-          { tier: 4, text: "What did you learn about how you think when solving problems?", hint: "Reflect on your own thinking process." }
-        ],
-        cap3: [
-          { tier: 1, text: "How is Linh's approach to filtration an example of systems thinking?", hint: "Consider the relationships between materials, contamination, and community needs." },
-          { tier: 2, text: "What stakeholders should Linh have consulted before deploying the filter?", hint: "Think about engineers, users, environmental impact." },
-          { tier: 3, text: "Use SCAMPER: Could you Substitute, Combine, or Adapt existing water treatment technology for rural contexts?", hint: "Focus on one SCAMPER dimension." },
-          { tier: 4, text: "How has your understanding of design thinking evolved through this story?", hint: "Compare this to how you thought about problems before." }
-        ]
-      }
-    },
-    {
-      id: 2,
-      title: "Designing an App for Local Markets",
-      character: "Hoa, UX Designer & Entrepreneur",
-      context: "Age 18 | Created marketplace app for street vendors",
-      grade: "both",
-      story: `Hoa noticed that street food vendors in her city struggled to reach customers and manage inventory. She decided to design an app, but faced a challenge: many vendors were older and not tech-savvy. Instead of building what she *thought* they needed, Hoa spent weeks interviewing vendors, observing how they worked, and even working a shift in a noodle stall. She realized the app needed to be simple, show photos (not just text), and let vendors manage orders on paper if they wanted. The result was an app that actually got used because it respected how vendors worked.`,
-      questions: {
-        cap2: [
-          { tier: 1, text: "What problem was Hoa trying to solve? Why is this problem important?", hint: "Think about what street vendors struggle with." },
-          { tier: 2, text: "Why did Hoa spend time working in a noodle stall? What did she learn?", hint: "This is about understanding other people's experiences." },
-          { tier: 3, text: "What's a completely different way to help street vendors that no one else has thought of?", hint: "No idea is too wild!" },
-          { tier: 4, text: "What surprised you most about how Hoa approached this problem?", hint: "Reflect on what you didn't expect." }
-        ],
-        cap3: [
-          { tier: 1, text: "Analyze the system: How are street vendors, customers, and the app interconnected?", hint: "Draw mental connections between all parts." },
-          { tier: 2, text: "Who are all the stakeholders in this problem? Why did Hoa's choice to interview vendors matter?", hint: "Go beyond vendors—think customers, city officials, etc." },
-          { tier: 3, text: "Apply SCAMPER: How could you Reverse the app's function? (Instead of vendors selling, what if...?)", hint: "Push yourself to think inversely." },
-          { tier: 4, text: "What principles of empathy in design do you now understand differently?", hint: "Connect this to your own design thinking growth." }
-        ]
-      }
-    },
-    {
-      id: 3,
-      title: "Coding a Tool for Student Safety",
-      character: "Thu, Software Engineer & Student Advocate",
-      context: "Age 17 | Built safety app after witnessing harassment",
-      grade: "both",
-      story: `Thu saw a friend get harassed while walking home from school. Instead of staying silent, she taught herself to code and built a simple app that lets students share unsafe locations and alert friends in real-time. The app isn't fancy—just pins on a map and a group chat feature. But it started a conversation in her school about safety, and the local government noticed her work. Now she's being asked to help design a city-wide student safety system.`,
-      questions: {
-        cap2: [
-          { tier: 1, text: "What made Thu decide to use coding to solve this problem?", hint: "Think about why she didn't just talk to teachers or parents." },
-          { tier: 2, text: "Who would use Thu's app? What do they care about most?", hint: "Think about the needs of different groups." },
-          { tier: 3, text: "Imagine you're designing this app. What feature would make students actually use it?", hint: "Think about what would make YOU want to use it." },
-          { tier: 4, text: "How did your thinking about technology and social problems change?", hint: "Did you realize code could solve real-world issues?" }
-        ],
-        cap3: [
-          { tier: 1, text: "What systems are involved in this problem? (Trust, visibility, communication...)", hint: "Think about how these systems interact." },
-          { tier: 2, text: "Beyond students, who else is a stakeholder? How might their interests differ?", hint: "Consider parents, teachers, police, city planners." },
-          { tier: 3, text: "SCAMPER challenge: How could you Combine this app with other safety tools? Or Eliminate a feature that creates new problems?", hint: "Think about unintended consequences." },
-          { tier: 4, text: "What does this story reveal about your own potential to create change?", hint: "Reflect on your agency and capability." }
-        ]
-      }
-    }
+const stories=[
+  {id:1,title:"Xây dựng hệ thống lọc nước",character:"Linh, Kỹ sư hóa học",ctx:"16 tuổi · Nước sạch nông thôn",img:"https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=70",tipImg:"https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=70",tipText:"Linh bắt đầu với cát, than củi và đá sỏi — thử nghiệm hàng chục lần cho đến khi tìm ra tỷ lệ hoàn hảo. Còn bạn, bạn sẽ bắt đầu từ đâu?",story:"Linh chuyển đến một ngôi làng nông thôn và nhận ra nhiều gia đình không có nước sạch. Cô bắt đầu thử nghiệm với các vật liệu địa phương — cát, than củi và sỏi — để thiết kế hệ thống lọc đơn giản. Ban đầu nó không hoạt động. Cô đã thử hàng chục cách kết hợp, nói chuyện với người dân về nhu cầu của họ, và cuối cùng tạo ra bộ lọc loại bỏ 80% tạp chất bằng vật liệu dân làng tự tìm kiếm được.",questions:{cap2:[{tier:1,text:"Bạn đã từng giải quyết một vấn đề mà không nhận ra mình đang dùng tư duy thiết kế chưa?"},{tier:2,text:"Nếu bạn là Linh, ai sẽ bị ảnh hưởng bởi quyết định về bộ lọc nước?"},{tier:3,text:"Vật liệu 'không tưởng' nào bạn có thể dùng để lọc nước?"},{tier:4,text:"Bạn học được gì về cách bạn tư duy khi giải quyết vấn đề?"}],cap3:[{tier:1,text:"Cách tiếp cận của Linh thể hiện tư duy hệ thống như thế nào?"},{tier:2,text:"Linh cần tham khảo ý kiến của những bên liên quan nào trước khi triển khai?"},{tier:3,text:"Áp dụng SCAMPER: Thay thế, Kết hợp hoặc Thích nghi công nghệ xử lý nước cho bối cảnh nông thôn?"},{tier:4,text:"Hiểu biết của bạn về tư duy thiết kế đã thay đổi như thế nào qua câu chuyện này?"}]}},
+  {id:2,title:"Thiết kế ứng dụng cho chợ địa phương",character:"Hoa, Nhà thiết kế UX",ctx:"18 tuổi · Ứng dụng chợ tiểu thương",img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=70",tipImg:"https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=70",tipText:"Hoa dành cả tuần ngồi bên xe hàng, lắng nghe từng khách hàng — không phán xét, chỉ quan sát. Đó là lúc cô hiểu thực sự họ cần gì. Còn bạn, bạn sẽ quan sát điều gì?",story:"Hoa nhận thấy các tiểu thương gặp khó khăn trong việc tiếp cận khách hàng và quản lý hàng tồn kho. Thay vì xây dựng những gì cô nghĩ họ cần, Hoa dành nhiều tuần phỏng vấn tiểu thương, quan sát cách họ làm việc, và thậm chí làm một ca tại quán bún. Kết quả là ứng dụng thực sự được sử dụng vì nó tôn trọng cách tiểu thương làm việc.",questions:{cap2:[{tier:1,text:"Hoa đang cố giải quyết vấn đề gì? Tại sao vấn đề đó quan trọng?"},{tier:2,text:"Tại sao Hoa dành thời gian làm ca tại quán bún? Cô học được gì?"},{tier:3,text:"Một cách hoàn toàn khác để giúp tiểu thương mà chưa ai nghĩ đến là gì?"},{tier:4,text:"Điều gì khiến bạn ngạc nhiên nhất về cách Hoa tiếp cận vấn đề?"}],cap3:[{tier:1,text:"Phân tích hệ thống: tiểu thương, khách hàng và ứng dụng kết nối với nhau như thế nào?"},{tier:2,text:"Ai là tất cả các bên liên quan? Tại sao việc Hoa phỏng vấn tiểu thương lại quan trọng?"},{tier:3,text:"Áp dụng SCAMPER: Bạn có thể Đảo ngược chức năng của ứng dụng không?"},{tier:4,text:"Bạn hiểu nguyên tắc đồng cảm trong thiết kế khác đi như thế nào?"}]}},
+  {id:3,title:"Lập trình công cụ an toàn học sinh",character:"Thu, Kỹ sư phần mềm",ctx:"17 tuổi · Ứng dụng an toàn trường học",img:"https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=70",tipImg:"https://images.unsplash.com/photo-1573164713712-03790a178651?w=600&q=70",tipText:"Thu không biết lập trình khi bắt đầu — cô học từ video trực tuyến mỗi buổi tối. Chỉ sau 3 tháng, cô đã có nguyên mẫu đầu tiên. Nếu bạn muốn thay đổi điều gì đó, bạn sẽ học kỹ năng nào trước?",story:"Thu chứng kiến một người bạn bị quấy rối trên đường về nhà. Thay vì im lặng, cô tự học lập trình và xây dựng ứng dụng cho phép học sinh chia sẻ các địa điểm không an toàn và cảnh báo bạn bè theo thời gian thực. Ứng dụng bắt đầu cuộc thảo luận về an toàn tại trường, và chính quyền địa phương đã chú ý. Bây giờ cô được mời thiết kế hệ thống an toàn học sinh toàn thành phố.",questions:{cap2:[{tier:1,text:"Điều gì khiến Thu quyết định dùng lập trình để giải quyết vấn đề này?"},{tier:2,text:"Ai sẽ dùng ứng dụng của Thu? Họ quan tâm nhất đến điều gì?"},{tier:3,text:"Tính năng nào sẽ khiến học sinh thực sự muốn sử dụng ứng dụng đó?"},{tier:4,text:"Suy nghĩ của bạn về công nghệ và các vấn đề xã hội thay đổi như thế nào?"}],cap3:[{tier:1,text:"Những hệ thống nào liên quan đến vấn đề này? (Tin tưởng, hiển thị, giao tiếp...)"},{tier:2,text:"Ngoài học sinh, ai còn là bên liên quan? Lợi ích của họ khác nhau như thế nào?"},{tier:3,text:"Thách thức SCAMPER: Bạn có thể Kết hợp ứng dụng này với các công cụ an toàn khác không?"},{tier:4,text:"Câu chuyện này tiết lộ điều gì về tiềm năng tạo ra sự thay đổi của bạn?"}]}}
+];
+
+const topics=[
+  {id:'design',name:'Tư duy thiết kế',sub:'Design thinking',selClass:'sel-design',iconBg:'#faeeda',iconStroke:'#ba7517',icon:'<path d="M4 14l4-4 3 3 5-6" stroke="%s" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'},
+  {id:'code',name:'Lập trình',sub:'Coding & Web',selClass:'sel-code',iconBg:'#e6f1fb',iconStroke:'#185fa5',icon:'<path d="M5 8L2 11l3 3M11 8l3 3-3 3M8 5l-2 12" stroke="%s" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>'},
+  {id:'eng',name:'Kỹ thuật',sub:'Engineering',selClass:'sel-eng',iconBg:'#e1f5ee',iconStroke:'#0f6e56',icon:'<circle cx="9" cy="9" r="3" stroke="%s" stroke-width="1.4" fill="none"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M4.2 4.2l1.4 1.4M12.4 12.4l1.4 1.4M4.2 13.8l1.4-1.4M12.4 5.6l1.4-1.4" stroke="%s" stroke-width="1.3" stroke-linecap="round"/>'},
+  {id:'sci',name:'Khoa học',sub:'Science & Biology',selClass:'sel-sci',iconBg:'#eaf3de',iconStroke:'#3b6d11',icon:'<path d="M6 2v6L3 14h10L10 8V2" stroke="%s" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5 2h6" stroke="%s" stroke-width="1.4" stroke-linecap="round"/>'},
+  {id:'ai',name:'AI & Công nghệ',sub:'AI & Technology',selClass:'sel-ai',iconBg:'#eeedfe',iconStroke:'#534ab7',icon:'<rect x="3" y="5" width="10" height="7" rx="2" stroke="%s" stroke-width="1.4" fill="none"/><path d="M8 12v3M5 15h6M6 8h.5M9.5 8H10" stroke="%s" stroke-width="1.3" stroke-linecap="round"/>'}
+];
+
+const resources={
+  design:[
+    {platform:'coursera',title:'Design Thinking for Innovation — University of Virginia',url:'https://www.coursera.org/learn/uva-darden-design-thinking-innovation',level:'Cơ bản',duration:'~12 giờ',free:true},
+    {platform:'coursera',title:'Human-Centered Design: an Introduction — UC San Diego',url:'https://www.coursera.org/learn/human-computer-interaction',level:'Cơ bản',duration:'~10 giờ',free:true},
+    {platform:'youtube',title:'IDEO Design Thinking Process — IDEO U',url:'https://www.youtube.com/watch?v=_r0VX-aU_T8',level:'Cơ bản',duration:'18 phút',free:true},
+    {platform:'youtube',title:'What Is Design Thinking? — MIT Sloan',url:'https://www.youtube.com/watch?v=a7sEoEvT8l8',level:'Cơ bản',duration:'4 phút',free:true},
+    {platform:'coursera',title:'Design Thinking Capstone — Cal Arts',url:'https://www.coursera.org/learn/design-thinking-capstone',level:'Nâng cao',duration:'~15 giờ',free:false}
+  ],
+  code:[
+    {platform:'coursera',title:'Python for Everybody — University of Michigan',url:'https://www.coursera.org/specializations/python',level:'Cơ bản',duration:'~8 tháng',free:true},
+    {platform:'coursera',title:'Web Design for Everybody — University of Michigan',url:'https://www.coursera.org/specializations/web-design',level:'Cơ bản',duration:'~6 tháng',free:true},
+    {platform:'youtube',title:'CS50x 2024 — Harvard (Full Course)',url:'https://www.youtube.com/watch?v=3LPJfIKxwWc',level:'Trung bình',duration:'25+ giờ',free:true},
+    {platform:'youtube',title:'Learn JavaScript in 1 Hour — Programming with Mosh',url:'https://www.youtube.com/watch?v=W6NZfCO5SIk',level:'Cơ bản',duration:'1 giờ',free:true},
+    {platform:'coursera',title:'Algorithms Specialization — Stanford',url:'https://www.coursera.org/specializations/algorithms',level:'Nâng cao',duration:'~4 tháng',free:false}
+  ],
+  eng:[
+    {platform:'coursera',title:'Introduction to Engineering Mechanics — Georgia Tech',url:'https://www.coursera.org/learn/engineering-mechanics-statics',level:'Trung bình',duration:'~10 giờ',free:true},
+    {platform:'youtube',title:'Engineering for Kids: How Bridges Work — TED-Ed',url:'https://www.youtube.com/watch?v=oVOnRPefcno',level:'Cơ bản',duration:'5 phút',free:true},
+    {platform:'coursera',title:'Design: Creation of Artifacts in Society — U Penn',url:'https://www.coursera.org/learn/design',level:'Cơ bản',duration:'~12 giờ',free:true},
+    {platform:'youtube',title:'How Does a Circuit Work? — Lesics',url:'https://www.youtube.com/watch?v=mc979OhitAg',level:'Cơ bản',duration:'7 phút',free:true},
+    {platform:'coursera',title:'Robotics Specialization — University of Pennsylvania',url:'https://www.coursera.org/specializations/robotics',level:'Nâng cao',duration:'~6 tháng',free:false}
+  ],
+  sci:[
+    {platform:'coursera',title:'Understanding Climate Change — University of British Columbia',url:'https://www.coursera.org/learn/climate-change',level:'Cơ bản',duration:'~10 giờ',free:true},
+    {platform:'youtube',title:'Biology: The Science of Life — CrashCourse',url:'https://www.youtube.com/watch?v=QnQe0xW_JY4',level:'Cơ bản',duration:'Series',free:true},
+    {platform:'coursera',title:'Chemistry: Concept Development — Duke University',url:'https://www.coursera.org/learn/chemistry-1',level:'Cơ bản',duration:'~7 giờ',free:true},
+    {platform:'youtube',title:'How the Universe Works — Kurzgesagt',url:'https://www.youtube.com/c/inanutshell',level:'Cơ bản',duration:'Series',free:true},
+    {platform:'coursera',title:'Astrobiology and the Search for Extraterrestrial Life — U Edinburgh',url:'https://www.coursera.org/learn/astrobiology',level:'Trung bình',duration:'~12 giờ',free:true}
+  ],
+  ai:[
+    {platform:'coursera',title:'AI For Everyone — Andrew Ng / DeepLearning.AI',url:'https://www.coursera.org/learn/ai-for-everyone',level:'Cơ bản',duration:'~6 giờ',free:true},
+    {platform:'youtube',title:'Intro to Machine Learning — Google Developers',url:'https://www.youtube.com/watch?v=HcqpanDadyQ',level:'Cơ bản',duration:'25 phút',free:true},
+    {platform:'coursera',title:'Machine Learning Specialization — Stanford / DeepLearning.AI',url:'https://www.coursera.org/specializations/machine-learning-introduction',level:'Trung bình',duration:'~3 tháng',free:false},
+    {platform:'youtube',title:'ChatGPT & AI Tools for Students — Ali Abdaal',url:'https://www.youtube.com/watch?v=sTeoEFzVNSc',level:'Cơ bản',duration:'20 phút',free:true},
+    {platform:'coursera',title:'Deep Learning Specialization — DeepLearning.AI',url:'https://www.coursera.org/specializations/deep-learning',level:'Nâng cao',duration:'~5 tháng',free:false}
+  ]
+};
+
+let selectedTopic=null;
+let appState={role:null,userName:'',userGrade:'cap3',classCode:'',entries:[],teacherCode:'',currentStoryId:null,currentStudentId:null};
+
+function loadState(){try{const s=localStorage.getItem('ssState2');if(s){const p=JSON.parse(s);Object.assign(appState,p);}}catch(e){}}
+function saveState(){try{localStorage.setItem('ssState2',JSON.stringify(appState));}catch(e){}}
+
+function selectRole(r){
+  document.getElementById('roleStudent').classList.remove('selected');
+  document.getElementById('roleTeacher').classList.remove('selected');
+  document.getElementById('role'+r.charAt(0).toUpperCase()+r.slice(1)).classList.add('selected');
+  appState.role=r;
+  const ns=document.getElementById('nameStep');
+  ns.classList.add('show');
+  document.getElementById('nameLabel').textContent=r==='student'?'Tên của bạn':'Tên giáo viên';
+  document.getElementById('classCodeWrap').style.display=r==='student'?'block':'none';
+}
+
+function doLogin(){
+  const name=document.getElementById('loginName').value.trim();
+  if(!name){document.getElementById('loginName').focus();return;}
+  appState.userName=name;
+  if(appState.role==='teacher'){
+    appState.teacherCode=appState.teacherCode||('STEAM'+Math.random().toString(36).substring(2,6).toUpperCase());
+  }else{
+    const cc=document.getElementById('loginClassCode').value.trim().toUpperCase();
+    appState.classCode=cc;
+  }
+  saveState();bootApp();
+}
+
+function bootApp(){
+  document.getElementById('loginScreen').style.display='none';
+  const ma=document.getElementById('mainApp');
+  ma.style.display='flex';ma.style.flexDirection='column';ma.style.height='100%';
+  document.getElementById('hdrAv').textContent=appState.userName.charAt(0).toUpperCase();
+  if(appState.role==='teacher'){
+    document.getElementById('studentNav').style.display='none';
+    document.getElementById('teacherNav').style.display='grid';
+    document.getElementById('teacherGreet').textContent='Chào, '+appState.userName+'!';
+    document.getElementById('teacherCode').textContent=appState.teacherCode;
+    document.getElementById('hdrTitle').textContent='Lớp học của tôi';
+    renderStudentList();switchPage('teacherHome');
+  }else{
+    document.getElementById('homeGreet').textContent='Chào, '+appState.userName+'!';
+    document.getElementById('profileName').value=appState.userName;
+    document.getElementById('profileGrade').value=appState.userGrade;
+    document.getElementById('profileClassCode').value=appState.classCode||'';
+    renderTeacherNote();switchPage('home');
+  }
+}
+
+function switchPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  const pg=document.getElementById(p);if(pg)pg.classList.add('active');
+  document.querySelectorAll('[data-page="'+p+'"]').forEach(x=>x.classList.add('active'));
+  if(p==='explore')renderExplore();
+  if(p==='journal')renderJournal();
+  if(p==='resources')renderResources();
+  if(p==='teacherHome')renderStudentList();
+}
+
+function renderResources(){
+  const grid=document.getElementById('topicGrid');
+  grid.innerHTML=topics.map(t=>{
+    const iconSvg=t.icon.replace(/%s/g,t.iconStroke);
+    return`<div class="topic-card${selectedTopic===t.id?' selected '+t.selClass:''}" onclick="selectTopic('${t.id}')">
+      <div class="topic-icon" style="background:${t.iconBg}">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">${iconSvg}</svg>
+      </div>
+      <div class="topic-name">${t.name}</div>
+      <div class="topic-sub">${t.sub}</div>
+    </div>`;
+  }).join('');
+  renderResourceResults();
+}
+
+function selectTopic(id){
+  selectedTopic=selectedTopic===id?null:id;
+  document.getElementById('resSearch').value='';
+  renderResources();
+}
+
+function filterResources(){
+  selectedTopic=null;
+  document.querySelectorAll('.topic-card').forEach(c=>c.classList.remove('selected','sel-design','sel-code','sel-eng','sel-sci','sel-ai'));
+  renderResourceResults();
+}
+
+function renderResourceResults(){
+  const query=document.getElementById('resSearch').value.trim().toLowerCase();
+  const out=document.getElementById('resResults');
+  let pool=[];
+  if(selectedTopic){
+    pool=resources[selectedTopic]||[];
+  }else if(query){
+    Object.values(resources).forEach(arr=>pool.push(...arr));
+    pool=pool.filter(r=>r.title.toLowerCase().includes(query)||r.level.toLowerCase().includes(query));
+  }else{
+    out.innerHTML='<div class="no-results" style="padding:1.5rem 0"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" style="display:block;margin:0 auto 8px"><circle cx="14" cy="14" r="9" stroke="var(--color-border-secondary)" stroke-width="1.5"/><path d="M21 21L28 28" stroke="var(--color-border-secondary)" stroke-width="1.5" stroke-linecap="round"/></svg>Chọn chủ đề hoặc tìm kiếm để xem tài nguyên</div>';
+    return;
+  }
+  if(!pool.length){
+    out.innerHTML='<div class="no-results">Không tìm thấy tài nguyên phù hợp. Thử từ khóa khác!</div>';
+    return;
+  }
+  const coursera=pool.filter(r=>r.platform==='coursera');
+  const youtube=pool.filter(r=>r.platform==='youtube');
+  let html='';
+  if(coursera.length){
+    html+=`<div class="res-section"><div class="res-section-title">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="2" fill="#0056d2"/><path d="M5 5l4 2-4 2V5z" fill="white"/></svg>
+      Coursera
+    </div>${coursera.map(r=>resCard(r)).join('')}</div>`;
+  }
+  if(youtube.length){
+    html+=`<div class="res-section"><div class="res-section-title">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="2" fill="#ff0000"/><path d="M5 5l4 2-4 2V5z" fill="white"/></svg>
+      YouTube
+    </div>${youtube.map(r=>resCard(r)).join('')}</div>`;
+  }
+  out.innerHTML=html;
+}
+
+function resCard(r){
+  return`<a class="res-card" href="${r.url}" target="_blank" rel="noopener">
+    <div class="res-card-top">
+      <div class="res-platform ${r.platform}">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 4l5 3-5 3V4z" fill="white"/></svg>
+      </div>
+      <div class="res-title">${r.title}</div>
+    </div>
+    <div class="res-meta">
+      <span class="res-chip">${r.level}</span>
+      <span class="res-chip">${r.duration}</span>
+      ${r.free?'<span class="res-chip res-free">Miễn phí</span>':'<span class="res-chip">Có phí</span>'}
+    </div>
+  </a>`;
+}
+
+function renderExplore(){
+  document.getElementById('storyList').innerHTML=stories.map(s=>`
+    <div class="card" onclick="selectStory(${s.id})">
+      <img src="${s.img}" style="width:100%;height:110px;object-fit:cover;border-radius:var(--border-radius-md);margin-bottom:0.625rem;display:block">
+      <div style="font-size:14px;font-weight:500;margin-bottom:4px">${s.title}</div>
+      <div class="meta-row"><span class="meta-txt">${s.character}</span><span class="tag amber">${s.ctx}</span></div>
+    </div>`).join('');
+}
+
+function selectStory(id){
+  appState.currentStoryId=id;
+  const s=stories.find(x=>x.id===id);
+  document.getElementById('storyTitle').textContent=s.title;
+  document.getElementById('storyChar').textContent=s.character;
+  document.getElementById('storyCtx').textContent=s.ctx;
+  document.getElementById('storyImg').src=s.img;
+  document.getElementById('storyBody').textContent=s.story;
+  document.getElementById('tipImg').src=s.tipImg;
+  document.getElementById('tipText').textContent=s.tipText;
+  document.getElementById('tipBox').classList.remove('visible');
+  const qs=s.questions[appState.userGrade]||s.questions.cap2;
+  const labels=['Hiểu','Đồng cảm','Sáng tạo','Phản chiếu'];
+  document.getElementById('questionsContainer').innerHTML=qs.map((q,i)=>`
+    <div class="q-tier">
+      <div class="tier-lbl t${q.tier}">Cấp độ ${q.tier}: ${labels[q.tier-1]}</div>
+      <div class="q-text">${q.text}</div>
+      <textarea class="input-field" id="ans-${i}" placeholder="Suy nghĩ của bạn..."></textarea>
+    </div>`).join('');
+  switchPage('story');
+}
+
+function toggleTip(){document.getElementById('tipBox').classList.toggle('visible');}
+
+function saveAndGoJournal(){
+  const s=stories.find(x=>x.id===appState.currentStoryId);
+  const qs=s.questions[appState.userGrade]||s.questions.cap2;
+  const answers=qs.map((_,i)=>{const el=document.getElementById('ans-'+i);return el?el.value.trim():'';}).filter(a=>a);
+  if(!answers.length){alert('Hãy ghi ít nhất một suy nghĩ trước khi lưu.');return;}
+  if(!appState.entries)appState.entries=[];
+  appState.entries.push({storyId:appState.currentStoryId,storyTitle:s.title,date:new Date().toLocaleDateString('vi-VN'),grade:appState.userGrade,answers});
+  saveState();switchPage('journal');
+}
+
+function renderJournal(){
+  const entries=appState.entries||[];
+  document.getElementById('totalStories').textContent=new Set(entries.map(e=>e.storyId)).size;
+  document.getElementById('totalAnswers').textContent=entries.reduce((s,e)=>s+e.answers.length,0);
+  const el=document.getElementById('entriesList');
+  if(!entries.length){el.innerHTML='<p style="color:var(--color-text-secondary);text-align:center;padding:2rem;font-size:13px">Chưa có bài ghi. Hãy bắt đầu khám phá câu chuyện!</p>';return;}
+  el.innerHTML=entries.slice().reverse().map(e=>`
+    <div class="entry-card">
+      <div class="entry-head"><div><div class="entry-story-title">${e.storyTitle}</div><div class="entry-date">${e.date}</div></div><span class="tag ${e.grade==='cap2'?'blue':'pink'}">${e.grade==='cap2'?'Cấp 2':'Cấp 3'}</span></div>
+      <div class="entry-resp">${e.answers[0]}</div>
+      ${e.answers.length>1?`<div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">+${e.answers.length-1} suy nghĩ khác</div>`:''}
+    </div>`).join('');
+  renderTeacherNote();
+}
+
+function renderTeacherNote(){
+  const key='assess_'+appState.classCode+'_'+appState.userName;
+  const note=appState.classCode?localStorage.getItem(key):null;
+  const box=document.getElementById('teacherNoteBox');
+  if(note){box.style.display='block';document.getElementById('teacherNoteText').textContent=note;}
+  else{box.style.display='none';}
+}
+
+function saveProfile(){
+  appState.userName=document.getElementById('profileName').value.trim()||appState.userName;
+  appState.userGrade=document.getElementById('profileGrade').value;
+  appState.classCode=document.getElementById('profileClassCode').value.trim().toUpperCase();
+  saveState();
+  document.getElementById('hdrAv').textContent=appState.userName.charAt(0).toUpperCase();
+  document.getElementById('homeGreet').textContent='Chào, '+appState.userName+'!';
+  const msg=document.getElementById('profileSaved');msg.style.display='block';
+  setTimeout(()=>msg.style.display='none',2000);
+}
+
+function doLogout(){
+  appState={role:null,userName:'',userGrade:'cap3',classCode:'',entries:[],teacherCode:'',currentStoryId:null,currentStudentId:null};
+  saveState();selectedTopic=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginName').value='';document.getElementById('loginClassCode').value='';
+  document.getElementById('nameStep').classList.remove('show');
+  document.getElementById('roleStudent').classList.remove('selected');
+  document.getElementById('roleTeacher').classList.remove('selected');
+}
+
+function getAllStudents(){
+  const demo=[
+    {userName:'Minh Anh',classCode:appState.teacherCode,userGrade:'cap3',entries:[{storyId:1,storyTitle:'Xây dựng hệ thống lọc nước',date:'14/04/2025',grade:'cap3',answers:['Em nghĩ Linh đã áp dụng tư duy hệ thống rất rõ ràng.','Em sẽ thêm bước kiểm tra chất lượng nước.']}]},
+    {userName:'Hà Linh',classCode:appState.teacherCode,userGrade:'cap2',entries:[{storyId:2,storyTitle:'Thiết kế ứng dụng cho chợ địa phương',date:'13/04/2025',grade:'cap2',answers:['Hoa muốn giúp tiểu thương bán hàng dễ hơn.']}]}
   ];
+  return demo;
+}
 
-  // APP STATE
-  let appState = {
-    currentUser: localStorage.getItem('userName') || 'Maria',
-    userGrade: localStorage.getItem('userGrade') || 'cap3',
-    entries: JSON.parse(localStorage.getItem('entries')) || []
-  };
+function renderStudentList(){
+  const sl=document.getElementById('studentList');
+  const students=getAllStudents();
+  if(!students.length){sl.innerHTML='<p style="font-size:13px;color:var(--color-text-secondary);padding:1rem 0">Chưa có học sinh nào tham gia.</p>';return;}
+  sl.innerHTML=students.map(s=>`
+    <div class="student-row" onclick="viewStudent('${s.userName}')">
+      <div class="student-av">${s.userName.charAt(0).toUpperCase()}</div>
+      <div style="flex:1;margin-left:10px;font-size:13px;font-weight:500">${s.userName}</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-right:8px">${(s.entries||[]).length} bài</div>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 10l4-3-4-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>`).join('');
+}
 
-  let currentStoryId = null;
+function viewStudent(name){
+  appState.currentStudentId=name;
+  const st=getAllStudents().find(s=>s.userName===name);
+  if(!st)return;
+  document.getElementById('tvAv').textContent=name.charAt(0).toUpperCase();
+  document.getElementById('tvName').textContent=name;
+  document.getElementById('tvMeta').textContent=(st.userGrade==='cap2'?'THCS (Cấp 2)':'THPT (Cấp 3)')+' · '+(st.entries||[]).length+' bài ghi';
+  const entries=st.entries||[];
+  const el=document.getElementById('tvEntries');
+  if(!entries.length){el.innerHTML='<p style="font-size:13px;color:var(--color-text-secondary)">Học sinh chưa có bài ghi nào.</p>';}
+  else{el.innerHTML=entries.map(e=>`<div class="entry-card" style="margin-bottom:10px"><div class="entry-head"><div><div class="entry-story-title">${e.storyTitle}</div><div class="entry-date">${e.date}</div></div><span class="tag ${e.grade==='cap2'?'blue':'pink'}">${e.grade==='cap2'?'Cấp 2':'Cấp 3'}</span></div>${e.answers.map(a=>`<div class="entry-resp" style="margin-bottom:6px">${a}</div>`).join('')}</div>`).join('');}
+  const assessKey='assess_'+appState.teacherCode+'_'+name;
+  document.getElementById('assessInput').value=localStorage.getItem(assessKey)||'';
+  document.getElementById('assessSaved').classList.remove('show');
+  switchPage('teacherStudentView');
+}
 
-  // PAGE NAVIGATION
-  function switchPage(pageName) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    
-    document.getElementById(pageName).classList.add('active');
-    event.target.closest('.nav-item')?.classList.add('active');
+function saveAssessment(){
+  const val=document.getElementById('assessInput').value.trim();if(!val)return;
+  localStorage.setItem('assess_'+appState.teacherCode+'_'+appState.currentStudentId,val);
+  document.getElementById('assessSaved').classList.add('show');
+  setTimeout(()=>document.getElementById('assessSaved').classList.remove('show'),2000);
+}
 
-    if (pageName === 'explore') renderExplore();
-    if (pageName === 'journal') renderJournal();
-  }
+function showShareModal(){
+  const entries=appState.entries||[];
+  document.getElementById('pcName').textContent=appState.userName||'Học sinh';
+  document.getElementById('pcStats').textContent=new Set(entries.map(e=>e.storyId)).size+' câu chuyện · '+entries.reduce((s,e)=>s+e.answers.length,0)+' suy nghĩ';
+  const slug=(appState.userName||'student').toLowerCase().replace(/\s+/g,'-');
+  document.getElementById('shareLink').textContent='https://steamstories.vn/portfolio/'+slug+'-'+Math.random().toString(36).substring(2,8);
+  document.getElementById('copyConfirm').classList.remove('show');
+  document.getElementById('shareModal').style.display='flex';
+}
 
-  // RENDER EXPLORE PAGE
-  function renderExplore() {
-    const storyList = document.getElementById('storyList');
-    storyList.innerHTML = stories.map(s => `
-      <div class="story-card" onclick="selectStory(${s.id})">
-        <h3>${s.title}</h3>
-        <div class="story-card-meta">
-          <span>📍 ${s.character}</span>
-          <span>${s.context}</span>
-        </div>
-      </div>
-    `).join('');
-  }
+function closeShareModal(){document.getElementById('shareModal').style.display='none';}
 
-  // SELECT & RENDER STORY
-  function selectStory(id) {
-    currentStoryId = id;
-    const story = stories.find(s => s.id === id);
-    
-    document.getElementById('storyTitle').textContent = story.title;
-    document.getElementById('storyCharacter').textContent = 'By ' + story.character;
-    document.getElementById('storyContext').textContent = story.context;
-    document.getElementById('storyBody').textContent = story.story;
+function copyLink(){
+  try{navigator.clipboard.writeText(document.getElementById('shareLink').textContent);}catch(e){}
+  document.getElementById('copyConfirm').classList.add('show');
+  setTimeout(()=>document.getElementById('copyConfirm').classList.remove('show'),2500);
+}
 
-    const questions = story.questions[appState.userGrade] || story.questions.cap2;
-    const questionsHtml = questions.map((q, idx) => `
-      <div class="question-tier">
-        <div class="tier-label tier${q.tier}">Level ${q.tier}: ${['Understand', 'Empathize', 'Create', 'Reflect'][q.tier-1]}</div>
-        <div class="question">${q.text}</div>
-        <div class="answer-area">
-          <textarea placeholder="Your reflection..." id="answer-${idx}"></textarea>
-        </div>
-      </div>
-    `).join('');
-
-    document.getElementById('questionsContainer').innerHTML = questionsHtml;
-    switchPage('story');
-  }
-
-  // SAVE & VIEW JOURNAL
-  function saveAndViewJournal() {
-    const questions = stories.find(s => s.id === currentStoryId).questions[appState.userGrade];
-    const story = stories.find(s => s.id === currentStoryId);
-
-    const answers = questions.map((q, idx) => {
-      const textarea = document.getElementById(`answer-${idx}`);
-      return textarea.value.trim();
-    }).filter(a => a);
-
-    if (answers.length === 0) {
-      alert('Please answer at least one question before saving.');
-      return;
-    }
-
-    const entry = {
-      storyId: currentStoryId,
-      storyTitle: story.title,
-      date: new Date().toLocaleDateString(),
-      grade: appState.userGrade,
-      answers: answers
-    };
-
-    appState.entries.push(entry);
-    localStorage.setItem('entries', JSON.stringify(appState.entries));
-
-    switchPage('journal');
-  }
-
-  // RENDER JOURNAL
-  function renderJournal() {
-    const totalStories = new Set(appState.entries.map(e => e.storyId)).size;
-    const totalAnswers = appState.entries.reduce((sum, e) => sum + e.answers.length, 0);
-
-    document.getElementById('totalStories').textContent = totalStories;
-    document.getElementById('totalAnswers').textContent = totalAnswers;
-
-    const entriesList = document.getElementById('entriesList');
-    if (appState.entries.length === 0) {
-      entriesList.innerHTML = '<p style="color: #888780; text-align: center; padding: 2rem;">No entries yet. Start exploring stories!</p>';
-      return;
-    }
-
-    entriesList.innerHTML = appState.entries.map((e, idx) => `
-      <div class="entry">
-        <div class="entry-meta">
-          <div>
-            <div class="entry-story">${e.storyTitle}</div>
-            <div class="entry-date">${e.date}</div>
-          </div>
-          <div class="entry-level">${e.grade === 'cap2' ? 'Cấp 2' : 'Cấp 3'}</div>
-        </div>
-        <div class="entry-response">${e.answers[0]}</div>
-      </div>
-    `).join('');
-  }
-
-  // SAVE PROFILE
-  function saveProfile() {
-    const name = document.getElementById('userName').value;
-    const grade = document.getElementById('userGrade').value;
-    
-    appState.currentUser = name;
-    appState.userGrade = grade;
-    
-    localStorage.setItem('userName', name);
-    localStorage.setItem('userGrade', grade);
-    
-    document.querySelector('.header h1').textContent = `Hi, ${name}`;
-    
-    const msg = document.getElementById('profileSuccess');
-    msg.classList.add('show');
-    setTimeout(() => msg.classList.remove('show'), 2000);
-  }
-
-  // INIT
-  window.addEventListener('load', () => {
-    document.querySelector('.header h1').textContent = `Hi, ${appState.currentUser}`;
-    document.getElementById('userName').value = appState.currentUser;
-    document.getElementById('userGrade').value = appState.userGrade;
-  });
+window.addEventListener('load',()=>{
+  loadState();
+  if(appState.role&&appState.userName){bootApp();}
+});
 </script>
-
-</body>
-</html>
