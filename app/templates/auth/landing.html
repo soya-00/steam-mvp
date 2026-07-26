@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}GALS — học tư duy thiết kế qua tình huống nghề nghiệp{% endblock %}
+
+{% block content %}
+<div class="-mt-6 md:-mt-8">
+
+  <header class="flex items-center justify-between py-4">
+    <span class="font-display font-extrabold text-xl text-trunk">◈ GALS</span>
+    <a href="/dang-nhap" class="text-sm font-medium text-trunk hover:underline">Đăng nhập</a>
+  </header>
+
+  <section class="py-10 md:py-16 max-w-2xl">
+    <p class="chip bg-teal-50 text-teal-700 mb-4">Dành cho học sinh THPT</p>
+    <h1 class="text-3xl md:text-5xl text-ink">
+      Thử làm nghề trước khi<br>phải chọn nghề.
+    </h1>
+    <p class="mt-5 text-lg text-ink-soft">
+      Bạn nhập vai vào một tình huống nghề nghiệp có thật — dữ liệu chưa đầy đủ, các bên
+      liên quan muốn những điều khác nhau, và chưa có đáp án nào sẵn. GALS đi cùng bạn
+      qua bốn cấp độ tư duy, hỏi từng câu một, và ghi lại cách bạn nghĩ.
+    </p>
+    <p class="mt-4 text-base text-ink-soft">
+      Không chấm điểm. Không xếp hạng. Không có &ldquo;đáp án mẫu&rdquo;.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/dang-ky" class="btn btn-primary">Bắt đầu — miễn phí</a>
+      <a href="/dang-nhap" class="btn btn-ghost">Tôi đã có tài khoản</a>
+    </div>
+  </section>
+
+  <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 py-8">
+    {% set pillars = [
+      ('Dự án học tập', 'Nhập vai vào một tình huống thật và đi qua bốn cấp độ tư duy cùng trợ lý AI.', 'border-l-teal'),
+      ('Hồ sơ năng lực', 'Mọi thứ bạn làm tự động gom thành hồ sơ. Bạn toàn quyền biên tập và chọn có chia sẻ hay không.', 'border-l-amber'),
+      ('Huy hiệu', 'Ghi nhận hành trình khám phá — không phải điểm số, không so sánh với ai.', 'border-l-plum'),
+      ('Tài nguyên miễn phí', 'Khoá học và video tuyển chọn từ Khan Academy, Coursera theo từng lĩnh vực.', 'border-l-slate')
+    ] %}
+    {% for title, desc, bar in pillars %}
+    <div class="card p-4 branch-bar {{ bar }}">
+      <h3 class="text-base text-ink">{{ title }}</h3>
+      <p class="mt-1.5 text-sm text-ink-soft">{{ desc }}</p>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section class="py-8">
+    <h2 class="text-xl text-ink">Những tình huống bạn có thể thử</h2>
+    <p class="mt-1 text-sm text-ink-soft">
+      Mỗi nghề thu thập bằng chứng và ra quyết định theo cách riêng — nội dung bên trong
+      phản ánh đúng điều đó.
+    </p>
+    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+      {% for s in scenarios %}
+      <div class="card p-4">
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="chip bg-trunk-50 text-trunk">{{ s.field }}</span>
+          <span class="text-ink-faint">{{ s.role }}</span>
+        </div>
+        <h3 class="mt-2 text-base text-ink">{{ s.title }}</h3>
+        <p class="mt-1 text-sm text-ink-soft">{{ s.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="py-10">
+    <div class="card p-6 bg-trunk text-white border-trunk">
+      <h2 class="text-xl text-white">Bạn là giáo viên?</h2>
+      <p class="mt-2 text-sm text-trunk-100 max-w-xl">
+        Tạo lớp, giao tình huống theo hình thức trực tuyến hoặc tại lớp, đọc nhật ký tư duy
+        của học sinh và để lại nhận xét riêng tư. Học sinh không nhìn thấy điểm số vì
+        không có điểm số nào cả.
+      </p>
+      <a href="/demo/giao_vien" class="btn bg-white text-trunk hover:bg-trunk-50 mt-4">
+        Xem thử màn hình giáo viên
+      </a>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

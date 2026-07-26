@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}GALS{% endblock %}</title>
+  <meta name="description" content="GALS — nơi học sinh THPT tập tư duy thiết kế qua những tình huống nghề nghiệp có thật.">
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <script src="/static/js/htmx.min.js" defer></script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+{% if user %}
+<header class="bg-trunk text-white sticky top-0 z-30">
+  <div class="mx-auto max-w-6xl px-4">
+    <div class="flex items-center gap-3 h-14">
+      <a href="{{ '/giao-vien' if user.is_teacher else '/trang-ca-nhan' }}"
+         class="flex items-center gap-2 font-display font-extrabold text-lg tracking-tight">
+        <span aria-hidden="true">◈</span> GALS
+      </a>
+
+      {% if not user.is_teacher %}
+      <!-- Vòng lặp: về Trang cá nhân từ bất cứ đâu (cạnh xanh lá trong sơ đồ luồng) -->
+      <a href="/trang-ca-nhan"
+         class="ml-auto text-sm text-trunk-100 hover:text-white hidden sm:inline">
+        ← Trang cá nhân
+      </a>
+      {% else %}
+      <span class="ml-auto chip bg-trunk-700 text-trunk-100">Giáo viên</span>
+      {% endif %}
+
+      <a href="/dang-xuat"
+         class="flex items-center gap-2 {{ 'ml-3' if not user.is_teacher else '' }} group"
+         title="Đăng xuất">
+        <span class="w-8 h-8 rounded-full bg-trunk-700 grid place-items-center text-sm font-semibold">
+          {{ user.name.split()[-1][:1] }}
+        </span>
+        <span class="text-sm text-trunk-100 group-hover:text-white hidden md:inline">Đăng xuất</span>
+      </a>
+    </div>
+
+    {% if not user.is_teacher %}
+    <nav aria-label="Bốn nhánh trải nghiệm"
+         class="flex gap-1 overflow-x-auto -mx-4 px-4 pb-2 text-sm">
+      {% set branches = [
+        ('/du-an', 'Dự án học tập', 'du_an'),
+        ('/ho-so', 'Hồ sơ năng lực', 'ho_so'),
+        ('/huy-hieu', 'Huy hiệu', 'huy_hieu'),
+        ('/tai-nguyen', 'Tài nguyên', 'tai_nguyen')
+      ] %}
+      {% for href, label, key in branches %}
+      <a href="{{ href }}"
+         class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium transition
+                {% if branch == key %}bg-paper text-trunk{% else %}text-trunk-100 hover:bg-trunk-700{% endif %}">
+        {{ label }}
+      </a>
+      {% endfor %}
+    </nav>
+    {% else %}
+    <nav aria-label="Điều hướng giáo viên" class="flex gap-1 overflow-x-auto -mx-4 px-4 pb-2 text-sm">
+      {% for href, label, key in [('/giao-vien', 'Lớp của tôi', 'lop'), ('/giao-vien/thong-bao', 'Thông báo', 'thong_bao')] %}
+      <a href="{{ href }}"
+         class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium transition
+                {% if branch == key %}bg-paper text-trunk{% else %}text-trunk-100 hover:bg-trunk-700{% endif %}">
+        {{ label }}
+      </a>
+      {% endfor %}
+    </nav>
+    {% endif %}
+  </div>
+</header>
+{% endif %}
+
+<main class="flex-1 mx-auto w-full max-w-6xl px-4 py-6 md:py-8">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="mx-auto w-full max-w-6xl px-4 py-6 text-xs text-ink-faint">
+  <p>GALS · bản mẫu tương tác. Dữ liệu trong ứng dụng là dữ liệu giả định.</p>
+  {% if not gemini_enabled() %}
+  <p class="mt-1">Đang chạy ở chế độ demo ngoại tuyến — phần trò chuyện dùng kịch bản dựng sẵn.</p>
+  {% endif %}
+</footer>
+
+</body>
+</html>

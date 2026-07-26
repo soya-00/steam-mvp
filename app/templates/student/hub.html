@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Trang cá nhân — GALS{% endblock %}
+
+{% block content %}
+
+<section class="flex flex-wrap items-start gap-4">
+  <span class="w-14 h-14 rounded-full bg-teal-50 grid place-items-center text-3xl shrink-0" aria-hidden="true">
+    {{ avatar_emoji.get(user.avatar_id, '🦊') }}
+  </span>
+  <div class="min-w-0">
+    <h1 class="text-2xl text-ink">Chào {{ user.name.split()[-1] }}</h1>
+    <p class="mt-1 text-sm text-ink-soft">
+      {% if classes %}
+        Đang học {% for c in classes %}<strong class="font-medium text-ink">{{ c.name }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}
+      {% else %}
+        Bạn đang dùng GALS một mình — không giáo viên nào xem được nhật ký của bạn.
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<!-- Tiến độ: mô tả hành trình, KHÔNG phải điểm số -->
+<section class="mt-6 grid gap-3 sm:grid-cols-3">
+  {# Tên class phải viết đủ chữ — Tailwind quét tĩnh, không ghép được chuỗi động. #}
+  {% set stats = [
+    (entry_count, 'bài trong nhật ký', 'border-l-teal'),
+    (portfolio_count, 'mục trong hồ sơ', 'border-l-amber'),
+    (badges|length, 'huy hiệu đã mở', 'border-l-plum')
+  ] %}
+  {% for value, label, bar in stats %}
+  <div class="card p-4 branch-bar {{ bar }}">
+    <p class="font-display text-2xl font-extrabold text-ink">{{ value }}</p>
+    <p class="text-sm text-ink-soft">{{ label }}</p>
+  </div>
+  {% endfor %}
+</section>
+
+{% if feedback %}
+<section class="mt-6">
+  <h2 class="text-lg text-ink">Lời nhắn từ giáo viên</h2>
+  {% for f in feedback[:2] %}
+  <div class="card p-4 mt-2 bg-trunk-50 border-trunk-100">
+    <p class="text-sm text-ink">{{ f.content }}</p>
+    <p class="mt-2 text-xs text-ink-faint">
+      {{ f.teacher.name }} · {{ f.created_at.strftime('%d/%m') }} · chỉ mình bạn đọc được
+    </p>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<!-- Bốn nhánh trải nghiệm -->
+<section class="mt-8">
+  <h2 class="text-lg text-ink">Bạn muốn làm gì hôm nay?</h2>
+  <p class="mt-1 text-sm text-ink-soft">
+    Không có thứ tự bắt buộc. Vào nhánh nào trước cũng được, quay lại đây lúc nào cũng được.
+  </p>
+
+  <div class="mt-4 grid gap-3 sm:grid-cols-2">
+    {% set branches = [
+      ('/du-an', 'Dự án học tập', 'Nhập vai vào một tình huống nghề nghiệp và đi qua bốn cấp độ tư duy.', 'border-l-teal hover:border-teal-300'),
+      ('/ho-so', 'Hồ sơ năng lực', 'Xem lại những gì bạn đã làm, hoặc mở một cuộc trò chuyện tự do để nghĩ tiếp.', 'border-l-amber hover:border-amber-300'),
+      ('/huy-hieu', 'Huy hiệu', 'Xem bạn đã khám phá tới đâu và gợi ý nên thử lĩnh vực nào tiếp theo.', 'border-l-plum hover:border-plum-300'),
+      ('/tai-nguyen', 'Tài nguyên miễn phí', 'Khoá học, video và thông báo hội thảo theo lĩnh vực bạn quan tâm.', 'border-l-slate hover:border-slate-300')
+    ] %}
+    {% for href, title, desc, bar in branches %}
+    <a href="{{ href }}" class="card p-5 branch-bar {{ bar }} transition block">
+      <h3 class="text-base text-ink">{{ title }}</h3>
+      <p class="mt-1 text-sm text-ink-soft">{{ desc }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% if entries %}
+<section class="mt-8">
+  <div class="flex items-baseline justify-between gap-3">
+    <h2 class="text-lg text-ink">Bạn đang dở</h2>
+    <a href="/ho-so" class="text-sm font-medium text-teal hover:underline">Xem tất cả</a>
+  </div>
+  <div class="mt-3 grid gap-2">
+    {% for e in entries %}
+    <div class="card p-4">
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="chip {{ 'bg-teal-50 text-teal-700' if e.source == 'guided' else 'bg-amber-50 text-amber-900' }}">
+          {{ 'Nhập vai' if e.source == 'guided' else 'Ý tưởng tự do' }}
+        </span>
+        <span class="text-ink-faint">{{ e.created_at.strftime('%d/%m/%Y') }}</span>
+      </div>
+      <p class="mt-2 font-medium text-sm text-ink">{{ e.title or 'Chưa đặt tên' }}</p>
+      <p class="mt-1 text-sm text-ink-soft line-clamp-2">{{ e.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if notifications %}
+<section class="mt-8">
+  <h2 class="text-lg text-ink">Sắp diễn ra</h2>
+  <div class="mt-3 grid gap-2">
+    {% for n in notifications %}
+    <div class="card p-4 branch-bar border-l-slate">
+      <span class="chip bg-slate-50 text-slate-700">
+        {{ 'Hội thảo' if n.type == 'workshop' else 'Talkshow' }}
+      </span>
+      <p class="mt-2 font-medium text-sm text-ink">{{ n.title }}</p>
+      <p class="mt-1 text-sm text-ink-soft">{{ n.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

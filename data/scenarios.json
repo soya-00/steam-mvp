@@ -1,0 +1,390 @@
+[
+  {
+    "id": "dich-te-truong-noi-tru",
+    "field": "Khoa học",
+    "career_group": "Y sinh, dịch tễ",
+    "title": "Điều gì đang khiến học sinh bị ốm?",
+    "role": "Chuyên viên dịch tễ học",
+    "protagonist": "An",
+    "has_female_protagonist": true,
+    "knowledge": "Sinh học – vi sinh vật, cơ chế lây bệnh, hệ miễn dịch, biến số và mối quan hệ nguyên nhân–kết quả.",
+    "domain_skills": ["Phương pháp khoa học", "Dịch tễ học", "Đạo đức nghiên cứu"],
+    "creation_output": "Kế hoạch điều tra và phòng ngừa",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "Một trường nội trú 600 học sinh ghi nhận 38 ca có triệu chứng trong bốn ngày. Phụ huynh đã có kết luận của riêng họ. Bạn thì chưa.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là An, chuyên viên dịch tễ học được mời hỗ trợ một trường nội trú có 600 học sinh. Trong bốn ngày, phòng y tế ghi nhận 38 học sinh đến khám: 29 em đau bụng, 17 em buồn nôn, 8 em sốt và 6 em tiêu chảy. Một học sinh có thể có nhiều triệu chứng. Phụ huynh đang cho rằng bữa trưa ở căng tin là nguyên nhân."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Bạn chú ý đến điều gì từ những dữ liệu này?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Trong số 38 học sinh đến khám, 31 em đã ăn ở căng tin. Tuy nhiên, khoảng 80% toàn trường cũng thường xuyên ăn tại đây. Thông tin triệu chứng được thu thập qua biểu mẫu tự khai; học sinh cảm thấy không khỏe có khả năng điền biểu mẫu nhiều hơn những học sinh khác."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Những dữ liệu này cho phép và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn cần so sánh những nhóm nào để hiểu liệu việc ăn ở căng tin có liên quan đến triệu chứng?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Các triệu chứng không bắt đầu cùng lúc. Một số học sinh thấy không khỏe trước bữa trưa được cho là có vấn đề. Hai lớp vừa trở về từ chuyến dã ngoại, một lớp đang có nhiều học sinh cảm cúm và tuần này cũng trùng với kỳ kiểm tra cuối kỳ."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Có những cách giải thích nào khác cho tình trạng hiện tại?"
+          }
+        ],
+        "closing": "Ở thời điểm này, bạn sẽ mô tả vấn đề cần điều tra như thế nào mà chưa khẳng định nguyên nhân?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh stakeholder",
+            "text": "Y tá trường đang phải tiếp nhận nhiều học sinh cùng lúc nhưng không thể công khai thông tin sức khỏe cá nhân. Nhân viên căng tin lo bị đổ lỗi và mất việc. Một số học sinh giấu triệu chứng vì không muốn bỏ kỳ kiểm tra. Phụ huynh yêu cầu đóng cửa căng tin ngay, trong khi 450 học sinh nội trú phụ thuộc vào nơi này để ăn hằng ngày."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Bạn muốn tìm hiểu góc nhìn của ai trước? Điều gì khiến bạn chọn người đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Một nhân viên căng tin nói quy trình luôn được thực hiện đúng. Tuy nhiên, sổ ghi nhiệt độ tủ lạnh bị bỏ trống trong hai ngày. Y tá cho biết một số học sinh chỉ báo đau bụng sau khi tin đồn về ngộ độc xuất hiện trong nhóm chat."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Điều gì là quan sát, điều gì là lời kể và điều gì vẫn chỉ là suy đoán?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn sẽ đặt câu hỏi như thế nào để người được hỏi không cảm thấy mình đang bị buộc tội?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Nếu công bố danh sách học sinh bị bệnh, nhóm có thể tìm ra các hoạt động chung nhanh hơn nhưng vi phạm quyền riêng tư. Nếu chỉ sử dụng dữ liệu ẩn danh, việc xác định mối liên hệ giữa các ca bệnh sẽ khó hơn."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Bạn sẽ cân bằng nhu cầu điều tra với quyền riêng tư của học sinh như thế nào?"
+          }
+        ],
+        "closing": "Bạn cần nghe hoặc quan sát thêm điều gì trước khi đưa ra khuyến nghị?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Ràng buộc thực tế",
+            "text": "Nhà trường cần một kế hoạch hành động trong ba giờ. Phòng xét nghiệm chỉ có thể phân tích 10 mẫu và cần ít nhất 48 giờ để trả kết quả. Nhóm không thể bắt buộc học sinh cung cấp mẫu hoặc trả lời phỏng vấn. Đóng toàn bộ căng tin sẽ ảnh hưởng đến 450 học sinh, nhưng tiếp tục hoạt động cũng có thể tạo rủi ro nếu thực phẩm thực sự là nguyên nhân."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Trước khi có kết quả xét nghiệm, kế hoạch của bạn cần đạt những mục tiêu nào?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu tiếp theo",
+            "text": "Nhóm có thể thu thập mẫu thức ăn, nước uống hoặc mẫu từ người có triệu chứng. Tuy nhiên, thức ăn được phục vụ bốn ngày trước không còn đầy đủ. Các mẫu còn lại đã được bảo quản trong những điều kiện khác nhau nên kết quả âm tính chưa chắc chứng minh thực phẩm an toàn."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Bạn sẽ sử dụng giới hạn 10 mẫu như thế nào? Bạn đang ưu tiên thông tin gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Lựa chọn đó có thể khiến nhóm bỏ sót điều gì?"
+          },
+          {
+            "type": "context",
+            "label": "Nhiều quyết định đồng thời",
+            "text": "Ngoài điều tra nguyên nhân, nhóm còn phải quyết định cách tổ chức bữa ăn tạm thời, theo dõi ca bệnh mới và thông báo cho phụ huynh mà không tạo hoảng loạn hoặc đổ lỗi khi chưa đủ bằng chứng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Bạn sẽ đề xuất kế hoạch cho 24 giờ tiếp theo như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Phần nào trong kế hoạch giúp bảo vệ học sinh ngay lập tức, và phần nào giúp thu thập bằng chứng?"
+          }
+        ],
+        "closing": ""
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả ban đầu",
+            "text": "Sau 48 giờ:\n• Ba trong tám mẫu từ học sinh phát hiện cùng một loại virus đường ruột.\n• Hai mẫu thức ăn không phát hiện vi khuẩn, nhưng đều được thu thập muộn.\n• Số lượt đến phòng y tế giảm từ 11 xuống còn 4 lượt mỗi ngày.\n• Căng tin đã tạm ngừng phục vụ trong cùng khoảng thời gian.\n• Một trường gần đó cũng báo cáo học sinh có triệu chứng tương tự."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Kết quả nào hỗ trợ cách diễn giải của bạn và kết quả nào vẫn còn mơ hồ?"
+          },
+          {
+            "type": "context",
+            "label": "Giới hạn của dữ liệu",
+            "text": "Không phải tất cả học sinh có triệu chứng đều được xét nghiệm. Việc số ca giảm có thể liên quan đến việc đóng căng tin, quá trình tự nhiên của đợt bệnh hoặc việc học sinh không tiếp tục báo cáo triệu chứng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Có những cách giải thích nào cho việc số ca được ghi nhận giảm?"
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Bạn sẽ khuyến nghị nhà trường làm gì tiếp theo? Điều gì có thể khiến bạn thay đổi khuyến nghị?"
+          }
+        ],
+        "closing": "Qua tình huống này, điều gì về nghề dịch tễ học khác với hình dung ban đầu của bạn?"
+      }
+    ]
+  },
+  {
+    "id": "thiet-ke-cong-cu-cho-tieu-thuong",
+    "field": "Nghệ thuật",
+    "career_group": "Thiết kế, nghệ thuật",
+    "title": "Công cụ nào thật sự giúp được người bán hàng ở chợ?",
+    "role": "Product Designer",
+    "protagonist": "Hoa",
+    "has_female_protagonist": true,
+    "knowledge": "Nguyên lý thị giác, kỹ thuật thiết kế, nghiên cứu người dùng và kiểm chứng giả định.",
+    "domain_skills": ["Nguyên lý thị giác", "Kỹ thuật thiết kế", "Nghiên cứu người dùng"],
+    "creation_output": "Bản mẫu đơn giản để kiểm tra giả định quan trọng nhất",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "Nhà tài trợ muốn giảm 20% lượng hàng bỏ đi trong sáu tuần. Trưởng nhóm đã có sẵn ý tưởng. Bạn chưa chắc ý tưởng đó giải đúng vấn đề.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là Hoa, Product Designer trong một nhóm công nghệ gồm bốn người. Một ban quản lý chợ muốn nhóm xây dựng công cụ giúp tiểu thương giảm lãng phí và quản lý hàng tồn kho. Nhà tài trợ kỳ vọng lượng hàng bị bỏ đi giảm 20% sau sáu tuần. Trưởng nhóm đã đề xuất xây dựng ứng dụng nhập số lượng hàng mỗi ngày."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Điều gì trong yêu cầu này khiến bạn chú ý hoặc muốn tìm hiểu thêm?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Nhóm đã khảo sát 20 tiểu thương. Trong đó, 14 người nói rằng họ không luôn biết chính xác lượng hàng còn lại, 11 người từng nhập thừa hàng trong tuần gần nhất và 6 người sẵn sàng nhập dữ liệu vào ứng dụng mỗi ngày.\n\nNhững người tham gia gồm 12 quán ăn, 5 sạp rau quả và 3 cửa hàng đồ gia dụng. Một người có thể thuộc nhiều nhóm kết quả khác nhau. Khảo sát được thực hiện sau một buổi hướng dẫn kỹ năng số, vì vậy người tham gia có thể quan tâm đến công nghệ hơn các tiểu thương khác."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Dữ liệu này giúp bạn hiểu được điều gì, và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Khi xem lại câu trả lời, Hoa phát hiện “nhập thừa hàng” không phải lúc nào cũng xuất phát từ việc quên kiểm tra tồn kho. Một số tiểu thương nhập thêm vì sợ giá tăng, muốn giữ quan hệ với nhà cung cấp hoặc phải đạt số lượng tối thiểu để được giao hàng miễn phí. Một số trường hợp thiếu hàng lại do nhà cung cấp giao muộn hoặc lượng khách tăng bất ngờ."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Những thông tin mới này làm thay đổi cách bạn hiểu vấn đề như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Có những vấn đề nào đang bị gộp chung dưới cụm từ “quản lý tồn kho”?"
+          }
+        ],
+        "closing": "Với thông tin hiện tại, bạn sẽ mô tả vấn đề Hoa cần nghiên cứu như thế nào? Cách mô tả này vẫn còn dựa trên giả định nào?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Hoa dành một ca làm việc cùng cô Lan, chủ quán bún. Cô bắt đầu chuẩn bị từ 4 giờ 30 sáng, nhận nguyên liệu lúc 5 giờ 15 và bán đông nhất từ 6 giờ đến 9 giờ. Trong giờ cao điểm, quán có thể phục vụ khoảng 40 khách mỗi giờ với ba người làm việc. Lượng thịt và rau trong mỗi bát được ước lượng bằng tay, không được cân chính xác."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn muốn quan sát kỹ khoảnh khắc nào trong ca làm việc của cô Lan? Điều gì khiến bạn chọn thời điểm đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Cô Lan nói rằng mình “nhớ được hết” nguyên liệu còn lại. Tuy nhiên, lúc 9 giờ 15, cô gọi cho con gái để hỏi còn bao nhiêu bún trong tủ. Khi nhà cung cấp thịt giao muộn, cô thay đổi khẩu phần thay vì ngừng bán. Cuốn sổ bên cạnh quầy chủ yếu ghi tiền khách nợ và tiền phải trả nhà cung cấp, không ghi số lượng nguyên liệu."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Bạn nhận thấy điểm nào giữa điều cô Lan nói và điều Hoa quan sát được?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Có những cách giải thích nào cho sự khác biệt đó?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Điện thoại của cô Lan cũng dùng để nhận đơn qua Zalo và đôi khi được con gái mang đi. Trong giờ bán hàng, tay cô thường ướt hoặc dính thức ăn. Cô không muốn nhân viên thời vụ nhìn thấy giá nhập và lợi nhuận. Ngoài ra, quyết định nhập hàng phải được đưa ra trước 7 giờ sáng để được nhà cung cấp cho nợ. Lượng khách lại thay đổi theo thời tiết và lịch học của trường gần đó."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Trong tình huống này, những mục tiêu hoặc mối quan tâm nào của cô Lan có thể xung đột với nhau?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Điều gì bạn biết từ quan sát, và điều gì vẫn chỉ là suy đoán?"
+          }
+        ],
+        "closing": "Nếu được hỏi cô Lan một câu trước khi thiết kế, bạn sẽ hỏi gì? Câu trả lời có thể làm thay đổi cách hiểu của bạn như thế nào?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh và ràng buộc",
+            "text": "Nhóm chỉ có hai tuần để tạo bản mẫu. Công cụ phải hoạt động trên điện thoại Android cũ, có thể sử dụng khi mạng không ổn định và không yêu cầu mua thêm cân điện tử hoặc máy quét. Mỗi tiểu thương chỉ có tối đa 15 phút để học cách sử dụng. Việc ghi nhận dữ liệu nên diễn ra trước hoặc sau giờ cao điểm."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Từ những gì đã tìm hiểu, giải pháp cần tôn trọng những đặc điểm nào trong công việc của tiểu thương?"
+          },
+          {
+            "type": "context",
+            "label": "Mục tiêu của các bên",
+            "text": "Các bên liên quan lại muốn những kết quả khác nhau:\n• Cô Lan muốn biết nên nhập bao nhiêu hàng mà không phải ghi thêm quá nhiều.\n• Ban quản lý chợ muốn xem dữ liệu tổng hợp về lượng thực phẩm bị bỏ đi.\n• Nhà tài trợ muốn chứng minh dự án tạo ra tác động có thể đo lường.\n• Trưởng nhóm muốn có một ứng dụng hoàn chỉnh để trình bày.\n• Lập trình viên muốn giới hạn số tính năng để kịp thời hạn."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Bạn sẽ ưu tiên nhu cầu nào trong bản thử nghiệm đầu tiên? Điều gì khiến bạn đưa ra lựa chọn đó?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết kỹ thuật",
+            "text": "Nhập bằng giọng nói có thể khó hoạt động trong môi trường ồn. Ảnh chụp không thể hiện được nguyên liệu nằm bên dưới hoặc trong tủ. Dữ liệu số món bán ra cũng không phản ánh chính xác lượng nguyên liệu đã dùng vì khẩu phần thay đổi. Các tiểu thương còn sử dụng những đơn vị khác nhau như kilôgam, túi, rổ, bó hoặc “đủ cho khoảng 20 bát”."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ đề xuất hướng giải quyết nào trong những điều kiện này?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Hướng giải quyết của bạn dựa trên giả định nào về hành vi hoặc công việc của người dùng?"
+          },
+          {
+            "type": "context",
+            "label": "Trường hợp ngoại lệ",
+            "text": "Một số quán cho nhau mượn nguyên liệu giữa ngày. Hàng thừa có thể được dùng vào hôm sau, bán giảm giá, cho nhân viên hoặc bỏ đi. Nhân viên nhập hàng không nhất thiết là người quyết định mua hàng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 4",
+            "text": "Trường hợp nào có thể khiến giải pháp của bạn đưa ra thông tin sai hoặc trở nên bất tiện?"
+          }
+        ],
+        "closing": "Bạn sẽ tạo bản mẫu đơn giản nào để kiểm tra giả định quan trọng nhất mà chưa cần xây dựng toàn bộ sản phẩm?"
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả thử nghiệm",
+            "text": "Nhóm thử bản mẫu trong bảy ngày với tám tiểu thương: bốn quán ăn, hai sạp rau và hai cửa hàng đồ gia dụng.\n• Sáu người hoàn thành hướng dẫn sử dụng.\n• Năm người dùng sản phẩm trong hai ngày đầu.\n• Ba người tiếp tục sử dụng ít nhất năm ngày.\n• Ba người thường xuyên kiểm tra báo cáo.\n• Hai người nhờ con hoặc nhân viên nhập dữ liệu thay.\n• Hai báo cáo không chính xác vì cách đo nguyên liệu không phù hợp.\n• Một người ngừng sử dụng vì lo nhân viên nhìn thấy giá nhập hàng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Dữ liệu nào hỗ trợ cách diễn giải của bạn? Dữ liệu nào khiến bạn chưa chắc chắn?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết gây nhiễu",
+            "text": "Lượng thực phẩm bị bỏ đi được ghi nhận giảm khoảng 12% tại các quán ăn. Tuy nhiên, trong tuần thử nghiệm, lượng khách tăng khoảng 9% vì có lễ hội gần khu chợ. Nhóm không ghi nhận lượng lãng phí trước khi thử nghiệm theo cùng một phương pháp và cũng không có nhóm đối chứng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Từ dữ liệu này, nhóm có thể và không thể đưa ra những kết luận nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Ngoài tác động của sản phẩm, còn yếu tố nào có thể giải thích kết quả?"
+          },
+          {
+            "type": "context",
+            "label": "Phản hồi trái chiều",
+            "text": "Một tiểu thương cho rằng báo cáo giúp họ chuẩn bị tốt hơn. Một người khác nói rằng họ chỉ sử dụng vì Hoa đến quan sát mỗi ngày. Hai người muốn tiếp tục nếu ứng dụng tích hợp cả tiền nợ, trong khi một người cho rằng thêm tính năng sẽ khiến sản phẩm quá phức tạp."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Những phản hồi trái chiều này ảnh hưởng đến quyết định tiếp theo của bạn như thế nào?"
+          }
+        ],
+        "closing": "Nếu chỉ có thêm hai tuần, bạn sẽ giữ, thay đổi hoặc kiểm tra điều gì tiếp theo? Bạn đang chấp nhận sự đánh đổi nào khi đưa ra quyết định đó?"
+      }
+    ]
+  }
+]
