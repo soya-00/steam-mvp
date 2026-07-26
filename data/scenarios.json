@@ -1,0 +1,957 @@
+[
+  {
+    "id": "dich-te-truong-noi-tru",
+    "field": "Khoa học",
+    "career_group": "Y sinh, dịch tễ",
+    "title": "Điều gì đang khiến học sinh bị ốm?",
+    "role": "Chuyên viên dịch tễ học",
+    "protagonist": "An",
+    "has_female_protagonist": true,
+    "knowledge": "Sinh học – vi sinh vật, cơ chế lây bệnh, hệ miễn dịch, biến số và mối quan hệ nguyên nhân–kết quả.",
+    "domain_skills": ["Phương pháp khoa học", "Dịch tễ học", "Đạo đức nghiên cứu"],
+    "creation_output": "Kế hoạch điều tra và phòng ngừa",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "Một trường nội trú 600 học sinh ghi nhận 38 ca có triệu chứng trong bốn ngày. Phụ huynh đã có kết luận của riêng họ. Bạn thì chưa.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là An, chuyên viên dịch tễ học được mời hỗ trợ một trường nội trú có 600 học sinh. Trong bốn ngày, phòng y tế ghi nhận 38 học sinh đến khám: 29 em đau bụng, 17 em buồn nôn, 8 em sốt và 6 em tiêu chảy. Một học sinh có thể có nhiều triệu chứng. Phụ huynh đang cho rằng bữa trưa ở căng tin là nguyên nhân."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Bạn chú ý đến điều gì từ những dữ liệu này?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Trong số 38 học sinh đến khám, 31 em đã ăn ở căng tin. Tuy nhiên, khoảng 80% toàn trường cũng thường xuyên ăn tại đây. Thông tin triệu chứng được thu thập qua biểu mẫu tự khai; học sinh cảm thấy không khỏe có khả năng điền biểu mẫu nhiều hơn những học sinh khác."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Những dữ liệu này cho phép và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn cần so sánh những nhóm nào để hiểu liệu việc ăn ở căng tin có liên quan đến triệu chứng?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Các triệu chứng không bắt đầu cùng lúc. Một số học sinh thấy không khỏe trước bữa trưa được cho là có vấn đề. Hai lớp vừa trở về từ chuyến dã ngoại, một lớp đang có nhiều học sinh cảm cúm và tuần này cũng trùng với kỳ kiểm tra cuối kỳ."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Có những cách giải thích nào khác cho tình trạng hiện tại?"
+          }
+        ],
+        "closing": "Ở thời điểm này, bạn sẽ mô tả vấn đề cần điều tra như thế nào mà chưa khẳng định nguyên nhân?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh stakeholder",
+            "text": "Y tá trường đang phải tiếp nhận nhiều học sinh cùng lúc nhưng không thể công khai thông tin sức khỏe cá nhân. Nhân viên căng tin lo bị đổ lỗi và mất việc. Một số học sinh giấu triệu chứng vì không muốn bỏ kỳ kiểm tra. Phụ huynh yêu cầu đóng cửa căng tin ngay, trong khi 450 học sinh nội trú phụ thuộc vào nơi này để ăn hằng ngày."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Bạn muốn tìm hiểu góc nhìn của ai trước? Điều gì khiến bạn chọn người đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Một nhân viên căng tin nói quy trình luôn được thực hiện đúng. Tuy nhiên, sổ ghi nhiệt độ tủ lạnh bị bỏ trống trong hai ngày. Y tá cho biết một số học sinh chỉ báo đau bụng sau khi tin đồn về ngộ độc xuất hiện trong nhóm chat."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Điều gì là quan sát, điều gì là lời kể và điều gì vẫn chỉ là suy đoán?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn sẽ đặt câu hỏi như thế nào để người được hỏi không cảm thấy mình đang bị buộc tội?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Nếu công bố danh sách học sinh bị bệnh, nhóm có thể tìm ra các hoạt động chung nhanh hơn nhưng vi phạm quyền riêng tư. Nếu chỉ sử dụng dữ liệu ẩn danh, việc xác định mối liên hệ giữa các ca bệnh sẽ khó hơn."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Bạn sẽ cân bằng nhu cầu điều tra với quyền riêng tư của học sinh như thế nào?"
+          }
+        ],
+        "closing": "Bạn cần nghe hoặc quan sát thêm điều gì trước khi đưa ra khuyến nghị?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Ràng buộc thực tế",
+            "text": "Nhà trường cần một kế hoạch hành động trong ba giờ. Phòng xét nghiệm chỉ có thể phân tích 10 mẫu và cần ít nhất 48 giờ để trả kết quả. Nhóm không thể bắt buộc học sinh cung cấp mẫu hoặc trả lời phỏng vấn. Đóng toàn bộ căng tin sẽ ảnh hưởng đến 450 học sinh, nhưng tiếp tục hoạt động cũng có thể tạo rủi ro nếu thực phẩm thực sự là nguyên nhân."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Trước khi có kết quả xét nghiệm, kế hoạch của bạn cần đạt những mục tiêu nào?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu tiếp theo",
+            "text": "Nhóm có thể thu thập mẫu thức ăn, nước uống hoặc mẫu từ người có triệu chứng. Tuy nhiên, thức ăn được phục vụ bốn ngày trước không còn đầy đủ. Các mẫu còn lại đã được bảo quản trong những điều kiện khác nhau nên kết quả âm tính chưa chắc chứng minh thực phẩm an toàn."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Bạn sẽ sử dụng giới hạn 10 mẫu như thế nào? Bạn đang ưu tiên thông tin gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Lựa chọn đó có thể khiến nhóm bỏ sót điều gì?"
+          },
+          {
+            "type": "context",
+            "label": "Nhiều quyết định đồng thời",
+            "text": "Ngoài điều tra nguyên nhân, nhóm còn phải quyết định cách tổ chức bữa ăn tạm thời, theo dõi ca bệnh mới và thông báo cho phụ huynh mà không tạo hoảng loạn hoặc đổ lỗi khi chưa đủ bằng chứng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Bạn sẽ đề xuất kế hoạch cho 24 giờ tiếp theo như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Phần nào trong kế hoạch giúp bảo vệ học sinh ngay lập tức, và phần nào giúp thu thập bằng chứng?"
+          }
+        ],
+        "closing": ""
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả ban đầu",
+            "text": "Sau 48 giờ:\n• Ba trong tám mẫu từ học sinh phát hiện cùng một loại virus đường ruột.\n• Hai mẫu thức ăn không phát hiện vi khuẩn, nhưng đều được thu thập muộn.\n• Số lượt đến phòng y tế giảm từ 11 xuống còn 4 lượt mỗi ngày.\n• Căng tin đã tạm ngừng phục vụ trong cùng khoảng thời gian.\n• Một trường gần đó cũng báo cáo học sinh có triệu chứng tương tự."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Kết quả nào hỗ trợ cách diễn giải của bạn và kết quả nào vẫn còn mơ hồ?"
+          },
+          {
+            "type": "context",
+            "label": "Giới hạn của dữ liệu",
+            "text": "Không phải tất cả học sinh có triệu chứng đều được xét nghiệm. Việc số ca giảm có thể liên quan đến việc đóng căng tin, quá trình tự nhiên của đợt bệnh hoặc việc học sinh không tiếp tục báo cáo triệu chứng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 2",
+            "text": "Có những cách giải thích nào cho việc số ca được ghi nhận giảm?"
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi nhỏ 3",
+            "text": "Bạn sẽ khuyến nghị nhà trường làm gì tiếp theo? Điều gì có thể khiến bạn thay đổi khuyến nghị?"
+          }
+        ],
+        "closing": "Qua tình huống này, điều gì về nghề dịch tễ học khác với hình dung ban đầu của bạn?"
+      }
+    ]
+  },
+  {
+    "id": "thiet-ke-cong-cu-cho-tieu-thuong",
+    "field": "Nghệ thuật",
+    "career_group": "Thiết kế, nghệ thuật",
+    "title": "Công cụ nào thật sự giúp được người bán hàng ở chợ?",
+    "role": "Product Designer",
+    "protagonist": "Hoa",
+    "has_female_protagonist": true,
+    "knowledge": "Nguyên lý thị giác, kỹ thuật thiết kế, nghiên cứu người dùng và kiểm chứng giả định.",
+    "domain_skills": ["Nguyên lý thị giác", "Kỹ thuật thiết kế", "Nghiên cứu người dùng"],
+    "creation_output": "Bản mẫu đơn giản để kiểm tra giả định quan trọng nhất",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "Nhà tài trợ muốn giảm 20% lượng hàng bỏ đi trong sáu tuần. Trưởng nhóm đã có sẵn ý tưởng. Bạn chưa chắc ý tưởng đó giải đúng vấn đề.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là Hoa, Product Designer trong một nhóm công nghệ gồm bốn người. Một ban quản lý chợ muốn nhóm xây dựng công cụ giúp tiểu thương giảm lãng phí và quản lý hàng tồn kho. Nhà tài trợ kỳ vọng lượng hàng bị bỏ đi giảm 20% sau sáu tuần. Trưởng nhóm đã đề xuất xây dựng ứng dụng nhập số lượng hàng mỗi ngày."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Điều gì trong yêu cầu này khiến bạn chú ý hoặc muốn tìm hiểu thêm?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Nhóm đã khảo sát 20 tiểu thương. Trong đó, 14 người nói rằng họ không luôn biết chính xác lượng hàng còn lại, 11 người từng nhập thừa hàng trong tuần gần nhất và 6 người sẵn sàng nhập dữ liệu vào ứng dụng mỗi ngày.\n\nNhững người tham gia gồm 12 quán ăn, 5 sạp rau quả và 3 cửa hàng đồ gia dụng. Một người có thể thuộc nhiều nhóm kết quả khác nhau. Khảo sát được thực hiện sau một buổi hướng dẫn kỹ năng số, vì vậy người tham gia có thể quan tâm đến công nghệ hơn các tiểu thương khác."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Dữ liệu này giúp bạn hiểu được điều gì, và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Khi xem lại câu trả lời, Hoa phát hiện “nhập thừa hàng” không phải lúc nào cũng xuất phát từ việc quên kiểm tra tồn kho. Một số tiểu thương nhập thêm vì sợ giá tăng, muốn giữ quan hệ với nhà cung cấp hoặc phải đạt số lượng tối thiểu để được giao hàng miễn phí. Một số trường hợp thiếu hàng lại do nhà cung cấp giao muộn hoặc lượng khách tăng bất ngờ."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Những thông tin mới này làm thay đổi cách bạn hiểu vấn đề như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Có những vấn đề nào đang bị gộp chung dưới cụm từ “quản lý tồn kho”?"
+          }
+        ],
+        "closing": "Với thông tin hiện tại, bạn sẽ mô tả vấn đề Hoa cần nghiên cứu như thế nào? Cách mô tả này vẫn còn dựa trên giả định nào?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Hoa dành một ca làm việc cùng cô Lan, chủ quán bún. Cô bắt đầu chuẩn bị từ 4 giờ 30 sáng, nhận nguyên liệu lúc 5 giờ 15 và bán đông nhất từ 6 giờ đến 9 giờ. Trong giờ cao điểm, quán có thể phục vụ khoảng 40 khách mỗi giờ với ba người làm việc. Lượng thịt và rau trong mỗi bát được ước lượng bằng tay, không được cân chính xác."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn muốn quan sát kỹ khoảnh khắc nào trong ca làm việc của cô Lan? Điều gì khiến bạn chọn thời điểm đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Cô Lan nói rằng mình “nhớ được hết” nguyên liệu còn lại. Tuy nhiên, lúc 9 giờ 15, cô gọi cho con gái để hỏi còn bao nhiêu bún trong tủ. Khi nhà cung cấp thịt giao muộn, cô thay đổi khẩu phần thay vì ngừng bán. Cuốn sổ bên cạnh quầy chủ yếu ghi tiền khách nợ và tiền phải trả nhà cung cấp, không ghi số lượng nguyên liệu."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Bạn nhận thấy điểm nào giữa điều cô Lan nói và điều Hoa quan sát được?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Có những cách giải thích nào cho sự khác biệt đó?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Điện thoại của cô Lan cũng dùng để nhận đơn qua Zalo và đôi khi được con gái mang đi. Trong giờ bán hàng, tay cô thường ướt hoặc dính thức ăn. Cô không muốn nhân viên thời vụ nhìn thấy giá nhập và lợi nhuận. Ngoài ra, quyết định nhập hàng phải được đưa ra trước 7 giờ sáng để được nhà cung cấp cho nợ. Lượng khách lại thay đổi theo thời tiết và lịch học của trường gần đó."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Trong tình huống này, những mục tiêu hoặc mối quan tâm nào của cô Lan có thể xung đột với nhau?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Điều gì bạn biết từ quan sát, và điều gì vẫn chỉ là suy đoán?"
+          }
+        ],
+        "closing": "Nếu được hỏi cô Lan một câu trước khi thiết kế, bạn sẽ hỏi gì? Câu trả lời có thể làm thay đổi cách hiểu của bạn như thế nào?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh và ràng buộc",
+            "text": "Nhóm chỉ có hai tuần để tạo bản mẫu. Công cụ phải hoạt động trên điện thoại Android cũ, có thể sử dụng khi mạng không ổn định và không yêu cầu mua thêm cân điện tử hoặc máy quét. Mỗi tiểu thương chỉ có tối đa 15 phút để học cách sử dụng. Việc ghi nhận dữ liệu nên diễn ra trước hoặc sau giờ cao điểm."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Từ những gì đã tìm hiểu, giải pháp cần tôn trọng những đặc điểm nào trong công việc của tiểu thương?"
+          },
+          {
+            "type": "context",
+            "label": "Mục tiêu của các bên",
+            "text": "Các bên liên quan lại muốn những kết quả khác nhau:\n• Cô Lan muốn biết nên nhập bao nhiêu hàng mà không phải ghi thêm quá nhiều.\n• Ban quản lý chợ muốn xem dữ liệu tổng hợp về lượng thực phẩm bị bỏ đi.\n• Nhà tài trợ muốn chứng minh dự án tạo ra tác động có thể đo lường.\n• Trưởng nhóm muốn có một ứng dụng hoàn chỉnh để trình bày.\n• Lập trình viên muốn giới hạn số tính năng để kịp thời hạn."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Bạn sẽ ưu tiên nhu cầu nào trong bản thử nghiệm đầu tiên? Điều gì khiến bạn đưa ra lựa chọn đó?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết kỹ thuật",
+            "text": "Nhập bằng giọng nói có thể khó hoạt động trong môi trường ồn. Ảnh chụp không thể hiện được nguyên liệu nằm bên dưới hoặc trong tủ. Dữ liệu số món bán ra cũng không phản ánh chính xác lượng nguyên liệu đã dùng vì khẩu phần thay đổi. Các tiểu thương còn sử dụng những đơn vị khác nhau như kilôgam, túi, rổ, bó hoặc “đủ cho khoảng 20 bát”."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ đề xuất hướng giải quyết nào trong những điều kiện này?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Hướng giải quyết của bạn dựa trên giả định nào về hành vi hoặc công việc của người dùng?"
+          },
+          {
+            "type": "context",
+            "label": "Trường hợp ngoại lệ",
+            "text": "Một số quán cho nhau mượn nguyên liệu giữa ngày. Hàng thừa có thể được dùng vào hôm sau, bán giảm giá, cho nhân viên hoặc bỏ đi. Nhân viên nhập hàng không nhất thiết là người quyết định mua hàng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 4",
+            "text": "Trường hợp nào có thể khiến giải pháp của bạn đưa ra thông tin sai hoặc trở nên bất tiện?"
+          }
+        ],
+        "closing": "Bạn sẽ tạo bản mẫu đơn giản nào để kiểm tra giả định quan trọng nhất mà chưa cần xây dựng toàn bộ sản phẩm?"
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả thử nghiệm",
+            "text": "Nhóm thử bản mẫu trong bảy ngày với tám tiểu thương: bốn quán ăn, hai sạp rau và hai cửa hàng đồ gia dụng.\n• Sáu người hoàn thành hướng dẫn sử dụng.\n• Năm người dùng sản phẩm trong hai ngày đầu.\n• Ba người tiếp tục sử dụng ít nhất năm ngày.\n• Ba người thường xuyên kiểm tra báo cáo.\n• Hai người nhờ con hoặc nhân viên nhập dữ liệu thay.\n• Hai báo cáo không chính xác vì cách đo nguyên liệu không phù hợp.\n• Một người ngừng sử dụng vì lo nhân viên nhìn thấy giá nhập hàng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Dữ liệu nào hỗ trợ cách diễn giải của bạn? Dữ liệu nào khiến bạn chưa chắc chắn?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết gây nhiễu",
+            "text": "Lượng thực phẩm bị bỏ đi được ghi nhận giảm khoảng 12% tại các quán ăn. Tuy nhiên, trong tuần thử nghiệm, lượng khách tăng khoảng 9% vì có lễ hội gần khu chợ. Nhóm không ghi nhận lượng lãng phí trước khi thử nghiệm theo cùng một phương pháp và cũng không có nhóm đối chứng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Từ dữ liệu này, nhóm có thể và không thể đưa ra những kết luận nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Ngoài tác động của sản phẩm, còn yếu tố nào có thể giải thích kết quả?"
+          },
+          {
+            "type": "context",
+            "label": "Phản hồi trái chiều",
+            "text": "Một tiểu thương cho rằng báo cáo giúp họ chuẩn bị tốt hơn. Một người khác nói rằng họ chỉ sử dụng vì Hoa đến quan sát mỗi ngày. Hai người muốn tiếp tục nếu ứng dụng tích hợp cả tiền nợ, trong khi một người cho rằng thêm tính năng sẽ khiến sản phẩm quá phức tạp."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Những phản hồi trái chiều này ảnh hưởng đến quyết định tiếp theo của bạn như thế nào?"
+          }
+        ],
+        "closing": "Nếu chỉ có thêm hai tuần, bạn sẽ giữ, thay đổi hoặc kiểm tra điều gì tiếp theo? Bạn đang chấp nhận sự đánh đổi nào khi đưa ra quyết định đó?"
+      }
+    ]
+  },
+  {
+    "id": "nang-luong-tram-y-te-dao",
+    "field": "Kỹ thuật",
+    "career_group": "Kỹ thuật, năng lượng",
+    "title": "Vì sao tủ vắc-xin cứ mất điện?",
+    "role": "Kỹ sư năng lượng",
+    "protagonist": "Hằng",
+    "has_female_protagonist": true,
+    "knowledge": "Vật lý – công suất, điện năng, lưu trữ; tính toán kỹ thuật; tiêu chuẩn an toàn điện và bảo quản vắc-xin.",
+    "domain_skills": ["Vật lý", "Tính toán kỹ thuật", "Tiêu chuẩn an toàn"],
+    "creation_output": "Phương án hệ thống và kế hoạch thử nghiệm",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "Ai cũng bảo ắc quy hỏng, thay là xong. Nhưng số liệu chưa nói như vậy — và ngoài đảo, mua nhầm một lần là mất cả tháng.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là Hằng, kỹ sư năng lượng được mời hỗ trợ một trạm y tế xã đảo. Trạm dùng hệ điện mặt trời 5 kWp kèm bộ ắc quy 20 kWh, lắp cách đây bốn năm. Trong sáu tuần gần nhất, tủ bảo quản vắc-xin bị mất điện 9 lần, mỗi lần từ 40 phút đến 3 giờ. Vắc-xin phải giữ trong khoảng 2–8°C liên tục. Ban quản lý cho rằng ắc quy đã hỏng và muốn duyệt kinh phí mua bộ mới."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn chú ý đến điều gì từ những thông tin này?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Sổ vận hành cho thấy 7 trong 9 lần mất điện rơi vào khoảng 17–20 giờ. Ba lần trùng với những ngày nhiều mây. Lần đo dung lượng gần nhất, cách đây một tháng, cho kết quả ắc quy còn khoảng 82% so với thiết kế. Tháng 4 vừa rồi trạm lắp thêm hai máy điều hoà cho phòng khám."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Những dữ liệu này cho phép và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn cần đo thêm đại lượng nào để phân biệt giữa 'ắc quy yếu' và 'tải vượt thiết kế'?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Hệ thống không có đồng hồ đo riêng cho từng nhánh tải, nên không biết thiết bị nào tiêu thụ bao nhiêu. Số liệu bức xạ mặt trời lấy từ trạm khí tượng cách đó 12 km. Ngoài ra, một nhân viên cho biết đôi khi họ tắt bộ nghịch lưu vào ban đêm để 'đỡ hao'."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Có những cách giải thích nào khác cho việc tủ vắc-xin mất điện?"
+          }
+        ],
+        "closing": "Ở thời điểm này, bạn sẽ mô tả vấn đề cần khảo sát như thế nào mà chưa khẳng định nguyên nhân?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh stakeholder",
+            "text": "Trạm trưởng chịu trách nhiệm trực tiếp nếu lô vắc-xin hỏng, và đang rất muốn có kết luận nhanh. Nhân viên phụ trách kỹ thuật là y sĩ kiêm nhiệm, học cách vận hành qua lời chỉ lại chứ chưa từng được đào tạo. Ngân sách năm của xã đã phân bổ cho việc khác. Người dân thấy đèn phòng khám vẫn sáng nên nghĩ hệ thống điện vẫn tốt."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn muốn tìm hiểu góc nhìn của ai trước? Điều gì khiến bạn chọn người đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Nhân viên kỹ thuật nói rằng tuần nào cũng kiểm tra ắc quy. Tuy nhiên sổ theo dõi bị bỏ trống bốn tuần liên tiếp. Hằng thấy có ổ cắm nối thêm phía sau tủ, đang dùng để sạc điện thoại và cắm ấm siêu tốc. Bảng điều khiển bộ nghịch lưu hiển thị toàn tiếng Anh, và không ai ở trạm đọc được các mã cảnh báo."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Điều gì là quan sát, điều gì là lời kể và điều gì vẫn chỉ là suy đoán?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn sẽ hỏi như thế nào để người vận hành không cảm thấy mình đang bị quy trách nhiệm?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Nếu Hằng ghi rõ trong báo cáo rằng hệ thống bị dùng sai tải, nhân viên có thể bị kiểm điểm. Nhưng nếu bỏ qua chi tiết đó, phương án mới sẽ lại được tính trên một con số tải sai, và sự cố sẽ lặp lại sau vài tháng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ cân bằng giữa việc báo cáo trung thực và việc không đẩy một người vào thế khó như thế nào?"
+          }
+        ],
+        "closing": "Bạn cần quan sát hoặc đo thêm điều gì trước khi đề xuất phương án?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh và ràng buộc",
+            "text": "Kinh phí tối đa 60 triệu đồng. Tàu chở hàng ra đảo mỗi tháng một chuyến, nên thiết bị đặt nhầm là mất thêm một tháng. Trên đảo không có thợ điện chuyên trách. Vắc-xin vẫn phải giữ 2–8°C trong suốt thời gian sửa chữa. Hằng phải nộp đề xuất trong hai tuần."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Từ những gì đã tìm hiểu, phương án của bạn cần đạt được những mục tiêu nào?"
+          },
+          {
+            "type": "context",
+            "label": "Mục tiêu của các bên",
+            "text": "Các bên mong đợi những kết quả khác nhau:\n• Trạm trưởng muốn tủ vắc-xin không bao giờ mất điện nữa.\n• Nhân viên kỹ thuật muốn hệ thống đơn giản, ít thao tác, có cảnh báo bằng tiếng Việt.\n• Lãnh đạo xã muốn chi một lần, không phát sinh chi phí hằng năm.\n• Đơn vị tài trợ muốn con số chứng minh hiệu quả.\n• Phòng khám muốn giữ lại hai máy điều hoà."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Bạn sẽ ưu tiên nhu cầu nào trước? Điều gì khiến bạn chọn như vậy?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết kỹ thuật",
+            "text": "Mỗi hướng đều kéo theo hệ quả riêng. Tăng dung lượng ắc quy làm tăng khối lượng vận chuyển và chi phí thay thế sau khoảng năm năm. Lắp thêm tấm pin đòi hỏi mái có đủ khả năng chịu lực và diện tích hướng nắng. Máy phát dự phòng cần nhiên liệu và người vận hành định kỳ. Cắt điều hoà thì phòng khám có thể lên tới 34°C vào buổi trưa."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ đề xuất hướng giải quyết nào trong những điều kiện này?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Hướng đó đang dựa trên giả định nào về mức tiêu thụ điện và về cách con người vận hành hệ thống?"
+          },
+          {
+            "type": "context",
+            "label": "Trường hợp ngoại lệ",
+            "text": "Vào mùa mưa bão, đảo có thể không có nắng trong 5 ngày liên tiếp. Trong các đợt tiêm chủng, lượng vắc-xin cần bảo quản tăng gần gấp đôi. Đã có lần tàu không ra đảo được trong ba tuần vì biển động."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 4",
+            "text": "Trường hợp nào có thể khiến phương án của bạn không còn an toàn?"
+          }
+        ],
+        "closing": "Bạn sẽ thiết kế kế hoạch thử nghiệm hoặc phép đo đơn giản nào để kiểm tra giả định quan trọng nhất, trước khi đề nghị mua bất kỳ thiết bị nào?"
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả sau tám tuần",
+            "text": "Hằng chưa mua ắc quy mới. Thay vào đó, nhóm lắp ba đồng hồ đo riêng cho từng nhánh tải, dán nhãn tiếng Việt lên bảng điều khiển và đổi lịch vận hành. Kết quả:\n• Số lần tủ vắc-xin mất điện giảm từ 9 xuống còn 2.\n• Tải buổi tối đo được cao gấp khoảng 2,3 lần so với ước tính trong thiết kế ban đầu.\n• Đo lại dung lượng ắc quy: còn khoảng 79%.\n• Trong tám tuần đó có ba tuần nắng liên tục.\n• Hai lần mất điện còn lại đều rơi vào ngày mưa kéo dài."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Kết quả nào ủng hộ cách diễn giải của bạn, và kết quả nào vẫn còn mơ hồ?"
+          },
+          {
+            "type": "context",
+            "label": "Giới hạn của dữ liệu",
+            "text": "Ba tuần nắng liên tục không đại diện cho mùa mưa. Nhóm đã thay đổi nhiều thứ cùng lúc — đo tải, dán nhãn, đổi lịch vận hành — nên khó tách riêng tác dụng của từng thay đổi. Không có giai đoạn đối chứng nào được ghi nhận bằng cùng một phương pháp."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Từ dữ liệu này, bạn có thể và chưa thể kết luận điều gì về bộ ắc quy?"
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ khuyến nghị trạm làm gì tiếp theo? Điều gì có thể khiến bạn thay đổi khuyến nghị đó?"
+          }
+        ],
+        "closing": "Qua tình huống này, điều gì về nghề kỹ sư năng lượng khác với hình dung ban đầu của bạn?"
+      }
+    ]
+  },
+  {
+    "id": "an-ninh-mang-tai-khoan-truong",
+    "field": "Công nghệ",
+    "career_group": "Phần mềm, an ninh mạng",
+    "title": "Trường bị tấn công, hay là chuyện khác?",
+    "role": "Chuyên viên an ninh mạng",
+    "protagonist": "Quyên",
+    "has_female_protagonist": true,
+    "knowledge": "Kiến trúc hệ thống, nhật ký truy cập, xác thực và phân quyền, quyền riêng tư của người dùng vị thành niên.",
+    "domain_skills": ["Lập trình", "Kiến trúc hệ thống", "Bảo mật"],
+    "creation_output": "Quy trình phản ứng sự cố",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "23 tài khoản đăng nhập lúc nửa đêm. Ban giám hiệu muốn đổi mật khẩu toàn trường ngay trong đêm. Bạn có 24 giờ và một hệ thống chỉ lưu log 14 ngày.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là Quyên, chuyên viên an ninh mạng được mời hỗ trợ một trường THPT có 1.800 học sinh. Hệ thống học tập trực tuyến của trường ghi nhận 23 tài khoản học sinh có hoạt động đăng nhập bất thường trong mười ngày. Phòng công nghệ thông tin cho rằng trường 'bị hack'. Ban giám hiệu muốn buộc toàn bộ 1.800 tài khoản đổi mật khẩu ngay trong đêm."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Điều gì trong yêu cầu này khiến bạn chú ý hoặc muốn tìm hiểu thêm?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Trong 23 tài khoản, 19 lượt đăng nhập đến từ cùng một dải địa chỉ IP, trong khoảng 22 giờ đến 1 giờ sáng. Tuy nhiên dải IP đó thuộc một nhà mạng phổ biến ở địa phương, nên hàng nghìn hộ gia đình quanh trường cũng dùng chung dải này. Hệ thống chỉ lưu nhật ký truy cập trong 14 ngày, và 9 ngày đầu của đợt việc đã sắp hết hạn lưu."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Dữ liệu này giúp bạn hiểu được điều gì, và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn cần so sánh với dữ liệu nền nào để biết 19 lượt này có thật sự bất thường không?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Tuần trước trường có một cuộc thi trực tuyến. Nhiều học sinh đã cho bạn mượn tài khoản để 'hỗ trợ làm bài'. Máy tính ở phòng chờ giáo viên được dùng chung và trình duyệt lưu sẵn mật khẩu. Một giáo viên cho biết thỉnh thoảng vẫn đăng nhập hộ những em quên mật khẩu."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Có những cách giải thích nào khác cho các lượt đăng nhập này?"
+          }
+        ],
+        "closing": "Ở thời điểm này, bạn sẽ mô tả sự việc cần điều tra như thế nào mà chưa khẳng định đây là một cuộc tấn công?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh stakeholder",
+            "text": "Học sinh sợ bị kỷ luật vì đã chia sẻ tài khoản, nên có xu hướng không khai. Giáo viên chủ nhiệm lo lớp mình mang tiếng. Người phụ trách công nghệ thông tin là giáo viên tin học kiêm nhiệm, không có thời gian trực hệ thống ban đêm. Phụ huynh muốn biết ngay thông tin của con mình có bị lộ không. Ban giám hiệu lo sự việc lan ra ngoài trước kỳ tuyển sinh."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn muốn tìm hiểu góc nhìn của ai trước? Điều gì khiến bạn chọn người đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Nhật ký cho thấy 4 tài khoản đã đổi mật khẩu ngay sau lượt đăng nhập lạ — nhưng không rõ ai đổi. Một học sinh nói 'em chỉ cho bạn mượn thôi'. Hệ thống chưa bật xác thực hai lớp cho tài khoản học sinh, và cũng không gửi cảnh báo khi có đăng nhập từ thiết bị mới. Mật khẩu mặc định khi cấp tài khoản là ngày sinh của học sinh."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Điều gì là bằng chứng kỹ thuật, điều gì là lời kể và điều gì vẫn chỉ là suy đoán?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bạn sẽ hỏi học sinh như thế nào để các em nói thật, thay vì im lặng vì sợ bị phạt?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Nếu đọc toàn bộ nhật ký hoạt động và nội dung tin nhắn trong hệ thống, nhóm sẽ dựng lại sự việc nhanh hơn nhiều — nhưng đó là dữ liệu của người chưa thành niên, và phần lớn các em không liên quan. Nếu chỉ dùng dữ liệu tối thiểu, việc xác định phạm vi ảnh hưởng sẽ chậm và có thể bỏ sót."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ cân bằng nhu cầu điều tra với quyền riêng tư của học sinh như thế nào?"
+          }
+        ],
+        "closing": "Bạn cần biết thêm điều gì trước khi khuyến nghị nhà trường hành động?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh và ràng buộc",
+            "text": "Nhà trường cần một quy trình xử lý trong vòng 24 giờ. Không có ngân sách mua công cụ giám sát. Chỉ một người phụ trách kỹ thuật, và người đó vẫn phải dạy đủ tiết. Tuần này là tuần thi, nên không thể bắt 1.800 học sinh đổi mật khẩu cùng lúc. Hệ thống hiện tại không hỗ trợ xác thực hai lớp cho tài khoản học sinh."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Trong 24 giờ tới, quy trình của bạn cần đạt được những mục tiêu nào?"
+          },
+          {
+            "type": "context",
+            "label": "Mục tiêu của các bên",
+            "text": "Các bên muốn những kết quả khác nhau:\n• Ban giám hiệu muốn tuyên bố sự việc đã được xử lý.\n• Phụ huynh muốn biết dữ liệu của con mình có bị lộ hay không.\n• Học sinh muốn không bị kỷ luật và không mất bài thi.\n• Người phụ trách kỹ thuật muốn số việc phát sinh nằm trong khả năng một người làm được.\n• Bạn muốn giữ lại đủ bằng chứng để hiểu chuyện gì đã thật sự xảy ra."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Bạn sẽ ưu tiên mục tiêu nào trước? Điều gì khiến bạn chọn như vậy?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết kỹ thuật",
+            "text": "Buộc đổi mật khẩu hàng loạt sẽ tạo ra hàng trăm yêu cầu hỗ trợ mà một người không kịp xử lý, và nhiều em sẽ đặt lại mật khẩu còn yếu hơn. Khoá ngay 23 tài khoản có thể khoá nhầm những em không làm gì sai, giữa tuần thi. Nhật ký của 9 ngày đầu sắp bị xoá theo chu kỳ lưu trữ, và không thể khôi phục sau đó."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ đề xuất các bước xử lý nào trong những điều kiện này?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Bước nào trong quy trình của bạn nhằm bảo vệ ngay lập tức, và bước nào nhằm giữ lại bằng chứng?"
+          },
+          {
+            "type": "context",
+            "label": "Trường hợp ngoại lệ",
+            "text": "Một số học sinh dùng chung máy tính ở thư viện và ký túc xá, nên nhiều tài khoản đăng nhập từ cùng một thiết bị là chuyện bình thường. Có em đang đi thi đấu ở tỉnh khác nên đăng nhập từ địa chỉ lạ là hợp lý. Ngược lại, nếu thật sự có người ngoài truy cập, họ có thể đã đọc được thông tin liên lạc của gia đình học sinh."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 4",
+            "text": "Trường hợp nào có thể khiến quy trình của bạn xử lý oan người vô can, hoặc bỏ lọt việc nghiêm trọng?"
+          }
+        ],
+        "closing": "Bạn sẽ viết quy trình phản ứng sự cố cho 24 giờ tới gồm những bước nào, theo thứ tự nào, và ai chịu trách nhiệm ở mỗi bước?"
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả sau hai tuần",
+            "text": "Nhóm không đổi mật khẩu toàn trường. Thay vào đó, họ bật cảnh báo đăng nhập từ thiết bị mới, đổi mật khẩu mặc định cho tài khoản cấp mới, sao lưu nhật ký trước khi hết hạn, và gặp riêng từng em trong danh sách. Kết quả:\n• 15 em thừa nhận đã tự cho bạn mượn tài khoản.\n• 2 tài khoản xác định là bị người khác dùng mà chủ tài khoản không biết.\n• 6 trường hợp không kết luận được vì nhật ký đã bị xoá.\n• Số lượt đăng nhập bất thường giảm còn khoảng 1 lượt mỗi tuần.\n• Không tìm thấy dấu hiệu dữ liệu bị tải xuống hàng loạt."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Dữ liệu nào ủng hộ cách diễn giải của bạn? Dữ liệu nào khiến bạn chưa chắc chắn?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết gây nhiễu",
+            "text": "Kỳ thi kết thúc đúng vào tuần thứ hai, nên hoạt động ban đêm của học sinh giảm hẳn một cách tự nhiên. Việc bật cảnh báo cũng có thể khiến những em hay mượn tài khoản của bạn tự dừng lại, bất kể có ai xâm nhập hay không. 'Không tìm thấy dấu hiệu' cũng không giống với 'chắc chắn không xảy ra'."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Từ dữ liệu này, nhóm có thể và không thể kết luận những gì?"
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ khuyến nghị nhà trường làm gì tiếp theo, và bạn sẽ nói với phụ huynh như thế nào về những điều còn chưa chắc chắn?"
+          }
+        ],
+        "closing": "Qua tình huống này, điều gì về nghề an ninh mạng khác với hình dung ban đầu của bạn?"
+      }
+    ]
+  },
+  {
+    "id": "phan-bo-quy-hoc-bong",
+    "field": "Toán",
+    "career_group": "Phân tích dữ liệu, tài chính",
+    "title": "Chia 900 triệu cho 240 hồ sơ như thế nào?",
+    "role": "Chuyên viên phân tích dữ liệu",
+    "protagonist": "Ngọc",
+    "has_female_protagonist": true,
+    "knowledge": "Thống kê mô tả, thiết kế tiêu chí và trọng số, phân tích rủi ro, sai lệch trong dữ liệu tự khai.",
+    "domain_skills": ["Thống kê", "Mô hình tài chính", "Phân tích rủi ro"],
+    "creation_output": "Mô hình phân bổ ngân sách",
+    "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
+    "description": "\"Trao cho em khó khăn nhất và học giỏi nhất\" nghe rất hợp lý — cho đến khi bạn phải biến nó thành một quy tắc giải thích được cho phụ huynh.",
+    "stages": [
+      {
+        "key": "hieu_van_de",
+        "name": "Hiểu vấn đề",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh ban đầu",
+            "text": "Bạn là Ngọc, chuyên viên phân tích dữ liệu, hỗ trợ một quỹ học bổng địa phương. Quỹ có 900 triệu đồng cho năm nay và nhận được 240 hồ sơ. Ban điều hành mô tả tiêu chí là 'trao cho những em có hoàn cảnh khó khăn nhất và học lực tốt nhất'. Năm ngoái quỹ trao 60 suất, mỗi suất 15 triệu đồng."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Điều gì trong tiêu chí này khiến bạn chú ý hoặc muốn làm rõ thêm?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu mới",
+            "text": "Trong 240 hồ sơ: 180 em có giấy chứng nhận hộ nghèo hoặc cận nghèo, 95 em có điểm trung bình từ 8,0 trở lên, và 62 em thuộc cả hai nhóm. Thông tin thu nhập gia đình là do người nộp tự khai. Các em đến từ 11 trường khác nhau."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Dữ liệu này giúp bạn hiểu được điều gì, và chưa cho phép bạn kết luận điều gì?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Điểm trung bình từ 11 trường khác nhau có so sánh trực tiếp với nhau được không? Vì sao?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Nhiều gia đình làm nông hoặc lao động tự do nên không có bảng lương để đối chiếu. Việc một hộ có giấy chứng nhận cận nghèo hay không còn phụ thuộc vào quy trình xét duyệt của từng xã, vốn không giống nhau. Ngoài ra, một số em có điểm thấp chính vì phải đi làm thêm phụ giúp gia đình — nghĩa là hai tiêu chí 'khó khăn' và 'học lực tốt' có thể kéo ngược nhau."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Những thông tin này làm thay đổi cách bạn hiểu bài toán như thế nào?"
+          }
+        ],
+        "closing": "Với thông tin hiện tại, bạn sẽ phát biểu lại bài toán mà quỹ cần giải như thế nào? Cách phát biểu đó vẫn dựa trên giả định nào?"
+      },
+      {
+        "key": "dong_cam",
+        "name": "Đồng cảm",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh stakeholder",
+            "text": "Ban điều hành muốn một con số đẹp để báo cáo nhà tài trợ vào cuối năm. Nhà tài trợ muốn thấy bằng chứng rằng tiền tạo ra thay đổi. Giáo viên giới thiệu học sinh thường hiểu rõ hoàn cảnh nhưng cũng thiên về lớp mình. Nhiều em ngại kể chi tiết về gia đình trong đơn. Một số phụ huynh không biết quỹ tồn tại nên không nộp hồ sơ."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn muốn tìm hiểu góc nhìn của ai trước? Điều gì khiến bạn chọn người đó?"
+          },
+          {
+            "type": "context",
+            "label": "Dữ liệu quan sát",
+            "text": "Ngọc nhận thấy 12 đơn có nét chữ giống nhau — hỏi ra thì một giáo viên đã viết hộ cho những em ngại viết. Những đơn đó trình bày hoàn cảnh rõ ràng và thuyết phục hơn hẳn. Một số em viết rất ngắn, không phải vì hoàn cảnh nhẹ hơn mà vì không quen kể về mình. Có hai em thuộc cùng một gia đình cùng nộp hồ sơ."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Điều gì trong bộ hồ sơ này phản ánh hoàn cảnh thật, và điều gì phản ánh khả năng trình bày?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Nếu mô hình của bạn chấm điểm phần tự thuật, ai sẽ được lợi và ai sẽ chịu thiệt?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết phức tạp",
+            "text": "Nếu hỏi sâu hơn về thu nhập và tài sản, quỹ sẽ có dữ liệu chính xác hơn nhưng đặt các em vào tình thế phải chứng minh mình nghèo trước mặt người lạ. Nếu không hỏi, mô hình sẽ dựa trên số liệu tự khai mà ai cũng biết là không đồng đều."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ cân bằng giữa độ chính xác của dữ liệu và phẩm giá của người nộp đơn như thế nào?"
+          }
+        ],
+        "closing": "Nếu chỉ được hỏi thêm một câu trong mẫu đơn, bạn sẽ hỏi gì? Câu trả lời có thể làm thay đổi mô hình của bạn ra sao?"
+      },
+      {
+        "key": "sang_tao",
+        "name": "Sáng tạo",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Bối cảnh và ràng buộc",
+            "text": "Tổng ngân sách cố định ở 900 triệu đồng. Quyết định phải xong trong ba tuần. Không thể xác minh thu nhập tại nhà cho cả 240 hồ sơ. Ban điều hành yêu cầu quy tắc phải giải thích được cho phụ huynh trong vài câu, và không chấp nhận một công thức mà chính họ không hiểu."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Mô hình phân bổ của bạn cần đạt được những mục tiêu nào?"
+          },
+          {
+            "type": "context",
+            "label": "Mục tiêu của các bên",
+            "text": "Các bên muốn những kết quả khác nhau:\n• Học sinh muốn khoản hỗ trợ đủ lớn để thật sự thay đổi được điều gì đó.\n• Ban điều hành muốn số suất trao càng nhiều càng tốt.\n• Nhà tài trợ muốn tác động đo lường được.\n• Giáo viên muốn những em mình biết rõ không bị bỏ sót.\n• Phụ huynh muốn hiểu vì sao con mình được hoặc không được."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Trao ít suất giá trị lớn hay nhiều suất giá trị nhỏ? Điều gì khiến bạn chọn như vậy?"
+          },
+          {
+            "type": "context",
+            "label": "Tình tiết kỹ thuật",
+            "text": "Mỗi cách làm đều có mặt trái. Chia đều cho cả 240 em thì mỗi suất chỉ còn 3,75 triệu, có thể không đủ để thay đổi quyết định đi học. Xếp hạng theo điểm sẽ loại chính nhóm khó khăn nhất. Dùng trọng số thì phải giải thích được vì sao chọn trọng số đó chứ không phải con số khác. Đặt ngưỡng cứng sẽ tạo ra 'vách đá': hai em chênh nhau 0,1 điểm nhận kết quả hoàn toàn khác nhau."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Bạn sẽ đề xuất mô hình phân bổ nào trong những điều kiện này?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Mô hình của bạn dựa trên giả định nào về việc tiền sẽ tạo ra thay đổi bằng cách nào?"
+          },
+          {
+            "type": "context",
+            "label": "Trường hợp ngoại lệ",
+            "text": "Có em cần tiền gấp giữa năm học vì gia đình gặp biến cố. Có em đã nhận học bổng từ nguồn khác. Hai anh em cùng một nhà cùng nộp đơn. Một em đủ điều kiện nhưng nộp hồ sơ muộn ba ngày vì nhà xa."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 4",
+            "text": "Trường hợp nào có thể khiến mô hình của bạn cho ra kết quả mà chính bạn thấy không ổn?"
+          }
+        ],
+        "closing": "Bạn sẽ thử mô hình trên một phần nhỏ hồ sơ như thế nào để kiểm tra giả định quan trọng nhất, trước khi áp dụng cho cả 240 em?"
+      },
+      {
+        "key": "phan_chieu",
+        "name": "Phản chiếu",
+        "beats": [
+          {
+            "type": "context",
+            "label": "Kết quả sau một năm",
+            "text": "Quỹ áp dụng mô hình của Ngọc cho 60 suất. Sau một năm học:\n• 54 trong 60 em vẫn đi học đầy đủ.\n• 4 em bỏ học, 2 em chuyển trường.\n• Điểm trung bình của nhóm nhận học bổng tăng 0,3.\n• Điểm trung bình của nhóm nộp đơn nhưng không nhận cũng tăng 0,2.\n• 11 gia đình cho biết khoản tiền giúp con giảm số giờ đi làm thêm.\n• Quỹ nhận 3 khiếu nại về việc bị loại."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 1",
+            "text": "Bạn diễn giải những kết quả này như thế nào?"
+          },
+          {
+            "type": "followup",
+            "label": "Follow-up",
+            "text": "Việc nhóm không nhận học bổng cũng tăng điểm nói lên điều gì về con số 0,3?"
+          },
+          {
+            "type": "context",
+            "label": "Giới hạn của dữ liệu",
+            "text": "Nhóm nhận và nhóm không nhận vốn đã khác nhau từ đầu, vì chính mô hình đã chọn ra nhóm nhận — nên không thể coi nhóm còn lại là nhóm đối chứng. Trong năm đó, sở giáo dục cũng thay đổi cách tính điểm trung bình. Một năm là quá ngắn để thấy tác động lên việc học tiếp sau THPT. Bốn em bỏ học không trả lời khảo sát nên không rõ lý do."
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 2",
+            "text": "Từ dữ liệu này, quỹ có thể và không thể kết luận những gì về hiệu quả của mô hình?"
+          },
+          {
+            "type": "question",
+            "label": "Câu hỏi 3",
+            "text": "Ba khiếu nại ảnh hưởng thế nào đến quyết định của bạn cho năm sau? Bạn sẽ giữ, sửa hay bỏ phần nào của mô hình?"
+          }
+        ],
+        "closing": "Qua tình huống này, điều gì về nghề phân tích dữ liệu khác với hình dung ban đầu của bạn?"
+      }
+    ]
+  }
+]

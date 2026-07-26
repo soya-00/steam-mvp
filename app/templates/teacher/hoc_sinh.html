@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }} — GALS{% endblock %}
+
+{% block content %}
+
+<nav class="text-sm text-ink-soft mb-4">
+  <a href="/giao-vien" class="hover:underline">Lớp của tôi</a>
+  <span class="text-ink-faint mx-1">/</span>
+  <a href="/giao-vien/lop/{{ klass.id }}" class="hover:underline">{{ klass.name }}</a>
+  <span class="text-ink-faint mx-1">/</span>
+  <span class="text-ink">{{ student.name }}</span>
+</nav>
+
+<header class="flex items-center gap-4">
+  <span class="w-14 h-14 rounded-full bg-trunk-50 grid place-items-center text-3xl shrink-0" aria-hidden="true">
+    {{ avatar_emoji.get(student.avatar_id, '🦊') }}
+  </span>
+  <div>
+    <h1 class="text-2xl text-ink">{{ student.name }}</h1>
+    <p class="text-sm text-ink-soft">
+      {{ summary.entry_count }} bài nhật ký · {{ summary.submitted }} dự án đã nộp ·
+      {{ badges|length }} huy hiệu
+    </p>
+  </div>
+</header>
+
+<div class="lg:grid lg:grid-cols-[1fr_20rem] lg:gap-8 mt-8">
+
+  <div class="min-w-0">
+    <h2 class="text-lg text-ink">Nhật ký tư duy</h2>
+    <p class="mt-1 text-sm text-ink-soft">
+      Ghi lại trong lúc em làm. Đây là quá trình suy nghĩ, không phải bài nộp để chấm.
+    </p>
+
+    <div class="mt-3 grid gap-2">
+      {% for e in summary.entries %}
+      {% set sc = scenario_of.get(e.id) %}
+      <article class="card p-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip {{ 'bg-teal-50 text-teal-700' if e.source == 'guided' else 'bg-amber-50 text-amber-900' }}">
+            {{ 'Nhập vai' if e.source == 'guided' else 'Ý tưởng tự do' }}
+          </span>
+          {% if sc %}<span class="chip {{ field_classes(sc.field).chip }}">{{ sc.field }}</span>{% endif %}
+          {% if e.submitted %}<span class="chip bg-trunk-50 text-trunk">Đã nộp</span>{% endif %}
+          <span class="text-xs text-ink-faint">{{ e.created_at.strftime('%d/%m/%Y') }}</span>
+        </div>
+        <h3 class="mt-2 text-base text-ink">{{ e.title or 'Chưa đặt tên' }}</h3>
+        <p class="mt-2 text-sm text-ink-soft prose-beat">{{ e.content or 'Chưa có nội dung.' }}</p>
+
+        <details class="mt-3">
+          <summary class="cursor-pointer text-sm font-medium text-teal hover:underline">
+            Nhắn riêng về bài này
+          </summary>
+          <form method="post" action="/giao-vien/hoc-sinh/{{ student.id }}/nhan-xet" class="mt-2">
+            <input type="hidden" name="journal_entry_id" value="{{ e.id }}">
+            <label for="nx-{{ e.id }}" class="sr-only">Lời nhắn</label>
+            <textarea id="nx-{{ e.id }}" name="noi_dung" rows="3" required
+                      placeholder="Chỉ em này đọc được. Nhắc một chỗ em nghĩ tốt thường có ích hơn là chỉ ra chỗ sai."
+                      class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-faint"></textarea>
+            <button type="submit" class="btn btn-primary text-sm py-1.5 px-3 mt-2">Gửi lời nhắn</button>
+          </form>
+        </details>
+      </article>
+      {% else %}
+      <div class="card p-5">
+        <p class="text-sm text-ink-soft">Em này chưa bắt đầu tình huống nào.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if portfolio %}
+    <h2 class="mt-10 text-lg text-ink">Hồ sơ năng lực</h2>
+    <div class="mt-3 grid gap-2">
+      {% for p in portfolio %}
+      <div class="card p-4 branch-bar border-l-amber">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip bg-paper text-ink-soft border border-hairline">
+            {{ category_labels.get(p.category, p.category) }}
+          </span>
+          <span class="chip {{ 'bg-teal-50 text-teal-700' if p.shared else 'bg-paper text-ink-faint border border-hairline' }}">
+            {{ 'Em đã chia sẻ' if p.shared else 'Em để riêng tư' }}
+          </span>
+        </div>
+        <p class="mt-2 font-medium text-sm text-ink">{{ p.journal_entry.title }}</p>
+        <p class="mt-1 text-sm text-ink-soft">{{ p.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <aside class="mt-10 lg:mt-0">
+    <h2 class="text-lg text-ink">Lời nhắn đã gửi</h2>
+    <div class="mt-3 grid gap-2">
+      {% for n in notes %}
+      <div class="card p-4 bg-trunk-50 border-trunk-100">
+        <p class="text-sm text-ink">{{ n.content }}</p>
+        <p class="mt-2 text-xs text-ink-faint">{{ n.created_at.strftime('%d/%m/%Y') }}</p>
+      </div>
+      {% else %}
+      <div class="card p-4"><p class="text-sm text-ink-soft">Chưa gửi lời nhắn nào.</p></div>
+      {% endfor %}
+    </div>
+
+    <form method="post" action="/giao-vien/hoc-sinh/{{ student.id }}/nhan-xet" class="mt-4">
+      <label for="nhan-xet-chung" class="block text-sm font-medium text-ink mb-1">Nhắn chung</label>
+      <textarea id="nhan-xet-chung" name="noi_dung" rows="3" required
+                placeholder="Lời nhắn không gắn với bài cụ thể nào."
+                class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-faint"></textarea>
+      <button type="submit" class="btn btn-ghost text-sm py-1.5 px-3 mt-2">Gửi</button>
+    </form>
+
+    {% if badges %}
+    <h2 class="mt-8 text-lg text-ink">Huy hiệu</h2>
+    <div class="mt-3 flex flex-wrap gap-2">
+      {% for b in badges %}
+      <span class="chip bg-plum-50 text-plum-700">
+        {{ badge_icon(b.badge_type) }} {{ badge_label(b.badge_type) }}
+      </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </aside>
+</div>
+
+{% endblock %}

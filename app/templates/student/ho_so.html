@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Hồ sơ năng lực — GALS{% endblock %}
+
+{% block content %}
+
+<div class="flex flex-wrap items-start justify-between gap-4">
+  <div>
+    <h1 class="text-2xl text-ink">Hồ sơ năng lực</h1>
+    <p class="mt-1 text-sm text-ink-soft max-w-xl">
+      Tự động gom lại từ những gì bạn đã làm. Bạn toàn quyền sửa mô tả, đổi phân loại,
+      và quyết định mục nào được chia sẻ.
+    </p>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <a href="/ho-so/y-tuong-tu-do" class="btn btn-ghost">Ý tưởng tự do</a>
+    <a href="/ho-so/chia-se" class="btn btn-primary">Link chia sẻ</a>
+  </div>
+</div>
+
+{% if just_submitted %}
+<div class="card p-4 mt-5 branch-bar border-l-teal bg-teal-50 border-teal-100">
+  <p class="text-sm text-teal-900">
+    Đã thêm dự án vào hồ sơ. Mục mới mặc định là <strong>riêng tư</strong> — chỉ bạn thấy,
+    cho tới khi bạn tự bấm chia sẻ.
+  </p>
+</div>
+{% endif %}
+
+<h2 class="mt-8 text-lg text-ink">Các mục trong hồ sơ</h2>
+<div class="mt-3 grid gap-3">
+  {% for item in items %}
+  {% include "student/partials/portfolio_item.html" %}
+  {% else %}
+  <div class="card p-6">
+    <p class="text-sm text-ink-soft">
+      Hồ sơ còn trống. Thử một tình huống ở
+      <a href="/du-an" class="text-teal font-medium hover:underline">Dự án học tập</a>,
+      hoặc mở
+      <a href="/ho-so/y-tuong-tu-do" class="text-amber-700 font-medium hover:underline">Ý tưởng tự do</a>
+      để nghĩ vu vơ trước cũng được.
+    </p>
+  </div>
+  {% endfor %}
+</div>
+
+{% if entries %}
+<h2 class="mt-10 text-lg text-ink">Nhật ký</h2>
+<p class="mt-1 text-sm text-ink-soft">
+  Ghi lại tự động trong lúc bạn làm. Không ai chấm phần này.
+</p>
+<div class="mt-3 grid gap-2">
+  {% for e in entries %}
+  {% set sc = scenario_of.get(e.id) %}
+  <details class="card p-4">
+    <summary class="cursor-pointer list-none">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip {{ 'bg-teal-50 text-teal-700' if e.source == 'guided' else 'bg-amber-50 text-amber-900' }}">
+          {{ 'Nhập vai' if e.source == 'guided' else 'Ý tưởng tự do' }}
+        </span>
+        {% if sc %}<span class="chip {{ field_classes(sc.field).chip }}">{{ sc.field }}</span>{% endif %}
+        <span class="text-xs text-ink-faint">{{ e.created_at.strftime('%d/%m/%Y') }}</span>
+      </div>
+      <p class="mt-2 font-medium text-sm text-ink">{{ e.title or 'Chưa đặt tên' }}</p>
+    </summary>
+    <p class="mt-3 pt-3 border-t border-hairline text-sm text-ink-soft prose-beat">{{ e.content or 'Chưa có nội dung.' }}</p>
+  </details>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

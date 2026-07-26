@@ -1,0 +1,68 @@
+{# Khung hội thoại — HTMX thay thế cả khối này sau mỗi lượt. #}
+<div id="brainstorm">
+
+  <div class="grid gap-3">
+    {% for m in history %}
+    {% if m.role == 'user' %}
+    <div class="flex justify-end">
+      <div class="card p-3 px-4 bg-trunk-50 border-trunk-100 max-w-[85%]">
+        <p class="text-sm text-ink prose-beat">{{ m.text }}</p>
+      </div>
+    </div>
+    {% else %}
+    <div class="flex items-start gap-2.5">
+      <span class="w-7 h-7 shrink-0 rounded-full bg-amber-100 grid place-items-center text-sm" aria-hidden="true">💭</span>
+      <div class="min-w-0 flex-1">
+        <div class="card p-3 px-4 bg-paper-raised border-hairline">
+          <p class="text-sm text-ink prose-beat">{{ m.text }}</p>
+        </div>
+
+        {% if m.idea %}
+        {# AI chỉ đề nghị — mọi thứ vào hồ sơ đều do học sinh tự bấm. #}
+        <div class="card p-3 px-4 mt-2 bg-amber-50 border-amber-100"
+             id="goi-y-{{ loop.index }}">
+          <p class="text-sm text-amber-900">
+            <strong class="font-semibold">Thêm ý tưởng này vào Hồ sơ?</strong>
+          </p>
+          <p class="mt-1 text-sm text-ink">{{ m.idea }}</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button type="button" class="btn btn-primary text-sm py-1.5 px-3"
+                    hx-post="/ho-so/y-tuong-tu-do/giu"
+                    hx-vals='{"y_tuong": {{ m.idea | tojson }}}'
+                    hx-target="#goi-y-{{ loop.index }}"
+                    hx-swap="outerHTML">
+              Thêm vào hồ sơ
+            </button>
+            <button type="button" class="btn btn-ghost text-sm py-1.5 px-3"
+                    onclick="this.closest('div[id^=goi-y-]').remove()">
+              Để sau
+            </button>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  <form hx-post="/ho-so/y-tuong-tu-do"
+        hx-target="#brainstorm"
+        hx-swap="outerHTML"
+        hx-disabled-elt="find button"
+        class="mt-4"
+        {% if history %}hx-on::after-request="this.reset()"{% endif %}>
+    <label for="tin_nhan" class="sr-only">Tin nhắn của bạn</label>
+    <textarea id="tin_nhan" name="tin_nhan" rows="3" required
+              placeholder="{% if history %}Nói tiếp đi…{% else %}Gần đây có chuyện gì làm bạn để ý, thắc mắc hay thấy khó chịu không?{% endif %}"
+              class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
+    <div class="mt-2 flex flex-wrap items-center gap-3">
+      <button type="submit" class="btn btn-primary">Gửi</button>
+      <span class="htmx-indicator text-sm text-ink-soft">
+        <span class="spinner-dot">●</span> đang nghĩ…
+      </span>
+      <span class="ml-auto text-xs text-ink-faint">còn {{ quota }} lượt trong phiên demo</span>
+    </div>
+  </form>
+
+</div>

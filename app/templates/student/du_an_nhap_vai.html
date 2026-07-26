@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ scenario.title }} — GALS{% endblock %}
+
+{% block content %}
+{% set fc = field_classes(scenario.field) %}
+
+<nav class="text-sm text-ink-soft mb-4">
+  <a href="/du-an" class="hover:underline">Dự án học tập</a>
+  <span class="text-ink-faint mx-1">/</span>
+  <a href="/du-an/linh-vuc/{{ field_key[scenario.field] }}" class="hover:underline">{{ scenario.field }}</a>
+</nav>
+
+<div class="max-w-2xl">
+  <span class="chip {{ fc.chip }}">Nhập vai</span>
+  <h1 class="mt-3 text-2xl md:text-3xl text-ink">{{ scenario.title }}</h1>
+
+  <div class="card p-5 mt-5 branch-bar {{ fc.bar }}">
+    <p class="text-sm text-ink-soft">Trong tình huống này bạn là</p>
+    <p class="mt-1 font-display font-extrabold text-xl text-ink">
+      {{ scenario.protagonist }} — {{ scenario.role }}
+    </p>
+    {% if scenario.knowledge %}
+    <p class="mt-3 text-sm text-ink-soft">
+      <strong class="font-medium text-ink">Kiến thức liên quan:</strong> {{ scenario.knowledge }}
+    </p>
+    {% endif %}
+    <p class="mt-3 text-sm text-ink-soft">
+      <strong class="font-medium text-ink">Ở cấp độ Sáng tạo bạn sẽ tạo ra:</strong>
+      {{ scenario.creation_output }}
+    </p>
+  </div>
+
+  <p class="mt-5 text-base text-ink-soft">{{ scenario.description }}</p>
+
+  <h2 class="mt-8 text-lg text-ink">Bạn sẽ đi qua bốn cấp độ</h2>
+  <ol class="mt-3 grid gap-2">
+    {% for st in scenario.stages %}
+    <li class="card p-4 flex items-start gap-3">
+      <span class="w-7 h-7 shrink-0 rounded-full bg-paper grid place-items-center text-sm font-display font-extrabold text-ink-soft">
+        {{ loop.index }}
+      </span>
+      <div>
+        <p class="font-medium text-ink">{{ st.name }}</p>
+        <p class="text-sm text-ink-soft">{{ st.question_count }} câu hỏi</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+
+  {% if scenario.disclaimer %}
+  <p class="mt-5 chip bg-amber-50 text-amber-900">{{ scenario.disclaimer }}</p>
+  {% endif %}
+
+  <div class="mt-7 flex flex-wrap gap-3">
+    <a href="/du-an/{{ scenario.id }}/khong-gian-tu-duy" class="btn btn-primary">
+      {% if gs and not gs.finished %}Tiếp tục ở cấp độ {{ gs.stage_index + 1 }}{% else %}Bắt đầu{% endif %}
+    </a>
+    <a href="/ho-so/y-tuong-tu-do" class="btn btn-ghost">Hoặc brainstorm tự do</a>
+  </div>
+
+  <p class="mt-4 text-sm text-ink-soft">
+    Không có giới hạn thời gian. Đóng tab lúc nào cũng được — nhật ký tự lưu lại những gì bạn đã viết.
+  </p>
+</div>
+
+{% endblock %}

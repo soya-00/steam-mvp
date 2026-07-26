@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Huy hiệu — GALS{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl text-ink">Huy hiệu</h1>
+<p class="mt-2 text-sm text-ink-soft max-w-2xl">
+  Huy hiệu ghi lại những nơi bạn đã đi qua, không phải bạn làm tốt đến đâu.
+  Không có thứ hạng và không so sánh với ai.
+</p>
+
+<div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  {% for bt in catalogue %}
+  {% set b = earned.get(bt) %}
+  <div class="card p-5 {% if b %}branch-bar border-l-plum{% else %}opacity-60{% endif %}">
+    <div class="flex items-start gap-3">
+      <span class="text-3xl {% if not b %}grayscale{% endif %}" aria-hidden="true">{{ badge_icon(bt) }}</span>
+      <div class="min-w-0">
+        <p class="font-medium text-ink">{{ badge_label(bt) }}</p>
+        {% if b %}
+        <p class="text-xs text-plum-700 mt-0.5">Đã mở · {{ b.earned_at.strftime('%d/%m/%Y') }}</p>
+        {% else %}
+        <p class="text-xs text-ink-faint mt-0.5">Chưa mở khoá</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if suggestion %}
+{% set fc = field_classes(suggestion.field.key) %}
+<section class="mt-10">
+  <h2 class="text-lg text-ink">Gợi ý dự án tiếp theo</h2>
+  <div class="card p-5 mt-3 branch-bar {{ fc.bar }}">
+    <span class="chip {{ fc.chip }}">{{ suggestion.field.name }}</span>
+    <p class="mt-2 text-sm text-ink-soft">
+      Bạn chưa thử lĩnh vực này. Không phải vì bạn &ldquo;còn thiếu&rdquo; — chỉ là ở đó có
+      những cách suy nghĩ khác hẳn, và biết đâu bạn lại thích.
+    </p>
+    {% if suggestion.scenario %}
+    <p class="mt-3 font-medium text-ink">{{ suggestion.scenario.title }}</p>
+    <p class="text-sm text-ink-soft">Vai: {{ suggestion.scenario.role }}</p>
+    <a href="/du-an/{{ suggestion.scenario.id }}" class="btn btn-primary mt-4">Thử tình huống này</a>
+    {% else %}
+    <a href="/du-an/linh-vuc/{{ suggestion.field.key }}" class="btn btn-primary mt-4">Xem lĩnh vực này</a>
+    {% endif %}
+  </div>
+</section>
+{% else %}
+<section class="mt-10">
+  <div class="card p-5 branch-bar border-l-teal">
+    <p class="text-sm text-ink-soft">
+      Bạn đã chạm vào cả năm lĩnh vực STEAM. Quay lại tình huống cũ để thử một hướng suy nghĩ
+      khác cũng là một cách đi tiếp.
+    </p>
+    <a href="/du-an" class="btn btn-ghost mt-3">Xem lại các lĩnh vực</a>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

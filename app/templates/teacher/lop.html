@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}{{ klass.name }} — GALS{% endblock %}
+
+{% block content %}
+
+<nav class="text-sm text-ink-soft mb-4">
+  <a href="/giao-vien" class="hover:underline">Lớp của tôi</a>
+  <span class="text-ink-faint mx-1">/</span>
+  <span class="text-ink">{{ klass.name }}</span>
+</nav>
+
+<div class="flex flex-wrap items-start justify-between gap-3">
+  <h1 class="text-2xl text-ink">{{ klass.name }}</h1>
+  <div class="card px-4 py-2.5">
+    <p class="text-xs text-ink-soft">Mã lớp cho học sinh</p>
+    <p class="font-mono font-semibold text-lg text-trunk">{{ klass.class_code }}</p>
+  </div>
+</div>
+
+<h2 class="mt-8 text-lg text-ink">Học sinh trong lớp</h2>
+<div class="mt-3 grid gap-2">
+  {% for s in summaries %}
+  <a href="/giao-vien/hoc-sinh/{{ s.student.id }}"
+     class="card p-4 hover:border-ink-faint transition flex flex-wrap items-center gap-4">
+    <span class="w-10 h-10 rounded-full bg-trunk-50 grid place-items-center text-xl shrink-0" aria-hidden="true">
+      {{ avatar_emoji.get(s.student.avatar_id, '🦊') }}
+    </span>
+    <div class="min-w-0 flex-1">
+      <p class="font-medium text-ink">{{ s.student.name }}</p>
+      <p class="text-sm text-ink-soft">
+        {{ s.entry_count }} bài nhật ký · {{ s.submitted }} dự án đã nộp · {{ s.badge_count }} huy hiệu
+      </p>
+    </div>
+    <span class="text-sm text-ink-faint">
+      {% if s.last_active %}Hoạt động {{ s.last_active.strftime('%d/%m') }}{% else %}Chưa bắt đầu{% endif %}
+    </span>
+  </a>
+  {% else %}
+  <div class="card p-5">
+    <p class="text-sm text-ink-soft">
+      Chưa có học sinh nào tham gia. Đọc mã <strong class="font-mono">{{ klass.class_code }}</strong>
+      cho các em nhập khi đăng ký.
+    </p>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 class="mt-10 text-lg text-ink">Nhiệm vụ đã giao</h2>
+<div class="mt-3 grid gap-2">
+  {% for a in assignments %}
+  {% set sc = scenario_of.get(a.id) %}
+  <div class="card p-4 branch-bar {{ 'border-l-teal' if a.mode == 'online' else 'border-l-amber' }}">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="chip {{ 'bg-teal-50 text-teal-700' if a.mode == 'online' else 'bg-amber-50 text-amber-900' }}">
+        {{ 'Trực tuyến' if a.mode == 'online' else 'Tại lớp' }}
+      </span>
+      {% if a.field %}<span class="chip {{ field_classes(a.field).chip }}">Cả lĩnh vực {{ a.field }}</span>{% endif %}
+      <span class="text-xs text-ink-faint">{{ a.created_at.strftime('%d/%m/%Y') }}</span>
+    </div>
+    <p class="mt-2 font-medium text-sm text-ink">
+      {% if sc %}{{ sc.title }}{% elif a.field %}Học sinh tự chọn tình huống trong {{ a.field }}{% else %}Nhiệm vụ{% endif %}
+    </p>
+    {% if a.note %}<p class="mt-1 text-sm text-ink-soft">{{ a.note }}</p>{% endif %}
+  </div>
+  {% else %}
+  <div class="card p-5"><p class="text-sm text-ink-soft">Chưa giao nhiệm vụ nào.</p></div>
+  {% endfor %}
+</div>
+
+<section class="mt-8 max-w-xl">
+  <h2 class="text-lg text-ink">Giao nhiệm vụ mới</h2>
+  <form method="post" action="/giao-vien/lop/{{ klass.id }}/giao" class="mt-3 space-y-4">
+
+    <div>
+      <label for="muc_tieu" class="block text-sm font-medium text-ink mb-1">Giao gì</label>
+      <select id="muc_tieu" name="muc_tieu"
+              class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink">
+        <optgroup label="Một tình huống cụ thể">
+          {% for s in scenarios %}
+          <option value="kich-huong:{{ s.id }}">{{ s.field }} — {{ s.title }}</option>
+          {% endfor %}
+        </optgroup>
+        <optgroup label="Mở cả lĩnh vực để học sinh tự chọn">
+          {% for f in steam_fields %}
+          <option value="linh-vuc:{{ f.key }}">{{ f.name }}</option>
+          {% endfor %}
+        </optgroup>
+      </select>
+    </div>
+
+    <fieldset>
+      <legend class="block text-sm font-medium text-ink mb-2">Hình thức</legend>
+      <div class="grid gap-2 sm:grid-cols-2">
+        {% for key, label, note in [('online','Trực tuyến','Các em làm trên GALS'), ('offline','Tại lớp','Thảo luận trực tiếp, ghi nhật ký sau')] %}
+        <label class="cursor-pointer">
+          <input type="radio" name="hinh_thuc" value="{{ key }}" class="sr-only peer" {% if loop.first %}checked{% endif %}>
+          <span class="block rounded-lg border-2 border-hairline bg-paper px-4 py-3 transition
+                       peer-checked:border-teal peer-checked:bg-teal-50">
+            <span class="block text-sm font-medium text-ink">{{ label }}</span>
+            <span class="block text-xs text-ink-soft">{{ note }}</span>
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <div>
+      <label for="ghi_chu" class="block text-sm font-medium text-ink mb-1">
+        Lời nhắn cho lớp <span class="font-normal text-ink-faint">— không bắt buộc</span>
+      </label>
+      <textarea id="ghi_chu" name="ghi_chu" rows="2"
+                placeholder="Ví dụ: các em làm theo nhịp của mình, không cần xong trong một buổi."
+                class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Giao nhiệm vụ</button>
+  </form>
+</section>
+
+{% endblock %}

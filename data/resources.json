@@ -1,0 +1,43 @@
+{
+  "Khoa học": [
+    {"platform": "coursera", "title": "Understanding Climate Change — University of British Columbia", "url": "https://www.coursera.org/learn/climate-change", "level": "Cơ bản", "duration": "~10 giờ", "free": true, "skill": "Khoa học môi trường"},
+    {"platform": "khan", "title": "Sinh học — Khan Academy", "url": "https://www.khanacademy.org/science/biology", "level": "Cơ bản", "duration": "Tự học", "free": true, "skill": "Sinh học"},
+    {"platform": "coursera", "title": "Chemistry: Concept Development — Duke University", "url": "https://www.coursera.org/learn/chemistry-1", "level": "Cơ bản", "duration": "~7 giờ", "free": true, "skill": "Hoá học"},
+    {"platform": "youtube", "title": "Biology: The Science of Life — CrashCourse", "url": "https://www.youtube.com/watch?v=QnQe0xW_JY4", "level": "Cơ bản", "duration": "Series", "free": true, "skill": "Sinh học"},
+    {"platform": "coursera", "title": "Astrobiology and the Search for Extraterrestrial Life — U Edinburgh", "url": "https://www.coursera.org/learn/astrobiology", "level": "Trung bình", "duration": "~12 giờ", "free": true, "skill": "Thiên văn"},
+    {"platform": "youtube", "title": "How the Universe Works — Kurzgesagt", "url": "https://www.youtube.com/c/inanutshell", "level": "Cơ bản", "duration": "Series", "free": true, "skill": "Vật lý thiên văn"}
+  ],
+  "Công nghệ": [
+    {"platform": "coursera", "title": "Python for Everybody — University of Michigan", "url": "https://www.coursera.org/specializations/python", "level": "Cơ bản", "duration": "~8 tháng", "free": true, "skill": "Lập trình"},
+    {"platform": "khan", "title": "Máy tính và lập trình — Khan Academy", "url": "https://www.khanacademy.org/computing", "level": "Cơ bản", "duration": "Tự học", "free": true, "skill": "Lập trình"},
+    {"platform": "coursera", "title": "AI For Everyone — Andrew Ng / DeepLearning.AI", "url": "https://www.coursera.org/learn/ai-for-everyone", "level": "Cơ bản", "duration": "~6 giờ", "free": true, "skill": "Trí tuệ nhân tạo"},
+    {"platform": "youtube", "title": "CS50x — Harvard (Full Course)", "url": "https://www.youtube.com/watch?v=3LPJfIKxwWc", "level": "Trung bình", "duration": "25+ giờ", "free": true, "skill": "Khoa học máy tính"},
+    {"platform": "coursera", "title": "Web Design for Everybody — University of Michigan", "url": "https://www.coursera.org/specializations/web-design", "level": "Cơ bản", "duration": "~6 tháng", "free": true, "skill": "Phát triển web"},
+    {"platform": "youtube", "title": "Intro to Machine Learning — Google Developers", "url": "https://www.youtube.com/watch?v=HcqpanDadyQ", "level": "Cơ bản", "duration": "25 phút", "free": true, "skill": "Học máy"},
+    {"platform": "coursera", "title": "Machine Learning Specialization — Stanford / DeepLearning.AI", "url": "https://www.coursera.org/specializations/machine-learning-introduction", "level": "Trung bình", "duration": "~3 tháng", "free": false, "skill": "Học máy"}
+  ],
+  "Kỹ thuật": [
+    {"platform": "coursera", "title": "Introduction to Engineering Mechanics — Georgia Tech", "url": "https://www.coursera.org/learn/engineering-mechanics-statics", "level": "Trung bình", "duration": "~10 giờ", "free": true, "skill": "Cơ học kỹ thuật"},
+    {"platform": "khan", "title": "Vật lý — Khan Academy", "url": "https://www.khanacademy.org/science/physics", "level": "Cơ bản", "duration": "Tự học", "free": true, "skill": "Vật lý"},
+    {"platform": "coursera", "title": "Design: Creation of Artifacts in Society — U Penn", "url": "https://www.coursera.org/learn/design", "level": "Cơ bản", "duration": "~12 giờ", "free": true, "skill": "Thiết kế kỹ thuật"},
+    {"platform": "youtube", "title": "Engineering for Kids: How Bridges Work — TED-Ed", "url": "https://www.youtube.com/watch?v=oVOnRPefcno", "level": "Cơ bản", "duration": "5 phút", "free": true, "skill": "Kết cấu"},
+    {"platform": "youtube", "title": "How Does a Circuit Work? — Lesics", "url": "https://www.youtube.com/watch?v=mc979OhitAg", "level": "Cơ bản", "duration": "7 phút", "free": true, "skill": "Điện — điện tử"},
+    {"platform": "coursera", "title": "Robotics Specialization — University of Pennsylvania", "url": "https://www.coursera.org/specializations/robotics", "level": "Nâng cao", "duration": "~6 tháng", "free": false, "skill": "Robot"}
+  ],
+  "Nghệ thuật": [
+    {"platform": "coursera", "title": "Design Thinking for Innovation — University of Virginia", "url": "https://www.coursera.org/learn/uva-darden-design-thinking-innovation", "level": "Cơ bản", "duration": "~12 giờ", "free": true, "skill": "Tư duy thiết kế"},
+    {"platform": "coursera", "title": "Human-Centered Design: an Introduction — UC San Diego", "url": "https://www.coursera.org/learn/human-computer-interaction", "level": "Cơ bản", "duration": "~10 giờ", "free": true, "skill": "Thiết kế lấy con người làm trung tâm"},
+    {"platform": "youtube", "title": "IDEO Design Thinking Process — IDEO U", "url": "https://www.youtube.com/watch?v=_r0VX-aU_T8", "level": "Cơ bản", "duration": "18 phút", "free": true, "skill": "Tư duy thiết kế"},
+    {"platform": "youtube", "title": "What Is Design Thinking? — MIT Sloan", "url": "https://www.youtube.com/watch?v=a7sEoEvT8l8", "level": "Cơ bản", "duration": "4 phút", "free": true, "skill": "Tư duy thiết kế"},
+    {"platform": "khan", "title": "Lịch sử nghệ thuật — Khan Academy", "url": "https://www.khanacademy.org/humanities/art-history", "level": "Cơ bản", "duration": "Tự học", "free": true, "skill": "Nghệ thuật thị giác"},
+    {"platform": "coursera", "title": "Graphic Design Specialization — CalArts", "url": "https://www.coursera.org/specializations/graphic-design", "level": "Trung bình", "duration": "~4 tháng", "free": false, "skill": "Thiết kế đồ hoạ"}
+  ],
+  "Toán": [
+    {"platform": "khan", "title": "Thống kê và xác suất — Khan Academy", "url": "https://www.khanacademy.org/math/statistics-probability", "level": "Cơ bản", "duration": "Tự học", "free": true, "skill": "Thống kê"},
+    {"platform": "khan", "title": "Đại số tuyến tính — Khan Academy", "url": "https://www.khanacademy.org/math/linear-algebra", "level": "Trung bình", "duration": "Tự học", "free": true, "skill": "Đại số tuyến tính"},
+    {"platform": "coursera", "title": "Data Analysis with Python — IBM", "url": "https://www.coursera.org/learn/data-analysis-with-python", "level": "Trung bình", "duration": "~15 giờ", "free": true, "skill": "Phân tích dữ liệu"},
+    {"platform": "coursera", "title": "Introduction to Data Science — IBM", "url": "https://www.coursera.org/specializations/introduction-data-science", "level": "Cơ bản", "duration": "~3 tháng", "free": true, "skill": "Khoa học dữ liệu"},
+    {"platform": "youtube", "title": "Essence of Linear Algebra — 3Blue1Brown", "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab", "level": "Trung bình", "duration": "Series", "free": true, "skill": "Đại số tuyến tính"},
+    {"platform": "khan", "title": "Toán tài chính cơ bản — Khan Academy", "url": "https://www.khanacademy.org/economics-finance-domain/core-finance", "level": "Cơ bản", "duration": "Tự học", "free": true, "skill": "Tài chính"}
+  ]
+}
