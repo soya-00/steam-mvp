@@ -2,123 +2,221 @@
 
 **Thử làm nghề trước khi phải chọn nghề.**
 
-Nền tảng web giúp học sinh THPT tập tư duy thiết kế thông qua những tình huống nghề nghiệp có thật — dữ liệu chưa đầy đủ, các bên liên quan muốn những điều khác nhau, và không có đáp án nào sẵn.
+---
 
-Sản phẩm nhắm vào ba khoảng trống: học sinh THPT ít được thực hành tư duy thiết kế, ít được khám phá nghề nghiệp, và vẫn còn định kiến giới trong các ngành STEAM.
+## GALS là gì?
 
-> **Không chấm điểm. Không xếp hạng. Không có "đáp án mẫu".**
-> Đây là công cụ, không phải khoá học tuyến tính — học sinh quay lại và khám phá tự do bất cứ lúc nào.
+GALS là một trang web cho học sinh cấp 3.
+
+Thay vì đọc lý thuyết về nghề nghiệp, học sinh được **đóng vai một người đang đi làm thật** và tự xử lý một tình huống có thật của nghề đó.
+
+Ví dụ: em vào vai một kỹ sư năng lượng, được gọi tới một trạm y tế ngoài đảo vì tủ đựng vắc-xin cứ bị mất điện. Ai cũng bảo là do ắc quy hỏng. Nhưng số liệu lại chưa đủ để khẳng định điều đó.
+
+Không có đáp án sẵn. Có một trợ lý AI đi cùng, nhưng **nó chỉ hỏi lại chứ không giải hộ**.
+
+### Ba điều GALS muốn giải quyết
+
+1. Học sinh cấp 3 ít được thực hành **tư duy thiết kế** — tức là cách nghĩ để giải quyết một vấn đề chưa rõ ràng.
+2. Học sinh ít có cơ hội **thử nghề trước khi chọn ngành**.
+3. Nhiều em vẫn nghĩ một số ngành STEAM "không dành cho con gái".
+
+### Ba điều GALS cố tình KHÔNG có
+
+- **Không chấm điểm.** Không có bài kiểm tra, không có thang điểm.
+- **Không xếp hạng.** Không so sánh em này với em kia.
+- **Không có "đáp án mẫu".** Vì ngoài đời cũng không có.
+
+> Đây là **công cụ**, không phải khoá học. Em muốn nhảy sang phần nào, quay lại từ đầu, hay bỏ dở giữa chừng đều được.
 
 ---
 
-## Trạng thái hiện tại
+## Thử demo
 
-Bản mẫu đã **chạy được trọn vẹn cả hai vai**. 41 màn hình, 5 kịch huống, không có link chết.
+### Cách nhanh nhất: 3 nút bấm
 
-| | Hạng mục | Trạng thái |
-|---|---|---|
-| 1 | Khung ứng dụng, hệ thống thiết kế, đăng nhập giả, khung điều hướng | ✅ |
-| 2a | Nội dung kịch huống — 5 kịch huống, mỗi lĩnh vực STEAM một cái | ✅ |
-| 2b | Luồng học sinh trọn vẹn (4 nhánh + 3 cạnh nối chéo) | ✅ |
-| 3 | Luồng giáo viên, dùng chung dữ liệu với học sinh | ✅ |
-| 4 | Tích hợp Gemini — hai chế độ trò chuyện + tổng hợp cuối hành trình | ✅ |
-| 5 | Hoàn thiện, cấu hình deploy, README | ✅ |
+Ở màn hình đăng nhập có mục **Demo nhanh** với 3 nút. Bấm một cái là vào thẳng, **không cần đăng ký, không cần gõ gì**:
 
-**Hai điểm cần biết trước khi chấm:**
+| Nút | Bạn sẽ thấy |
+|---|---|
+| **Giáo viên** | Lớp học có sẵn học sinh và bài làm |
+| **Học sinh (có lớp)** | Một em đang học lớp 11A2 của cô Mai |
+| **Học sinh (độc lập)** | Một em tự học, không thuộc lớp nào |
 
-- **Chưa có khoá Gemini** thì ứng dụng chạy ở *chế độ demo ngoại tuyến* — trợ lý trả lời bằng kịch bản dựng sẵn, mọi màn hình vẫn bấm được đầy đủ. Giao diện nói rõ điều này, không giả vờ là AI thật. Đường gọi API thật đã viết xong nhưng **chưa được kiểm chứng** vì phiên xây dựng không có khoá.
-- **Màn hình giáo viên được suy ra từ mô hình dữ liệu**, vì sơ đồ luồng giáo viên không được cung cấp. Cần rà lại với sơ đồ gốc.
+Bạn cũng có thể đăng nhập bằng **email và mật khẩu bất kỳ** — gõ gì cũng vào được, vì đây là bản demo.
 
----
+### Chạy trên máy của bạn
 
-## Cài đặt
-
-Cần **Python 3.11+** và **Node 18+** (Node chỉ dùng để build CSS).
+Cần cài sẵn **Python** và **Node.js**. Mở cửa sổ dòng lệnh (Terminal) rồi gõ lần lượt:
 
 ```bash
+# 1. Tải mã nguồn về
+git clone https://github.com/soya-00/steam-mvp.git
+cd steam-mvp
+
+# 2. Cài các thư viện cần thiết
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-
 npm install
 npm run build:css
 
+# 3. Chạy
 .venv/bin/uvicorn app.main:app --reload
 ```
 
-Mở http://127.0.0.1:8000
+Xong rồi mở trình duyệt vào **http://127.0.0.1:8000**
 
-Khi sửa CSS, chạy song song `npm run watch:css`. **Nhớ commit lại `static/css/app.css`** — file build được commit vào repo vì Render không có Node.
-
-Cơ sở dữ liệu SQLite được **xoá và gieo lại mỗi lần khởi động**, nên cứ xoá `gals.db` thoải mái.
+> **Không có khoá AI cũng chạy được.** Lúc đó trợ lý trả lời bằng câu có sẵn, và trang web nói rõ điều này. Mọi nút bấm vẫn hoạt động bình thường. Muốn bật AI thật thì xem mục [Bật trợ lý AI](#bật-trợ-lý-ai) bên dưới.
 
 ---
 
-## Biến môi trường
+## Học sinh dùng như thế nào?
 
-Sao chép `.env.example` thành `.env`. Không commit `.env`.
+Sau khi đăng nhập, em vào **Trang cá nhân**. Từ đây toả ra 4 hướng, **đi hướng nào trước cũng được**:
 
-| Biến | Bắt buộc | Ý nghĩa |
-|---|---|---|
-| `GEMINI_API_KEY` | Không | Khoá API Gemini ([lấy tại đây](https://aistudio.google.com/apikey)). Để trống thì ứng dụng chạy ở **chế độ demo ngoại tuyến** — AI trả lời bằng kịch bản dựng sẵn, mọi màn hình vẫn bấm được. |
-| `GEMINI_MODEL` | Không | Ghi đè tên model. Bỏ trống thì ứng dụng tự dò model flash mới nhất lúc khởi động qua `models.list()`. |
-| `SECRET_KEY` | Nên đặt khi deploy | Khoá ký cookie phiên đăng nhập. |
+```
+                      TRANG CÁ NHÂN
+                            │
+        ┌──────────┬────────┴────────┬──────────┐
+        │          │                 │          │
+   Dự án học tập  Hồ sơ         Huy hiệu   Tài nguyên
+                năng lực                     miễn phí
+```
 
-Khoá API **chỉ nằm ở phía máy chủ**, không bao giờ gửi xuống trình duyệt.
+### 1 · Dự án học tập — phần chính
+
+Đây là nơi em đóng vai và xử lý tình huống. Các bước:
+
+| Bước | Em làm gì |
+|---|---|
+| **Chọn lĩnh vực** | 5 lĩnh vực STEAM: Khoa học, Công nghệ, Kỹ thuật, Nghệ thuật, Toán |
+| **Chọn tình huống** | Mỗi lĩnh vực có một tình huống nghề nghiệp |
+| **Nhập vai** | Em trở thành nhân vật đó — ví dụ "Hằng, kỹ sư năng lượng" |
+| **Đi 4 cấp độ** | Đọc bối cảnh → trả lời câu hỏi → gặp tình tiết mới → trả lời tiếp |
+| **Nhìn lại** | AI tóm tắt lại cách em đã nghĩ. **Không chấm điểm** |
+| **Nộp dự án** | Viết mô tả, thêm ảnh hoặc video nếu muốn |
+| **Nhận huy hiệu** | Tự động, ghi nhận là em đã đi qua chặng này |
+
+**Bốn cấp độ** là bốn kiểu suy nghĩ khác nhau:
+
+1. **Hiểu vấn đề** — Đọc số liệu. Đâu là điều chắc chắn, đâu là mình đang đoán?
+2. **Đồng cảm** — Ai bị ảnh hưởng? Họ muốn những thứ khác nhau ra sao?
+3. **Sáng tạo** — Đề xuất một phương án, trong điều kiện thiếu thời gian và thiếu tiền.
+4. **Phản chiếu** — Kết quả ra vậy, nhưng liệu có cách giải thích nào khác không?
+
+> **Mỗi nghề làm ra một thứ khác nhau** ở cấp độ Sáng tạo. Kỹ sư năng lượng làm *phương án hệ thống*. Chuyên viên dịch tễ làm *kế hoạch điều tra*. Chuyên viên an ninh mạng làm *quy trình xử lý sự cố*. Không phải nghề nào cũng "làm một cái app".
+
+### 2 · Hồ sơ năng lực
+
+Mọi thứ em làm **tự động gom lại** thành hồ sơ. Em không phải tự sắp xếp.
+
+Em có toàn quyền sửa mô tả, đổi phân loại, và chọn mục nào cho người khác xem.
+
+Ở đây còn có **Ý tưởng tự do** — trò chuyện với AI mà không cần theo khuôn khổ nào. Kể về điều em để ý thấy, thắc mắc, hay thấy khó chịu. Khi AI nhận ra em vừa nói ra một ý hay, nó sẽ hỏi:
+
+> *"Thêm ý tưởng này vào Hồ sơ?"*
+
+**Em bấm đồng ý thì mới lưu.** Và kể cả khi đã lưu, mục đó vẫn để **riêng tư** — muốn cho người khác xem thì phải bấm chia sẻ một lần nữa. AI không bao giờ tự đăng thứ gì.
+
+### 3 · Huy hiệu
+
+Ghi lại những nơi em đã đi qua — **không phải em làm tốt đến đâu**.
+
+Có cả huy hiệu chưa mở khoá, kèm gợi ý lĩnh vực tiếp theo nên thử. Gợi ý này không mang nghĩa "em còn thiếu", mà là "chỗ kia có kiểu suy nghĩ khác, biết đâu em thích".
+
+### 4 · Tài nguyên miễn phí
+
+Khoá học và video chọn lọc từ Khan Academy, Coursera, YouTube — lọc theo lĩnh vực. Tất cả đều mở, không cần tài khoản GALS để học.
+
+Kèm thông báo về hội thảo và talkshow liên quan.
 
 ---
 
-## Kịch bản demo cho ban giám khảo — dưới 5 phút
+## Giáo viên dùng như thế nào?
 
-Ở màn hình đăng nhập có khối **Demo nhanh** với ba nút, không cần gõ gì.
-Đi theo đúng thứ tự dưới đây sẽ thấy trọn câu chuyện.
+| Bước | Thầy cô làm gì |
+|---|---|
+| **Tạo lớp** | Hệ thống sinh ra một mã lớp, ví dụ `GALS-11A2` |
+| **Đọc mã cho học sinh** | Các em nhập mã này khi đăng ký |
+| **Giao nhiệm vụ** | Chọn một tình huống cụ thể, hoặc mở cả lĩnh vực cho các em tự chọn. Làm trên mạng hoặc thảo luận tại lớp |
+| **Đọc nhật ký** | Xem cách từng em suy nghĩ — không phải bài nộp để chấm |
+| **Nhắn riêng** | Lời nhắn chỉ em đó đọc được |
+| **Gửi thông báo** | Báo cả lớp về buổi hội thảo, talkshow |
 
-### 1 · Nhập vai — khoảng 2 phút *(phần quan trọng nhất)*
+**Không có bảng điểm ở bất cứ đâu.** Thầy cô đọc được quá trình suy nghĩ, không phải kết quả đúng sai.
 
-Bấm **Học sinh (có lớp)** → **Dự án học tập** → **Kỹ thuật** →
-*Vì sao tủ vắc-xin cứ mất điện?*
+### Về quyền riêng tư
 
-Bấm **Bắt đầu** rồi đi vài nhịp. Điều đáng chú ý:
+Học sinh **không nhập mã lớp** thì không giáo viên nào xem được bài của em — kể cả nhật ký. Đây là **mặc định**, không phải một tuỳ chọn phải đi tìm để bật.
 
-- Học sinh nhập vai **Hằng, kỹ sư năng lượng** — không phải làm bài tập về kỹ thuật.
-- Dữ liệu **cố tình chưa đủ để kết luận**: 7/9 lần mất điện vào buổi tối, nhưng cũng vừa lắp thêm hai máy điều hoà. Câu hỏi không có đáp án đúng.
-- Trợ lý **hỏi lại chứ không giảng**, và hỏi theo cách một kỹ sư năng lượng suy nghĩ.
-- Ở cấp độ Sáng tạo, sản phẩm cần tạo ra là **phương án hệ thống và kế hoạch thử nghiệm** — mỗi nghề tạo ra một thứ khác nhau, không nghề nào cũng "làm một cái app".
-
-> Muốn xem nhanh phần cuối: bấm tiếp tới hết cấp độ 4 sẽ thấy mục **Nhìn lại cùng bạn** — không điểm, không đáp án mẫu, chỉ phản chiếu lại chính lời học sinh đã viết.
-
-### 2 · Ý tưởng tự do — khoảng 1 phút
-
-**Hồ sơ năng lực** → **Ý tưởng tự do**. Gõ hai câu bất kỳ về một chuyện bạn để ý ở trường.
-
-Sau lượt thứ hai, trợ lý hiện nút **&ldquo;Thêm ý tưởng này vào Hồ sơ?&rdquo;**.
-Đây là điểm mấu chốt: **AI đề nghị, học sinh quyết định.** Bấm đồng ý thì mục vào hồ sơ nhưng vẫn **riêng tư** — muốn công khai phải bấm chia sẻ lần nữa. Không có gì tự xuất hiện.
-
-### 3 · Quyền riêng tư — khoảng 1 phút
-
-Đăng xuất → **Học sinh (độc lập)**.
-
-Cùng một sản phẩm, nhưng em này không thuộc lớp nào và **không giáo viên nào xem được** — đây là mặc định, không phải tuỳ chọn phải đi tìm.
-
-### 4 · Phía giáo viên — khoảng 1 phút
-
-Đăng xuất → **Giáo viên** → mở lớp **11A2** → chọn **Nguyễn Khánh Linh**.
-
-- Giáo viên đọc **nhật ký tư duy**, không phải bài nộp để chấm.
-- **Không có bảng điểm, không có xếp hạng** ở bất cứ đâu.
-- Nhận xét là **lời nhắn riêng tư**, chỉ em đó đọc được — quay lại tài khoản học sinh sẽ thấy nó trên trang cá nhân.
-
-> Thử tìm điểm số ở phía học sinh cũng được — không có. Đó là chủ ý thiết kế, không phải chưa làm.
+Em vẫn dùng được đầy đủ mọi tính năng.
 
 ---
 
-## Kiến trúc
+## Kịch bản demo 5 phút cho ban giám khảo
+
+### 1 · Nhập vai — 2 phút *(phần quan trọng nhất)*
+
+**Học sinh (có lớp)** → **Dự án học tập** → **Kỹ thuật** → *Vì sao tủ vắc-xin cứ mất điện?* → **Bắt đầu**
+
+Bấm đi vài nhịp. Điều đáng chú ý:
+
+- Học sinh **nhập vai kỹ sư**, không phải làm bài tập về kỹ thuật.
+- Số liệu **cố tình chưa đủ để kết luận** — 7/9 lần mất điện vào buổi tối, nhưng cũng vừa lắp thêm hai máy điều hoà.
+- Trợ lý **hỏi lại chứ không giảng**.
+
+### 2 · AI đề nghị, học sinh quyết định — 1 phút
+
+**Hồ sơ năng lực** → **Ý tưởng tự do** → gõ hai câu bất kỳ về chuyện gì đó ở trường.
+
+Sau lượt thứ hai, trợ lý hiện nút **"Thêm ý tưởng này vào Hồ sơ?"**. Bấm đồng ý thì mục vào hồ sơ nhưng **vẫn riêng tư**.
+
+### 3 · Quyền riêng tư — 1 phút
+
+Đăng xuất → **Học sinh (độc lập)**. Cùng một sản phẩm, nhưng em này không thuộc lớp nào và không ai xem được bài của em.
+
+### 4 · Phía giáo viên — 1 phút
+
+Đăng xuất → **Giáo viên** → lớp **11A2** → **Nguyễn Khánh Linh**
+
+Thầy cô đọc nhật ký tư duy, không có bảng điểm. Nhận xét là lời nhắn riêng — quay lại tài khoản học sinh sẽ thấy nó trên trang cá nhân.
+
+> Thử tìm điểm số ở phía học sinh cũng được — **không có**. Đó là chủ ý thiết kế, không phải chưa làm xong.
+
+---
+
+## Bật trợ lý AI
+
+Không bắt buộc. Không có khoá thì trang web vẫn chạy đủ, chỉ là trợ lý trả lời bằng câu dựng sẵn.
+
+Muốn dùng AI thật:
+
+1. Lấy khoá miễn phí tại [Google AI Studio](https://aistudio.google.com/apikey)
+2. Tạo một file tên `.env` ngay trong thư mục dự án
+3. Viết vào đó một dòng:
+
+```
+GEMINI_API_KEY=khoa-cua-ban-o-day
+```
+
+4. Chạy lại ứng dụng
+
+> ⚠️ **Đừng bao giờ chia sẻ khoá này cho ai, và đừng đưa nó lên GitHub.** File `.env` đã được cấu hình để git bỏ qua. Khoá miễn phí cũng có giới hạn số lượt mỗi ngày.
+
+---
+
+## Dành cho người phát triển
+
+<details>
+<summary><strong>Công nghệ sử dụng</strong></summary>
+
+<br>
 
 | Lớp | Công nghệ |
 |---|---|
 | Máy chủ | FastAPI (Python 3.11+) |
 | Giao diện | Jinja2, render phía máy chủ |
 | Tương tác | HTMX (tự host, không CDN) |
-| CSS | Tailwind v4 qua Tailwind CLI, build ra file tĩnh |
+| CSS | Tailwind v4 qua Tailwind CLI |
 | Dữ liệu | SQLite + SQLAlchemy, gieo lại mỗi lần khởi động |
 | AI | `google-genai` (SDK Gemini hiện hành) |
 
@@ -126,42 +224,40 @@ Cùng một sản phẩm, nhưng em này không thuộc lớp nào và **không 
 app/
   main.py          Khởi tạo FastAPI, gieo dữ liệu lúc khởi động
   config.py        5 lĩnh vực STEAM, thứ tự ưu tiên model, trần 30 lượt chat
-  models.py        Bảng dữ liệu, cộng Feedback và GuidedSession
+  models.py        Bảng dữ liệu
   seed.py          Xoá và gieo lại toàn bộ mỗi lần khởi động
   auth.py          Phiên đăng nhập bằng cookie đã ký
   scenarios.py     Nạp và kiểm tra kịch huống  ← đọc file này trước
+  gemini.py        Hai chế độ trò chuyện + rào an toàn
   routers/         auth · student · teacher · chat
-  templates/       base + auth/ + student/ + teacher/
+  templates/
 data/
   scenarios.json   Nội dung kịch huống
   resources.json   Tài nguyên miễn phí theo lĩnh vực
-src/input.css      Token bảng màu @theme + lớp component
 static/css/app.css File CSS đã build — có commit vào repo
 legacy/            Bản mẫu HTML cũ, chỉ để tham khảo
 ```
 
-### Hệ thống thiết kế
+**Biến môi trường** (tất cả đều không bắt buộc):
 
-Bảng màu giữ nguyên từ các sơ đồ đã trình bày với ban giám khảo, khai báo một lần trong `src/input.css`:
-
-| Vai trò | Mã màu |
+| Biến | Ý nghĩa |
 |---|---|
-| Thân/hệ thống | `#4A4E9C` |
-| Dự án học tập | `#1F8A70` |
-| Hồ sơ năng lực | `#C98A2E` |
-| Huy hiệu | `#8B4B6B` |
-| Tài nguyên | `#4F6F94` |
-| Nền giấy ấm | `#F6F5F1` |
+| `GEMINI_API_KEY` | Khoá Gemini. Bỏ trống → chế độ demo ngoại tuyến |
+| `GEMINI_MODEL` | Ghi đè tên model. Bỏ trống → tự dò model flash mới nhất |
+| `SECRET_KEY` | Khoá ký cookie. Nên đặt khi deploy |
 
-Chữ: **Be Vietnam Pro 800** cho tiêu đề (xưởng chữ Việt, dấu được vẽ từ đầu) + **Lexend** cho nội dung. Cả hai tự host, không phụ thuộc CDN.
+Cơ sở dữ liệu bị xoá và gieo lại mỗi lần khởi động — cứ xoá `gals.db` thoải mái.
 
-> ⚠️ Tailwind quét class **tĩnh**. Đừng ghép chuỗi kiểu `border-l-{{ color }}` trong Jinja — class sẽ không được sinh ra. Luôn để tên class đủ chữ trong dữ liệu.
+⚠️ Tailwind quét class **tĩnh**. Đừng ghép chuỗi kiểu `border-l-{{ color }}` trong Jinja — class sẽ không được sinh ra. Luôn để tên class đủ chữ trong dữ liệu.
 
----
+</details>
 
-## Thêm kịch huống mới
+<details>
+<summary><strong>Thêm kịch huống mới</strong></summary>
 
-Kịch huống **không phải** mô tả phẳng. Mỗi kịch huống là một kịch bản đi qua bốn cấp độ — *Hiểu vấn đề → Đồng cảm → Sáng tạo → Phản chiếu* — trong đó mỗi cấp độ là một mảng `beats` **có thứ tự**, đan xen khối bối cảnh với câu hỏi.
+<br>
+
+Kịch huống **không phải** mô tả phẳng. Mỗi kịch huống là kịch bản đi qua bốn cấp độ, mỗi cấp độ là một mảng `beats` **có thứ tự**, đan xen khối bối cảnh với câu hỏi.
 
 Nhãn và số lượng beat khác nhau giữa các kịch huống, nên nhãn nằm trong dữ liệu chứ không nằm trong code.
 
@@ -175,7 +271,7 @@ Nhãn và số lượng beat khác nhau giữa các kịch huống, nên nhãn n
   "protagonist": "An",
   "has_female_protagonist": true,
   "knowledge": "Sinh học – vi sinh vật, cơ chế lây bệnh…",
-  "domain_skills": ["Phương pháp khoa học", "Dịch tễ học", "Đạo đức nghiên cứu"],
+  "domain_skills": ["Phương pháp khoa học", "Dịch tễ học"],
   "creation_output": "Kế hoạch điều tra và phòng ngừa",
   "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
   "description": "Tóm tắt ngắn hiển thị ở thẻ chọn kịch huống",
@@ -196,11 +292,7 @@ Nhãn và số lượng beat khác nhau giữa các kịch huống, nên nhãn n
 
 `type` nhận `context` (khối kể chuyện, không cần trả lời), `question` và `followup` (học sinh trả lời).
 
-### Vì sao có `domain_skills` và `creation_output`
-
-Design Thinking chỉ là **khung dẫn dắt tư duy**. Nội dung bên trong phải thể hiện đúng cách mỗi nghề thu thập bằng chứng và ra quyết định. Nếu nghề nào cũng chỉ "phỏng vấn người dùng rồi thiết kế ứng dụng", người học sẽ hiểu sai bản chất nghề nghiệp.
-
-`creation_output` quy định **cấp độ 3 thật sự tạo ra cái gì** — và thường không phải một ứng dụng:
+**Vì sao có `domain_skills` và `creation_output`:** Design Thinking chỉ là khung dẫn dắt. Nội dung bên trong phải thể hiện đúng cách mỗi nghề thu thập bằng chứng và ra quyết định. Nếu nghề nào cũng chỉ "phỏng vấn người dùng rồi thiết kế ứng dụng", người học sẽ hiểu sai bản chất nghề nghiệp.
 
 | Nghề | Sản phẩm của cấp độ Sáng tạo |
 |---|---|
@@ -212,26 +304,57 @@ Design Thinking chỉ là **khung dẫn dắt tư duy**. Nội dung bên trong p
 | Nhà quy hoạch | Kịch bản sử dụng không gian hoặc giao thông |
 | Nhà truyền thông | Thông điệp cho từng nhóm đối tượng |
 
-Giao diện cấp độ 3 và prompt AI đều đọc trường này.
+</details>
 
----
+<details>
+<summary><strong>Deploy lên Render</strong></summary>
 
-## Deploy
+<br>
 
-Chạy trên **Render.com** (gói web service miễn phí). File `render.yaml` đã có sẵn — trỏ Render vào repo này và chọn *Blueprint* là xong.
+File `render.yaml` đã có sẵn — trỏ Render vào repo này và chọn *Blueprint*.
 
 ```
 Build:  pip install -r requirements.txt
 Start:  uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
 
-Sau khi tạo service, vào phần **Environment** của Render và điền `GEMINI_API_KEY` (`SECRET_KEY` được Render tự sinh). Không điền khoá thì ứng dụng vẫn chạy đủ ở chế độ demo ngoại tuyến.
+Sau khi tạo service, vào **Environment** của Render và điền `GEMINI_API_KEY` (`SECRET_KEY` được Render tự sinh).
 
-Vài điểm đáng lưu ý:
+- **Không cần Node khi deploy.** CSS đã build sẵn và commit vào repo.
+- **SQLite bị đặt lại mỗi lần deploy** — không sao, dữ liệu tự gieo lại.
+- **Gói miễn phí có cold start.** Nếu máy chủ ngủ, lượt truy cập đầu mất 30–60 giây. Nên mở trước trang chủ vài phút trước giờ chấm.
 
-- **Không cần Node khi deploy.** CSS đã build sẵn và commit vào `static/css/app.css`.
-- **SQLite bị đặt lại mỗi lần deploy** — không sao, dữ liệu tự gieo lại, và mỗi lượt chấm bắt đầu từ trạng thái sạch.
-- **Gói miễn phí có cold start.** Nếu máy chủ ngủ, lượt truy cập đầu mất khoảng 30–60 giây. Nên mở trước trang chủ vài phút trước giờ chấm. Nếu thấy chậm quá thì Railway.app là phương án thay thế với cùng hai lệnh trên.
+</details>
+
+<details>
+<summary><strong>Hệ thống thiết kế</strong></summary>
+
+<br>
+
+Bảng màu giữ nguyên từ các sơ đồ đã trình bày với ban giám khảo, khai báo một lần trong `src/input.css`:
+
+| Vai trò | Mã màu |
+|---|---|
+| Thân/hệ thống | `#4A4E9C` |
+| Dự án học tập | `#1F8A70` |
+| Hồ sơ năng lực | `#C98A2E` |
+| Huy hiệu | `#8B4B6B` |
+| Tài nguyên | `#4F6F94` |
+| Nền giấy ấm | `#F6F5F1` |
+
+Chữ: **Be Vietnam Pro** cho tiêu đề (xưởng chữ Việt, dấu được vẽ từ đầu) + **Lexend** cho nội dung. Cả hai tự host, không phụ thuộc CDN.
+
+</details>
+
+<details>
+<summary><strong>Còn cần rà lại</strong></summary>
+
+<br>
+
+- **Màn hình giáo viên được suy ra từ mô hình dữ liệu**, vì sơ đồ luồng giáo viên không được cung cấp. Cần đối chiếu với sơ đồ gốc.
+- Ba nhóm nghề trong bảng phân loại **chưa có kịch huống**: Hoá học/kiểm định, Quy hoạch/môi trường, Truyền thông/ngôn ngữ.
+
+</details>
 
 ---
 
