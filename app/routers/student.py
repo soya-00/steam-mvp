@@ -1,34 +1,62 @@
-"""Luồng học sinh. Trang cá nhân là điểm hội tụ chính của sơ đồ."""
+"""Luồng học sinh — bốn nhánh toả ra từ Trang cá nhân.
+
+Sơ đồ luồng có ba cạnh nối chéo và tất cả đều là đường đi thật, không phải
+trang trí: vòng lặp quay về Trang cá nhân từ bất cứ đâu, lối rẽ từ Không gian
+tư duy sang Ý tưởng tự do, và việc cả Nộp dự án lẫn Ý tưởng tự do đều dẫn tới
+Link chia sẻ.
+"""
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Request
+import json
+
+from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from itsdangerous import BadSignature, URLSafeSerializer
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
+from app.config import (
+    FIELD_KEY_BY_NAME,
+    FIELD_NAME_BY_KEY,
+    PROJECT_CATEGORIES,
+    SECRET_KEY,
+    STEAM_FIELDS,
+)
 from app.db import get_db
 from app.models import (
     Badge,
     ClassMembership,
     Feedback,
+    GuidedSession,
     JournalEntry,
     Notification,
     PortfolioEntry,
     User,
 )
-from app.scenarios import all_scenarios, get_scenario
+from app.scenarios import (
+    Scenario,
+    all_scenarios,
+    get_scenario,
+    load_resources,
+    scenarios_for_field,
+)
 from app.templating import templates
 
 router = APIRouter()
 
+_share = URLSafeSerializer(SECRET_KEY, salt="gals-share")
 
-def require_student(user: User | None = Depends(get_current_user)) -> User | RedirectResponse:
-    return user
+VALID_CATEGORIES = {c["key"] for c in PROJECT_CATEGORIES}
+
+
+# --------------------------------------------------------------------------
+# Tiện ích dùng chung
+# --------------------------------------------------------------------------
 
 
 def _guard(user: User | None):
-    """Chưa đăng nhập -> về trang đăng nhập. Giáo viên -> về khu giáo viên."""
+    """Chưa đăng nhập -> đăng nhập. Giáo viên -> khu giáo viên."""
     if user is None:
         return RedirectResponse("/dang-nhap", status_code=303)
     if user.is_teacher:
@@ -36,25 +64,123 @@ def _guard(user: User | None):
     return None
 
 
-@router.get("/du-an", response_class=HTMLResponse)
-@router.get("/ho-so", response_class=HTMLResponse)
-@router.get("/huy-hieu", response_class=HTMLResponse)
-@router.get("/tai-nguyen", response_class=HTMLResponse)
-def branch_placeholder(request: Request, user: User | None = Depends(get_current_user)):
-    """Bốn nhánh — nội dung thật được dựng ở Giai đoạn 2."""
-    if (redirect := _guard(user)) is not None:
-        return redirect
-    branch = {
-        "/du-an": ("du_an", "Dự án học tập"),
-        "/ho-so": ("ho_so", "Hồ sơ năng lực"),
-        "/huy-hieu": ("huy_hieu", "Huy hiệu"),
-        "/tai-nguyen": ("tai_nguyen", "Tài nguyên miễn phí"),
-    }[request.url.path]
-    return templates.TemplateResponse(
-        request,
-        "student/soon.html",
-        {"user": user, "branch": branch[0], "branch_title": branch[1]},
+def award_badge(db: Session, student_id: int, badge_type: str) -> Badge | None:
+    """Trao huy hiệu, bỏ qua nếu đã có. Huy hiệu ghi nhận hành trình, không
+    phải điểm số — không có thứ hạng, không so sánh giữa học sinh."""
+    existing = (
+        db.query(Badge)
+        .filter(Badge.student_id == student_id, Badge.badge_type == badge_type)
+        .first()
     )
+    if existing:
+        return None
+    badge = Badge(student_id=student_id, badge_type=badge_type)
+    db.add(badge)
+    return badge
+
+
+def share_token(student_id: int) -> str:
+    return _share.dumps({"sid": student_id})
+
+
+def student_from_token(token: str) -> int | None:
+    try:
+        return _share.loads(token).get("sid")
+    except BadSignature:
+        return None
+
+
+def _transcript(gs: GuidedSession) -> list[dict]:
+    try:
+        return json.loads(gs.transcript or "[]")
+    except json.JSONDecodeError:
+        return []
+
+
+def _save_transcript(gs: GuidedSession, entries: list[dict]) -> None:
+    gs.transcript = json.dumps(entries, ensure_ascii=False)
+
+
+def _current_beat(scenario: Scenario, gs: GuidedSession):
+    """Beat đang chờ ở vị trí con trỏ.
+
+    Trong mỗi cấp độ, các beat chạy hết rồi mới tới `closing`, nên chỉ số
+    beat bằng đúng len(beats) nghĩa là đang ở câu kết cấp độ.
+    """
+    stage = scenario.stage_at(gs.stage_index)
+    if stage is None:
+        return None, None
+    if gs.beat_index < len(stage.beats):
+        return stage, stage.beats[gs.beat_index]
+    if gs.beat_index == len(stage.beats) and stage.closing:
+        return stage, None  # None + còn trong tầm = câu kết cấp độ
+    return stage, None
+
+
+def _at_closing(scenario: Scenario, gs: GuidedSession) -> bool:
+    stage = scenario.stage_at(gs.stage_index)
+    return bool(stage and stage.closing and gs.beat_index == len(stage.beats))
+
+
+def _advance(scenario: Scenario, gs: GuidedSession) -> None:
+    """Đẩy con trỏ sang beat kế tiếp, sang cấp độ mới hoặc kết thúc."""
+    stage = scenario.stage_at(gs.stage_index)
+    if stage is None:
+        gs.finished = True
+        return
+
+    last_index = len(stage.beats) if stage.closing else len(stage.beats) - 1
+    if gs.beat_index < last_index:
+        gs.beat_index += 1
+        return
+
+    if gs.stage_index + 1 < len(scenario.stages):
+        gs.stage_index += 1
+        gs.beat_index = 0
+    else:
+        gs.finished = True
+
+
+def _sync_journal(db: Session, gs: GuidedSession, scenario: Scenario, user: User) -> JournalEntry:
+    """Nhật ký tự động ghi lại quá trình — học sinh không phải bấm lưu."""
+    entry = (
+        db.query(JournalEntry)
+        .filter(
+            JournalEntry.student_id == user.id,
+            JournalEntry.scenario_id == scenario.id,
+            JournalEntry.source == "guided",
+        )
+        .first()
+    )
+    answers = [t for t in _transcript(gs) if t.get("answer")]
+    body = "\n\n".join(f"{t['label']}\n{t['answer']}" for t in answers)
+
+    if entry is None:
+        entry = JournalEntry(
+            student_id=user.id,
+            scenario_id=scenario.id,
+            source="guided",
+            title=f"Nhật ký — {scenario.title}",
+        )
+        db.add(entry)
+    entry.content = body
+    entry.ai_transcript = gs.transcript or "[]"
+    return entry
+
+
+def _progress(scenario: Scenario, gs: GuidedSession) -> list[dict]:
+    out = []
+    for i, st in enumerate(scenario.stages):
+        state = "done" if (gs.finished or i < gs.stage_index) else (
+            "current" if i == gs.stage_index else "todo"
+        )
+        out.append({"name": st.name, "state": state, "index": i})
+    return out
+
+
+# --------------------------------------------------------------------------
+# Trang cá nhân — điểm hội tụ chính
+# --------------------------------------------------------------------------
 
 
 @router.get("/trang-ca-nhan", response_class=HTMLResponse)
@@ -72,13 +198,9 @@ def hub(
         .order_by(JournalEntry.created_at.desc())
         .all()
     )
-    portfolio = (
-        db.query(PortfolioEntry).filter(PortfolioEntry.student_id == user.id).all()
-    )
+    portfolio = db.query(PortfolioEntry).filter(PortfolioEntry.student_id == user.id).all()
     badges = db.query(Badge).filter(Badge.student_id == user.id).all()
-    memberships = (
-        db.query(ClassMembership).filter(ClassMembership.student_id == user.id).all()
-    )
+    memberships = db.query(ClassMembership).filter(ClassMembership.student_id == user.id).all()
     class_ids = [m.class_id for m in memberships]
 
     feedback = (
@@ -88,23 +210,17 @@ def hub(
         .all()
     )
 
-    notifications = (
-        db.query(Notification)
-        .filter(
-            (Notification.class_id.in_(class_ids) if class_ids else False)
-            | (Notification.student_id == user.id)
-            | ((Notification.class_id.is_(None)) & (Notification.student_id.is_(None)))
-        )
-        .order_by(Notification.created_at.desc())
-        .limit(3)
-        .all()
+    notif_q = db.query(Notification).filter(
+        (Notification.class_id.is_(None) & Notification.student_id.is_(None))
+        | (Notification.student_id == user.id)
     )
-
-    fields_touched = {
-        s.field
-        for e in entries
-        if e.scenario_id and (s := get_scenario(e.scenario_id)) is not None
-    }
+    if class_ids:
+        notif_q = db.query(Notification).filter(
+            (Notification.class_id.is_(None) & Notification.student_id.is_(None))
+            | (Notification.student_id == user.id)
+            | (Notification.class_id.in_(class_ids))
+        )
+    notifications = notif_q.order_by(Notification.created_at.desc()).limit(3).all()
 
     return templates.TemplateResponse(
         request,
@@ -120,7 +236,598 @@ def hub(
             "classes": [m.klass for m in memberships],
             "feedback": feedback,
             "notifications": notifications,
-            "fields_touched": fields_touched,
             "scenarios": all_scenarios(),
+        },
+    )
+
+
+# --------------------------------------------------------------------------
+# Nhánh A — Dự án học tập
+# --------------------------------------------------------------------------
+
+
+@router.get("/du-an", response_class=HTMLResponse)
+def choose_field(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    done_fields = {
+        s.field
+        for e in db.query(JournalEntry).filter(JournalEntry.student_id == user.id).all()
+        if e.scenario_id and (s := get_scenario(e.scenario_id))
+    }
+    counts = {f["name"]: len(scenarios_for_field(f["name"])) for f in STEAM_FIELDS}
+
+    return templates.TemplateResponse(
+        request,
+        "student/du_an_linh_vuc.html",
+        {
+            "user": user,
+            "branch": "du_an",
+            "counts": counts,
+            "done_fields": done_fields,
+        },
+    )
+
+
+@router.get("/du-an/linh-vuc/{field_key}", response_class=HTMLResponse)
+def choose_scenario(
+    request: Request,
+    field_key: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    field_name = FIELD_NAME_BY_KEY.get(field_key)
+    if field_name is None:
+        return RedirectResponse("/du-an", status_code=303)
+
+    started = {
+        gs.scenario_id: gs
+        for gs in db.query(GuidedSession).filter(GuidedSession.student_id == user.id).all()
+    }
+
+    return templates.TemplateResponse(
+        request,
+        "student/du_an_kich_huong.html",
+        {
+            "user": user,
+            "branch": "du_an",
+            "field_name": field_name,
+            "field_key": field_key,
+            "scenarios": scenarios_for_field(field_name),
+            "started": started,
+        },
+    )
+
+
+@router.get("/du-an/{scenario_id}", response_class=HTMLResponse)
+def scenario_intro(
+    request: Request,
+    scenario_id: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None:
+        return RedirectResponse("/du-an", status_code=303)
+
+    gs = (
+        db.query(GuidedSession)
+        .filter(
+            GuidedSession.student_id == user.id,
+            GuidedSession.scenario_id == scenario_id,
+        )
+        .first()
+    )
+
+    return templates.TemplateResponse(
+        request,
+        "student/du_an_nhap_vai.html",
+        {
+            "user": user,
+            "branch": "du_an",
+            "scenario": scenario,
+            "gs": gs,
+        },
+    )
+
+
+@router.get("/du-an/{scenario_id}/khong-gian-tu-duy", response_class=HTMLResponse)
+def workspace(
+    request: Request,
+    scenario_id: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None:
+        return RedirectResponse("/du-an", status_code=303)
+
+    gs = (
+        db.query(GuidedSession)
+        .filter(
+            GuidedSession.student_id == user.id,
+            GuidedSession.scenario_id == scenario_id,
+        )
+        .first()
+    )
+    if gs is None:
+        gs = GuidedSession(student_id=user.id, scenario_id=scenario_id)
+        db.add(gs)
+        award_badge(db, user.id, "nhap_vai_dau_tien")
+        db.commit()
+
+    stage, beat = _current_beat(scenario, gs)
+
+    return templates.TemplateResponse(
+        request,
+        "student/workspace.html",
+        {
+            "user": user,
+            "branch": "du_an",
+            "scenario": scenario,
+            "gs": gs,
+            "stage": stage,
+            "beat": beat,
+            "at_closing": _at_closing(scenario, gs),
+            "transcript": _transcript(gs),
+            "progress": _progress(scenario, gs),
+        },
+    )
+
+
+@router.post("/du-an/{scenario_id}/tiep", response_class=HTMLResponse)
+def workspace_step(
+    request: Request,
+    scenario_id: str,
+    tra_loi: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Một nhịp trong kịch bản: ghi lại (nếu có câu trả lời) rồi tiến tới."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None:
+        return RedirectResponse("/du-an", status_code=303)
+
+    gs = (
+        db.query(GuidedSession)
+        .filter(
+            GuidedSession.student_id == user.id,
+            GuidedSession.scenario_id == scenario_id,
+        )
+        .first()
+    )
+    if gs is None or gs.finished:
+        return RedirectResponse(f"/du-an/{scenario_id}/khong-gian-tu-duy", status_code=303)
+
+    stage, beat = _current_beat(scenario, gs)
+    entries = _transcript(gs)
+
+    if _at_closing(scenario, gs):
+        entries.append(
+            {
+                "kind": "closing",
+                "stage": stage.name,
+                "label": f"Câu kết cấp độ · {stage.name}",
+                "text": stage.closing,
+                "answer": tra_loi.strip(),
+            }
+        )
+    elif beat is not None:
+        entries.append(
+            {
+                "kind": beat.type,
+                "stage": stage.name,
+                "label": beat.label or stage.name,
+                "text": beat.text,
+                "answer": tra_loi.strip() if beat.needs_answer else "",
+            }
+        )
+
+    _save_transcript(gs, entries)
+    _advance(scenario, gs)
+    _sync_journal(db, gs, scenario, user)
+
+    if gs.finished:
+        award_badge(db, user.id, "hoan_thanh_4_cap_do")
+        award_badge(db, user.id, FIELD_KEY_BY_NAME.get(scenario.field, "khoa_hoc"))
+
+    db.commit()
+    return RedirectResponse(f"/du-an/{scenario_id}/khong-gian-tu-duy", status_code=303)
+
+
+@router.post("/du-an/{scenario_id}/lam-lai")
+def workspace_restart(
+    scenario_id: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Công cụ, không phải khoá học — quay lại làm từ đầu lúc nào cũng được."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+    gs = (
+        db.query(GuidedSession)
+        .filter(
+            GuidedSession.student_id == user.id,
+            GuidedSession.scenario_id == scenario_id,
+        )
+        .first()
+    )
+    if gs is not None:
+        gs.stage_index = 0
+        gs.beat_index = 0
+        gs.finished = False
+        gs.synthesis = ""
+        gs.transcript = "[]"
+        db.commit()
+    return RedirectResponse(f"/du-an/{scenario_id}/khong-gian-tu-duy", status_code=303)
+
+
+@router.get("/du-an/{scenario_id}/nop", response_class=HTMLResponse)
+def submit_form(
+    request: Request,
+    scenario_id: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None:
+        return RedirectResponse("/du-an", status_code=303)
+
+    entry = (
+        db.query(JournalEntry)
+        .filter(
+            JournalEntry.student_id == user.id,
+            JournalEntry.scenario_id == scenario_id,
+            JournalEntry.source == "guided",
+        )
+        .first()
+    )
+
+    return templates.TemplateResponse(
+        request,
+        "student/du_an_nop.html",
+        {
+            "user": user,
+            "branch": "du_an",
+            "scenario": scenario,
+            "entry": entry,
+        },
+    )
+
+
+@router.post("/du-an/{scenario_id}/nop")
+def submit_project(
+    scenario_id: str,
+    mo_ta: str = Form(""),
+    anh: str = Form(""),
+    video: str = Form(""),
+    phan_loai: str = Form("ca_hai"),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Nộp dự án -> cập nhật hồ sơ + nhận huy hiệu (tự động, theo sơ đồ)."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None:
+        return RedirectResponse("/du-an", status_code=303)
+
+    entry = (
+        db.query(JournalEntry)
+        .filter(
+            JournalEntry.student_id == user.id,
+            JournalEntry.scenario_id == scenario_id,
+            JournalEntry.source == "guided",
+        )
+        .first()
+    )
+    if entry is None:
+        entry = JournalEntry(
+            student_id=user.id,
+            scenario_id=scenario_id,
+            source="guided",
+            title=f"Nhật ký — {scenario.title}",
+        )
+        db.add(entry)
+        db.flush()
+
+    entry.image_url = anh.strip()
+    entry.video_url = video.strip()
+    entry.submitted = True
+
+    category = phan_loai if phan_loai in VALID_CATEGORIES else "ca_hai"
+    portfolio = (
+        db.query(PortfolioEntry)
+        .filter(
+            PortfolioEntry.student_id == user.id,
+            PortfolioEntry.journal_entry_id == entry.id,
+        )
+        .first()
+    )
+    if portfolio is None:
+        count = db.query(PortfolioEntry).filter(PortfolioEntry.student_id == user.id).count()
+        portfolio = PortfolioEntry(
+            student_id=user.id,
+            journal_entry_id=entry.id,
+            order_index=count,
+        )
+        db.add(portfolio)
+    portfolio.category = category
+    portfolio.description = mo_ta.strip() or scenario.description
+
+    award_badge(db, user.id, FIELD_KEY_BY_NAME.get(scenario.field, "khoa_hoc"))
+    db.commit()
+
+    return RedirectResponse("/ho-so?vua-nop=1", status_code=303)
+
+
+# --------------------------------------------------------------------------
+# Nhánh B — Hồ sơ năng lực
+# --------------------------------------------------------------------------
+
+
+@router.get("/ho-so", response_class=HTMLResponse)
+def portfolio_view(
+    request: Request,
+    vua_nop: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    items = (
+        db.query(PortfolioEntry)
+        .filter(PortfolioEntry.student_id == user.id)
+        .order_by(PortfolioEntry.order_index, PortfolioEntry.created_at)
+        .all()
+    )
+    entries = (
+        db.query(JournalEntry)
+        .filter(JournalEntry.student_id == user.id)
+        .order_by(JournalEntry.created_at.desc())
+        .all()
+    )
+
+    return templates.TemplateResponse(
+        request,
+        "student/ho_so.html",
+        {
+            "user": user,
+            "branch": "ho_so",
+            "items": items,
+            "entries": entries,
+            "scenario_of": {e.id: get_scenario(e.scenario_id) for e in entries},
+            "just_submitted": bool(vua_nop),
+            "token": share_token(user.id),
+        },
+    )
+
+
+@router.post("/ho-so/{entry_id}/mo-ta", response_class=HTMLResponse)
+def edit_description(
+    request: Request,
+    entry_id: int,
+    mo_ta: str = Form(""),
+    phan_loai: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Học sinh toàn quyền biên tập phần mô tả trong hồ sơ."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    item = (
+        db.query(PortfolioEntry)
+        .filter(PortfolioEntry.id == entry_id, PortfolioEntry.student_id == user.id)
+        .first()
+    )
+    if item is None:
+        return RedirectResponse("/ho-so", status_code=303)
+
+    item.description = mo_ta.strip()
+    if phan_loai in VALID_CATEGORIES:
+        item.category = phan_loai
+    db.commit()
+
+    return templates.TemplateResponse(
+        request,
+        "student/partials/portfolio_item.html",
+        {"user": user, "item": item, "saved": True},
+    )
+
+
+@router.post("/ho-so/{entry_id}/chia-se", response_class=HTMLResponse)
+def toggle_share(
+    request: Request,
+    entry_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Bật/tắt chia sẻ. Luôn cần thao tác rõ ràng của học sinh — AI không bao
+    giờ tự đăng thứ gì lên hồ sơ công khai."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    item = (
+        db.query(PortfolioEntry)
+        .filter(PortfolioEntry.id == entry_id, PortfolioEntry.student_id == user.id)
+        .first()
+    )
+    if item is None:
+        return RedirectResponse("/ho-so", status_code=303)
+
+    item.shared = not item.shared
+    if item.shared:
+        award_badge(db, user.id, "chia_se_dau_tien")
+    db.commit()
+
+    return templates.TemplateResponse(
+        request,
+        "student/partials/portfolio_item.html",
+        {"user": user, "item": item, "saved": False},
+    )
+
+
+@router.get("/ho-so/chia-se", response_class=HTMLResponse)
+def share_page(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    shared = (
+        db.query(PortfolioEntry)
+        .filter(PortfolioEntry.student_id == user.id, PortfolioEntry.shared.is_(True))
+        .order_by(PortfolioEntry.order_index)
+        .all()
+    )
+    return templates.TemplateResponse(
+        request,
+        "student/ho_so_chia_se.html",
+        {
+            "user": user,
+            "branch": "ho_so",
+            "shared": shared,
+            "token": share_token(user.id),
+        },
+    )
+
+
+@router.get("/p/{token}", response_class=HTMLResponse)
+def public_portfolio(
+    request: Request,
+    token: str,
+    db: Session = Depends(get_db),
+):
+    """Hồ sơ công khai. Ai có link đều xem được, nhưng không xuất hiện trên
+    bất kỳ bảng tin hay danh sách nào — đúng như ghi chú trong sơ đồ."""
+    student_id = student_from_token(token)
+    owner = db.get(User, student_id) if student_id else None
+    if owner is None:
+        return templates.TemplateResponse(request, "404.html", {"user": None}, status_code=404)
+
+    items = (
+        db.query(PortfolioEntry)
+        .filter(PortfolioEntry.student_id == owner.id, PortfolioEntry.shared.is_(True))
+        .order_by(PortfolioEntry.order_index)
+        .all()
+    )
+    return templates.TemplateResponse(
+        request,
+        "student/public_portfolio.html",
+        {"user": None, "owner": owner, "items": items},
+    )
+
+
+# --------------------------------------------------------------------------
+# Nhánh C — Huy hiệu
+# --------------------------------------------------------------------------
+
+
+@router.get("/huy-hieu", response_class=HTMLResponse)
+def badges_view(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    earned = {
+        b.badge_type: b for b in db.query(Badge).filter(Badge.student_id == user.id).all()
+    }
+
+    catalogue = ["nhap_vai_dau_tien", "hoan_thanh_4_cap_do", "chia_se_dau_tien"]
+    catalogue += [f["key"] for f in STEAM_FIELDS]
+
+    # Gợi ý dự án tiếp theo: lĩnh vực chưa mở khoá huy hiệu.
+    unexplored = [f for f in STEAM_FIELDS if f["key"] not in earned]
+    suggestion = None
+    if unexplored:
+        field = unexplored[0]
+        pool = scenarios_for_field(field["name"])
+        suggestion = {"field": field, "scenario": pool[0] if pool else None}
+
+    return templates.TemplateResponse(
+        request,
+        "student/huy_hieu.html",
+        {
+            "user": user,
+            "branch": "huy_hieu",
+            "earned": earned,
+            "catalogue": catalogue,
+            "suggestion": suggestion,
+        },
+    )
+
+
+# --------------------------------------------------------------------------
+# Nhánh D — Tài nguyên miễn phí
+# --------------------------------------------------------------------------
+
+
+@router.get("/tai-nguyen", response_class=HTMLResponse)
+def resources_view(
+    request: Request,
+    linh_vuc: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    resources = load_resources()
+    selected = FIELD_NAME_BY_KEY.get(linh_vuc)
+    shown = {selected: resources.get(selected, [])} if selected else resources
+
+    memberships = db.query(ClassMembership).filter(ClassMembership.student_id == user.id).all()
+    class_ids = [m.class_id for m in memberships]
+
+    notif_q = db.query(Notification).filter(
+        (Notification.class_id.is_(None) & Notification.student_id.is_(None))
+        | (Notification.student_id == user.id)
+    )
+    if class_ids:
+        notif_q = db.query(Notification).filter(
+            (Notification.class_id.is_(None) & Notification.student_id.is_(None))
+            | (Notification.student_id == user.id)
+            | (Notification.class_id.in_(class_ids))
+        )
+    notifications = notif_q.order_by(Notification.created_at.desc()).all()
+
+    return templates.TemplateResponse(
+        request,
+        "student/tai_nguyen.html",
+        {
+            "user": user,
+            "branch": "tai_nguyen",
+            "shown": shown,
+            "selected": selected,
+            "selected_key": linh_vuc,
+            "notifications": notifications,
         },
     )

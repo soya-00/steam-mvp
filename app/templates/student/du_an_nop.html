@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Nộp dự án — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+
+  <nav class="text-sm text-ink-soft mb-4">
+    <a href="/du-an/{{ scenario.id }}/khong-gian-tu-duy" class="hover:underline">Không gian tư duy</a>
+    <span class="text-ink-faint mx-1">/</span>
+    <span class="text-ink">Nộp dự án</span>
+  </nav>
+
+  <h1 class="text-2xl text-ink">Nộp dự án</h1>
+  <p class="mt-2 text-sm text-ink-soft">
+    Không ai chấm điểm phần này. Nộp dự án chỉ để bạn có một mục gọn gàng trong hồ sơ năng lực —
+    thứ bạn có thể tự nhìn lại, hoặc chia sẻ nếu muốn.
+  </p>
+
+  <form method="post" action="/du-an/{{ scenario.id }}/nop" class="mt-6 space-y-5">
+
+    <div>
+      <label for="mo_ta" class="block text-sm font-medium text-ink mb-1">
+        Mô tả dự án của bạn
+      </label>
+      <textarea id="mo_ta" name="mo_ta" rows="5"
+                placeholder="Bạn đã tạo ra {{ scenario.creation_output|lower }} như thế nào? Điều gì bạn còn phân vân?"
+                class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint">{{ entry.content[:400] if entry and entry.content else '' }}</textarea>
+      <p class="mt-1.5 text-xs text-ink-soft">
+        Phần này đã được điền sẵn từ nhật ký của bạn. Sửa thoải mái.
+      </p>
+    </div>
+
+    <div>
+      <label for="anh" class="block text-sm font-medium text-ink mb-1">
+        Link ảnh <span class="font-normal text-ink-faint">— không bắt buộc</span>
+      </label>
+      <input type="url" id="anh" name="anh" placeholder="https://..."
+             value="{{ entry.image_url if entry else '' }}"
+             class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint">
+    </div>
+
+    <div>
+      <label for="video" class="block text-sm font-medium text-ink mb-1">
+        Link video <span class="font-normal text-ink-faint">— không bắt buộc</span>
+      </label>
+      <input type="url" id="video" name="video" placeholder="https://..."
+             value="{{ entry.video_url if entry else '' }}"
+             class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint">
+    </div>
+
+    <fieldset>
+      <legend class="block text-sm font-medium text-ink mb-2">Bạn xếp dự án này vào đâu?</legend>
+      <div class="grid gap-2 sm:grid-cols-3">
+        {% for c in project_categories %}
+        <label class="cursor-pointer">
+          <input type="radio" name="phan_loai" value="{{ c.key }}" class="sr-only peer"
+                 {% if loop.last %}checked{% endif %}>
+          <span class="block rounded-lg border-2 border-hairline bg-paper px-4 py-3 text-center text-sm font-medium
+                       transition peer-checked:border-teal peer-checked:bg-teal-50 peer-checked:text-teal-700">
+            {{ c.label }}
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+      <p class="mt-2 text-xs text-ink-soft">
+        Nhiều dự án thuộc cả hai — chọn &ldquo;Cả hai&rdquo; là hoàn toàn bình thường.
+      </p>
+    </fieldset>
+
+    <div class="flex flex-wrap gap-3 pt-2">
+      <button type="submit" class="btn btn-primary">Nộp và cập nhật hồ sơ</button>
+      <a href="/du-an/{{ scenario.id }}/khong-gian-tu-duy" class="btn btn-ghost">Quay lại</a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

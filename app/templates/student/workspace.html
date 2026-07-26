@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Không gian tư duy — {{ scenario.title }}{% endblock %}
+
+{% block content %}
+{% set fc = field_classes(scenario.field) %}
+
+<div class="lg:grid lg:grid-cols-[15rem_1fr] lg:gap-8">
+
+  <!-- Tiến độ 4 cấp độ -->
+  <aside class="mb-6 lg:mb-0">
+    <p class="text-xs uppercase tracking-wider text-ink-faint font-semibold">Bốn cấp độ</p>
+    <ol class="mt-3 grid gap-1.5">
+      {% for p in progress %}
+      <li class="flex items-center gap-2.5 text-sm">
+        <span class="w-2.5 h-2.5 rounded-full shrink-0
+          {% if p.state == 'done' %}{{ fc.dot }}{% elif p.state == 'current' %}bg-teal ring-4 ring-teal-100{% else %}bg-hairline{% endif %}"></span>
+        <span class="{% if p.state == 'current' %}font-semibold text-ink{% elif p.state == 'done' %}text-ink-soft{% else %}text-ink-faint{% endif %}">
+          {{ p.name }}
+        </span>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="mt-6 card p-3">
+      <p class="text-xs text-ink-soft">Bạn đang là</p>
+      <p class="text-sm font-medium text-ink">{{ scenario.protagonist }}, {{ scenario.role }}</p>
+    </div>
+
+    <!-- Cạnh nối chéo: rẽ sang brainstorm tự do bất cứ lúc nào -->
+    <a href="/ho-so/y-tuong-tu-do"
+       class="mt-3 block card p-3 branch-bar border-l-amber hover:border-amber-300 transition">
+      <p class="text-sm font-medium text-ink">Muốn nghĩ tự do?</p>
+      <p class="text-xs text-ink-soft mt-0.5">Chuyển sang Ý tưởng tự do, quay lại đây lúc nào cũng được.</p>
+    </a>
+
+    <form method="post" action="/du-an/{{ scenario.id }}/lam-lai" class="mt-3"
+          onsubmit="return confirm('Làm lại từ đầu sẽ xoá hết câu trả lời bạn đã viết trong tình huống này. Bạn có chắc không?')">
+      <button type="submit" class="text-xs text-ink-faint hover:text-ink underline">
+        Làm lại từ đầu
+      </button>
+    </form>
+  </aside>
+
+  <div class="min-w-0">
+
+    {% if not gs.finished and stage %}
+    <p class="text-xs uppercase tracking-wider text-ink-faint font-semibold mb-2">
+      Cấp độ {{ gs.stage_index + 1 }} · {{ stage.name }}
+    </p>
+    {% endif %}
+
+    <!-- Những gì đã đi qua -->
+    {% for t in transcript %}
+    <div class="card p-4 mb-2 {{ beat_classes.get(t.kind, 'bg-paper-raised border-hairline') }}">
+      <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">{{ t.label }}</p>
+      <p class="mt-1.5 text-sm text-ink prose-beat">{{ t.text }}</p>
+      {% if t.answer %}
+      <div class="mt-3 pt-3 border-t border-hairline">
+        <p class="text-xs font-semibold text-teal-700">Bạn trả lời</p>
+        <p class="mt-1 text-sm text-ink prose-beat">{{ t.answer }}</p>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if gs.finished %}
+
+    <div class="card p-6 branch-bar border-l-teal">
+      <h1 class="text-xl text-ink">Bạn đã đi hết bốn cấp độ</h1>
+      <p class="mt-2 text-sm text-ink-soft">
+        Không có điểm số và cũng không có đáp án mẫu — điều đáng giá nằm ở cách bạn đọc dữ liệu,
+        nhận ra giả định của mình và cân nhắc các bên liên quan.
+      </p>
+      {% if gs.synthesis %}
+      <div class="mt-4 pt-4 border-t border-hairline">
+        <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">Nhìn lại cùng bạn</p>
+        <p class="mt-2 text-sm text-ink prose-beat">{{ gs.synthesis }}</p>
+      </div>
+      {% else %}
+      <p class="mt-4 chip bg-amber-50 text-amber-900">
+        Phần tổng hợp cuối hành trình sẽ có ở Giai đoạn 4
+      </p>
+      {% endif %}
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/du-an/{{ scenario.id }}/nop" class="btn btn-primary">Nộp dự án</a>
+        <a href="/trang-ca-nhan" class="btn btn-ghost">Về trang cá nhân</a>
+      </div>
+    </div>
+
+    {% elif stage %}
+
+    {% if at_closing %}
+    <!-- Câu kết cấp độ -->
+    <div class="card p-5 mt-2 branch-bar border-l-teal">
+      <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">Câu kết cấp độ</p>
+      <h1 class="mt-2 text-lg text-ink">{{ stage.closing }}</h1>
+      <form method="post" action="/du-an/{{ scenario.id }}/tiep" class="mt-4">
+        <label for="tra_loi" class="sr-only">Câu trả lời của bạn</label>
+        <textarea id="tra_loi" name="tra_loi" rows="5" required
+                  placeholder="Viết theo cách của bạn. Không cần đúng văn phong nào cả."
+                  class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
+        <button type="submit" class="btn btn-primary mt-3">Xong cấp độ này</button>
+      </form>
+    </div>
+
+    {% elif beat and beat.needs_answer %}
+    <!-- Câu hỏi -->
+    <div class="card p-5 mt-2">
+      <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">{{ beat.label }}</p>
+      <h1 class="mt-2 text-lg text-ink">{{ beat.text }}</h1>
+      <form method="post" action="/du-an/{{ scenario.id }}/tiep" class="mt-4">
+        <label for="tra_loi" class="sr-only">Câu trả lời của bạn</label>
+        <textarea id="tra_loi" name="tra_loi" rows="5" required
+                  placeholder="Chưa chắc chắn cũng cứ viết ra — nghĩ chưa xong vẫn là nghĩ."
+                  class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
+        <button type="submit" class="btn btn-primary mt-3">Gửi câu trả lời</button>
+      </form>
+    </div>
+
+    {% elif beat %}
+    <!-- Khối bối cảnh: chỉ để đọc -->
+    <div class="card p-5 mt-2 bg-trunk-50 border-trunk-100">
+      <p class="text-xs uppercase tracking-wide font-semibold text-trunk">{{ beat.label }}</p>
+      <p class="mt-2 text-base text-ink prose-beat">{{ beat.text }}</p>
+      <form method="post" action="/du-an/{{ scenario.id }}/tiep" class="mt-4">
+        <button type="submit" class="btn btn-primary">Tôi đã đọc xong</button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

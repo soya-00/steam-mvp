@@ -45,6 +45,28 @@ PLATFORM_LABELS = {
     "khan": "Khan Academy",
 }
 
+# Tailwind quét class TĨNH — không ghép được chuỗi kiểu `border-l-{{ x }}`.
+# Vì vậy mọi tên class phải viết đủ chữ ở đây, không dựng động trong template.
+FIELD_CLASSES = {
+    "khoa_hoc": {"bar": "border-l-teal", "chip": "bg-teal-50 text-teal-700", "dot": "bg-teal"},
+    "cong_nghe": {"bar": "border-l-trunk", "chip": "bg-trunk-50 text-trunk", "dot": "bg-trunk"},
+    "ky_thuat": {"bar": "border-l-slate", "chip": "bg-slate-50 text-slate-700", "dot": "bg-slate"},
+    "nghe_thuat": {"bar": "border-l-amber", "chip": "bg-amber-50 text-amber-900", "dot": "bg-amber"},
+    "toan": {"bar": "border-l-plum", "chip": "bg-plum-50 text-plum-700", "dot": "bg-plum"},
+}
+
+BEAT_CLASSES = {
+    "context": "bg-trunk-50 border-trunk-100",
+    "question": "bg-paper-raised border-hairline",
+    "followup": "bg-paper-raised border-hairline",
+    "closing": "bg-teal-50 border-teal-100",
+}
+
+
+def field_classes(field_name_or_key: str) -> dict:
+    key = FIELD_KEY_BY_NAME.get(field_name_or_key, field_name_or_key)
+    return FIELD_CLASSES.get(key, FIELD_CLASSES["khoa_hoc"])
+
 
 def badge_label(badge_type: str) -> str:
     return BADGE_LABELS.get(badge_type, badge_type)
@@ -66,5 +88,7 @@ templates.env.globals.update(
     platform_labels=PLATFORM_LABELS,
     badge_label=badge_label,
     badge_icon=badge_icon,
+    field_classes=field_classes,
+    beat_classes=BEAT_CLASSES,
     gemini_enabled=gemini_enabled,
 )
