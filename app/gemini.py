@@ -223,27 +223,76 @@ QUOTA_MESSAGE = (
 # --------------------------------------------------------------------------
 
 
+# Model dòng flash bật "suy nghĩ" mặc định, và phần suy nghĩ ăn CHUNG hạn mức
+# output. Đo thực tế trên gemini-flash-latest: 381/400 token rơi vào phần suy
+# nghĩ, chỉ còn 15 token cho câu trả lời — mọi câu đều cụt giữa chừng.
+#
+# Cách tắt suy nghĩ lại khác nhau giữa các đời model: `thinking_budget=0` bị
+# từ chối trên gemini-flash-latest, trong khi model 2.x lại chấp nhận. Vì tên
+# model được dò lúc chạy nên không thể đoán trước sẽ gặp đời nào. Do đó thử
+# lần lượt, và quan trọng nhất: hạn mức output luôn để rộng để dù không tắt
+# được suy nghĩ thì câu trả lời vẫn đủ chỗ.
+_THINKING_ATTEMPTS: list[str | None] = ["level", "budget", None]
+_thinking_mode: str | None = "level"
+_thinking_settled = False
+
+
+def _config(system: str, max_tokens: int, mode: str | None):
+    from google.genai import types
+
+    thinking = None
+    if mode == "level":
+        thinking = types.ThinkingConfig(thinking_level="low")
+    elif mode == "budget":
+        thinking = types.ThinkingConfig(thinking_budget=0)
+
+    return types.GenerateContentConfig(
+        system_instruction=system,
+        temperature=0.85,
+        # Rộng rãi có chủ đích: phần suy nghĩ tiêu tốn vài trăm token trước khi
+        # chữ đầu tiên xuất hiện. Lời nhắc hệ thống đã yêu cầu trả lời ngắn.
+        max_output_tokens=max_tokens + 1200,
+        thinking_config=thinking,
+    )
+
+
 def _generate(system: str, contents: list[dict], *, max_tokens: int = 600) -> str | None:
+    global _thinking_mode, _thinking_settled
+
     client = get_client()
     if client is None:
         return None
-    from google.genai import types
 
-    try:
-        resp = client.models.generate_content(
-            model=resolve_model(),
-            contents=contents,
-            config=types.GenerateContentConfig(
-                system_instruction=system,
-                temperature=0.85,
-                max_output_tokens=max_tokens,
-            ),
-        )
+    modes = (
+        [_thinking_mode]
+        if _thinking_settled
+        else _THINKING_ATTEMPTS[_THINKING_ATTEMPTS.index(_thinking_mode) :]
+    )
+
+    for mode in modes:
+        try:
+            resp = client.models.generate_content(
+                model=resolve_model(),
+                contents=contents,
+                config=_config(system, max_tokens, mode),
+            )
+        except Exception as exc:
+            if "INVALID_ARGUMENT" in str(exc) and not _thinking_settled and mode is not None:
+                log.info("Gemini: model không nhận thinking_config kiểu '%s', thử kiểu khác", mode)
+                _thinking_mode = _THINKING_ATTEMPTS[_THINKING_ATTEMPTS.index(mode) + 1]
+                continue
+            log.warning("Gemini: lời gọi thất bại (%s)", exc)
+            return None
+
+        _thinking_mode, _thinking_settled = mode, True
         text = (resp.text or "").strip()
-        return text or None
-    except Exception as exc:  # pragma: no cover - phụ thuộc mạng
-        log.warning("Gemini: lời gọi thất bại (%s)", exc)
-        return None
+        if not text:
+            reason = resp.candidates[0].finish_reason if resp.candidates else "?"
+            log.warning("Gemini: không có nội dung trả về (finish_reason=%s)", reason)
+            return None
+        return text
+
+    return None
 
 
 def _turns(history: list[dict]) -> list[dict]:
