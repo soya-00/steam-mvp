@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Thông báo — GALS{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl text-ink">Thông báo</h1>
+<p class="mt-2 text-sm text-ink-soft max-w-2xl">
+  Thông báo bạn gửi sẽ hiện ở trang cá nhân và mục Tài nguyên của học sinh trong lớp đó.
+</p>
+
+<div class="lg:grid lg:grid-cols-[1fr_22rem] lg:gap-8 mt-6">
+
+  <div class="min-w-0">
+    <h2 class="text-lg text-ink">Bạn đã gửi</h2>
+    <div class="mt-3 grid gap-2">
+      {% for n in sent %}
+      <div class="card p-4 branch-bar border-l-trunk">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip bg-slate-50 text-slate-700">
+            {{ 'Hội thảo' if n.type == 'workshop' else 'Talkshow' }}
+          </span>
+          {% if class_of.get(n.class_id) %}
+          <span class="chip bg-trunk-50 text-trunk">{{ class_of[n.class_id].name }}</span>
+          {% endif %}
+          <span class="text-xs text-ink-faint">{{ n.created_at.strftime('%d/%m/%Y') }}</span>
+        </div>
+        <p class="mt-2 font-medium text-sm text-ink">{{ n.title }}</p>
+        {% if n.content %}<p class="mt-1 text-sm text-ink-soft">{{ n.content }}</p>{% endif %}
+      </div>
+      {% else %}
+      <div class="card p-5"><p class="text-sm text-ink-soft">Bạn chưa gửi thông báo nào.</p></div>
+      {% endfor %}
+    </div>
+
+    <h2 class="mt-10 text-lg text-ink">Từ nền tảng</h2>
+    <p class="mt-1 text-sm text-ink-soft">
+      GALS tự gửi tới học sinh theo lĩnh vực các em đang theo dõi. Bạn không cần làm gì.
+    </p>
+    <div class="mt-3 grid gap-2">
+      {% for n in platform %}
+      <div class="card p-4 branch-bar border-l-slate">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip bg-slate-50 text-slate-700">
+            {{ 'Hội thảo' if n.type == 'workshop' else 'Talkshow' }}
+          </span>
+          {% if n.field %}<span class="chip {{ field_classes(n.field).chip }}">{{ n.field }}</span>{% endif %}
+        </div>
+        <p class="mt-2 font-medium text-sm text-ink">{{ n.title }}</p>
+        <p class="mt-1 text-sm text-ink-soft">{{ n.content }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="mt-10 lg:mt-0">
+    <div class="card p-5">
+      <h2 class="text-lg text-ink">Gửi thông báo</h2>
+      <form method="post" action="/giao-vien/thong-bao" class="mt-3 space-y-3">
+
+        <div>
+          <label for="lop" class="block text-sm font-medium text-ink mb-1">Gửi cho lớp</label>
+          <select id="lop" name="lop" required
+                  class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-sm text-ink">
+            {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="loai" class="block text-sm font-medium text-ink mb-1">Loại</label>
+          <select id="loai" name="loai"
+                  class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-sm text-ink">
+            <option value="workshop">Hội thảo</option>
+            <option value="talkshow">Talkshow</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="tieu_de" class="block text-sm font-medium text-ink mb-1">Tiêu đề</label>
+          <input type="text" id="tieu_de" name="tieu_de" required
+                 class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-sm text-ink">
+        </div>
+
+        <div>
+          <label for="noi_dung" class="block text-sm font-medium text-ink mb-1">Nội dung</label>
+          <textarea id="noi_dung" name="noi_dung" rows="3"
+                    class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-sm text-ink"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full">Gửi</button>
+      </form>
+    </div>
+  </aside>
+</div>
+
+{% endblock %}
