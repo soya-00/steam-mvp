@@ -15,7 +15,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from itsdangerous import BadSignature, URLSafeSerializer
 from sqlalchemy.orm import Session
 
-from app.auth import get_current_user
+from app.auth import get_current_user, session_key
+from app.gemini import guided_reply, synthesis
 from app.config import (
     FIELD_KEY_BY_NAME,
     FIELD_NAME_BY_KEY,
@@ -418,25 +419,45 @@ def workspace_step(
 
     stage, beat = _current_beat(scenario, gs)
     entries = _transcript(gs)
+    answer = tra_loi.strip()
+    question = None
 
     if _at_closing(scenario, gs):
+        question = stage.closing
         entries.append(
             {
                 "kind": "closing",
                 "stage": stage.name,
                 "label": f"Câu kết cấp độ · {stage.name}",
                 "text": stage.closing,
-                "answer": tra_loi.strip(),
+                "answer": answer,
             }
         )
     elif beat is not None:
+        if beat.needs_answer:
+            question = beat.text
         entries.append(
             {
                 "kind": beat.type,
                 "stage": stage.name,
                 "label": beat.label or stage.name,
                 "text": beat.text,
-                "answer": tra_loi.strip() if beat.needs_answer else "",
+                "answer": answer if beat.needs_answer else "",
+            }
+        )
+
+    # Trợ lý phản hồi lại câu trả lời — chỉ ở những nhịp có câu hỏi.
+    if question and answer:
+        turn = sum(1 for t in entries if t.get("kind") == "ai")
+        entries.append(
+            {
+                "kind": "ai",
+                "stage": stage.name,
+                "label": "Người đồng hành",
+                "text": guided_reply(
+                    scenario, stage, question, answer, turn, session_key(request)
+                ),
+                "answer": "",
             }
         )
 
@@ -447,6 +468,8 @@ def workspace_step(
     if gs.finished:
         award_badge(db, user.id, "hoan_thanh_4_cap_do")
         award_badge(db, user.id, FIELD_KEY_BY_NAME.get(scenario.field, "khoa_hoc"))
+        if not gs.synthesis:
+            gs.synthesis = synthesis(scenario, entries, session_key(request))
 
     db.commit()
     return RedirectResponse(f"/du-an/{scenario_id}/khong-gian-tu-duy", status_code=303)

@@ -10,26 +10,50 @@
     <span class="text-ink">Ý tưởng tự do</span>
   </nav>
 
-  <h1 class="text-2xl text-ink">Ý tưởng tự do</h1>
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <h1 class="text-2xl text-ink">Ý tưởng tự do</h1>
+    {% if history %}
+    <form method="post" action="/ho-so/y-tuong-tu-do/xoa-lich-su"
+          onsubmit="return confirm('Xoá cuộc trò chuyện này? Những ý tưởng bạn đã thêm vào hồ sơ vẫn được giữ lại.')">
+      <button type="submit" class="text-sm text-ink-faint hover:text-ink underline">
+        Bắt đầu cuộc trò chuyện mới
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
   <p class="mt-2 text-sm text-ink-soft">
     Không có khung sườn, không có bốn cấp độ, không cần chọn lĩnh vực trước. Cứ kể ra điều bạn
-    để ý thấy, thắc mắc hay khó chịu về một chuyện gì đó — nghĩ tới đâu nói tới đó cũng được.
+    để ý thấy, thắc mắc hay thấy khó chịu — nghĩ tới đâu nói tới đó cũng được.
   </p>
 
-  <div class="card p-5 mt-6 branch-bar border-l-amber">
-    <div class="flex items-center gap-2">
-      <span class="w-8 h-8 rounded-full bg-amber-50 grid place-items-center text-lg" aria-hidden="true">💭</span>
-      <p class="text-sm font-medium text-ink">Trợ lý brainstorm</p>
+  {% if not gemini_enabled() %}
+  <p class="mt-3 chip bg-amber-50 text-amber-900">
+    Chế độ demo ngoại tuyến — trợ lý đang trả lời bằng kịch bản dựng sẵn
+  </p>
+  {% endif %}
+
+  <div class="card p-5 mt-5 branch-bar border-l-amber">
+    {% if not history %}
+    <div class="flex items-start gap-2.5 mb-4">
+      <span class="w-7 h-7 shrink-0 rounded-full bg-amber-100 grid place-items-center text-sm" aria-hidden="true">💭</span>
+      <div class="card p-3 px-4 bg-paper-raised border-hairline flex-1">
+        <p class="text-sm text-ink">
+          Chào bạn. Mình không có câu hỏi nào chuẩn bị sẵn cả — bạn bắt đầu từ đâu cũng được.
+          Nếu chưa biết nói gì, kể mình nghe một chuyện gần đây làm bạn thấy hơi khó chịu
+          hoặc thấy lạ đi.
+        </p>
+      </div>
     </div>
-    <p class="mt-3 text-sm text-ink-soft">
-      Khi trợ lý nhận ra bạn vừa nói ra một ý đáng giữ, nó sẽ hỏi
-      &ldquo;<em>Thêm ý tưởng này vào Hồ sơ?</em>&rdquo; — và chỉ thêm khi bạn đồng ý.
-      Không có gì tự động xuất hiện trong hồ sơ hay được chia sẻ mà bạn không biết.
-    </p>
-    <p class="mt-4 chip bg-amber-50 text-amber-900">
-      Phần trò chuyện được dựng ở Giai đoạn 4
-    </p>
+    {% endif %}
+
+    {% include "student/partials/brainstorm.html" %}
   </div>
+
+  <p class="mt-3 text-xs text-ink-soft">
+    Trợ lý có thể đề nghị lưu một ý vào hồ sơ, nhưng chỉ thêm khi bạn bấm đồng ý.
+    Không có gì tự động xuất hiện trong hồ sơ hay được chia sẻ mà bạn không biết.
+  </p>
 
   {% if ideas %}
   <h2 class="mt-10 text-lg text-ink">Ý tưởng bạn đã giữ lại</h2>
@@ -37,8 +61,7 @@
     {% for e in ideas %}
     <div class="card p-4">
       <span class="chip bg-amber-50 text-amber-900">Ý tưởng tự do</span>
-      <p class="mt-2 font-medium text-sm text-ink">{{ e.title }}</p>
-      <p class="mt-1 text-sm text-ink-soft prose-beat">{{ e.content }}</p>
+      <p class="mt-2 text-sm text-ink prose-beat">{{ e.content }}</p>
       <p class="mt-2 text-xs text-ink-faint">{{ e.created_at.strftime('%d/%m/%Y') }}</p>
     </div>
     {% endfor %}

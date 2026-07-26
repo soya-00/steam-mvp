@@ -51,6 +51,15 @@
 
     <!-- Những gì đã đi qua -->
     {% for t in transcript %}
+    {% if t.kind == 'ai' %}
+    <div class="flex items-start gap-2.5 mb-2 ml-1">
+      <span class="w-7 h-7 shrink-0 rounded-full bg-teal-100 grid place-items-center text-sm" aria-hidden="true">💬</span>
+      <div class="card p-4 bg-teal-50 border-teal-100 flex-1 min-w-0">
+        <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">{{ t.label }}</p>
+        <p class="mt-1.5 text-sm text-ink prose-beat">{{ t.text }}</p>
+      </div>
+    </div>
+    {% else %}
     <div class="card p-4 mb-2 {{ beat_classes.get(t.kind, 'bg-paper-raised border-hairline') }}">
       <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">{{ t.label }}</p>
       <p class="mt-1.5 text-sm text-ink prose-beat">{{ t.text }}</p>
@@ -61,6 +70,7 @@
       </div>
       {% endif %}
     </div>
+    {% endif %}
     {% endfor %}
 
     {% if gs.finished %}

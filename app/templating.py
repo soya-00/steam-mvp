@@ -60,6 +60,7 @@ BEAT_CLASSES = {
     "question": "bg-paper-raised border-hairline",
     "followup": "bg-paper-raised border-hairline",
     "closing": "bg-teal-50 border-teal-100",
+    "ai": "bg-teal-50 border-teal-100",
 }
 
 

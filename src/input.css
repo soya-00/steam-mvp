@@ -163,6 +163,16 @@
   }
 
   /* Chỉ báo đang gọi AI — HTMX bật/tắt qua .htmx-request */
+  .htmx-indicator {
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .htmx-request .htmx-indicator,
+  .htmx-request.htmx-indicator {
+    opacity: 1;
+  }
+
   .spinner-dot {
     animation: gals-pulse 1.1s ease-in-out infinite;
   }
