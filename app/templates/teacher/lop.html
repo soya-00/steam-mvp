@@ -101,7 +101,7 @@
     <fieldset>
       <legend class="block text-sm font-medium text-ink mb-2">Hình thức</legend>
       <div class="grid gap-2 sm:grid-cols-2">
-        {% for key, label, note in [('online','Trực tuyến','Các em làm trên GALS'), ('offline','Tại lớp','Thảo luận trực tiếp, ghi nhật ký sau')] %}
+        {% for key, label, note in [('online','Trực tuyến','Các em làm trên GALS'), ('offline','Tại lớp','Có tài liệu in sẵn — chỉ cần giấy và bút')] %}
         <label class="cursor-pointer">
           <input type="radio" name="hinh_thuc" value="{{ key }}" class="sr-only peer" {% if loop.first %}checked{% endif %}>
           <span class="block rounded-lg border-2 border-hairline bg-paper px-4 py-3 transition
@@ -112,6 +112,11 @@
         </label>
         {% endfor %}
       </div>
+      <p class="mt-2 text-xs text-ink-soft">
+        Chọn &ldquo;Tại lớp&rdquo; thì lấy bản in ở
+        <a href="/giao-vien/tai-lieu" class="text-teal font-medium hover:underline">Tài liệu in</a>
+        trên thanh menu. Không có máy in vẫn dạy được.
+      </p>
     </fieldset>
 
     <div>

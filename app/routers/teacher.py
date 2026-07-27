@@ -300,6 +300,21 @@ def leave_feedback(
     return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
 
 
+@router.get("/tai-lieu", response_class=HTMLResponse)
+def materials_index(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+    return templates.TemplateResponse(
+        request,
+        "teacher/tai_lieu.html",
+        {"user": user, "branch": "tai_lieu", "scenarios": all_scenarios()},
+    )
+
+
 @router.get("/tai-lieu/{scenario_id}", response_class=HTMLResponse)
 def printable_materials(
     request: Request,

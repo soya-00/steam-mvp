@@ -69,7 +69,7 @@
     </nav>
     {% else %}
     <nav aria-label="Điều hướng giáo viên" class="flex gap-1 overflow-x-auto -mx-4 px-4 pb-2 text-sm">
-      {% for href, label, key in [('/giao-vien', 'Lớp của tôi', 'lop'), ('/giao-vien/thong-bao', 'Thông báo', 'thong_bao')] %}
+      {% for href, label, key in [('/giao-vien', 'Lớp của tôi', 'lop'), ('/giao-vien/tai-lieu', 'Tài liệu in', 'tai_lieu'), ('/giao-vien/thong-bao', 'Thông báo', 'thong_bao')] %}
       <a href="{{ href }}"
          {% if branch == key %}aria-current="page"{% endif %}
          class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium transition
