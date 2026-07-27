@@ -1,8 +1,3 @@
-"""Mô hình dữ liệu — bám sát §5 của đặc tả, cộng hai bảng bổ sung có ghi chú.
-
-Toàn bộ dữ liệu là dữ liệu giả lập, được gieo lại mỗi lần khởi động (xem seed.py).
-"""
-
 from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
@@ -21,7 +16,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120))
     email: Mapped[str] = mapped_column(String(200), unique=True)
-    role: Mapped[str] = mapped_column(String(20))  # teacher | student
+    role: Mapped[str] = mapped_column(String(20))
     avatar_id: Mapped[str] = mapped_column(String(40), default="avatar-1")
 
     memberships: Mapped[list["ClassMembership"]] = relationship(
@@ -61,7 +56,6 @@ class Class(Base):
 
 
 class ClassMembership(Base):
-    """Nhiều-nhiều: một học sinh có thể tham gia nhiều lớp."""
 
     __tablename__ = "class_memberships"
 
@@ -78,10 +72,9 @@ class Assignment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     class_id: Mapped[int] = mapped_column(ForeignKey("classes.id"))
-    # Giáo viên giao theo một kịch huống cụ thể HOẶC mở rộng cả một lĩnh vực.
     scenario_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
     field: Mapped[str | None] = mapped_column(String(80), nullable=True)
-    mode: Mapped[str] = mapped_column(String(20), default="online")  # online | offline
+    mode: Mapped[str] = mapped_column(String(20), default="online")
     note: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
@@ -89,19 +82,17 @@ class Assignment(Base):
 
 
 class JournalEntry(Base):
-    """Nhật ký — tự động ghi lại quá trình suy nghĩ của học sinh."""
 
     __tablename__ = "journal_entries"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     student_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     scenario_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
-    source: Mapped[str] = mapped_column(String(20))  # guided | freeform
+    source: Mapped[str] = mapped_column(String(20))
     title: Mapped[str] = mapped_column(String(240), default="")
     content: Mapped[str] = mapped_column(Text, default="")
     ai_transcript: Mapped[str] = mapped_column(Text, default="")
 
-    # Phần "Nộp dự án": ảnh + link video + mô tả.
     image_url: Mapped[str] = mapped_column(String(500), default="")
     video_url: Mapped[str] = mapped_column(String(500), default="")
     submitted: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -123,11 +114,9 @@ class PortfolioEntry(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     student_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     journal_entry_id: Mapped[int] = mapped_column(ForeignKey("journal_entries.id"))
-    # nghe_thuat | ky_thuat | ca_hai
     category: Mapped[str] = mapped_column(String(30), default="ca_hai")
     description: Mapped[str] = mapped_column(Text, default="")
     order_index: Mapped[int] = mapped_column(Integer, default=0)
-    # `shared` chỉ bật khi học sinh xác nhận rõ ràng. AI không bao giờ tự đăng.
     shared: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
@@ -150,22 +139,16 @@ class Notification(Base):
     __tablename__ = "notifications"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    # scope: gắn với một lớp HOẶC một học sinh HOẶC toàn nền tảng (cả hai None).
     class_id: Mapped[int | None] = mapped_column(ForeignKey("classes.id"), nullable=True)
     student_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    type: Mapped[str] = mapped_column(String(30))  # workshop | talkshow
+    type: Mapped[str] = mapped_column(String(30))
     title: Mapped[str] = mapped_column(String(240), default="")
     content: Mapped[str] = mapped_column(Text, default="")
     field: Mapped[str | None] = mapped_column(String(80), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
 
-# --- Hai bảng bổ sung ngoài §5, có chủ đích ---
-
-
 class Feedback(Base):
-    """Nhận xét RIÊNG TƯ của giáo viên. §5 không có bảng này nhưng luồng giáo
-    viên cần. Không bao giờ hiển thị như điểm số — chỉ là lời nhắn cá nhân."""
 
     __tablename__ = "feedback"
 
@@ -184,7 +167,6 @@ class Feedback(Base):
 
 
 class GuidedSession(Base):
-    """Vị trí hiện tại của học sinh trong kịch bản 4 cấp độ."""
 
     __tablename__ = "guided_sessions"
 
@@ -195,7 +177,7 @@ class GuidedSession(Base):
     beat_index: Mapped[int] = mapped_column(Integer, default=0)
     finished: Mapped[bool] = mapped_column(Boolean, default=False)
     synthesis: Mapped[str] = mapped_column(Text, default="")
-    transcript: Mapped[str] = mapped_column(Text, default="[]")  # JSON list
+    transcript: Mapped[str] = mapped_column(Text, default="[]")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     student: Mapped["User"] = relationship()

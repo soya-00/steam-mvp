@@ -1,17 +1,10 @@
 @import "tailwindcss";
 @import "./fonts.css";
 
-/* Quét template Jinja để Tailwind biết class nào đang được dùng. */
 @source "../app/templates/**/*.html";
 @source "../app/**/*.py";
 
-/* ------------------------------------------------------------------
-   Hệ thống thiết kế GALS
-   Bảng màu lấy nguyên từ các sơ đồ đã trình bày với ban giám khảo —
-   giữ liên tục về mặt thị giác là có chủ đích.
-   ------------------------------------------------------------------ */
 @theme {
-  /* Thân/hệ thống — nav, header, khung liên quan giáo viên */
   --color-trunk-50: #eeeff8;
   --color-trunk-100: #dcdef1;
   --color-trunk-300: #9fa3d3;
@@ -19,7 +12,6 @@
   --color-trunk-700: #3a3d7a;
   --color-trunk-900: #23264c;
 
-  /* Dự án học tập — CTA chính, vòng lặp cốt lõi, tiến độ */
   --color-teal-50: #e8f5f1;
   --color-teal-100: #cfeae3;
   --color-teal-300: #7fc9b7;
@@ -27,7 +19,6 @@
   --color-teal-700: #186b57;
   --color-teal-900: #0f4136;
 
-  /* Hồ sơ năng lực — portfolio, phần tử do nền tảng kích hoạt */
   --color-amber-50: #fbf3e6;
   --color-amber-100: #f6e7cc;
   --color-amber-300: #e4bd7f;
@@ -35,7 +26,6 @@
   --color-amber-700: #9d6b24;
   --color-amber-900: #5e4016;
 
-  /* Huy hiệu */
   --color-plum-50: #f6ecf1;
   --color-plum-100: #edd9e3;
   --color-plum-300: #c99db3;
@@ -43,7 +33,6 @@
   --color-plum-700: #6d3b54;
   --color-plum-900: #412332;
 
-  /* Tài nguyên / liên kết ngoài */
   --color-slate-50: #eef2f7;
   --color-slate-100: #dde5ee;
   --color-slate-300: #a3b6cd;
@@ -51,7 +40,6 @@
   --color-slate-700: #3e5774;
   --color-slate-900: #253445;
 
-  /* Nền giấy ấm — cố ý không dùng trắng gắt */
   --color-paper: #f6f5f1;
   --color-paper-raised: #fffefb;
   --color-ink: #23262b;
@@ -59,9 +47,6 @@
   --color-ink-faint: #8b9098;
   --color-hairline: #e4e1d9;
 
-  /* Chữ hiển thị: Be Vietnam Pro — dựng bởi xưởng chữ Việt, dấu được vẽ
-     từ đầu chứ không phải gắn thêm vào chữ Latin.
-     Chữ nội dung: Lexend — thiết kế để tăng khả năng đọc hiểu. */
   --font-display: "Be Vietnam Pro", system-ui, sans-serif;
   --font-sans: "Lexend", system-ui, sans-serif;
 
@@ -89,14 +74,12 @@
     letter-spacing: -0.015em;
   }
 
-  /* Vòng focus rõ ràng — nhiều người sẽ thử bằng bàn phím. */
   :focus-visible {
     outline: 2px solid var(--color-teal);
     outline-offset: 2px;
     border-radius: 4px;
   }
 
-  /* Khối bối cảnh trong kịch huống có xuống dòng và gạch đầu dòng. */
   .prose-beat {
     white-space: pre-line;
   }
@@ -109,7 +92,6 @@
     border-radius: var(--radius-card);
   }
 
-  /* Thanh màu bên trái — dấu hiệu nhánh, khớp với sơ đồ luồng. */
   .branch-bar {
     border-left-width: 4px;
     border-left-style: solid;
@@ -162,7 +144,6 @@
     line-height: 1.5;
   }
 
-  /* Chỉ báo đang gọi AI — HTMX bật/tắt qua .htmx-request */
   .htmx-indicator {
     opacity: 0;
     transition: opacity 150ms ease;
@@ -183,18 +164,11 @@
   40% { opacity: 1; }
 }
 
-/* ------------------------------------------------------------------
-   Bản in cho buổi học tại lớp
-   Mục tiêu: dạy được bằng giấy và bút, máy in chỉ là tuỳ chọn.
-   ------------------------------------------------------------------ */
-
-/* Dòng kẻ để học sinh viết tay — chỉ xuất hiện khi in */
 .answer-lines {
   display: none;
 }
 
 @media print {
-  /* Bỏ mọi thứ không thuộc về tờ giấy */
   header, footer, nav, .no-print {
     display: none !important;
   }
@@ -219,7 +193,6 @@
     display: block !important;
   }
 
-  /* Mỗi cấp độ bắt đầu ở trang mới cho dễ phát theo nhóm */
   .print-page-break {
     break-before: page;
     page-break-before: always;

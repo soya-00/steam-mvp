@@ -62,7 +62,6 @@
     </p>
     {% if a.note %}<p class="mt-1 text-sm text-ink-soft">{{ a.note }}</p>{% endif %}
 
-    {# Buổi học tại lớp có thể không có thiết bị nào — cần bản in. #}
     {% if a.mode == 'offline' and sc %}
     <a href="/giao-vien/tai-lieu/{{ sc.id }}" class="btn btn-ghost text-sm py-1.5 px-3 mt-3">
       Xem và in tài liệu

@@ -19,9 +19,7 @@
   </div>
 </section>
 
-<!-- Tiến độ: mô tả hành trình, KHÔNG phải điểm số -->
 <section class="mt-6 grid gap-3 sm:grid-cols-3">
-  {# Tên class phải viết đủ chữ — Tailwind quét tĩnh, không ghép được chuỗi động. #}
   {% set stats = [
     (entry_count, 'bài trong nhật ký', 'border-l-teal'),
     (portfolio_count, 'mục trong hồ sơ', 'border-l-amber'),
@@ -49,7 +47,6 @@
 </section>
 {% endif %}
 
-<!-- Bốn nhánh trải nghiệm -->
 <section class="mt-8">
   <h2 class="text-lg text-ink">Bạn muốn làm gì hôm nay?</h2>
   <p class="mt-1 text-sm text-ink-soft">

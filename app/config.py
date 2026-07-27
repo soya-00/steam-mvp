@@ -1,5 +1,3 @@
-"""Cấu hình ứng dụng, đọc từ biến môi trường / file .env."""
-
 import os
 from pathlib import Path
 
@@ -21,8 +19,6 @@ SESSION_COOKIE = "gals_session"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "").strip()
 
-# Thứ tự ưu tiên khi tự dò model. Ứng dụng gọi models.list() lúc khởi động và
-# chọn model khả dụng đầu tiên trong danh sách này — không hard-code mù.
 GEMINI_MODEL_PREFERENCE = (
     "gemini-flash-latest",
     "gemini-3.6-flash",
@@ -30,10 +26,8 @@ GEMINI_MODEL_PREFERENCE = (
     "gemini-2.5-flash",
 )
 
-# Trần số lượt chat mỗi phiên — demo chạy trên URL công khai lúc chấm thi.
 MAX_MESSAGES_PER_SESSION = 30
 
-# 5 lĩnh vực STEAM hiển thị ở bước "Chọn lĩnh vực".
 STEAM_FIELDS = (
     {"key": "khoa_hoc", "name": "Khoa học", "letter": "S", "accent": "teal"},
     {"key": "cong_nghe", "name": "Công nghệ", "letter": "T", "accent": "indigo"},
@@ -53,5 +47,4 @@ PROJECT_CATEGORIES = (
 
 
 def gemini_enabled() -> bool:
-    """True khi có khoá API thật. False -> chạy chế độ demo ngoại tuyến."""
     return bool(GEMINI_API_KEY)

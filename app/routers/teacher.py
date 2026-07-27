@@ -1,14 +1,3 @@
-"""Luồng giáo viên.
-
-Sơ đồ giáo viên không được cung cấp, nên các màn hình ở đây được suy ra từ mô
-hình dữ liệu (Class, ClassMembership, Assignment, Notification) — cần rà lại
-với người ra đề.
-
-Nguyên tắc giữ nguyên như phía học sinh: không có điểm số, không xếp hạng,
-không so sánh giữa học sinh. Giáo viên đọc nhật ký tư duy và để lại lời nhắn
-riêng tư, chứ không chấm bài.
-"""
-
 from __future__ import annotations
 
 import random
@@ -47,7 +36,6 @@ def _guard(user: User | None):
 
 
 def _new_class_code(db: Session) -> str:
-    """Mã lớp ngắn, dễ đọc to trong lớp học."""
     alphabet = string.ascii_uppercase + string.digits
     for _ in range(50):
         code = "GALS-" + "".join(random.choice(alphabet) for _ in range(4))
@@ -175,10 +163,6 @@ def assign_work(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Giao theo một kịch huống cụ thể HOẶC mở rộng cả một lĩnh vực.
-
-    `muc_tieu` là 'kich-huong:<id>' hoặc 'linh-vuc:<key>'.
-    """
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -217,11 +201,6 @@ def student_detail(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Chỉ xem được học sinh thuộc lớp của chính giáo viên này.
-
-    Học sinh độc lập (không vào lớp nào) không hiện ở đây — đó là điểm mấu
-    chốt của sản phẩm, không phải thiếu sót.
-    """
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -282,7 +261,6 @@ def leave_feedback(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Lời nhắn riêng tư — chỉ học sinh đó đọc được, và không phải điểm số."""
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -329,12 +307,6 @@ def printable_materials(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Bản in cho buổi học không dùng thiết bị.
-
-    Không phải ai cũng có phòng máy hay điện thoại cho từng em. Trang này in
-    ra giấy là dạy được bằng bút và giấy; máy in chỉ là tuỳ chọn, vì giáo viên
-    có thể đọc to hoặc chép lên bảng.
-    """
     if (redirect := _guard(user)) is not None:
         return redirect
 

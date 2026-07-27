@@ -1,11 +1,3 @@
-# Blueprint deploy cho Render.com (gói web service miễn phí).
-#
-# CSS đã được build sẵn và commit vào static/css/app.css, nên môi trường
-# deploy chỉ cần Python — không cài Node, không chạy Tailwind ở đây.
-#
-# SQLite được gieo lại mỗi lần khởi động, nên đĩa tạm của gói miễn phí không
-# phải vấn đề: mỗi lần deploy lại là một bộ dữ liệu demo sạch.
-
 services:
   - type: web
     name: gals
@@ -19,12 +11,9 @@ services:
       - key: PYTHON_VERSION
         value: "3.11.15"
 
-      # Điền trong bảng Environment của Render. Để trống thì ứng dụng vẫn chạy
-      # đầy đủ ở chế độ demo ngoại tuyến.
       - key: GEMINI_API_KEY
         sync: false
 
-      # Bỏ trống để ứng dụng tự dò model flash mới nhất lúc khởi động.
       - key: GEMINI_MODEL
         sync: false
 

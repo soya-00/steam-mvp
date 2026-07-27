@@ -1,9 +1,3 @@
-"""Gieo dữ liệu giả lập mỗi lần khởi động.
-
-Dữ liệu bị xoá và tạo lại toàn bộ — phù hợp với đĩa tạm của Render và giúp
-mỗi lượt chấm thi bắt đầu từ trạng thái sạch, đoán trước được.
-"""
-
 from __future__ import annotations
 
 import json
@@ -35,7 +29,6 @@ def _seed(db: Session) -> None:
     by_field = {s.field: s for s in scenarios}
     first = scenarios[0]
 
-    # --- Người dùng ---
     teacher = User(
         name="Cô Mai",
         email=DEMO_ACCOUNTS["giao_vien"],
@@ -54,7 +47,6 @@ def _seed(db: Session) -> None:
         role="student",
         avatar_id="avatar-4",
     )
-    # Bạn cùng lớp — để màn hình giáo viên có nhiều hơn một dòng.
     classmates = [
         User(name="Trần Gia Bảo", email="bao@gals.demo", role="student", avatar_id="avatar-1"),
         User(name="Lê Minh Anh", email="minhanh@gals.demo", role="student", avatar_id="avatar-3"),
@@ -63,7 +55,6 @@ def _seed(db: Session) -> None:
     db.add_all([teacher, linh, trang, *classmates])
     db.flush()
 
-    # --- Lớp học ---
     lop_11a2 = Class(teacher_id=teacher.id, class_code="GALS-11A2", name="11A2 — Chuyên đề STEAM")
     lop_10b1 = Class(teacher_id=teacher.id, class_code="GALS-10B1", name="10B1 — Hướng nghiệp sớm")
     db.add_all([lop_11a2, lop_10b1])
@@ -78,7 +69,6 @@ def _seed(db: Session) -> None:
         ]
     )
 
-    # --- Nhiệm vụ giáo viên đã giao ---
     db.add_all(
         [
             Assignment(
@@ -96,7 +86,6 @@ def _seed(db: Session) -> None:
         ]
     )
 
-    # --- Hoạt động sẵn có của học sinh (để màn hình giáo viên không trống) ---
     now = datetime.now()
 
     linh_entry = JournalEntry(
@@ -189,7 +178,6 @@ def _seed(db: Session) -> None:
         )
     )
 
-    # --- Thông báo hội thảo / talkshow ---
     db.add_all(
         [
             Notification(

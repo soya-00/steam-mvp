@@ -1,10 +1,3 @@
-"""Trang chủ, đăng ký, đăng nhập, chọn avatar, đăng xuất.
-
-Xác thực là giả lập (§6): mọi email/mật khẩu đều vào tài khoản học sinh mặc
-định. Các màn hình đăng ký / nhập mã lớp / chọn avatar vẫn được dựng và bấm
-được theo sơ đồ, nhưng không lưu gì thật.
-"""
-
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Form, Request
@@ -42,7 +35,7 @@ templates.env.globals["avatar_emoji"] = AVATAR_EMOJI
 
 def _login_as(email: str, db: Session, destination: str) -> RedirectResponse:
     user = db.query(User).filter(User.email == email).first()
-    if user is None:  # phòng khi dữ liệu gieo bị đổi
+    if user is None:
         user = db.query(User).filter(User.role == "student").first()
     response = RedirectResponse(destination, status_code=303)
     set_session(response, user.id)
@@ -70,7 +63,6 @@ def login_submit(
     mat_khau: str = Form(""),
     db: Session = Depends(get_db),
 ):
-    # Giả lập: bất kỳ thông tin nào cũng vào tài khoản học sinh mặc định.
     return _login_as(DEFAULT_STUDENT_EMAIL, db, "/trang-ca-nhan")
 
 
@@ -81,7 +73,6 @@ def signup_form(request: Request):
 
 @router.post("/dang-ky")
 def signup_submit(request: Request, ma_lop: str = Form("")):
-    # Không lưu gì thật — chuyển sang bước chọn avatar theo sơ đồ.
     target = "/chon-avatar"
     if ma_lop.strip():
         target += f"?ma_lop={ma_lop.strip()}"
@@ -107,20 +98,18 @@ def avatar_submit(
     ma_lop: str = Form(""),
     db: Session = Depends(get_db),
 ):
-    # Đăng ký không tạo tài khoản thật; đưa về tài khoản demo tương ứng.
     email = (
         DEMO_ACCOUNTS["hoc_sinh_co_lop"] if ma_lop.strip() else DEMO_ACCOUNTS["hoc_sinh_doc_lap"]
     )
     user = db.query(User).filter(User.email == email).first()
     if user and avatar_id in AVATAR_EMOJI:
-        user.avatar_id = avatar_id  # avatar vừa chọn có hiệu lực ngay, cho demo
+        user.avatar_id = avatar_id
         db.commit()
     return _login_as(email, db, "/trang-ca-nhan")
 
 
 @router.get("/demo/{account}")
 def demo_login(account: str, db: Session = Depends(get_db)):
-    """Ba nút 'Demo nhanh' — mở thẳng từng đường vào sản phẩm."""
     email = DEMO_ACCOUNTS.get(account)
     if email is None:
         return RedirectResponse("/dang-nhap", status_code=303)

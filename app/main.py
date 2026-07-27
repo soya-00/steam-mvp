@@ -1,8 +1,3 @@
-"""GALS — prototype tương tác cho cuộc thi học sinh THPT.
-
-FastAPI + Jinja2 + HTMX, dữ liệu SQLite gieo lại mỗi lần khởi động.
-"""
-
 from __future__ import annotations
 
 import logging

@@ -1,11 +1,3 @@
-"""Luồng học sinh — bốn nhánh toả ra từ Trang cá nhân.
-
-Sơ đồ luồng có ba cạnh nối chéo và tất cả đều là đường đi thật, không phải
-trang trí: vòng lặp quay về Trang cá nhân từ bất cứ đâu, lối rẽ từ Không gian
-tư duy sang Ý tưởng tự do, và việc cả Nộp dự án lẫn Ý tưởng tự do đều dẫn tới
-Link chia sẻ.
-"""
-
 from __future__ import annotations
 
 import json
@@ -51,13 +43,7 @@ _share = URLSafeSerializer(SECRET_KEY, salt="gals-share")
 VALID_CATEGORIES = {c["key"] for c in PROJECT_CATEGORIES}
 
 
-# --------------------------------------------------------------------------
-# Tiện ích dùng chung
-# --------------------------------------------------------------------------
-
-
 def _guard(user: User | None):
-    """Chưa đăng nhập -> đăng nhập. Giáo viên -> khu giáo viên."""
     if user is None:
         return RedirectResponse("/dang-nhap", status_code=303)
     if user.is_teacher:
@@ -66,8 +52,6 @@ def _guard(user: User | None):
 
 
 def award_badge(db: Session, student_id: int, badge_type: str) -> Badge | None:
-    """Trao huy hiệu, bỏ qua nếu đã có. Huy hiệu ghi nhận hành trình, không
-    phải điểm số — không có thứ hạng, không so sánh giữa học sinh."""
     existing = (
         db.query(Badge)
         .filter(Badge.student_id == student_id, Badge.badge_type == badge_type)
@@ -103,18 +87,13 @@ def _save_transcript(gs: GuidedSession, entries: list[dict]) -> None:
 
 
 def _current_beat(scenario: Scenario, gs: GuidedSession):
-    """Beat đang chờ ở vị trí con trỏ.
-
-    Trong mỗi cấp độ, các beat chạy hết rồi mới tới `closing`, nên chỉ số
-    beat bằng đúng len(beats) nghĩa là đang ở câu kết cấp độ.
-    """
     stage = scenario.stage_at(gs.stage_index)
     if stage is None:
         return None, None
     if gs.beat_index < len(stage.beats):
         return stage, stage.beats[gs.beat_index]
     if gs.beat_index == len(stage.beats) and stage.closing:
-        return stage, None  # None + còn trong tầm = câu kết cấp độ
+        return stage, None
     return stage, None
 
 
@@ -124,7 +103,6 @@ def _at_closing(scenario: Scenario, gs: GuidedSession) -> bool:
 
 
 def _advance(scenario: Scenario, gs: GuidedSession) -> None:
-    """Đẩy con trỏ sang beat kế tiếp, sang cấp độ mới hoặc kết thúc."""
     stage = scenario.stage_at(gs.stage_index)
     if stage is None:
         gs.finished = True
@@ -143,7 +121,6 @@ def _advance(scenario: Scenario, gs: GuidedSession) -> None:
 
 
 def _sync_journal(db: Session, gs: GuidedSession, scenario: Scenario, user: User) -> JournalEntry:
-    """Nhật ký tự động ghi lại quá trình — học sinh không phải bấm lưu."""
     entry = (
         db.query(JournalEntry)
         .filter(
@@ -177,11 +154,6 @@ def _progress(scenario: Scenario, gs: GuidedSession) -> list[dict]:
         )
         out.append({"name": st.name, "state": state, "index": i})
     return out
-
-
-# --------------------------------------------------------------------------
-# Trang cá nhân — điểm hội tụ chính
-# --------------------------------------------------------------------------
 
 
 @router.get("/trang-ca-nhan", response_class=HTMLResponse)
@@ -240,11 +212,6 @@ def hub(
             "scenarios": all_scenarios(),
         },
     )
-
-
-# --------------------------------------------------------------------------
-# Nhánh A — Dự án học tập
-# --------------------------------------------------------------------------
 
 
 @router.get("/du-an", response_class=HTMLResponse)
@@ -398,7 +365,6 @@ def workspace_step(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Một nhịp trong kịch bản: ghi lại (nếu có câu trả lời) rồi tiến tới."""
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -446,7 +412,6 @@ def workspace_step(
             }
         )
 
-    # Trợ lý phản hồi lại câu trả lời — chỉ ở những nhịp có câu hỏi.
     if question and answer:
         turn = sum(1 for t in entries if t.get("kind") == "ai")
         entries.append(
@@ -481,7 +446,6 @@ def workspace_restart(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Công cụ, không phải khoá học — quay lại làm từ đầu lúc nào cũng được."""
     if (redirect := _guard(user)) is not None:
         return redirect
     gs = (
@@ -548,7 +512,6 @@ def submit_project(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Nộp dự án -> cập nhật hồ sơ + nhận huy hiệu (tự động, theo sơ đồ)."""
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -605,11 +568,6 @@ def submit_project(
     return RedirectResponse("/ho-so?vua-nop=1", status_code=303)
 
 
-# --------------------------------------------------------------------------
-# Nhánh B — Hồ sơ năng lực
-# --------------------------------------------------------------------------
-
-
 @router.get("/ho-so", response_class=HTMLResponse)
 def portfolio_view(
     request: Request,
@@ -657,7 +615,6 @@ def edit_description(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Học sinh toàn quyền biên tập phần mô tả trong hồ sơ."""
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -688,8 +645,6 @@ def toggle_share(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Bật/tắt chia sẻ. Luôn cần thao tác rõ ràng của học sinh — AI không bao
-    giờ tự đăng thứ gì lên hồ sơ công khai."""
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -746,8 +701,6 @@ def public_portfolio(
     token: str,
     db: Session = Depends(get_db),
 ):
-    """Hồ sơ công khai. Ai có link đều xem được, nhưng không xuất hiện trên
-    bất kỳ bảng tin hay danh sách nào — đúng như ghi chú trong sơ đồ."""
     student_id = student_from_token(token)
     owner = db.get(User, student_id) if student_id else None
     if owner is None:
@@ -766,11 +719,6 @@ def public_portfolio(
     )
 
 
-# --------------------------------------------------------------------------
-# Nhánh C — Huy hiệu
-# --------------------------------------------------------------------------
-
-
 @router.get("/huy-hieu", response_class=HTMLResponse)
 def badges_view(
     request: Request,
@@ -787,7 +735,6 @@ def badges_view(
     catalogue = ["nhap_vai_dau_tien", "hoan_thanh_4_cap_do", "chia_se_dau_tien"]
     catalogue += [f["key"] for f in STEAM_FIELDS]
 
-    # Gợi ý dự án tiếp theo: lĩnh vực chưa mở khoá huy hiệu.
     unexplored = [f for f in STEAM_FIELDS if f["key"] not in earned]
     suggestion = None
     if unexplored:
@@ -806,11 +753,6 @@ def badges_view(
             "suggestion": suggestion,
         },
     )
-
-
-# --------------------------------------------------------------------------
-# Nhánh D — Tài nguyên miễn phí
-# --------------------------------------------------------------------------
 
 
 @router.get("/tai-nguyen", response_class=HTMLResponse)

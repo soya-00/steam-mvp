@@ -1,6 +1,3 @@
-{# Khung hội thoại — HTMX thay thế cả khối này sau mỗi lượt.
-   aria-live để trình đọc màn hình đọc câu trả lời mới mà người dùng không
-   phải tự đi tìm; "polite" để không cắt ngang khi em đang nghe thứ khác. #}
 <div id="brainstorm">
 
   <div class="grid gap-3" role="log" aria-live="polite" aria-relevant="additions"
@@ -21,7 +18,6 @@
         </div>
 
         {% if m.idea %}
-        {# AI chỉ đề nghị — mọi thứ vào hồ sơ đều do học sinh tự bấm. #}
         <section class="card p-3 px-4 mt-2 bg-amber-50 border-amber-100"
                  id="goi-y-{{ loop.index }}"
                  aria-labelledby="goi-y-tieu-de-{{ loop.index }}">

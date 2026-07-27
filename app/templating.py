@@ -1,5 +1,3 @@
-"""Cấu hình Jinja2 dùng chung cho mọi router."""
-
 from __future__ import annotations
 
 from fastapi import Request
@@ -45,8 +43,6 @@ PLATFORM_LABELS = {
     "khan": "Khan Academy",
 }
 
-# Tailwind quét class TĨNH — không ghép được chuỗi kiểu `border-l-{{ x }}`.
-# Vì vậy mọi tên class phải viết đủ chữ ở đây, không dựng động trong template.
 FIELD_CLASSES = {
     "khoa_hoc": {"bar": "border-l-teal", "chip": "bg-teal-50 text-teal-700", "dot": "bg-teal"},
     "cong_nghe": {"bar": "border-l-trunk", "chip": "bg-trunk-50 text-trunk", "dot": "bg-trunk"},

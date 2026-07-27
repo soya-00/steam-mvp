@@ -1,13 +1,3 @@
-"""Nạp và kiểm tra kịch huống từ /data/scenarios.json.
-
-Mỗi kịch huống là một kịch bản 4 cấp độ (Hiểu vấn đề → Đồng cảm → Sáng tạo →
-Phản chiếu). Mỗi cấp độ là một chuỗi `beats` có thứ tự, đan xen khối bối cảnh
-(`context`) với câu hỏi (`question` / `followup`), khép lại bằng `closing`.
-
-Nhãn và số lượng beat KHÁC NHAU giữa các kịch huống — vì vậy schema không cố
-định nhãn; nhãn nằm trong dữ liệu.
-"""
-
 from __future__ import annotations
 
 import json
@@ -18,8 +8,6 @@ from app.config import DATA_DIR
 
 BEAT_TYPES = {"context", "question", "followup"}
 
-# Bốn cấp độ, dùng chung cho mọi nghề. Design Thinking là khung dẫn dắt tư duy;
-# nội dung bên trong mới thể hiện đặc thù từng nghề.
 STAGE_ORDER = ("hieu_van_de", "dong_cam", "sang_tao", "phan_chieu")
 
 STAGE_LABELS = {
@@ -31,7 +19,7 @@ STAGE_LABELS = {
 
 
 class ScenarioError(ValueError):
-    """Dữ liệu kịch huống sai định dạng — báo lỗi to, không nuốt lặng."""
+    pass
 
 
 @dataclass(frozen=True)
@@ -186,7 +174,6 @@ def scenarios_for_field(field_name: str) -> list[Scenario]:
 
 @lru_cache(maxsize=1)
 def load_resources() -> dict:
-    """Tài nguyên miễn phí, gom theo lĩnh vực."""
     path = DATA_DIR / "resources.json"
     if not path.exists():
         return {}

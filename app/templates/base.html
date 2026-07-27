@@ -11,8 +11,6 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-{# Người dùng bàn phím và trình đọc màn hình không phải nghe lại thanh điều
-   hướng ở mỗi trang. Liên kết này ẩn cho tới khi được focus. #}
 <a href="#noi-dung"
    class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2
           focus:bg-paper-raised focus:text-ink focus:px-4 focus:py-2 focus:rounded-lg
@@ -30,7 +28,6 @@
       </a>
 
       {% if not user.is_teacher %}
-      <!-- Vòng lặp: về Trang cá nhân từ bất cứ đâu (cạnh xanh lá trong sơ đồ luồng) -->
       <a href="/trang-ca-nhan"
          class="ml-auto text-sm text-trunk-100 hover:text-white hidden sm:inline">
         ← Trang cá nhân
@@ -39,7 +36,6 @@
       <span class="ml-auto chip bg-trunk-700 text-trunk-100">Giáo viên</span>
       {% endif %}
 
-      {# Chữ cái đầu chỉ là hình trang trí; trình đọc màn hình đọc tên đầy đủ. #}
       <a href="/dang-xuat"
          class="flex items-center gap-2 {{ 'ml-3' if not user.is_teacher else '' }} group">
         <span class="w-8 h-8 rounded-full bg-trunk-700 grid place-items-center text-sm font-semibold"

@@ -6,11 +6,8 @@
 
 <div class="lg:grid lg:grid-cols-[15rem_1fr] lg:gap-8">
 
-  <!-- Tiến độ 4 cấp độ -->
   <aside class="mb-6 lg:mb-0">
     <h2 class="text-xs uppercase tracking-wider text-ink-faint font-semibold">Bốn cấp độ</h2>
-    {# Trạng thái không được thể hiện chỉ bằng màu: mỗi mục có chữ đi kèm cho
-       trình đọc màn hình, và cấp độ đang làm được đánh dấu aria-current. #}
     <ol class="mt-3 grid gap-1.5">
       {% for p in progress %}
       <li class="flex items-center gap-2.5 text-sm"
@@ -34,7 +31,6 @@
       <p class="text-sm font-medium text-ink">{{ scenario.protagonist }}, {{ scenario.role }}</p>
     </div>
 
-    <!-- Cạnh nối chéo: rẽ sang brainstorm tự do bất cứ lúc nào -->
     <a href="/ho-so/y-tuong-tu-do"
        class="mt-3 block card p-3 branch-bar border-l-amber hover:border-amber-300 transition">
       <p class="text-sm font-medium text-ink">Muốn nghĩ tự do?</p>
@@ -57,7 +53,6 @@
     </p>
     {% endif %}
 
-    <!-- Những gì đã đi qua -->
     {% for t in transcript %}
     {% if t.kind == 'ai' %}
     <div class="flex items-start gap-2.5 mb-2 ml-1">
@@ -94,10 +89,6 @@
         <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">Nhìn lại cùng bạn</p>
         <p class="mt-2 text-sm text-ink prose-beat">{{ gs.synthesis }}</p>
       </div>
-      {% else %}
-      <p class="mt-4 chip bg-amber-50 text-amber-900">
-        Phần tổng hợp cuối hành trình sẽ có ở Giai đoạn 4
-      </p>
       {% endif %}
       <div class="mt-5 flex flex-wrap gap-3">
         <a href="/du-an/{{ scenario.id }}/nop" class="btn btn-primary">Nộp dự án</a>
@@ -108,7 +99,6 @@
     {% elif stage %}
 
     {% if at_closing %}
-    <!-- Câu kết cấp độ -->
     <div class="card p-5 mt-2 branch-bar border-l-teal">
       <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">Câu kết cấp độ</p>
       <h1 class="mt-2 text-lg text-ink">{{ stage.closing }}</h1>
@@ -122,7 +112,6 @@
     </div>
 
     {% elif beat and beat.needs_answer %}
-    <!-- Câu hỏi -->
     <div class="card p-5 mt-2">
       <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">{{ beat.label }}</p>
       <h1 class="mt-2 text-lg text-ink">{{ beat.text }}</h1>
@@ -136,7 +125,6 @@
     </div>
 
     {% elif beat %}
-    <!-- Khối bối cảnh: chỉ để đọc -->
     <div class="card p-5 mt-2 bg-trunk-50 border-trunk-100">
       <p class="text-xs uppercase tracking-wide font-semibold text-trunk">{{ beat.label }}</p>
       <p class="mt-2 text-base text-ink prose-beat">{{ beat.text }}</p>

@@ -1,5 +1,3 @@
-"""Kết nối SQLite qua SQLAlchemy."""
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -18,7 +16,6 @@ class Base(DeclarativeBase):
 
 
 def get_db():
-    """FastAPI dependency — mở/đóng một session cho mỗi request."""
     db = SessionLocal()
     try:
         yield db

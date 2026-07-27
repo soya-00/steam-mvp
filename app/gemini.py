@@ -1,10 +1,3 @@
-"""Tích hợp Gemini — toàn bộ lời gọi nằm ở phía máy chủ.
-
-Khoá API không bao giờ được gửi xuống trình duyệt. Khi chưa cấu hình khoá,
-mọi hàm ở đây rơi về "chế độ demo ngoại tuyến": trả lời bằng kịch bản dựng
-sẵn để mọi màn hình vẫn bấm được, và giao diện hiển thị rõ điều đó.
-"""
-
 from __future__ import annotations
 
 import logging
@@ -27,13 +20,8 @@ _client = None
 _model: str | None = None
 _lock = threading.Lock()
 
-# Trần số lượt cho mỗi phiên — demo chạy trên URL công khai lúc chấm thi.
 _usage: dict[str, int] = {}
 
-
-# --------------------------------------------------------------------------
-# Rào an toàn dùng chung cho mọi lời nhắc hệ thống
-# --------------------------------------------------------------------------
 
 GUARDRAILS = """
 NGUYÊN TẮC BẮT BUỘC — áp dụng cho mọi câu trả lời:
@@ -134,11 +122,6 @@ thiếu sót — hãy nói với em như vậy.
 """.strip()
 
 
-# --------------------------------------------------------------------------
-# Kết nối và chọn model
-# --------------------------------------------------------------------------
-
-
 def get_client():
     global _client
     if not gemini_enabled():
@@ -152,11 +135,6 @@ def get_client():
 
 
 def resolve_model() -> str:
-    """Chọn model flash hiện hành.
-
-    Không hard-code tên model theo trí nhớ: hỏi thẳng API xem có gì, rồi lấy
-    lựa chọn khả dụng đầu tiên theo thứ tự ưu tiên. Biến GEMINI_MODEL ghi đè.
-    """
     global _model
     if _model:
         return _model
@@ -188,16 +166,11 @@ def resolve_model() -> str:
             _model = flash[-1]
             log.warning("Gemini: không thấy model ưu tiên, dùng %s", _model)
             return _model
-    except Exception as exc:  # pragma: no cover - phụ thuộc mạng
+    except Exception as exc:
         log.warning("Gemini: không liệt kê được model (%s), dùng mặc định", exc)
 
     _model = GEMINI_MODEL_PREFERENCE[0]
     return _model
-
-
-# --------------------------------------------------------------------------
-# Trần số lượt
-# --------------------------------------------------------------------------
 
 
 def quota_left(session_key: str) -> int:
@@ -218,20 +191,6 @@ QUOTA_MESSAGE = (
 )
 
 
-# --------------------------------------------------------------------------
-# Gọi model
-# --------------------------------------------------------------------------
-
-
-# Model dòng flash bật "suy nghĩ" mặc định, và phần suy nghĩ ăn CHUNG hạn mức
-# output. Đo thực tế trên gemini-flash-latest: 381/400 token rơi vào phần suy
-# nghĩ, chỉ còn 15 token cho câu trả lời — mọi câu đều cụt giữa chừng.
-#
-# Cách tắt suy nghĩ lại khác nhau giữa các đời model: `thinking_budget=0` bị
-# từ chối trên gemini-flash-latest, trong khi model 2.x lại chấp nhận. Vì tên
-# model được dò lúc chạy nên không thể đoán trước sẽ gặp đời nào. Do đó thử
-# lần lượt, và quan trọng nhất: hạn mức output luôn để rộng để dù không tắt
-# được suy nghĩ thì câu trả lời vẫn đủ chỗ.
 _THINKING_ATTEMPTS: list[str | None] = ["level", "budget", None]
 _thinking_mode: str | None = "level"
 _thinking_settled = False
@@ -249,8 +208,6 @@ def _config(system: str, max_tokens: int, mode: str | None):
     return types.GenerateContentConfig(
         system_instruction=system,
         temperature=0.85,
-        # Rộng rãi có chủ đích: phần suy nghĩ tiêu tốn vài trăm token trước khi
-        # chữ đầu tiên xuất hiện. Lời nhắc hệ thống đã yêu cầu trả lời ngắn.
         max_output_tokens=max_tokens + 1200,
         thinking_config=thinking,
     )
@@ -302,10 +259,6 @@ def _turns(history: list[dict]) -> list[dict]:
     ]
 
 
-# --------------------------------------------------------------------------
-# Kịch bản dự phòng khi chạy ngoại tuyến
-# --------------------------------------------------------------------------
-
 _OFFLINE_GUIDED = {
     "hieu_van_de": [
         "Mình ghi nhận cách bạn đọc dữ kiện. Trong những điều bạn vừa nêu, đâu là thứ bạn "
@@ -346,12 +299,6 @@ def _offline_guided(stage_key: str, turn: int) -> str:
 
 
 def _offline_freeform(turn: int, message: str = "") -> tuple[str, str | None]:
-    """Ở chế độ ngoại tuyến vẫn thỉnh thoảng đề nghị lưu ý tưởng.
-
-    Đây là điểm đặc trưng nhất của chế độ tự do, nên nếu bỏ qua thì lúc chấm
-    thi sẽ không ai nhìn thấy nó. Ý tưởng lấy từ chính lời học sinh vừa viết,
-    và vẫn phải được em bấm đồng ý mới lưu.
-    """
     reply = _OFFLINE_FREEFORM[turn % len(_OFFLINE_FREEFORM)]
     idea = None
     cleaned = " ".join(message.split())
@@ -372,13 +319,7 @@ def _offline_synthesis(scenario, answers: list[str]) -> str:
     )
 
 
-# --------------------------------------------------------------------------
-# API cho router
-# --------------------------------------------------------------------------
-
-
 def guided_reply(scenario, stage, question: str, answer: str, turn: int, session_key: str) -> str:
-    """Phản hồi ngắn cho một câu trả lời trong Không gian tư duy."""
     if not gemini_enabled():
         return _offline_guided(stage.key, turn)
     if not _spend(session_key):
@@ -405,7 +346,6 @@ def guided_reply(scenario, stage, question: str, answer: str, turn: int, session
 
 
 def freeform_reply(history: list[dict], message: str, session_key: str) -> tuple[str, str | None]:
-    """Trả về (lời đáp, ý tưởng gợi lưu hoặc None)."""
     turn = len(history) // 2
     if not gemini_enabled():
         return _offline_freeform(turn, message)
@@ -421,10 +361,6 @@ def freeform_reply(history: list[dict], message: str, session_key: str) -> tuple
 
 
 def split_idea(text: str) -> tuple[str, str | None]:
-    """Tách dòng sentinel ra khỏi lời đáp hiển thị cho học sinh.
-
-    Sentinel chỉ là tín hiệu để hiện nút hỏi ý — không bao giờ tự lưu.
-    """
     pattern = re.escape(IDEA_TAG) + r"\s*(.+)"
     match = re.search(pattern, text)
     if not match:
@@ -435,7 +371,6 @@ def split_idea(text: str) -> tuple[str, str | None]:
 
 
 def synthesis(scenario, transcript: list[dict], session_key: str) -> str:
-    """Phần "Kết thúc flow": tổng hợp lại hành trình, không điểm số, không đáp án mẫu."""
     answers = [t for t in transcript if t.get("answer")]
     if not gemini_enabled():
         return _offline_synthesis(scenario, [a["answer"] for a in answers])

@@ -1,12 +1,3 @@
-"""Ý tưởng tự do — chế độ trò chuyện không có khung sườn.
-
-Chế độ có cấu trúc (Không gian tư duy) nằm trong student.py vì nó đi theo kịch
-bản beat của từng kịch huống. Ở đây học sinh dẫn dắt cuộc trò chuyện.
-
-Điểm mấu chốt: khi trợ lý nhận ra một ý đáng giữ, nó chỉ hiện nút hỏi ý học
-sinh. Không có gì được thêm vào hồ sơ nếu em không tự bấm.
-"""
-
 from __future__ import annotations
 
 import json
@@ -25,8 +16,6 @@ from app.templating import templates
 
 router = APIRouter()
 
-# Lịch sử hội thoại sống trong cookie đã ký — không cần bảng riêng cho bản mẫu,
-# và tự biến mất khi đóng phiên, đúng tinh thần "không lưu thứ em chưa đồng ý".
 _history = URLSafeSerializer(SECRET_KEY, salt="gals-brainstorm")
 HISTORY_COOKIE = "gals_bs"
 MAX_TURNS = 24
@@ -100,7 +89,6 @@ def freeform_send(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """HTMX gửi tin nhắn và nhận về khung hội thoại đã cập nhật."""
     if (redirect := _guard(user)) is not None:
         return redirect
 
@@ -132,11 +120,6 @@ def keep_idea(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Học sinh bấm đồng ý -> tạo mục nháp trong hồ sơ.
-
-    Mục này vẫn `shared=False`; muốn công khai thì phải bấm chia sẻ ở Hồ sơ
-    năng lực. Hai lần xác nhận, không lần nào do AI tự quyết.
-    """
     if (redirect := _guard(user)) is not None:
         return redirect
 
