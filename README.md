@@ -1,6 +1,3 @@
-<!-- Thêm logo sau: đặt file vào docs/logo.png rồi bỏ dấu chú thích ở dòng dưới.
-<p align="center"><img src="docs/logo.png" alt="GALS" width="180"></p>
--->
 
 # GALS
 
