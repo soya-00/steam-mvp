@@ -322,6 +322,33 @@ def leave_feedback(
     return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
 
 
+@router.get("/tai-lieu/{scenario_id}", response_class=HTMLResponse)
+def printable_materials(
+    request: Request,
+    scenario_id: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Bản in cho buổi học không dùng thiết bị.
+
+    Không phải ai cũng có phòng máy hay điện thoại cho từng em. Trang này in
+    ra giấy là dạy được bằng bút và giấy; máy in chỉ là tuỳ chọn, vì giáo viên
+    có thể đọc to hoặc chép lên bảng.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    return templates.TemplateResponse(
+        request,
+        "teacher/tai_lieu_in.html",
+        {"user": user, "branch": "lop", "scenario": scenario, "printable": True},
+    )
+
+
 @router.get("/thong-bao", response_class=HTMLResponse)
 def notifications_view(
     request: Request,

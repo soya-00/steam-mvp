@@ -11,6 +11,15 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
+{# Người dùng bàn phím và trình đọc màn hình không phải nghe lại thanh điều
+   hướng ở mỗi trang. Liên kết này ẩn cho tới khi được focus. #}
+<a href="#noi-dung"
+   class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2
+          focus:bg-paper-raised focus:text-ink focus:px-4 focus:py-2 focus:rounded-lg
+          focus:border focus:border-teal focus:font-medium">
+  Bỏ qua phần điều hướng, tới nội dung chính
+</a>
+
 {% if user %}
 <header class="bg-trunk text-white sticky top-0 z-30">
   <div class="mx-auto max-w-6xl px-4">
@@ -30,13 +39,17 @@
       <span class="ml-auto chip bg-trunk-700 text-trunk-100">Giáo viên</span>
       {% endif %}
 
+      {# Chữ cái đầu chỉ là hình trang trí; trình đọc màn hình đọc tên đầy đủ. #}
       <a href="/dang-xuat"
-         class="flex items-center gap-2 {{ 'ml-3' if not user.is_teacher else '' }} group"
-         title="Đăng xuất">
-        <span class="w-8 h-8 rounded-full bg-trunk-700 grid place-items-center text-sm font-semibold">
+         class="flex items-center gap-2 {{ 'ml-3' if not user.is_teacher else '' }} group">
+        <span class="w-8 h-8 rounded-full bg-trunk-700 grid place-items-center text-sm font-semibold"
+              aria-hidden="true">
           {{ user.name.split()[-1][:1] }}
         </span>
-        <span class="text-sm text-trunk-100 group-hover:text-white hidden md:inline">Đăng xuất</span>
+        <span class="text-sm text-trunk-100 group-hover:text-white hidden md:inline" aria-hidden="true">
+          Đăng xuất
+        </span>
+        <span class="sr-only">Đăng xuất khỏi tài khoản {{ user.name }}</span>
       </a>
     </div>
 
@@ -51,6 +64,7 @@
       ] %}
       {% for href, label, key in branches %}
       <a href="{{ href }}"
+         {% if branch == key %}aria-current="page"{% endif %}
          class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium transition
                 {% if branch == key %}bg-paper text-trunk{% else %}text-trunk-100 hover:bg-trunk-700{% endif %}">
         {{ label }}
@@ -61,6 +75,7 @@
     <nav aria-label="Điều hướng giáo viên" class="flex gap-1 overflow-x-auto -mx-4 px-4 pb-2 text-sm">
       {% for href, label, key in [('/giao-vien', 'Lớp của tôi', 'lop'), ('/giao-vien/thong-bao', 'Thông báo', 'thong_bao')] %}
       <a href="{{ href }}"
+         {% if branch == key %}aria-current="page"{% endif %}
          class="whitespace-nowrap rounded-lg px-3 py-1.5 font-medium transition
                 {% if branch == key %}bg-paper text-trunk{% else %}text-trunk-100 hover:bg-trunk-700{% endif %}">
         {{ label }}
@@ -72,7 +87,7 @@
 </header>
 {% endif %}
 
-<main class="flex-1 mx-auto w-full max-w-6xl px-4 py-6 md:py-8">
+<main id="noi-dung" tabindex="-1" class="flex-1 mx-auto w-full max-w-6xl px-4 py-6 md:py-8">
   {% block content %}{% endblock %}
 </main>
 

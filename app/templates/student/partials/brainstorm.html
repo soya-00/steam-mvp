@@ -1,7 +1,10 @@
-{# Khung hội thoại — HTMX thay thế cả khối này sau mỗi lượt. #}
+{# Khung hội thoại — HTMX thay thế cả khối này sau mỗi lượt.
+   aria-live để trình đọc màn hình đọc câu trả lời mới mà người dùng không
+   phải tự đi tìm; "polite" để không cắt ngang khi em đang nghe thứ khác. #}
 <div id="brainstorm">
 
-  <div class="grid gap-3">
+  <div class="grid gap-3" role="log" aria-live="polite" aria-relevant="additions"
+       aria-label="Cuộc trò chuyện với trợ lý">
     {% for m in history %}
     {% if m.role == 'user' %}
     <div class="flex justify-end">
@@ -19,9 +22,10 @@
 
         {% if m.idea %}
         {# AI chỉ đề nghị — mọi thứ vào hồ sơ đều do học sinh tự bấm. #}
-        <div class="card p-3 px-4 mt-2 bg-amber-50 border-amber-100"
-             id="goi-y-{{ loop.index }}">
-          <p class="text-sm text-amber-900">
+        <section class="card p-3 px-4 mt-2 bg-amber-50 border-amber-100"
+                 id="goi-y-{{ loop.index }}"
+                 aria-labelledby="goi-y-tieu-de-{{ loop.index }}">
+          <p class="text-sm text-amber-900" id="goi-y-tieu-de-{{ loop.index }}">
             <strong class="font-semibold">Thêm ý tưởng này vào Hồ sơ?</strong>
           </p>
           <p class="mt-1 text-sm text-ink">{{ m.idea }}</p>
@@ -34,11 +38,11 @@
               Thêm vào hồ sơ
             </button>
             <button type="button" class="btn btn-ghost text-sm py-1.5 px-3"
-                    onclick="this.closest('div[id^=goi-y-]').remove()">
+                    onclick="this.closest('section[id^=goi-y-]').remove()">
               Để sau
             </button>
           </div>
-        </div>
+        </section>
         {% endif %}
       </div>
     </div>
@@ -58,8 +62,8 @@
               class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
     <div class="mt-2 flex flex-wrap items-center gap-3">
       <button type="submit" class="btn btn-primary">Gửi</button>
-      <span class="htmx-indicator text-sm text-ink-soft">
-        <span class="spinner-dot">●</span> đang nghĩ…
+      <span class="htmx-indicator text-sm text-ink-soft" role="status">
+        <span class="spinner-dot" aria-hidden="true">●</span> đang nghĩ…
       </span>
       <span class="ml-auto text-xs text-ink-faint">còn {{ quota }} lượt trong phiên demo</span>
     </div>

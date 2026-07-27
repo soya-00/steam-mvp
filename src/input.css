@@ -183,6 +183,82 @@
   40% { opacity: 1; }
 }
 
+/* ------------------------------------------------------------------
+   Bản in cho buổi học tại lớp
+   Mục tiêu: dạy được bằng giấy và bút, máy in chỉ là tuỳ chọn.
+   ------------------------------------------------------------------ */
+
+/* Dòng kẻ để học sinh viết tay — chỉ xuất hiện khi in */
+.answer-lines {
+  display: none;
+}
+
+@media print {
+  /* Bỏ mọi thứ không thuộc về tờ giấy */
+  header, footer, nav, .no-print {
+    display: none !important;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11.5pt;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-sheet {
+    margin-top: 0 !important;
+  }
+
+  .print-sheet footer {
+    display: block !important;
+  }
+
+  /* Mỗi cấp độ bắt đầu ở trang mới cho dễ phát theo nhóm */
+  .print-page-break {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .print-box {
+    border: 1pt solid #999;
+    border-radius: 4pt;
+    padding: 8pt 10pt;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h3, h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .answer-lines {
+    display: block;
+    margin-top: 6pt;
+  }
+
+  .answer-lines span {
+    display: block;
+    border-bottom: 0.5pt solid #b0b0b0;
+    height: 20pt;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+
+  @page {
+    margin: 16mm 14mm;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
