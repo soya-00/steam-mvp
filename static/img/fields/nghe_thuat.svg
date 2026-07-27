@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="presentation" aria-hidden="true">
+<defs><clipPath id="c-a"><rect width="320" height="180" rx="14"/></clipPath></defs>
+<g clip-path="url(#c-a)"><rect width="320" height="180" fill="#fbf3e6"/>
+
+<circle cx="118" cy="78" r="52" fill="#c98a2e" opacity=".8"/>
+<rect x="140" y="52" width="98" height="98" rx="16" fill="#9d6b24" opacity=".62" transform="rotate(-12 189 101)"/>
+<path d="M196 34l58 46-58 46-58-46z" fill="#e4bd7f" opacity=".7"/>
+<circle cx="256" cy="132" r="20" fill="#5e4016" opacity=".5"/>
+</g></svg>

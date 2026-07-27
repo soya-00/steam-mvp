@@ -58,6 +58,8 @@ class Scenario:
     creation_output: str = ""
     disclaimer: str = ""
     protagonist: str = ""
+    image_url: str = ""
+    image_alt: str = ""
     domain_skills: tuple[str, ...] = ()
     stages: tuple[Stage, ...] = dc_field(default_factory=tuple)
 
@@ -134,6 +136,8 @@ def _parse_scenario(raw: dict, ctx: str) -> Scenario:
         creation_output=str(raw.get("creation_output", "")).strip(),
         disclaimer=str(raw.get("disclaimer", "")).strip(),
         protagonist=str(raw.get("protagonist", "")).strip(),
+        image_url=str(raw.get("image_url", "")).strip(),
+        image_alt=str(raw.get("image_alt", "")).strip(),
         domain_skills=tuple(str(s) for s in raw.get("domain_skills", [])),
         stages=stages,
     )

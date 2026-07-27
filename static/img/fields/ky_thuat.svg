@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="presentation" aria-hidden="true">
+<defs><clipPath id="c-e"><rect width="320" height="180" rx="14"/></clipPath></defs>
+<g clip-path="url(#c-e)"><rect width="320" height="180" fill="#eef2f7"/>
+
+<path d="M146.0,84.0L134.2,95.1L137.2,111.0L121.2,113.1L114.2,127.7L100.0,120.0L85.8,127.7L78.8,113.1L62.8,111.0L65.8,95.1L54.0,84.0L65.8,72.9L62.8,57.0L78.8,54.9L85.8,40.3L100.0,48.0L114.2,40.3L121.2,54.9L137.2,57.0L134.2,72.9Z" fill="#4f6f94" opacity=".92"/>
+<circle cx="100" cy="84" r="16" fill="#eef2f7"/>
+<path d="M244.3,126.7L231.7,133.0L227.3,146.4L213.9,141.9L201.3,148.3L195.0,135.7L181.6,131.3L186.1,117.9L179.7,105.3L192.3,99.0L196.7,85.6L210.1,90.1L222.7,83.7L229.0,96.3L242.4,100.7L237.9,114.1Z" fill="#3e5774" opacity=".78"/>
+<circle cx="212" cy="116" r="12" fill="#eef2f7"/>
+<path d="M0 158h320" stroke="#a3b6cd" stroke-width="5" stroke-dasharray="16 12"/>
+<g stroke="#a3b6cd" stroke-width="3" stroke-linecap="round" opacity=".85">
+<path d="M40 26v22M70 26v22M100 26v22M130 26v22"/><path d="M28 26h114"/></g>
+</g></svg>

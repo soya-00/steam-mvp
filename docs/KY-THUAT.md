@@ -169,3 +169,31 @@ Chữ: **Be Vietnam Pro** cho tiêu đề (xưởng chữ Việt, dấu được
 ### Bản in
 
 `src/input.css` có khối `@media print` riêng cho trang tài liệu buổi học: ẩn phần điều hướng, mỗi cấp độ sang một trang mới, và hiện dòng kẻ để học sinh viết tay. Xem `app/templates/teacher/tai_lieu_in.html`.
+
+### Hình minh hoạ
+
+Mỗi lĩnh vực STEAM có một hình vector trong `static/img/fields/`, vẽ bằng đúng màu thương hiệu của lĩnh vực đó. Hình là **trang trí thuần tuý**: luôn kèm `aria-hidden="true"` và `alt=""` để trình đọc màn hình bỏ qua.
+
+Cố ý dùng hình hình học, **không vẽ người**. Vẽ người là phải chọn giới tính, độ tuổi, ngoại hình — đúng thứ định kiến mà sản phẩm đang muốn tránh.
+
+Đường dẫn hình khai báo trong `FIELD_CLASSES` (`app/templating.py`), cùng chỗ với các class Tailwind của lĩnh vực. Thêm lĩnh vực mới thì thêm cả `art` ở đó.
+
+### Dùng ảnh thật thay cho hình vector
+
+Mỗi kịch huống trong `data/scenarios.json` nhận thêm hai trường **không bắt buộc**:
+
+```jsonc
+{
+  "image_url": "https://images.unsplash.com/photo-...",
+  "image_alt": "Mô tả ngắn nội dung ảnh, cho người dùng trình đọc màn hình"
+}
+```
+
+Có `image_url` thì dùng ảnh đó; không có thì tự động rơi về hình vector của lĩnh vực. **Không bao giờ hiện ảnh vỡ.**
+
+Vài điểm cần nhớ:
+
+- **Bắt buộc điền `image_alt` khi dùng ảnh thật.** Hình vector là trang trí nên để `alt` rỗng được, còn ảnh thật mang thông tin thì phải mô tả.
+- **Kiểm tra link mở được trước khi dùng.** Ảnh hỏng lúc chấm thi trông tệ hơn là không có ảnh.
+- **Giấy phép:** ảnh trên [Unsplash](https://unsplash.com/license) và [Pexels](https://www.pexels.com/license/) dùng miễn phí, không cần ghi nguồn. Vẫn nên kiểm tra lại từng ảnh.
+- **Ảnh tải từ máy chủ nước ngoài** sẽ chậm hơn hình vector tự host, nhất là trên gói Render miễn phí. Cân nhắc tải ảnh về `static/img/` rồi trỏ đường dẫn nội bộ.

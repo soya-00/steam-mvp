@@ -3,12 +3,12 @@
 
 {% block content %}
 
-<section class="flex flex-wrap items-start gap-4">
-  <span class="w-14 h-14 rounded-full bg-teal-50 grid place-items-center text-3xl shrink-0" aria-hidden="true">
+<section class="card p-5 md:p-6 flex flex-wrap items-center gap-4 bg-teal-50 border-teal-100">
+  <span class="w-16 h-16 rounded-full bg-paper-raised grid place-items-center text-4xl shrink-0" aria-hidden="true">
     {{ avatar_emoji.get(user.avatar_id, '🦊') }}
   </span>
   <div class="min-w-0">
-    <h1 class="text-2xl text-ink">Chào {{ user.name.split()[-1] }}</h1>
+    <h1 class="text-2xl md:text-3xl text-ink">Chào {{ user.name.split()[-1] }} 👋</h1>
     <p class="mt-1 text-sm text-ink-soft">
       {% if classes %}
         Đang học {% for c in classes %}<strong class="font-medium text-ink">{{ c.name }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}
@@ -55,15 +55,21 @@
 
   <div class="mt-4 grid gap-3 sm:grid-cols-2">
     {% set branches = [
-      ('/du-an', 'Dự án học tập', 'Nhập vai vào một tình huống nghề nghiệp và đi qua bốn cấp độ tư duy.', 'border-l-teal hover:border-teal-300'),
-      ('/ho-so', 'Hồ sơ năng lực', 'Xem lại những gì bạn đã làm, hoặc mở một cuộc trò chuyện tự do để nghĩ tiếp.', 'border-l-amber hover:border-amber-300'),
-      ('/huy-hieu', 'Huy hiệu', 'Xem bạn đã khám phá tới đâu và gợi ý nên thử lĩnh vực nào tiếp theo.', 'border-l-plum hover:border-plum-300'),
-      ('/tai-nguyen', 'Tài nguyên miễn phí', 'Khoá học, video và thông báo hội thảo theo lĩnh vực bạn quan tâm.', 'border-l-slate hover:border-slate-300')
+      ('/du-an', '🎭', 'Dự án học tập', 'Nhập vai vào một tình huống nghề nghiệp và đi qua bốn cấp độ tư duy.', 'border-l-teal', 'bg-teal-50'),
+      ('/ho-so', '📁', 'Hồ sơ năng lực', 'Xem lại những gì bạn đã làm, hoặc mở một cuộc trò chuyện tự do để nghĩ tiếp.', 'border-l-amber', 'bg-amber-50'),
+      ('/huy-hieu', '🏅', 'Huy hiệu', 'Xem bạn đã khám phá tới đâu và gợi ý nên thử lĩnh vực nào tiếp theo.', 'border-l-plum', 'bg-plum-50'),
+      ('/tai-nguyen', '📚', 'Tài nguyên miễn phí', 'Khoá học, video và thông báo hội thảo theo lĩnh vực bạn quan tâm.', 'border-l-slate', 'bg-slate-50')
     ] %}
-    {% for href, title, desc, bar in branches %}
-    <a href="{{ href }}" class="card p-5 branch-bar {{ bar }} transition block">
-      <h3 class="text-base text-ink">{{ title }}</h3>
-      <p class="mt-1 text-sm text-ink-soft">{{ desc }}</p>
+    {% for href, icon, title, desc, bar, wash in branches %}
+    <a href="{{ href }}" class="card lift p-5 branch-bar {{ bar }} block">
+      <div class="flex items-start gap-3.5">
+        <span class="w-11 h-11 shrink-0 rounded-xl {{ wash }} grid place-items-center text-xl"
+              aria-hidden="true">{{ icon }}</span>
+        <div class="min-w-0">
+          <h3 class="text-lg text-ink">{{ title }}</h3>
+          <p class="mt-1 text-sm text-ink-soft">{{ desc }}</p>
+        </div>
+      </div>
     </a>
     {% endfor %}
   </div>

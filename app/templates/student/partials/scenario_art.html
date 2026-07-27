@@ -1,0 +1,8 @@
+{% set _fc = field_classes(scenario.field) %}
+{% if scenario.image_url %}
+<img src="{{ scenario.image_url }}" alt="{{ scenario.image_alt }}"
+     loading="lazy" class="{{ art_class|default('w-full h-32 object-cover') }}">
+{% else %}
+<img src="{{ _fc.art }}" alt="" aria-hidden="true"
+     loading="lazy" class="{{ art_class|default('w-full h-32 object-cover') }}">
+{% endif %}

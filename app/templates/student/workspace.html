@@ -3,17 +3,42 @@
 
 {% block content %}
 {% set fc = field_classes(scenario.field) %}
+{% set total = progress|length %}
+{% set done = progress|selectattr('state','equalto','done')|list|length %}
+{% set pct = 100 if gs.finished else (done * 100 // total if total else 0) %}
 
-<div class="lg:grid lg:grid-cols-[15rem_1fr] lg:gap-8">
+<div class="lg:grid lg:grid-cols-[16rem_1fr] lg:gap-8">
 
   <aside class="mb-6 lg:mb-0">
-    <h2 class="text-xs uppercase tracking-wider text-ink-faint font-semibold">Bốn cấp độ</h2>
-    <ol class="mt-3 grid gap-1.5">
+    <div class="card overflow-hidden">
+      <img src="{{ fc.art }}" alt="" aria-hidden="true" loading="lazy" class="art-banner h-20">
+      <div class="p-4">
+        <p class="text-xs text-ink-soft">Bạn đang là</p>
+        <p class="text-base font-display font-extrabold text-ink leading-snug">
+          {{ scenario.protagonist }}
+        </p>
+        <p class="text-sm text-ink-soft">{{ scenario.role }}</p>
+      </div>
+    </div>
+
+    <h2 class="mt-6 text-xs uppercase tracking-wider text-ink-faint font-semibold">Bốn cấp độ</h2>
+
+    <div class="step-track mt-2" role="img"
+         aria-label="Tiến độ: xong {{ done }} trên {{ total }} cấp độ">
+      <div class="step-fill {{ fc.track }}" style="width: {{ pct }}%"></div>
+    </div>
+
+    <ol class="mt-3 grid gap-2">
       {% for p in progress %}
       <li class="flex items-center gap-2.5 text-sm"
           {% if p.state == 'current' %}aria-current="step"{% endif %}>
-        <span aria-hidden="true" class="w-2.5 h-2.5 rounded-full shrink-0
-          {% if p.state == 'done' %}{{ fc.dot }}{% elif p.state == 'current' %}bg-teal ring-4 ring-teal-100{% else %}bg-hairline{% endif %}"></span>
+        <span aria-hidden="true"
+              class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-semibold
+              {% if p.state == 'done' %}{{ fc.dot }} text-white
+              {% elif p.state == 'current' %}bg-teal text-white ring-4 {{ fc.ring }}
+              {% else %}bg-hairline text-ink-faint{% endif %}">
+          {% if p.state == 'done' %}✓{% else %}{{ loop.index }}{% endif %}
+        </span>
         <span class="{% if p.state == 'current' %}font-semibold text-ink{% elif p.state == 'done' %}text-ink-soft{% else %}text-ink-faint{% endif %}">
           {{ p.name }}
           <span class="sr-only">
@@ -26,13 +51,8 @@
       {% endfor %}
     </ol>
 
-    <div class="mt-6 card p-3">
-      <p class="text-xs text-ink-soft">Bạn đang là</p>
-      <p class="text-sm font-medium text-ink">{{ scenario.protagonist }}, {{ scenario.role }}</p>
-    </div>
-
     <a href="/ho-so/y-tuong-tu-do"
-       class="mt-3 block card p-3 branch-bar border-l-amber hover:border-amber-300 transition">
+       class="mt-5 block card p-3 branch-bar border-l-amber hover:border-amber-300 transition">
       <p class="text-sm font-medium text-ink">Muốn nghĩ tự do?</p>
       <p class="text-xs text-ink-soft mt-0.5">Chuyển sang Ý tưởng tự do, quay lại đây lúc nào cũng được.</p>
     </a>
@@ -55,15 +75,15 @@
 
     {% for t in transcript %}
     {% if t.kind == 'ai' %}
-    <div class="flex items-start gap-2.5 mb-2 ml-1">
-      <span class="w-7 h-7 shrink-0 rounded-full bg-teal-100 grid place-items-center text-sm" aria-hidden="true">💬</span>
+    <div class="flex items-start gap-2.5 mb-2.5 ml-1">
+      <span class="w-8 h-8 shrink-0 rounded-full bg-teal-100 grid place-items-center" aria-hidden="true">💬</span>
       <div class="card p-4 bg-teal-50 border-teal-100 flex-1 min-w-0">
         <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">{{ t.label }}</p>
         <p class="mt-1.5 text-sm text-ink prose-beat">{{ t.text }}</p>
       </div>
     </div>
     {% else %}
-    <div class="card p-4 mb-2 {{ beat_classes.get(t.kind, 'bg-paper-raised border-hairline') }}">
+    <div class="card p-4 mb-2.5 {{ beat_classes.get(t.kind, 'bg-paper-raised border-hairline') }}">
       <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">{{ t.label }}</p>
       <p class="mt-1.5 text-sm text-ink prose-beat">{{ t.text }}</p>
       {% if t.answer %}
@@ -78,8 +98,9 @@
 
     {% if gs.finished %}
 
-    <div class="card p-6 branch-bar border-l-teal">
-      <h1 class="text-xl text-ink">Bạn đã đi hết bốn cấp độ</h1>
+    <div class="card p-6 branch-bar border-l-teal pop">
+      <p class="text-4xl" aria-hidden="true">🌱</p>
+      <h1 class="mt-2 text-2xl text-ink">Bạn đã đi hết bốn cấp độ</h1>
       <p class="mt-2 text-sm text-ink-soft">
         Không có điểm số và cũng không có đáp án mẫu — điều đáng giá nằm ở cách bạn đọc dữ liệu,
         nhận ra giả định của mình và cân nhắc các bên liên quan.
@@ -99,9 +120,9 @@
     {% elif stage %}
 
     {% if at_closing %}
-    <div class="card p-5 mt-2 branch-bar border-l-teal">
+    <div class="card p-5 mt-2 branch-bar border-l-teal rise">
       <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">Câu kết cấp độ</p>
-      <h1 class="mt-2 text-lg text-ink">{{ stage.closing }}</h1>
+      <h1 class="mt-2 text-xl text-ink">{{ stage.closing }}</h1>
       <form method="post" action="/du-an/{{ scenario.id }}/tiep" class="mt-4">
         <label for="tra_loi" class="sr-only">Câu trả lời của bạn</label>
         <textarea id="tra_loi" name="tra_loi" rows="5" required
@@ -112,9 +133,9 @@
     </div>
 
     {% elif beat and beat.needs_answer %}
-    <div class="card p-5 mt-2">
+    <div class="card p-5 mt-2 rise">
       <p class="text-xs uppercase tracking-wide font-semibold text-ink-faint">{{ beat.label }}</p>
-      <h1 class="mt-2 text-lg text-ink">{{ beat.text }}</h1>
+      <h1 class="mt-2 text-xl text-ink">{{ beat.text }}</h1>
       <form method="post" action="/du-an/{{ scenario.id }}/tiep" class="mt-4">
         <label for="tra_loi" class="sr-only">Câu trả lời của bạn</label>
         <textarea id="tra_loi" name="tra_loi" rows="5" required
@@ -125,7 +146,7 @@
     </div>
 
     {% elif beat %}
-    <div class="card p-5 mt-2 bg-trunk-50 border-trunk-100">
+    <div class="card p-5 mt-2 bg-trunk-50 border-trunk-100 rise">
       <p class="text-xs uppercase tracking-wide font-semibold text-trunk">{{ beat.label }}</p>
       <p class="mt-2 text-base text-ink prose-beat">{{ beat.text }}</p>
       <form method="post" action="/du-an/{{ scenario.id }}/tiep" class="mt-4">

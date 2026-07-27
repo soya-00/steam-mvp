@@ -4,44 +4,47 @@
 {% block content %}
 {% set fc = field_classes(field_key) %}
 
-<nav class="text-sm text-ink-soft mb-4">
+<nav aria-label="Đường dẫn" class="text-sm text-ink-soft mb-4">
   <a href="/trang-ca-nhan" class="hover:underline">Trang cá nhân</a>
-  <span class="text-ink-faint mx-1">/</span>
+  <span class="text-ink-faint mx-1" aria-hidden="true">/</span>
   <a href="/du-an" class="hover:underline">Dự án học tập</a>
-  <span class="text-ink-faint mx-1">/</span>
+  <span class="text-ink-faint mx-1" aria-hidden="true">/</span>
   <span class="text-ink">{{ field_name }}</span>
 </nav>
 
-<h1 class="text-2xl text-ink">Tình huống trong {{ field_name }}</h1>
-<p class="mt-2 text-sm text-ink-soft max-w-2xl">
+<h1 class="text-3xl text-ink">Tình huống trong {{ field_name }}</h1>
+<p class="mt-3 text-base text-ink-soft max-w-2xl">
   Mỗi tình huống dựa trên cách một nghề thật sự thu thập bằng chứng và ra quyết định —
   không phải bài tập có sẵn đáp án.
 </p>
 
-<div class="mt-6 grid gap-3">
+<div class="mt-7 grid gap-4 sm:grid-cols-2">
   {% for s in scenarios %}
   {% set gs = started.get(s.id) %}
-  <a href="/du-an/{{ s.id }}" class="card p-5 branch-bar {{ fc.bar }} hover:border-ink-faint transition block">
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="chip {{ fc.chip }}">{{ s.role }}</span>
-      {% if s.has_female_protagonist %}
-      <span class="chip bg-plum-50 text-plum-700">Nhân vật nữ</span>
-      {% endif %}
-      {% if gs and gs.finished %}
-      <span class="chip bg-teal-50 text-teal-700">Đã đi hết 4 cấp độ</span>
-      {% elif gs %}
-      <span class="chip bg-amber-50 text-amber-900">Đang làm dở</span>
-      {% endif %}
+  <a href="/du-an/{{ s.id }}" class="card lift overflow-hidden block">
+    {% with scenario = s, art_class = 'art-banner h-32' %}
+      {% include "student/partials/scenario_art.html" %}
+    {% endwith %}
+    <div class="p-5">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip {{ fc.chip }}">{{ s.role }}</span>
+        {% if gs and gs.finished %}
+        <span class="chip bg-teal-50 text-teal-700">Đã đi hết 4 cấp độ</span>
+        {% elif gs %}
+        <span class="chip bg-amber-50 text-amber-900">Đang làm dở</span>
+        {% endif %}
+      </div>
+      <h2 class="mt-2.5 text-xl text-ink">{{ s.title }}</h2>
+      <p class="mt-1.5 text-sm text-ink-soft">{{ s.description }}</p>
+      <p class="mt-4 pt-3 border-t border-hairline text-xs text-ink-faint">
+        4 cấp độ · {{ s.total_questions }} câu hỏi · bạn tạo ra: {{ s.creation_output }}
+      </p>
     </div>
-    <h2 class="mt-2 text-lg text-ink">{{ s.title }}</h2>
-    <p class="mt-1 text-sm text-ink-soft">{{ s.description }}</p>
-    <p class="mt-3 text-xs text-ink-faint">
-      4 cấp độ · {{ s.total_questions }} câu hỏi · bạn tạo ra: {{ s.creation_output }}
-    </p>
   </a>
   {% else %}
   <div class="card p-6 text-sm text-ink-soft">
-    Lĩnh vực này chưa có tình huống nào. <a href="/du-an" class="text-teal hover:underline">Chọn lĩnh vực khác</a>.
+    Lĩnh vực này chưa có tình huống nào.
+    <a href="/du-an" class="text-teal font-medium hover:underline">Chọn lĩnh vực khác</a>.
   </div>
   {% endfor %}
 </div>
