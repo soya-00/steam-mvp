@@ -159,8 +159,5 @@ Ba nhóm nghề trong bảng phân loại vẫn chưa có kịch huống: Hoá h
 **4 · Phần trình đọc màn hình chưa thử trên máy thật**
 Ngữ nghĩa HTML đã viết đúng và đã kiểm tra ở mức mã nguồn, nhưng chưa từng chạy VoiceOver hay TalkBack với giọng đọc tiếng Việt.
 
-**5 · Luồng giáo viên vẫn là suy đoán**
-Dựng từ mô hình dữ liệu vì thiếu sơ đồ. Hợp lý, nhưng chưa được xác nhận.
-
 **6 · Xác thực là giả**
 Mọi email/mật khẩu đều vào được tài khoản demo. Đúng với mục tiêu bản mẫu, nhưng phải làm thật trước khi có học sinh thật.
