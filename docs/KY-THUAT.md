@@ -194,6 +194,4 @@ Có `image_url` thì dùng ảnh đó; không có thì tự động rơi về h�
 Vài điểm cần nhớ:
 
 - **Bắt buộc điền `image_alt` khi dùng ảnh thật.** Hình vector là trang trí nên để `alt` rỗng được, còn ảnh thật mang thông tin thì phải mô tả.
-- **Kiểm tra link mở được trước khi dùng.** Ảnh hỏng lúc chấm thi trông tệ hơn là không có ảnh.
 - **Giấy phép:** ảnh trên [Unsplash](https://unsplash.com/license) và [Pexels](https://www.pexels.com/license/) dùng miễn phí, không cần ghi nguồn. Vẫn nên kiểm tra lại từng ảnh.
-- **Ảnh tải từ máy chủ nước ngoài** sẽ chậm hơn hình vector tự host, nhất là trên gói Render miễn phí. Cân nhắc tải ảnh về `static/img/` rồi trỏ đường dẫn nội bộ.
