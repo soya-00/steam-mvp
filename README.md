@@ -86,6 +86,7 @@ Mở trình duyệt vào **http://127.0.0.1:8000**
 
 ## Tài liệu thêm
 
+- [Nhật ký thiết kế](docs/NHAT-KY-THIET-KE.md) — vì sao sản phẩm được làm như hiện tại: từng giai đoạn, quyết định đã chốt, lỗi đã gặp và hướng đi tiếp
 - [Hướng dẫn kỹ thuật](docs/KY-THUAT.md) — kiến trúc, cách thêm kịch huống, cách deploy, cách bật AI
 - [Việc cần làm tiếp](docs/VIEC-CAN-LAM.md) — khả năng tiếp cận, các nhóm nghề chưa có kịch huống
 

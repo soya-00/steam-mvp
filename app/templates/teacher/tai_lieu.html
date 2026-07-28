@@ -19,7 +19,17 @@
   </p>
 </div>
 
-<h2 class="mt-8 text-lg text-ink">Chọn tình huống</h2>
+<section class="mt-8">
+  <h2 class="text-lg text-ink">Gợi ý khi dạy</h2>
+  <p class="mt-1 text-sm text-ink-soft">
+    Bốn điều hay được hỏi nhất. Phần này cũng nằm trong bản in, ở trang dành riêng cho thầy cô.
+  </p>
+  <div class="card p-5 mt-3 max-w-3xl">
+    {% include "teacher/partials/huong_dan.html" %}
+  </div>
+</section>
+
+<h2 class="mt-10 text-lg text-ink">Chọn tình huống</h2>
 <ul class="mt-3 grid gap-2">
   {% for s in scenarios %}
   <li>

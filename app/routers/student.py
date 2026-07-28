@@ -9,6 +9,9 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_user, session_key
 from app.gemini import guided_reply, synthesis
+from app.moderation import OK as SCREEN_OK
+from app.moderation import REPLIES as SCREEN_REPLIES
+from app.moderation import screen
 from app.config import (
     FIELD_KEY_BY_NAME,
     FIELD_NAME_BY_KEY,
@@ -314,6 +317,7 @@ def scenario_intro(
 def workspace(
     request: Request,
     scenario_id: str,
+    nhac: str = "",
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -353,6 +357,7 @@ def workspace(
             "at_closing": _at_closing(scenario, gs),
             "transcript": _transcript(gs),
             "progress": _progress(scenario, gs),
+            "loi_nhac": SCREEN_REPLIES.get(nhac),
         },
     )
 
@@ -387,6 +392,15 @@ def workspace_step(
     entries = _transcript(gs)
     answer = tra_loi.strip()
     question = None
+
+    needs_answer = _at_closing(scenario, gs) or (beat is not None and beat.needs_answer)
+    if needs_answer and answer:
+        verdict, _ = screen(answer)
+        if verdict != SCREEN_OK:
+            return RedirectResponse(
+                f"/du-an/{scenario_id}/khong-gian-tu-duy?nhac={verdict}",
+                status_code=303,
+            )
 
     if _at_closing(scenario, gs):
         question = stage.closing
