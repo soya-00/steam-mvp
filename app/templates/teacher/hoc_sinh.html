@@ -3,13 +3,7 @@
 
 {% block content %}
 
-<nav class="text-sm text-ink-soft mb-4">
-  <a href="/giao-vien" class="hover:underline">Lớp của tôi</a>
-  <span class="text-ink-faint mx-1">/</span>
-  <a href="/giao-vien/lop/{{ klass.id }}" class="hover:underline">{{ klass.name }}</a>
-  <span class="text-ink-faint mx-1">/</span>
-  <span class="text-ink">{{ student.name }}</span>
-</nav>
+{% with crumbs = [("/giao-vien", "Lớp của tôi"), ("/giao-vien/lop/" ~ klass.id, klass.name), (None, student.name)] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
 <header class="flex items-center gap-4">
   <span class="w-14 h-14 rounded-full bg-trunk-50 grid place-items-center text-3xl shrink-0" aria-hidden="true">

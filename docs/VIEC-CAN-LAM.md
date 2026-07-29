@@ -68,3 +68,36 @@ Cách viết xem [Hướng dẫn kỹ thuật](KY-THUAT.md#thêm-kịch-huống-
 
 - [ ] **Màn hình giáo viên được suy ra từ mô hình dữ liệu**, vì sơ đồ luồng giáo viên không được cung cấp. Cần đối chiếu với sơ đồ gốc.
 - [ ] **Đường gọi Gemini thật** mới chỉ thử được vài lượt trước khi hết hạn mức của khoá miễn phí. Nên chạy thử lại đầy đủ cả hai chế độ trước khi chấm.
+
+---
+
+## Ý tưởng mở rộng — brainstorm có xếp hạng ưu tiên
+
+Đã có bộ kiểm thử tự động (`tests/`, chạy bằng `pytest`) khoá chặt các bất biến: mọi trang mở được, kịch huống đi trọn, ranh giới riêng tư, bộ lọc đầu vào (kể cả các ca va chạm dấu tiếng Việt), không có giao diện chấm điểm, class Tailwind không biến mất khỏi CSS build, và các mốc trợ năng. CI chạy trên mỗi lần đẩy code.
+
+### Mở rộng quy mô
+
+1. **Postgres + chỉ gieo khi trống** — dữ liệu phải sống qua deploy. Vẫn là việc số một của cả dự án.
+2. **Quy trình soạn kịch huống** — lệnh kiểm tra `scenarios.json` + khuôn Markdown → JSON, để giáo viên và người viết nội dung soạn được kịch huống mà không phải gõ tay JSON lồng nhiều lớp. Nội dung là nút thắt tăng trưởng thật của sản phẩm.
+3. **Hạn mức chat theo người dùng, lưu trong DB** — hiện đếm trong bộ nhớ theo cookie: đúng cho demo, nhưng mất khi restart và không gắn với người. (Rò rỉ bộ nhớ của bộ đếm đã được chặn bằng trần 2.000 khoá.)
+4. **Nhiều giáo viên một lớp**, chuyển lớp giữa giáo viên.
+
+### Nhất quán thiết kế
+
+5. **Gom chip trạng thái và thẻ-trống thành macro Jinja** — hiện mỗi template tự chép một bản. (Breadcrumb đã gom xong thành `partials/breadcrumb.html`, dùng ở 9 trang.)
+6. **Một trang design-token duy nhất** trong docs: màu, chữ, bo góc, chuyển động — để người làm sau không phải đọc `input.css` để đoán hệ thống.
+
+### Dễ dùng
+
+7. **Nhập mã lớp sau khi đăng ký** — học sinh độc lập hiện *không bao giờ* vào được lớp; ô mã lớp chỉ tồn tại lúc đăng ký. Cần form "Nhập mã lớp" ở Trang cá nhân, kèm màn xác nhận nói rõ: vào lớp nghĩa là giáo viên đó đọc được nhật ký. Chạm vào lời hứa riêng tư nên phải làm cẩn thận, không làm vội.
+8. **Thẻ "Tiếp tục chỗ đang dở"** nổi bật trên Trang cá nhân, trỏ thẳng vào đúng beat đang đứng. (Ô trả lời đã tự lưu nháp — đóng tab giữa chừng không mất chữ nữa.)
+9. **Giáo viên: lọc nhật ký theo kịch huống, xuất nhật ký cả lớp ra bản in** — dùng lại hạ tầng in sẵn có.
+10. **Meta tags cho link chia sẻ** — dán link hồ sơ vào Zalo/Messenger phải hiện preview tử tế; đây là kênh chia sẻ thật của học sinh Việt Nam.
+11. **PWA shell tối thiểu** cho mạng chập chờn ở trường: cache trang vỏ và CSS, để mất mạng giữa chừng không thành màn hình trắng.
+
+### Tiếp cận (bổ sung thứ tự làm cho checklist ở trên)
+
+12. **Dời focus sau mỗi lượt HTMX** — việc còn lại quan trọng nhất với người dùng trình đọc màn hình.
+13. **Thu hẹp `hx-swap` thành chỉ-thêm-mới** để trình đọc không đọc lại cả khung chat sau mỗi lượt.
+14. **`lang="en"`** cho các đoạn tiếng Anh xen kẽ (tên khoá học, "Follow-up").
+15. **Kịch bản kiểm thử VoiceOver/TalkBack từng bước** trên máy thật, giọng đọc tiếng Việt.

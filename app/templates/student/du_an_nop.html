@@ -4,11 +4,7 @@
 {% block content %}
 <div class="max-w-2xl">
 
-  <nav class="text-sm text-ink-soft mb-4">
-    <a href="/du-an/{{ scenario.id }}/khong-gian-tu-duy" class="hover:underline">Không gian tư duy</a>
-    <span class="text-ink-faint mx-1">/</span>
-    <span class="text-ink">Nộp dự án</span>
-  </nav>
+  {% with crumbs = [("/du-an/" ~ scenario.id ~ "/khong-gian-tu-duy", "Không gian tư duy"), (None, "Nộp dự án")] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
   <h1 class="text-2xl text-ink">Nộp dự án</h1>
   <p class="mt-2 text-sm text-ink-soft">

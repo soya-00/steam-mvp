@@ -23,6 +23,7 @@ _model: str | None = None
 _lock = threading.Lock()
 
 _usage: dict[str, int] = {}
+_USAGE_MAX_KEYS = 2000
 
 
 GUARDRAILS = """
@@ -191,6 +192,9 @@ def _spend(session_key: str) -> bool:
     used = _usage.get(session_key, 0)
     if used >= MAX_MESSAGES_PER_SESSION:
         return False
+    if session_key not in _usage and len(_usage) >= _USAGE_MAX_KEYS:
+        for stale in list(_usage)[: _USAGE_MAX_KEYS // 2]:
+            del _usage[stale]
     _usage[session_key] = used + 1
     return True
 

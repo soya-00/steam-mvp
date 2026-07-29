@@ -4,13 +4,7 @@
 {% block content %}
 {% set fc = field_classes(field_key) %}
 
-<nav aria-label="Đường dẫn" class="text-sm text-ink-soft mb-4">
-  <a href="/trang-ca-nhan" class="hover:underline">Trang cá nhân</a>
-  <span class="text-ink-faint mx-1" aria-hidden="true">/</span>
-  <a href="/du-an" class="hover:underline">Dự án học tập</a>
-  <span class="text-ink-faint mx-1" aria-hidden="true">/</span>
-  <span class="text-ink">{{ field_name }}</span>
-</nav>
+{% with crumbs = [("/trang-ca-nhan", "Trang cá nhân"), ("/du-an", "Dự án học tập"), (None, field_name)] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
 <h1 class="text-3xl text-ink">Tình huống trong {{ field_name }}</h1>
 <p class="mt-3 text-base text-ink-soft max-w-2xl">

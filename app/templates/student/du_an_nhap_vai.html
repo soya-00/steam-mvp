@@ -4,11 +4,7 @@
 {% block content %}
 {% set fc = field_classes(scenario.field) %}
 
-<nav class="text-sm text-ink-soft mb-4">
-  <a href="/du-an" class="hover:underline">Dự án học tập</a>
-  <span class="text-ink-faint mx-1">/</span>
-  <a href="/du-an/linh-vuc/{{ field_key[scenario.field] }}" class="hover:underline">{{ scenario.field }}</a>
-</nav>
+{% with crumbs = [("/du-an", "Dự án học tập"), ("/du-an/linh-vuc/" ~ field_key[scenario.field], scenario.field), (None, scenario.title)] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
 <div class="max-w-2xl">
   <div class="card overflow-hidden">

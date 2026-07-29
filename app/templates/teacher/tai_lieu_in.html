@@ -4,11 +4,7 @@
 {% block content %}
 
 <div class="no-print">
-  <nav aria-label="Đường dẫn" class="text-sm text-ink-soft mb-4">
-    <a href="/giao-vien" class="hover:underline">Lớp của tôi</a>
-    <span class="text-ink-faint mx-1" aria-hidden="true">/</span>
-    <span class="text-ink">Tài liệu in</span>
-  </nav>
+  {% with crumbs = [("/giao-vien", "Lớp của tôi"), ("/giao-vien/tai-lieu", "Tài liệu in"), (None, scenario.title)] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
   <div class="card p-5 branch-bar border-l-amber">
     <h1 class="text-xl text-ink">Tài liệu cho buổi học tại lớp</h1>

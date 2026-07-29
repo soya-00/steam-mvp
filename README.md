@@ -82,6 +82,8 @@ npm install && npm run build:css
 
 Mở trình duyệt vào **http://127.0.0.1:8000**
 
+Chạy bộ kiểm thử (không bắt buộc): `pip install -r requirements-dev.txt` rồi `pytest`
+
 ---
 
 ## Tài liệu thêm

@@ -1,0 +1,10 @@
+<nav aria-label="Đường dẫn" class="text-sm text-ink-soft mb-4">
+  {% for href, label in crumbs %}
+  {% if not loop.last and href %}
+  <a href="{{ href }}" class="hover:underline">{{ label }}</a>
+  <span class="text-ink-faint mx-1" aria-hidden="true">/</span>
+  {% else %}
+  <span class="text-ink" {% if loop.last %}aria-current="page"{% endif %}>{{ label }}</span>
+  {% endif %}
+  {% endfor %}
+</nav>

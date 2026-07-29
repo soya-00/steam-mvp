@@ -165,4 +165,23 @@
   </div>
 </div>
 
+<script>
+(function () {
+  var ta = document.querySelector("textarea[name=tra_loi]");
+  if (!ta) return;
+  var key = "gals-nhap-{{ scenario.id }}-{{ gs.stage_index }}-{{ gs.beat_index }}";
+  try {
+    if (!ta.value && sessionStorage.getItem(key)) {
+      ta.value = sessionStorage.getItem(key);
+    }
+    ta.addEventListener("input", function () {
+      sessionStorage.setItem(key, ta.value);
+    });
+    ta.form.addEventListener("submit", function () {
+      sessionStorage.removeItem(key);
+    });
+  } catch (e) {}
+})();
+</script>
+
 {% endblock %}
