@@ -129,6 +129,41 @@ Năm nhóm bị chặn: nói tục · gõ linh tinh · cố bẻ lời nhắc h�
 
 **Lỗi nghiêm trọng phát hiện khi kiểm thử:** bản đầu tiên bỏ dấu tiếng Việt trước khi so khớp. Cách đó làm **"các"** (từ cực kỳ thông dụng) trùng với một từ tục, **"buổi"** trùng với một từ tục, và **"từ từ"** trùng với cách viết không dấu của "tự tử". Một em viết *"các bạn"* sẽ bị gắn cờ nói tục; viết *"từ từ đã"* sẽ nhận được thông điệp khủng hoảng tâm lý. Với sản phẩm lấy an toàn tâm lý làm gốc, đây là lỗi phá hỏng niềm tin. **Đã sửa: từ tiếng Việt so khớp nguyên dấu**, chỉ những từ viết tắt vốn không dấu mới so khớp kiểu ASCII.
 
+### Giai đoạn 9 — Người dùng thật gõ không giống người dùng demo
+
+Giai đoạn 8 sửa đúng một lỗi nhưng mở ra lỗi ngược lại. So khớp nguyên dấu diệt được `các` → từ tục, nhưng khiến **mọi cụm khủng hoảng viết không dấu lọt hết**: `em muon chet qua`, `em khong muon song nua`, `dao nay em nghi den tu tu` đều trả về "ok". Học sinh Việt Nam phần lớn gõ không dấu, nên đây là nhóm người dùng dễ tổn thương nhất lại được bảo vệ kém nhất.
+
+Kiểm thử còn tìm ra một lỗi **đang chạy thật**: `muốn chết` là cách nói phóng đại rất thường gặp. `Bài này khó muốn chết`, `Trời nóng muốn chết luôn`, `Em đói muốn chết` đều kích hoạt thông điệp khủng hoảng kèm số 111. Học sinh gặp thông điệp nghiêm trọng nhất của ứng dụng khi đang than bài tập — và học được cách bỏ qua nó.
+
+**Nguyên tắc rút ra: hai nhóm có chi phí sai ngược nhau.**
+
+| | Bỏ sót | Báo nhầm |
+|---|---|---|
+| **Khủng hoảng** | Một em đang cần giúp không nhận được gì | Một lời nhắn tử tế và số tổng đài |
+| **Nói tục** | Một câu chửi lọt qua | Ứng dụng buộc tội một em không làm gì sai |
+
+Nên **khủng hoảng ưu tiên độ phủ, nói tục ưu tiên độ chính xác**. Cụ thể: chỉ thêm dạng không dấu cho những cụm **không có từ đồng âm vô tội**. Danh sách bị loại và lý do được ghi lại để không ai thêm lại: `du ma` (đủ mà) · `cho chet` (cho chết) · `mat day` (mất dây, mặt dày) · `bo may` (bộ máy) · `con di` (con đi, con dì). Ba cụm chỉ nhận khi có từ chỉ ý định đi kèm: `tu tu` (từ từ), `tu sat` (tủ sắt), `rach tay` (rách tay).
+
+Thêm một tầng **quy đổi chính tả teen** chỉ dùng cho nhánh khủng hoảng — `ko/hok` → `không`, `mún` → `muốn`, `chit/chớt` → `chết` — nên `tui mún chit` và `em ko muốn sốg nữa` bắt được. Không bao giờ áp bảng này cho nhánh nói tục: quy đổi sai ở đó là buộc tội oan.
+
+**Chỗ còn hở, ghi ra thay vì giấu:** `em buồn quá muốn chết` sẽ không kích hoạt, vì từ đứng ngay trước là `quá`. Đây là đánh đổi có chủ ý — phương án còn lại là kích hoạt cả với `đói muốn chết`, và điều đó làm học sinh chai với thông điệp duy nhất cần được lắng nghe.
+
+**So khớp theo ranh giới từ, không phải chuỗi con.** Chính phép thử quét lại nội dung của 5 kịch huống đã phát hiện `được cho là` khớp `óc chó` và `là do người nộp` khớp `đồ ngu`. Nay có bài kiểm thử tự động quét toàn bộ nội dung ứng dụng qua chính bộ lọc của nó, cả bản có dấu lẫn bản bỏ dấu.
+
+**Emoji.** Trợ lý **không bao giờ dùng emoji**, kể cả khi học sinh gửi thật nhiều. Không chỉ ghi trong lời nhắc hệ thống — mọi câu trả lời từ model đều được **lọc emoji bằng mã** trước khi hiển thị, vì lời nhắc là đề nghị còn mã mới là bảo đảm. Đầu vào chỉ có emoji hoặc mặt cười ký tự (`:))`, `=))`, `:v`) nhận một câu trả lời riêng, thành thật hơn: mình đọc được, nhưng cần chữ.
+
+Đồng thời đặt **ngưỡng an toàn tường minh** cho Gemini thay vì dùng mặc định — sản phẩm dành cho trẻ vị thành niên không nên chạy bằng cấu hình mặc định của nhà cung cấp.
+
+### Giai đoạn 10 — Ranh giới giữa bản mẫu và dùng thật
+
+Câu hỏi "lưu và công bố nhật ký của học sinh có vấn đề pháp lý không" dẫn tới một tài liệu riêng ở gốc kho mã: [LEGAL.md](../LEGAL.md), kèm khối cảnh báo trong Trang giáo viên và ở chân mọi trang.
+
+Ba điều đáng nói nhất:
+
+1. **Quyết định lớn nhất là ai giữ dữ liệu.** Khuyến nghị: thiết kế để GALS **không bao giờ biết tên thật** — giáo viên phát mã ẩn danh, bảng đối chiếu giữ trên giấy — rồi ký hợp đồng với nhà trường ở vai bên xử lý. Rẻ nếu làm bây giờ, đắt nếu làm sau: bảng người dùng hiện đã có sẵn trường tên và email.
+2. **Bộ lọc khủng hoảng tạo ra trách nhiệm chỉ bằng việc tồn tại.** Làm ra một bộ dò là ngầm hứa rằng nó chạy được, trong khi ta vừa chứng minh nó bỏ sót. Cách kiểm soát nằm ở **cách mô tả** nhiều hơn ở mã: không bao giờ quảng cáo GALS là công cụ phát hiện khủng hoảng hay bảo vệ học sinh.
+3. **Trang chia sẻ là công bố, không phải chia sẻ.** Đường dẫn khó đoán không phải là riêng tư về mặt pháp lý. Chỗ hở sắc nhất tìm được: trường ảnh trong nhật ký nhận **đường dẫn tự do** và hiển thị thẳng lên trang công khai, trong khi bộ lọc chỉ soi chữ chứ không soi liên kết.
+
 ---
 
 ## Những lỗi đáng nhớ
@@ -140,6 +175,9 @@ Năm nhóm bị chặn: nói tục · gõ linh tinh · cố bẻ lời nhắc h�
 | Số phiên bản thư viện nhớ sai | Cài vẫn chạy, chỉ là cũ | Luôn `pip index versions` trước khi ghim |
 | Bỏ dấu tiếng Việt khi lọc từ tục | Chỉ lộ ra khi thử với câu tiếng Việt thật | So khớp nguyên dấu với từ tiếng Việt |
 | Regex xoá chú thích CSS ăn mất `/**/` | `@source "app/**/*.html"` thành đường dẫn sai, build vẫn chạy | Kiểm tra class có thật sự nằm trong CSS build ra |
+| So khớp cụm từ theo **chuỗi con** | `được cho là` chứa `óc chó`; `là do người nộp` chứa `đồ ngu` | Luôn so khớp theo **ranh giới từ**, và cho chính nội dung ứng dụng chạy qua bộ lọc của nó |
+| Sửa một chiều làm hở chiều ngược lại | Diệt xong báo nhầm thì bỏ sót tăng vọt, mà bỏ sót thì im lặng | Mỗi lần đổi bộ lọc phải ghim **cả hai hướng** trong bài kiểm thử |
+| Lớp ký tự nguyên âm thiếu dấu tiếng Việt | `nghĩ`, `phòng`, `đựng` bị coi là "không có nguyên âm" nên câu bình thường bị gắn cờ vô nghĩa | Bỏ dấu trước rồi mới xét nguyên âm, đừng liệt kê tay |
 
 ---
 

@@ -12,7 +12,7 @@ from app.config import (
     gemini_enabled,
 )
 from app.moderation import OK as SCREEN_OK
-from app.moderation import screen
+from app.moderation import screen, strip_emoji
 
 log = logging.getLogger("gals.gemini")
 
@@ -50,6 +50,11 @@ NGUYÊN TẮC BẮT BUỘC — áp dụng cho mọi câu trả lời:
   tình huống này không có đáp án đúng, rồi hỏi một câu giúp em tự đi tiếp.
 - Nếu học sinh viết tục hoặc gõ linh tinh, đừng bình luận, đừng dạy dỗ. Bỏ qua
   và quay lại chủ đề bằng một câu hỏi bình thường.
+- TUYỆT ĐỐI KHÔNG dùng emoji, biểu tượng cảm xúc, mặt cười bằng ký tự (:)) =))
+  :v ^^ <3) hay ký hiệu trang trí trong bất kỳ câu trả lời nào. Kể cả khi học
+  sinh gửi thật nhiều emoji, đừng đáp lại theo kiểu đó và cũng đừng nhắc tới
+  chuyện đó. Giữ giọng điềm đạm của một người lớn đang lắng nghe.
+- Không viết hoa cả câu để nhấn mạnh, không dùng nhiều dấu chấm than liên tiếp.
 - Viết ngắn. Tối đa 4-5 câu, trừ khi được yêu cầu tổng hợp.
 """
 
@@ -210,6 +215,27 @@ _thinking_mode: str | None = "level"
 _thinking_settled = False
 
 
+_SAFETY_CATEGORIES = (
+    "HARM_CATEGORY_HARASSMENT",
+    "HARM_CATEGORY_HATE_SPEECH",
+    "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    "HARM_CATEGORY_DANGEROUS_CONTENT",
+)
+
+
+def _safety_settings():
+    from google.genai import types
+
+    try:
+        return [
+            types.SafetySetting(category=c, threshold="BLOCK_LOW_AND_ABOVE")
+            for c in _SAFETY_CATEGORIES
+        ]
+    except Exception as exc:
+        log.warning("Gemini: không đặt được ngưỡng an toàn (%s), dùng mặc định", exc)
+        return None
+
+
 def _config(system: str, max_tokens: int, mode: str | None):
     from google.genai import types
 
@@ -224,6 +250,7 @@ def _config(system: str, max_tokens: int, mode: str | None):
         temperature=0.85,
         max_output_tokens=max_tokens + 1200,
         thinking_config=thinking,
+        safety_settings=_safety_settings(),
     )
 
 
@@ -256,7 +283,7 @@ def _generate(system: str, contents: list[dict], *, max_tokens: int = 600) -> st
             return None
 
         _thinking_mode, _thinking_settled = mode, True
-        text = (resp.text or "").strip()
+        text = strip_emoji(resp.text or "")
         if not text:
             reason = resp.candidates[0].finish_reason if resp.candidates else "?"
             log.warning("Gemini: không có nội dung trả về (finish_reason=%s)", reason)

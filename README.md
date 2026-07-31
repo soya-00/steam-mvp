@@ -9,6 +9,12 @@ Không cần cài gì, không cần đăng ký. Ở màn hình đăng nhập có
 
 > Lần vào đầu tiên có thể mất 30–60 giây vì máy chủ miễn phí đang "ngủ dậy".
 
+> [!IMPORTANT]
+> **Đây là bản mẫu trình diễn.** Toàn bộ dữ liệu trong ứng dụng là giả định, và dữ liệu
+> **không được lưu lại** — máy chủ khởi động lại là xoá sạch. Đừng nhập thông tin thật.
+> Trước khi cho học sinh có thật dùng, đọc **[LEGAL.md](LEGAL.md)** — lưu trữ dữ liệu,
+> phạm vi trách nhiệm, và danh sách việc bắt buộc phải làm trước.
+
 ---
 
 ## GALS là gì?
@@ -91,6 +97,7 @@ Chạy bộ kiểm thử (không bắt buộc): `pip install -r requirements-dev
 - [Nhật ký thiết kế](docs/NHAT-KY-THIET-KE.md) — vì sao sản phẩm được làm như hiện tại: từng giai đoạn, quyết định đã chốt, lỗi đã gặp và hướng đi tiếp
 - [Hướng dẫn kỹ thuật](docs/KY-THUAT.md) — kiến trúc, cách thêm kịch huống, cách deploy, cách bật AI
 - [Việc cần làm tiếp](docs/VIEC-CAN-LAM.md) — khả năng tiếp cận, các nhóm nghề chưa có kịch huống
+- [**Tuyên bố pháp lý và dữ liệu**](LEGAL.md) — dữ liệu được lưu ra sao, đi những đâu, ai chịu trách nhiệm, và phải làm gì trước khi dùng với học sinh thật
 
 ---
 
