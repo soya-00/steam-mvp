@@ -57,6 +57,22 @@ Ba đường ra, cần biết rõ:
 
 **3. Ra các trang bên thứ ba.** Mục Tài nguyên liên kết tới Coursera, Khan Academy, YouTube. Bấm vào là rời khỏi GALS và chịu chính sách của các trang đó.
 
+Liên kết ảnh và video do học sinh tự dán vào chỉ nhận `http://` và `https://`. Các dạng khác — đáng kể nhất là `javascript:` — bị chặn, vì mục hồ sơ có thể được chia sẻ công khai và một đường dẫn như vậy sẽ chạy mã trong trình duyệt của người vào xem.
+
+---
+
+## Ứng dụng đếm những gì
+
+Chỉ **con số tổng, không kèm nội dung, không kèm người**.
+
+Khi bộ lọc chặn một câu, ứng dụng cộng 1 vào bộ đếm theo nhóm — ví dụ `screen.crisis = 12`. Nó **không lưu câu đó**, không lưu ai viết, không lưu lớp nào, không lưu thời điểm cụ thể. Bộ đếm nằm trong bộ nhớ tiến trình và mất khi khởi động lại.
+
+Lý do giữ lại phần này thay vì bỏ hẳn: nếu không đếm gì cả thì **không có cách nào biết bộ lọc có đang chạy hay không**. Im lặng có thể là "không em nào cần tới", mà cũng có thể là "bộ lọc bỏ sót hết". Một con số phân biệt được hai điều đó, và con số thì không nhận dạng được ai.
+
+Bộ đếm này **không hiển thị cho giáo viên**, và đó là chủ ý: một con số kiểu *"lớp bạn có 3 lượt"* sẽ tạo ra lo lắng mà không có cách nào hành động, lại vừa đủ hẹp để đoán ra em nào.
+
+**Nút báo cáo câu trả lời và nút gửi góp ý** thì có lưu nội dung: câu trả lời của trợ lý bị báo cáo, lý do chọn từ danh sách, và phần ghi chú nếu học sinh viết. **Không lưu người gửi.** Ghi chú cũng đi qua chính bộ lọc đầu vào, và mỗi phiên chỉ gửi được 5 lần mỗi giờ để tránh bị lạm dụng.
+
 ---
 
 ## Trợ lý AI và những điều GALS không làm

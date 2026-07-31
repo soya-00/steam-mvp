@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import STATIC_DIR, gemini_enabled
 from app.routers import auth as auth_router
 from app.routers import chat as chat_router
+from app.routers import phan_hoi as phan_hoi_router
 from app.routers import student as student_router
 from app.routers import teacher as teacher_router
 from app.seed import reset_and_seed
@@ -42,6 +43,7 @@ app.include_router(auth_router.router)
 app.include_router(student_router.router)
 app.include_router(teacher_router.router)
 app.include_router(chat_router.router)
+app.include_router(phan_hoi_router.router)
 
 
 @app.exception_handler(404)

@@ -304,25 +304,28 @@ def _is_nonsense(raw: str) -> bool:
     return False
 
 
-def screen(text: str) -> tuple[str, str | None]:
-    raw = (text or "").strip()
-
+def _verdict(raw: str) -> str:
     if len(raw) > MAX_INPUT_CHARS:
-        return TOO_LONG, REPLIES[TOO_LONG]
-
+        return TOO_LONG
     if _is_emoji_only(raw):
-        return EMOJI, REPLIES[EMOJI]
-
+        return EMOJI
     if _is_crisis(raw):
-        return CRISIS, REPLIES[CRISIS]
-
+        return CRISIS
     if _INJECTION_RE.search(_normalise(raw)):
-        return INJECTION, REPLIES[INJECTION]
-
+        return INJECTION
     if _has_profanity(raw):
-        return PROFANITY, REPLIES[PROFANITY]
-
+        return PROFANITY
     if _is_nonsense(raw):
-        return NONSENSE, REPLIES[NONSENSE]
+        return NONSENSE
+    return OK
 
-    return OK, None
+
+def screen(text: str) -> tuple[str, str | None]:
+    verdict = _verdict((text or "").strip())
+    if verdict == OK:
+        return OK, None
+
+    from app.metrics import SCREEN_PREFIX, bump
+
+    bump(f"{SCREEN_PREFIX}.{verdict}")
+    return verdict, REPLIES[verdict]

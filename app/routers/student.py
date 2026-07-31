@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -12,6 +13,7 @@ from app.gemini import guided_reply, synthesis
 from app.moderation import OK as SCREEN_OK
 from app.moderation import REPLIES as SCREEN_REPLIES
 from app.moderation import screen
+from app.media import validate_url
 from app.config import (
     FIELD_KEY_BY_NAME,
     FIELD_NAME_BY_KEY,
@@ -484,6 +486,7 @@ def workspace_restart(
 def submit_form(
     request: Request,
     scenario_id: str,
+    loi: str = "",
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -512,6 +515,7 @@ def submit_form(
             "branch": "du_an",
             "scenario": scenario,
             "entry": entry,
+            "loi": loi,
         },
     )
 
@@ -552,8 +556,16 @@ def submit_project(
         db.add(entry)
         db.flush()
 
-    entry.image_url = anh.strip()
-    entry.video_url = video.strip()
+    image_url, image_error = validate_url(anh)
+    video_url, video_error = validate_url(video)
+    if image_error or video_error:
+        return RedirectResponse(
+            f"/du-an/{scenario_id}/nop?loi={quote(image_error or video_error)}",
+            status_code=303,
+        )
+
+    entry.image_url = image_url
+    entry.video_url = video_url
     entry.submitted = True
 
     category = phan_loai if phan_loai in VALID_CATEGORIES else "ca_hai"

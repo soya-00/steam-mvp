@@ -3,11 +3,13 @@ from __future__ import annotations
 import logging
 import re
 import threading
+import time
 
 from app.config import (
     GEMINI_API_KEY,
     GEMINI_MODEL,
     GEMINI_MODEL_PREFERENCE,
+    MAX_CALLS_PER_HOUR,
     MAX_MESSAGES_PER_SESSION,
     gemini_enabled,
 )
@@ -193,6 +195,28 @@ def quota_left(session_key: str) -> int:
     return max(0, MAX_MESSAGES_PER_SESSION - _usage.get(session_key, 0))
 
 
+_calls: list[float] = []
+_calls_lock = threading.Lock()
+_WINDOW_SECONDS = 3600
+
+
+def budget_left() -> int:
+    now = time.time()
+    with _calls_lock:
+        _calls[:] = [t for t in _calls if now - t < _WINDOW_SECONDS]
+        return max(0, MAX_CALLS_PER_HOUR - len(_calls))
+
+
+def _take_from_budget() -> bool:
+    now = time.time()
+    with _calls_lock:
+        _calls[:] = [t for t in _calls if now - t < _WINDOW_SECONDS]
+        if len(_calls) >= MAX_CALLS_PER_HOUR:
+            return False
+        _calls.append(now)
+        return True
+
+
 def _spend(session_key: str) -> bool:
     used = _usage.get(session_key, 0)
     if used >= MAX_MESSAGES_PER_SESSION:
@@ -368,6 +392,9 @@ def guided_reply(scenario, stage, question: str, answer: str, turn: int, session
         return _offline_guided(stage.key, turn)
     if not _spend(session_key):
         return QUOTA_MESSAGE
+    if not _take_from_budget():
+        log.warning("Gemini: chạm trần %d lượt/giờ, chuyển sang ngoại tuyến", MAX_CALLS_PER_HOUR)
+        return _offline_guided(stage.key, turn)
 
     text = _generate(
         _guided_system(scenario, stage),
@@ -399,6 +426,9 @@ def freeform_reply(history: list[dict], message: str, session_key: str) -> tuple
         return _offline_freeform(turn, message)
     if not _spend(session_key):
         return QUOTA_MESSAGE, None
+    if not _take_from_budget():
+        log.warning("Gemini: chạm trần %d lượt/giờ, chuyển sang ngoại tuyến", MAX_CALLS_PER_HOUR)
+        return _offline_freeform(turn, message)
 
     contents = _turns(history) + [{"role": "user", "parts": [{"text": message}]}]
     text = _generate(FREEFORM_SYSTEM, contents, max_tokens=500)
@@ -422,7 +452,7 @@ def synthesis(scenario, transcript: list[dict], session_key: str) -> str:
     answers = [t for t in transcript if t.get("answer")]
     if not gemini_enabled():
         return _offline_synthesis(scenario, [a["answer"] for a in answers])
-    if not _spend(session_key):
+    if not _spend(session_key) or not _take_from_budget():
         return _offline_synthesis(scenario, [a["answer"] for a in answers])
 
     body = "\n\n".join(

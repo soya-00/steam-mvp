@@ -12,6 +12,12 @@
     thứ bạn có thể tự nhìn lại, hoặc chia sẻ nếu muốn.
   </p>
 
+  {% if loi %}
+  <div class="card p-4 mt-4 bg-amber-50 border-amber-100" role="alert">
+    <p class="text-sm text-ink">{{ loi }}</p>
+  </div>
+  {% endif %}
+
   <form method="post" action="/du-an/{{ scenario.id }}/nop" class="mt-6 space-y-5">
 
     <div>

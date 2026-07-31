@@ -1,0 +1,31 @@
+<div class="mt-2" id="bao-cao-{{ report_id }}">
+  <details class="text-xs">
+    <summary class="text-ink-faint hover:text-ink cursor-pointer">
+      Báo cáo câu trả lời này
+    </summary>
+    <form class="mt-2 grid gap-2"
+          hx-post="/phan-hoi/bao-cao"
+          hx-target="#bao-cao-{{ report_id }}"
+          hx-swap="innerHTML">
+      <input type="hidden" name="trich_dan" value="{{ reported_text }}">
+
+      <label for="ly-do-{{ report_id }}" class="sr-only">Lý do báo cáo</label>
+      <select id="ly-do-{{ report_id }}" name="ly_do"
+              class="rounded-lg border border-hairline bg-paper px-2 py-1.5 text-xs text-ink">
+        <option value="khong_phu_hop">Nội dung không phù hợp</option>
+        <option value="sai_lech">Thông tin sai lệch</option>
+        <option value="kho_hieu">Câu trả lời khó hiểu</option>
+        <option value="khac">Lý do khác</option>
+      </select>
+
+      <label for="ghi-chu-{{ report_id }}" class="sr-only">Ghi chú thêm</label>
+      <input type="text" id="ghi-chu-{{ report_id }}" name="ghi_chu" maxlength="600"
+             placeholder="Muốn nói thêm gì không? Không bắt buộc."
+             class="rounded-lg border border-hairline bg-paper px-2 py-1.5 text-xs text-ink placeholder:text-ink-faint">
+
+      <button type="submit" class="btn btn-ghost text-xs py-1 px-2 justify-self-start">
+        Gửi báo cáo
+      </button>
+    </form>
+  </details>
+</div>
