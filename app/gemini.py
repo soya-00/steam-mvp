@@ -3,16 +3,18 @@ from __future__ import annotations
 import logging
 import re
 import threading
+import time
 
 from app.config import (
     GEMINI_API_KEY,
     GEMINI_MODEL,
     GEMINI_MODEL_PREFERENCE,
+    MAX_CALLS_PER_HOUR,
     MAX_MESSAGES_PER_SESSION,
     gemini_enabled,
 )
 from app.moderation import OK as SCREEN_OK
-from app.moderation import screen
+from app.moderation import screen, strip_emoji
 
 log = logging.getLogger("gals.gemini")
 
@@ -50,6 +52,11 @@ NGUYÊN TẮC BẮT BUỘC — áp dụng cho mọi câu trả lời:
   tình huống này không có đáp án đúng, rồi hỏi một câu giúp em tự đi tiếp.
 - Nếu học sinh viết tục hoặc gõ linh tinh, đừng bình luận, đừng dạy dỗ. Bỏ qua
   và quay lại chủ đề bằng một câu hỏi bình thường.
+- TUYỆT ĐỐI KHÔNG dùng emoji, biểu tượng cảm xúc, mặt cười bằng ký tự (:)) =))
+  :v ^^ <3) hay ký hiệu trang trí trong bất kỳ câu trả lời nào. Kể cả khi học
+  sinh gửi thật nhiều emoji, đừng đáp lại theo kiểu đó và cũng đừng nhắc tới
+  chuyện đó. Giữ giọng điềm đạm của một người lớn đang lắng nghe.
+- Không viết hoa cả câu để nhấn mạnh, không dùng nhiều dấu chấm than liên tiếp.
 - Viết ngắn. Tối đa 4-5 câu, trừ khi được yêu cầu tổng hợp.
 """
 
@@ -188,6 +195,28 @@ def quota_left(session_key: str) -> int:
     return max(0, MAX_MESSAGES_PER_SESSION - _usage.get(session_key, 0))
 
 
+_calls: list[float] = []
+_calls_lock = threading.Lock()
+_WINDOW_SECONDS = 3600
+
+
+def budget_left() -> int:
+    now = time.time()
+    with _calls_lock:
+        _calls[:] = [t for t in _calls if now - t < _WINDOW_SECONDS]
+        return max(0, MAX_CALLS_PER_HOUR - len(_calls))
+
+
+def _take_from_budget() -> bool:
+    now = time.time()
+    with _calls_lock:
+        _calls[:] = [t for t in _calls if now - t < _WINDOW_SECONDS]
+        if len(_calls) >= MAX_CALLS_PER_HOUR:
+            return False
+        _calls.append(now)
+        return True
+
+
 def _spend(session_key: str) -> bool:
     used = _usage.get(session_key, 0)
     if used >= MAX_MESSAGES_PER_SESSION:
@@ -210,6 +239,27 @@ _thinking_mode: str | None = "level"
 _thinking_settled = False
 
 
+_SAFETY_CATEGORIES = (
+    "HARM_CATEGORY_HARASSMENT",
+    "HARM_CATEGORY_HATE_SPEECH",
+    "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    "HARM_CATEGORY_DANGEROUS_CONTENT",
+)
+
+
+def _safety_settings():
+    from google.genai import types
+
+    try:
+        return [
+            types.SafetySetting(category=c, threshold="BLOCK_LOW_AND_ABOVE")
+            for c in _SAFETY_CATEGORIES
+        ]
+    except Exception as exc:
+        log.warning("Gemini: không đặt được ngưỡng an toàn (%s), dùng mặc định", exc)
+        return None
+
+
 def _config(system: str, max_tokens: int, mode: str | None):
     from google.genai import types
 
@@ -224,6 +274,7 @@ def _config(system: str, max_tokens: int, mode: str | None):
         temperature=0.85,
         max_output_tokens=max_tokens + 1200,
         thinking_config=thinking,
+        safety_settings=_safety_settings(),
     )
 
 
@@ -256,7 +307,7 @@ def _generate(system: str, contents: list[dict], *, max_tokens: int = 600) -> st
             return None
 
         _thinking_mode, _thinking_settled = mode, True
-        text = (resp.text or "").strip()
+        text = strip_emoji(resp.text or "")
         if not text:
             reason = resp.candidates[0].finish_reason if resp.candidates else "?"
             log.warning("Gemini: không có nội dung trả về (finish_reason=%s)", reason)
@@ -341,6 +392,9 @@ def guided_reply(scenario, stage, question: str, answer: str, turn: int, session
         return _offline_guided(stage.key, turn)
     if not _spend(session_key):
         return QUOTA_MESSAGE
+    if not _take_from_budget():
+        log.warning("Gemini: chạm trần %d lượt/giờ, chuyển sang ngoại tuyến", MAX_CALLS_PER_HOUR)
+        return _offline_guided(stage.key, turn)
 
     text = _generate(
         _guided_system(scenario, stage),
@@ -372,6 +426,9 @@ def freeform_reply(history: list[dict], message: str, session_key: str) -> tuple
         return _offline_freeform(turn, message)
     if not _spend(session_key):
         return QUOTA_MESSAGE, None
+    if not _take_from_budget():
+        log.warning("Gemini: chạm trần %d lượt/giờ, chuyển sang ngoại tuyến", MAX_CALLS_PER_HOUR)
+        return _offline_freeform(turn, message)
 
     contents = _turns(history) + [{"role": "user", "parts": [{"text": message}]}]
     text = _generate(FREEFORM_SYSTEM, contents, max_tokens=500)
@@ -395,7 +452,7 @@ def synthesis(scenario, transcript: list[dict], session_key: str) -> str:
     answers = [t for t in transcript if t.get("answer")]
     if not gemini_enabled():
         return _offline_synthesis(scenario, [a["answer"] for a in answers])
-    if not _spend(session_key):
+    if not _spend(session_key) or not _take_from_budget():
         return _offline_synthesis(scenario, [a["answer"] for a in answers])
 
     body = "\n\n".join(

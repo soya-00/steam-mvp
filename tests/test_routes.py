@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from app.scenarios import all_scenarios
-from tests.conftest import login_student, login_teacher
+from tests.conftest import login_independent, login_student, login_teacher
 
 HREF = re.compile(r'href="(/[^"#]*)"')
 
@@ -52,3 +52,30 @@ def test_teacher_pages_and_links(client):
 
 def test_unknown_page_renders_404(client):
     assert client.get("/khong-ton-tai").status_code == 404
+
+
+def test_teacher_dashboard_carries_the_prototype_disclaimer(client):
+    login_teacher(client)
+    page = client.get("/giao-vien").text
+    for phrase in [
+        "bản mẫu",
+        "không được lưu lại",
+        "đừng để học sinh nhập thông tin thật",
+        "không phải công cụ hỗ trợ tâm lý",
+        "LEGAL.md",
+    ]:
+        assert phrase.lower() in page.lower(), phrase
+
+
+def test_legal_notice_exists_and_is_linked_everywhere(client):
+    from pathlib import Path
+
+    legal = Path("LEGAL.md").read_text(encoding="utf-8")
+    for heading in ["Tuyên bố về bản mẫu", "Dữ liệu đi những đâu", "Trách nhiệm pháp lý"]:
+        assert heading in legal, heading
+    assert "111" in legal
+
+    assert "LEGAL.md" in Path("README.md").read_text(encoding="utf-8")
+
+    login_independent(client)
+    assert "LEGAL.md" in client.get("/trang-ca-nhan").text

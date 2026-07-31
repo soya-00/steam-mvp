@@ -15,6 +15,9 @@
       <div class="min-w-0 flex-1">
         <div class="card p-3 px-4 bg-paper-raised border-hairline">
           <p class="text-sm text-ink prose-beat">{{ m.text }}</p>
+          {% with report_id = 'bs-' ~ loop.index, reported_text = m.text %}
+            {% include "partials/bao_cao_tra_loi.html" %}
+          {% endwith %}
         </div>
 
         {% if m.idea %}

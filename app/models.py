@@ -166,6 +166,18 @@ class Feedback(Base):
     journal_entry: Mapped["JournalEntry | None"] = relationship(back_populates="feedback")
 
 
+class Report(Base):
+
+    __tablename__ = "reports"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    kind: Mapped[str] = mapped_column(String(20))
+    reason: Mapped[str] = mapped_column(String(40), default="")
+    note: Mapped[str] = mapped_column(Text, default="")
+    reported_text: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
 class GuidedSession(Base):
 
     __tablename__ = "guided_sessions"

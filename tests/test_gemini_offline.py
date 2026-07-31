@@ -61,6 +61,37 @@ def test_usage_dict_is_bounded():
     _usage.clear()
 
 
+def test_assistant_never_speaks_in_emoji():
+    from app.gemini import (
+        _OFFLINE_FREEFORM,
+        _OFFLINE_GUIDED,
+        GUARDRAILS,
+        OFFLINE_NOTE,
+        QUOTA_MESSAGE,
+    )
+    from app.moderation import strip_emoji
+
+    spoken = [OFFLINE_NOTE, QUOTA_MESSAGE, *_OFFLINE_FREEFORM]
+    for pool in _OFFLINE_GUIDED.values():
+        spoken.extend(pool)
+    for line in spoken:
+        assert strip_emoji(line) == line, line
+
+    assert "emoji" in GUARDRAILS.lower()
+
+
+def test_blocked_emoji_input_gets_the_emoji_reply():
+    reply, idea = freeform_reply([], "😭😭😭", "t-emoji")
+    assert reply == REPLIES["emoji"]
+    assert idea is None
+
+
+def test_crisis_input_never_reaches_the_model():
+    reply, idea = freeform_reply([], "em ko muốn sốg nữa", "t-crisis")
+    assert reply == REPLIES["crisis"]
+    assert idea is None
+
+
 def test_quota_floors_at_cap():
     _usage.clear()
     key = "het-han-muc"

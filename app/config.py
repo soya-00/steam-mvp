@@ -27,6 +27,7 @@ GEMINI_MODEL_PREFERENCE = (
 )
 
 MAX_MESSAGES_PER_SESSION = 30
+MAX_CALLS_PER_HOUR = int(os.getenv("MAX_CALLS_PER_HOUR", "400"))
 
 STEAM_FIELDS = (
     {"key": "khoa_hoc", "name": "Khoa học", "letter": "S", "accent": "teal"},

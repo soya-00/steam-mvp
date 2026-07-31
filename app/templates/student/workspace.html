@@ -86,6 +86,9 @@
       <div class="card p-4 bg-teal-50 border-teal-100 flex-1 min-w-0">
         <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">{{ t.label }}</p>
         <p class="mt-1.5 text-sm text-ink prose-beat">{{ t.text }}</p>
+        {% with report_id = 'ws-' ~ loop.index, reported_text = t.text %}
+          {% include "partials/bao_cao_tra_loi.html" %}
+        {% endwith %}
       </div>
     </div>
     {% else %}
