@@ -144,4 +144,6 @@ Xem [LEGAL.md](../LEGAL.md) cho bối cảnh đầy đủ.
 - [ ] **Mặc định tắt chia sẻ công khai**, bật phải qua duyệt.
 - [ ] **Bỏ trường tên và email** khỏi bảng người dùng; chuyển sang mã ẩn danh do giáo viên phát.
 - [ ] **Trang Điều khoản sử dụng và Chính sách quyền riêng tư** bằng tiếng Việt, đủ dễ đọc cho học sinh lớp 10.
-- [ ] **Nút báo cáo câu trả lời không phù hợp** của trợ lý AI.
+- [x] **Nút báo cáo câu trả lời không phù hợp** của trợ lý AI, kèm nút gửi góp ý.
+- [ ] **Đưa góp ý ra một nơi sống được.** Hiện góp ý nằm trong bảng `reports` (mất khi khởi động lại) và trong nhật ký máy chủ (đọc được nhưng chỉ trong thời gian lưu log). Cần một trong hai: cơ sở dữ liệu lâu dài, hoặc đẩy ra webhook / email / issue trên GitHub. Đây là phần còn thiếu thật sự của tính năng này.
+- [ ] **Màn hình đọc báo cáo** cho người vận hành — hiện chưa có chỗ nào xem được, kể cả khi dữ liệu còn.

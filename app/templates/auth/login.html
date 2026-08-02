@@ -32,29 +32,8 @@
     </p>
   </div>
 
-  <div class="card p-5 mt-4 bg-amber-50 border-amber-100">
-    <h2 class="text-base text-amber-900">Demo nhanh</h2>
-    <p class="mt-1 text-sm text-amber-900/80">
-      Dành cho ban giám khảo — mở thẳng từng vai, dữ liệu mẫu đã có sẵn.
-    </p>
-    <div class="mt-4 grid gap-2">
-      {% set demos = [
-        ('giao_vien', 'Giáo viên', '2 lớp, đã có hoạt động của học sinh'),
-        ('hoc_sinh_co_lop', 'Học sinh (có lớp)', 'Đang học lớp 11A2 của cô Mai'),
-        ('hoc_sinh_doc_lap', 'Học sinh (độc lập)', 'Không thuộc lớp nào, giáo viên không thấy')
-      ] %}
-      {% for key, label, note in demos %}
-      <a href="/demo/{{ key }}"
-         class="flex items-center justify-between gap-3 rounded-lg bg-paper-raised border border-amber-100 px-4 py-3 hover:border-amber-300 transition">
-        <span>
-          <span class="block font-semibold text-sm text-ink">{{ label }}</span>
-          <span class="block text-xs text-ink-soft">{{ note }}</span>
-        </span>
-        <span class="text-amber" aria-hidden="true">→</span>
-      </a>
-      {% endfor %}
-    </div>
-  </div>
+  {% include "partials/demo_nhanh.html" %}
+
 
 </div>
 {% endblock %}

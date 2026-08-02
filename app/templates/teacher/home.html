@@ -84,4 +84,16 @@
   </form>
 </section>
 
+<section class="card p-5 mt-8 branch-bar border-l-slate max-w-3xl">
+  <h2 class="text-lg text-ink">Góp ý cho GALS</h2>
+  <p class="mt-1 text-sm text-ink-soft">
+    Thầy cô thấy chỗ nào vướng khi dùng với lớp, hoặc thiếu thứ gì cần cho buổi dạy? Góp ý ghi lại ở phía máy chủ, không kèm tên.
+  </p>
+  <div class="mt-3 text-xs text-ink-faint">
+    {% with slot = 'bang-dieu-khien', nhan = 'Mở ô góp ý', open = true %}
+      {% include "partials/gop_y.html" %}
+    {% endwith %}
+  </div>
+</section>
+
 {% endblock %}

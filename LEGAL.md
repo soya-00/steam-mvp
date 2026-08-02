@@ -73,6 +73,13 @@ Bộ đếm này **không hiển thị cho giáo viên**, và đó là chủ ý:
 
 **Nút báo cáo câu trả lời và nút gửi góp ý** thì có lưu nội dung: câu trả lời của trợ lý bị báo cáo, lý do chọn từ danh sách, và phần ghi chú nếu học sinh viết. **Không lưu người gửi.** Ghi chú cũng đi qua chính bộ lọc đầu vào, và mỗi phiên chỉ gửi được 5 lần mỗi giờ để tránh bị lạm dụng.
 
+Nội dung đó đi tới hai chỗ, **và không đi đâu khác** — không email, không dịch vụ bên ngoài:
+
+1. **Một dòng trong bảng `reports`** của cơ sở dữ liệu bản mẫu. Bảng này bị xoá mỗi lần máy chủ khởi động lại, và hiện **chưa có màn hình nào đọc được nó**.
+2. **Một dòng trong nhật ký máy chủ**, để người vận hành đọc được thật. Đây là lý do form góp ý có ghi rõ: đừng viết thông tin cá nhân vào đó.
+
+Nói thẳng: ở bản mẫu, góp ý **không chắc còn lại tới hôm sau**. Câu xác nhận sau khi gửi cũng nói đúng như vậy chứ không hứa suông. Muốn góp ý sống được thật thì cần cơ sở dữ liệu lâu dài hoặc gửi ra một nơi bên ngoài — xem [Việc cần làm tiếp](docs/VIEC-CAN-LAM.md).
+
 ---
 
 ## Trợ lý AI và những điều GALS không làm

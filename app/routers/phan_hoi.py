@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import threading
 import time
 
@@ -15,6 +16,8 @@ from app.moderation import MAX_INPUT_CHARS
 from app.moderation import OK as SCREEN_OK
 from app.moderation import screen
 from app.templating import templates
+
+log = logging.getLogger("gals.phanhoi")
 
 router = APIRouter()
 
@@ -33,9 +36,20 @@ REASONS = {
 _lock = threading.Lock()
 _sent: dict[str, list[float]] = {}
 
-THANKS = "Cảm ơn bạn đã báo. Mình đã ghi nhận."
+THANKS = (
+    "Cảm ơn bạn đã báo. Mình ghi lại rồi — đây là bản mẫu nên phần ghi này "
+    "có thể mất khi máy chủ khởi động lại."
+)
+FEEDBACK_THANKS = (
+    "Cảm ơn góp ý của bạn. Mình ghi lại rồi — đây là bản mẫu nên phần ghi này "
+    "có thể mất khi máy chủ khởi động lại."
+)
 THROTTLED = "Bạn vừa gửi khá nhiều báo cáo rồi. Nghỉ một lát rồi quay lại nhé."
 REJECTED = "Mình chưa gửi được phần ghi chú này. Bạn viết lại bằng lời bình thường nhé."
+
+
+def _flat(text: str) -> str:
+    return " ".join((text or "").split())
 
 
 def _allow(key: str) -> bool:
@@ -89,6 +103,12 @@ def report_reply(
     )
     db.commit()
     bump(f"{REPORT_PREFIX}.tra_loi_ai")
+    log.info(
+        "[BAO-CAO] ly_do=%s | ghi_chu=%s | trich_dan=%s",
+        reason,
+        _flat(note) or "(trống)",
+        _flat(trich_dan)[:300] or "(trống)",
+    )
     return _respond(request, THANKS, True)
 
 
@@ -112,4 +132,5 @@ def send_feedback(
     db.add(Report(kind="gop_y", reason="gop_y", note=body[:MAX_NOTE_CHARS]))
     db.commit()
     bump(f"{REPORT_PREFIX}.gop_y")
-    return _respond(request, "Cảm ơn góp ý của bạn. Mình đã ghi nhận.", True)
+    log.info("[GOP-Y] %s", _flat(body)[:MAX_NOTE_CHARS])
+    return _respond(request, FEEDBACK_THANKS, True)

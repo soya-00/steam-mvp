@@ -151,6 +151,21 @@ def _sync_journal(db: Session, gs: GuidedSession, scenario: Scenario, user: User
     return entry
 
 
+def _answers_by_stage(scenario: Scenario, gs: GuidedSession) -> list[dict]:
+    by_stage: dict[str, list[dict]] = {}
+    for beat in _transcript(gs):
+        if not beat.get("answer"):
+            continue
+        by_stage.setdefault(beat.get("stage", ""), []).append(beat)
+
+    out = []
+    for stage in scenario.stages:
+        answers = by_stage.get(stage.name) or by_stage.get(stage.key) or []
+        if answers:
+            out.append({"name": stage.name, "answers": answers})
+    return out
+
+
 def _progress(scenario: Scenario, gs: GuidedSession) -> list[dict]:
     out = []
     for i, st in enumerate(scenario.stages):
@@ -617,6 +632,37 @@ def portfolio_view(
         .all()
     )
 
+    feedback = (
+        db.query(Feedback)
+        .filter(Feedback.student_id == user.id)
+        .order_by(Feedback.created_at.desc())
+        .all()
+    )
+    feedback_for: dict[int, list[Feedback]] = {}
+    for note in feedback:
+        feedback_for.setdefault(note.journal_entry_id or 0, []).append(note)
+
+    sessions = (
+        db.query(GuidedSession)
+        .filter(GuidedSession.student_id == user.id)
+        .order_by(GuidedSession.created_at.desc())
+        .all()
+    )
+    journeys = []
+    for gs in sessions:
+        scenario = get_scenario(gs.scenario_id)
+        if scenario is None:
+            continue
+        journeys.append(
+            {
+                "scenario": scenario,
+                "finished": gs.finished,
+                "synthesis": gs.synthesis,
+                "stages": _answers_by_stage(scenario, gs),
+                "answer_count": len([t for t in _transcript(gs) if t.get("answer")]),
+            }
+        )
+
     return templates.TemplateResponse(
         request,
         "student/ho_so.html",
@@ -626,6 +672,10 @@ def portfolio_view(
             "items": items,
             "entries": entries,
             "scenario_of": {e.id: get_scenario(e.scenario_id) for e in entries},
+            "journeys": journeys,
+            "feedback_for": feedback_for,
+            "feedback_count": len(feedback),
+            "answer_total": sum(j["answer_count"] for j in journeys),
             "just_submitted": bool(vua_nop),
             "token": share_token(user.id),
         },

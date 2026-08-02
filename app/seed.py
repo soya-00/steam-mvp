@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.auth import DEMO_ACCOUNTS
 from app.db import Base, SessionLocal, engine
 from app.models import (
+    GuidedSession,
     Assignment,
     Badge,
     Class,
@@ -154,6 +155,99 @@ def _seed(db: Session) -> None:
                 created_at=now - timedelta(hours=6),
             ),
         ]
+    )
+
+    walked = [
+        (
+            "Hiểu vấn đề",
+            "Câu hỏi nhỏ 1",
+            "Bạn chú ý đến điều gì từ những dữ liệu này?",
+            "31/38 bạn bị ốm có ăn ở căng tin nghe thì nhiều, nhưng gần như cả trường "
+            "đều ăn ở đó nên con số này chưa nói lên gì. Em muốn biết trong nhóm KHÔNG "
+            "ăn căng tin thì bao nhiêu bạn bị ốm. Không có số đó thì em chưa so sánh được.",
+        ),
+        (
+            "Hiểu vấn đề",
+            "Câu hỏi nhỏ 2",
+            "Điều gì bạn đang chắc chắn, điều gì bạn đang giả định?",
+            "Em chắc là có 38 bạn ốm và hai lớp vừa đi dã ngoại về. Em đang giả định "
+            "là các bạn nhớ đúng mình đã ăn gì — mà cái này thì em không chắc, vì bảng "
+            "hỏi là tự khai và mọi người thường nhớ nhầm.",
+        ),
+        (
+            "Đồng cảm",
+            "Câu hỏi nhỏ 1",
+            "Bạn muốn tìm hiểu góc nhìn của ai trước?",
+            "Em muốn hỏi các bạn bị ốm mà KHÔNG báo với y tế trường. Mấy bạn sắp thi "
+            "học kỳ chắc sợ bị cho nghỉ nên giấu. Nếu chỉ đếm người đã báo thì em đang "
+            "bỏ sót đúng nhóm cần biết nhất.",
+        ),
+        (
+            "Sáng tạo",
+            "Câu hỏi nhỏ 1",
+            "Trước khi có kết quả xét nghiệm, kế hoạch của bạn cần đạt những gì?",
+            "Kế hoạch của em: lập bảng so sánh hai nhóm ăn và không ăn căng tin, hỏi "
+            "riêng hai lớp đi dã ngoại, và làm một kênh báo triệu chứng ẩn danh để các "
+            "bạn sợ bỏ thi vẫn báo được. Em không đóng cửa căng tin ngay vì chưa có bằng chứng.",
+        ),
+        (
+            "Phản chiếu",
+            "Câu hỏi nhỏ 1",
+            "Bạn diễn giải những kết quả này như thế nào?",
+            "Em vẫn thấy có cách giải thích khác: có thể nguồn lây là chuyến dã ngoại, "
+            "còn căng tin chỉ là chỗ đông người nên trông giống nguyên nhân. Nếu nhóm "
+            "không ăn căng tin cũng ốm nhiều thì em sẽ phải bỏ giả thuyết ban đầu.",
+        ),
+    ]
+    linh_session = GuidedSession(
+        student_id=linh.id,
+        scenario_id=first.id,
+        stage_index=len(first.stages),
+        beat_index=0,
+        finished=True,
+        synthesis=(
+            "Điều đáng chú ý nhất ở bạn là chỗ bạn không tin ngay vào con số 31/38. Bạn "
+            "nhận ra rằng một tỉ lệ chỉ có nghĩa khi đặt cạnh nhóm để so sánh, và bạn tự "
+            "nói ra mình cần dữ liệu của nhóm không ăn căng tin — đó chính là cách người "
+            "làm dịch tễ đọc số liệu.\n\n"
+            "Bạn cũng tự chỉ ra giả định của mình về bảng hỏi tự khai, thay vì để nó trôi "
+            "qua. Ở phần đồng cảm, bạn nghĩ tới nhóm giấu bệnh vì sợ lỡ kỳ thi — nhóm này "
+            "không xuất hiện trong bất kỳ bảng số liệu nào, và bạn vẫn nhớ tới họ.\n\n"
+            "Trong kế hoạch, bạn chấp nhận đánh đổi: không đóng cửa căng tin vội, dù làm "
+            "vậy sẽ trông quyết đoán hơn. Và đến cuối bạn vẫn để ngỏ khả năng chuyến dã "
+            "ngoại mới là nguồn lây. Chỗ bạn còn chưa chắc chắn không phải là chỗ thiếu — "
+            "đó là chỗ bạn biết mình cần quay lại khi có thêm dữ kiện."
+        ),
+        transcript=json.dumps(
+            [
+                {
+                    "kind": "question",
+                    "stage": stage,
+                    "label": label,
+                    "text": text,
+                    "answer": answer,
+                }
+                for stage, label, text, answer in walked
+            ],
+            ensure_ascii=False,
+        ),
+        created_at=now - timedelta(days=2),
+    )
+    db.add(linh_session)
+
+    db.add(
+        Feedback(
+            teacher_id=teacher.id,
+            student_id=linh.id,
+            journal_entry_id=None,
+            content=(
+                "Cô đọc cả bốn cấp độ của em rồi. Điều cô muốn em giữ lại là thói quen "
+                "hỏi \u201cso với nhóm nào?\u201d trước khi kết luận — cái đó dùng được ở "
+                "rất nhiều môn, không riêng gì phần này. Buổi sau em thử kể lại cho cả "
+                "lớp nghe cách em nghĩ nhé, cô nghĩ các bạn sẽ học được."
+            ),
+            created_at=now - timedelta(hours=20),
+        )
     )
 
     db.add_all(
