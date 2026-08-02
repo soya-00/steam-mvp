@@ -79,3 +79,16 @@ def test_legal_notice_exists_and_is_linked_everywhere(client):
 
     login_independent(client)
     assert "LEGAL.md" in client.get("/trang-ca-nhan").text
+
+
+def test_field_page_explains_how_scenarios_are_built(client):
+    login_independent(client)
+    page = client.get("/du-an").text
+    assert "Các tình huống ở đây được dựng thế nào" in page
+    for claim in [
+        "đi tìm bằng chứng theo cách riêng",
+        "Sản phẩm cuối mỗi nghề một khác",
+        "cố tình chưa đủ để kết luận",
+        "dữ liệu giả định",
+    ]:
+        assert claim in page, claim
