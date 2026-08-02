@@ -151,6 +151,31 @@ Start:  uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
 ---
 
+## Đọc góp ý và báo cáo
+
+Học sinh và giáo viên gửi góp ý từ ô **Góp ý cho GALS** trên trang cá nhân / trang giáo viên, hoặc từ mục *Gửi góp ý* ở chân trang. Nút **Báo cáo câu trả lời này** nằm dưới mỗi câu trả lời của trợ lý.
+
+Nội dung đi tới **hai chỗ, không đi đâu khác** — không email, không webhook, không dịch vụ ngoài:
+
+| Chỗ | Sống được bao lâu | Đọc bằng cách nào |
+|---|---|---|
+| Bảng `reports` trong DB | Mất khi máy chủ khởi động lại | Chưa có màn hình nào đọc được |
+| Nhật ký máy chủ | Theo thời gian lưu log của Render | Tab **Logs** trên Render |
+
+Trên Render, vào dịch vụ → tab **Logs** → ô tìm kiếm, gõ một trong hai nhãn:
+
+```
+[GOP-Y]      góp ý chung
+[BAO-CAO]    báo cáo một câu trả lời của trợ lý
+```
+
+Nhãn để bằng chữ không dấu có chủ ý, cho dễ gõ vào ô tìm kiếm. Mỗi bản ghi nằm gọn trên **một dòng** — xuống dòng trong nội dung đã được ép phẳng — nên lọc log không bị vỡ.
+
+Bộ đếm đi cùng, dạng `đếm report.gop_y = 3`, chỉ là con số. Các nhãn `screen.crisis`, `screen.profanity`… là số lượt bộ lọc đầu vào chặn, **không kèm nội dung và không kèm người**.
+
+> **Đây chưa phải là bền.** Muốn góp ý sống được thật thì cần cơ sở dữ liệu lâu dài, hoặc đẩy ra ngoài bằng webhook / email. Xem [Việc cần làm tiếp](VIEC-CAN-LAM.md).
+
+
 ## Hệ thống thiết kế
 
 Bảng màu khai báo một lần trong `src/input.css`:

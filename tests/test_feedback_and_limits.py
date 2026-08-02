@@ -194,3 +194,38 @@ def test_feedback_form_warns_against_personal_details(client):
     page = client.get("/trang-ca-nhan").text
     assert "không gửi đi đâu khác" in page
     assert "Đừng viết thông tin cá nhân" in page
+
+
+def test_feedback_box_is_reachable_from_both_dashboards(client):
+    from tests.conftest import login_teacher
+
+    login_independent(client)
+    hub = client.get("/trang-ca-nhan").text
+    assert "Góp ý cho GALS" in hub
+    assert 'hx-post="/phan-hoi/gop-y"' in hub
+
+    login_teacher(client)
+    board = client.get("/giao-vien").text
+    assert "Góp ý cho GALS" in board
+    assert 'hx-post="/phan-hoi/gop-y"' in board
+
+
+def test_two_feedback_boxes_on_a_page_do_not_share_an_id(client):
+    login_independent(client)
+    page = client.get("/trang-ca-nhan").text
+    assert page.count('id="gop-y-bang-dieu-khien"') == 1
+    assert page.count('id="gop-y-chan-trang"') == 1
+    assert page.count('id="gop-y-noi-dung-bang-dieu-khien"') == 1
+    assert page.count('id="gop-y-noi-dung-chan-trang"') == 1
+
+
+def test_log_labels_are_ascii_so_they_are_searchable(client, caplog):
+    _reset_reports()
+    login_independent(client)
+    with caplog.at_level("INFO", logger="gals.phanhoi"):
+        client.post("/phan-hoi/gop-y", data={"noi_dung": "Chữ nhỏ quá trên điện thoại"})
+        client.post("/phan-hoi/bao-cao", data={"ly_do": "kho_hieu"})
+    written = " ".join(r.getMessage() for r in caplog.records)
+    assert "[GOP-Y]" in written
+    assert "[BAO-CAO]" in written
+    _reset_reports()

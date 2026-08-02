@@ -99,22 +99,8 @@
   {% endif %}
 
   {% if user %}
-  <div class="mt-3" id="gop-y">
-    <details>
-      <summary class="cursor-pointer hover:text-ink">Gửi góp ý</summary>
-      <p class="mt-1 max-w-md">
-        Góp ý được ghi lại ở phía máy chủ của bản mẫu, không gửi đi đâu khác và không kèm
-        tên bạn. Đừng viết thông tin cá nhân vào đây nhé.
-      </p>
-      <form class="mt-2 grid gap-2 max-w-md"
-            hx-post="/phan-hoi/gop-y" hx-target="#gop-y" hx-swap="innerHTML">
-        <label for="gop-y-noi-dung" class="sr-only">Nội dung góp ý</label>
-        <textarea id="gop-y-noi-dung" name="noi_dung" rows="3" required maxlength="2000"
-                  placeholder="Chỗ nào khó dùng, chỗ nào bạn thấy sai? Viết thoải mái."
-                  class="w-full rounded-lg border border-hairline bg-paper px-3 py-2 text-xs text-ink placeholder:text-ink-faint"></textarea>
-        <button type="submit" class="btn btn-ghost text-xs py-1 px-2 justify-self-start">Gửi</button>
-      </form>
-    </details>
+  <div class="mt-3">
+    {% with slot = 'chan-trang' %}{% include "partials/gop_y.html" %}{% endwith %}
   </div>
   {% endif %}
 </footer>

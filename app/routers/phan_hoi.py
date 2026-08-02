@@ -104,10 +104,10 @@ def report_reply(
     db.commit()
     bump(f"{REPORT_PREFIX}.tra_loi_ai")
     log.info(
-        "báo cáo trả lời | lý do=%s | ghi chú=%s | trích dẫn=%s",
+        "[BAO-CAO] ly_do=%s | ghi_chu=%s | trich_dan=%s",
         reason,
-        _flat(note) or "(không có)",
-        _flat(trich_dan)[:300] or "(không có)",
+        _flat(note) or "(trống)",
+        _flat(trich_dan)[:300] or "(trống)",
     )
     return _respond(request, THANKS, True)
 
@@ -132,5 +132,5 @@ def send_feedback(
     db.add(Report(kind="gop_y", reason="gop_y", note=body[:MAX_NOTE_CHARS]))
     db.commit()
     bump(f"{REPORT_PREFIX}.gop_y")
-    log.info("góp ý | %s", _flat(body)[:MAX_NOTE_CHARS])
+    log.info("[GOP-Y] %s", _flat(body)[:MAX_NOTE_CHARS])
     return _respond(request, FEEDBACK_THANKS, True)
