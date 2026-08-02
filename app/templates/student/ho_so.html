@@ -7,8 +7,8 @@
   <div>
     <h1 class="text-2xl text-ink">Hồ sơ năng lực</h1>
     <p class="mt-1 text-sm text-ink-soft max-w-xl">
-      Tự động gom lại từ những gì bạn đã làm. Bạn toàn quyền sửa mô tả, đổi phân loại,
-      và quyết định mục nào được chia sẻ.
+      Đây không phải bảng thành tích. Đây là chỗ giữ lại <strong class="text-ink">cách bạn
+      đã nghĩ</strong> — bằng chính chữ bạn viết ra, cùng lời nhắn của thầy cô.
     </p>
   </div>
   <div class="flex flex-wrap gap-2">
@@ -26,7 +26,112 @@
 </div>
 {% endif %}
 
-<h2 class="mt-8 text-lg text-ink">Các mục trong hồ sơ</h2>
+{% if journeys or answer_total or feedback_count %}
+<div class="mt-6 grid gap-3 sm:grid-cols-3">
+  <div class="card p-4">
+    <p class="text-2xl font-display font-extrabold text-ink">{{ journeys|length }}</p>
+    <p class="text-xs text-ink-soft mt-0.5">tình huống bạn đã bước vào</p>
+  </div>
+  <div class="card p-4">
+    <p class="text-2xl font-display font-extrabold text-ink">{{ answer_total }}</p>
+    <p class="text-xs text-ink-soft mt-0.5">câu trả lời bạn tự viết</p>
+  </div>
+  <div class="card p-4">
+    <p class="text-2xl font-display font-extrabold text-ink">{{ feedback_count }}</p>
+    <p class="text-xs text-ink-soft mt-0.5">lời nhắn từ thầy cô</p>
+  </div>
+</div>
+<p class="mt-2 text-xs text-ink-faint">
+  Đếm cho vui thôi — nhiều hay ít không nói lên điều gì. Phần đáng đọc nằm ở bên dưới.
+</p>
+{% endif %}
+
+{% if feedback_for.get(0) %}
+<section class="mt-8">
+  <h2 class="text-lg text-ink">Thầy cô nhắn riêng cho bạn</h2>
+  <div class="mt-3 grid gap-2">
+    {% for note in feedback_for.get(0) %}
+    <div class="card p-4 branch-bar border-l-trunk bg-trunk-50 border-trunk-100">
+      <p class="text-sm text-ink prose-beat">{{ note.content }}</p>
+      <p class="mt-2 text-xs text-ink-faint">{{ note.created_at.strftime('%d/%m/%Y') }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if journeys %}
+<section class="mt-10">
+  <h2 class="text-lg text-ink">Cách bạn suy nghĩ</h2>
+  <p class="mt-1 text-sm text-ink-soft max-w-2xl">
+    Mỗi tình huống đi qua bốn kiểu suy nghĩ khác nhau. Dưới đây là chính những gì bạn
+    đã viết ở từng chặng — không sửa, không chấm.
+  </p>
+
+  <div class="mt-4 grid gap-4">
+    {% for j in journeys %}
+    {% set fc = field_classes(j.scenario.field) %}
+    <article class="card overflow-hidden">
+      <img src="{{ fc.art }}" alt="" aria-hidden="true" loading="lazy" class="art-banner h-16">
+      <div class="p-5">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip {{ fc.chip }}">{{ j.scenario.field }}</span>
+          {% if j.finished %}
+          <span class="chip bg-teal-50 text-teal-700">Đã đi hết bốn cấp độ</span>
+          {% else %}
+          <span class="chip bg-paper text-ink-faint border border-hairline">Đang làm dở</span>
+          {% endif %}
+        </div>
+
+        <h3 class="mt-2 text-base text-ink">{{ j.scenario.title }}</h3>
+        <p class="mt-0.5 text-sm text-ink-soft">
+          Bạn vào vai {{ j.scenario.protagonist }}, {{ j.scenario.role }}.
+        </p>
+
+        {% if j.synthesis %}
+        <div class="mt-4 card p-4 bg-teal-50 border-teal-100">
+          <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">Nhìn lại cùng bạn</p>
+          <p class="mt-1.5 text-sm text-ink prose-beat">{{ j.synthesis }}</p>
+        </div>
+        {% endif %}
+
+        {% if j.stages %}
+        <details class="mt-4">
+          <summary class="cursor-pointer text-sm font-medium text-ink hover:text-teal">
+            Đọc lại {{ j.answer_count }} câu trả lời của bạn
+          </summary>
+          <div class="mt-3 grid gap-4">
+            {% for st in j.stages %}
+            <div>
+              <p class="text-xs uppercase tracking-wider text-ink-faint font-semibold">{{ st.name }}</p>
+              <div class="mt-2 grid gap-2">
+                {% for a in st.answers %}
+                <div class="card p-3 bg-paper-raised border-hairline">
+                  <p class="text-xs text-ink-soft prose-beat">{{ a.text }}</p>
+                  <p class="mt-2 pt-2 border-t border-hairline text-sm text-ink prose-beat">{{ a.answer }}</p>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </details>
+        {% else %}
+        <p class="mt-3 text-sm text-ink-faint">Bạn chưa viết câu trả lời nào ở tình huống này.</p>
+        {% endif %}
+
+        <a href="/du-an/{{ j.scenario.id }}/khong-gian-tu-duy"
+           class="mt-4 inline-block text-sm font-medium text-teal hover:underline">
+          {{ 'Xem lại tình huống' if j.finished else 'Làm tiếp chỗ đang dở' }} →
+        </a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<h2 class="mt-10 text-lg text-ink">Các mục trong hồ sơ</h2>
 <div class="mt-3 grid gap-3">
   {% for item in items %}
   {% include "student/partials/portfolio_item.html" %}
@@ -58,11 +163,20 @@
           {{ 'Nhập vai' if e.source == 'guided' else 'Ý tưởng tự do' }}
         </span>
         {% if sc %}<span class="chip {{ field_classes(sc.field).chip }}">{{ sc.field }}</span>{% endif %}
+        {% if feedback_for.get(e.id) %}
+        <span class="chip bg-trunk-50 text-trunk">Có lời nhắn của thầy cô</span>
+        {% endif %}
         <span class="text-xs text-ink-faint">{{ e.created_at.strftime('%d/%m/%Y') }}</span>
       </div>
       <p class="mt-2 font-medium text-sm text-ink">{{ e.title or 'Chưa đặt tên' }}</p>
     </summary>
     <p class="mt-3 pt-3 border-t border-hairline text-sm text-ink-soft prose-beat">{{ e.content or 'Chưa có nội dung.' }}</p>
+    {% for note in feedback_for.get(e.id, []) %}
+    <div class="mt-3 card p-3 branch-bar border-l-trunk bg-trunk-50 border-trunk-100">
+      <p class="text-xs uppercase tracking-wide font-semibold text-trunk">Thầy cô nhắn</p>
+      <p class="mt-1 text-sm text-ink prose-beat">{{ note.content }}</p>
+    </div>
+    {% endfor %}
   </details>
   {% endfor %}
 </div>

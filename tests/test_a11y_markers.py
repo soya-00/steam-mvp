@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from app.scenarios import all_scenarios
-from tests.conftest import login_student, login_teacher
+from tests.conftest import login_independent, login_student, login_teacher
 
 IMG = re.compile(r"<img[^>]*>")
 INPUT = re.compile(r'<(?:input|textarea|select)[^>]*\bid="([^"]+)"')
@@ -35,7 +35,9 @@ def test_chat_log_is_a_live_region(client):
 
 
 def test_stepper_state_is_spoken_not_only_colour(client):
-    login_student(client)
+    # Học sinh độc lập không có dữ liệu gieo sẵn, nên tình huống luôn ở trạng
+    # thái đang làm dở — không phụ thuộc vào seed của tài khoản demo có lớp.
+    login_independent(client)
     sid = all_scenarios()[0].id
     client.get(f"/du-an/{sid}/khong-gian-tu-duy")
     page = client.get(f"/du-an/{sid}/khong-gian-tu-duy").text
