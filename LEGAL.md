@@ -9,10 +9,37 @@
 | | |
 |---|---|
 | GALS hiện là gì | Một **bản mẫu (prototype)** làm cho cuộc thi. Không phải sản phẩm thương mại. |
-| Dữ liệu trong ứng dụng | **Toàn bộ là dữ liệu giả định.** Không có học sinh thật nào trong đó. |
-| Dữ liệu có được lưu lại không | **Không.** Máy chủ khởi động lại là xoá sạch, kể cả bài bạn vừa viết. |
+| Dữ liệu gieo sẵn | **Toàn bộ là dữ liệu giả định.** Không có học sinh thật nào trong đó. |
+| Bài bạn tự viết | **Có ghi lên máy chủ**, nhưng bị xoá sạch mỗi lần máy chủ khởi động lại. |
+| Bài của bạn có riêng tư không | **Không.** Chưa có tài khoản riêng cho từng người — xem mục ngay dưới đây. |
 | Được nhập thông tin thật vào không | **Không.** Đừng nhập tên thật, trường thật, số điện thoại, email cá nhân. |
 | Có phải công cụ hỗ trợ tâm lý không | **Không.** Xem mục [Trợ lý AI](#trợ-lý-ai-và-những-điều-gals-không-làm). |
+
+---
+
+## Chưa có tài khoản riêng — mọi người dùng chung tài khoản
+
+Đây là điều quan trọng nhất trong cả trang này, và nó **không phải lỗi mới phát sinh** mà là giới hạn có sẵn của bản mẫu.
+
+Ứng dụng hiện có đúng **ba tài khoản**, và mọi đường vào đều rơi vào một trong ba:
+
+| Bạn làm gì | Bạn thực sự đăng nhập vào đâu |
+|---|---|
+| Bấm nút **Demo nhanh** | Một trong ba tài khoản mẫu, tuỳ nút bạn bấm |
+| Điền email và mật khẩu ở trang **Đăng nhập** | Tài khoản học sinh mẫu — **email và mật khẩu bạn gõ bị bỏ qua hoàn toàn** |
+| **Đăng ký** rồi chọn avatar, *có* nhập mã lớp | Tài khoản học sinh mẫu đang học lớp 11A2 |
+| **Đăng ký** rồi chọn avatar, *không* nhập mã lớp | Tài khoản học sinh mẫu độc lập |
+
+Hệ quả, nói thẳng:
+
+- **Hai người cùng nhập mã lớp là cùng một tài khoản.** Người này đọc được nhật ký, hồ sơ và câu trả lời của người kia, và ngược lại.
+- **Không có gì là riêng tư giữa những người đang dùng thử.** Lời hứa *"không nhập mã lớp thì giáo viên không xem được"* là **ý định thiết kế**, chưa phải thứ bản mẫu làm được.
+- **Đổi avatar là đổi cho tất cả**, vì cùng một bản ghi người dùng.
+- Đăng ký **không tạo ra tài khoản mới nào cả**.
+
+**Vì vậy: đừng dùng bản mẫu này để chạy thử với học sinh thật.** Nếu bạn đang cho người khác dùng thử, hãy nói rõ với họ rằng mọi thứ họ viết ra người khác đều đọc được, và đừng để ai viết chuyện cá nhân vào đó.
+
+Việc cần làm để sửa: xem mục [Cần làm gì trước khi dùng với học sinh thật](#cần-làm-gì-trước-khi-dùng-với-học-sinh-thật) và issue *Người dùng thử đang dùng chung tài khoản* trong kho mã.
 
 ---
 
@@ -35,7 +62,11 @@ Bản đang chạy là bản trình diễn. Điều đó có nghĩa là:
 
 **Hiện tại — bản mẫu**
 
+Mọi thứ bạn viết — câu trả lời khi nhập vai, nhật ký, mục hồ sơ, tin nhắn trong Ý tưởng tự do — đều **được gửi lên máy chủ và ghi vào cơ sở dữ liệu ở đó**. Không có gì chỉ nằm lại trên máy của bạn. Điều này là cần thiết để giáo viên đọc được nhật ký, nhưng cũng có nghĩa là **máy khác vẫn thấy được bài của bạn**, và vì chưa có tài khoản riêng nên **người khác cũng thấy**.
+
 Ứng dụng dùng SQLite trên đĩa tạm của máy chủ. Mỗi lần máy chủ khởi động lại, toàn bộ bảng dữ liệu bị xoá và gieo lại từ đầu bằng dữ liệu mẫu. Máy chủ miễn phí còn tự ngủ khi không có ai dùng, nên **bài viết của bạn thường không sống qua một đêm**.
+
+Thứ duy nhất lưu trên máy bạn là **bản nháp đang gõ dở** trong ô trả lời, giữ tạm ở `sessionStorage` của trình duyệt để đóng nhầm tab thì không mất chữ. Đóng trình duyệt là hết.
 
 Điều này là cố ý cho một bản trình diễn: mỗi người vào đều thấy ứng dụng sạch sẽ và đầy đủ nội dung. Nhưng nó cũng có nghĩa là **xoá dữ liệu ở đây không phải là quyền được xoá theo luật** — đó chỉ là mất dữ liệu.
 

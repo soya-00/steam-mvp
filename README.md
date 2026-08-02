@@ -10,10 +10,13 @@ Không cần cài gì, không cần đăng ký. Ở màn hình đăng nhập có
 > Lần vào đầu tiên có thể mất 30–60 giây vì máy chủ miễn phí đang "ngủ dậy".
 
 > [!IMPORTANT]
-> **Đây là bản mẫu trình diễn.** Toàn bộ dữ liệu trong ứng dụng là giả định, và dữ liệu
-> **không được lưu lại** — máy chủ khởi động lại là xoá sạch. Đừng nhập thông tin thật.
-> Trước khi cho học sinh có thật dùng, đọc **[LEGAL.md](LEGAL.md)** — lưu trữ dữ liệu,
-> phạm vi trách nhiệm, và danh sách việc bắt buộc phải làm trước.
+> **Đây là bản mẫu trình diễn, chưa có tài khoản riêng cho từng người.**
+> Cả ứng dụng hiện chỉ có **ba tài khoản dùng chung** — mọi người đăng nhập đều rơi vào
+> một trong ba tài khoản đó, nên **ai cũng đọc được bài của người khác**.
+> Những gì bạn viết **có được ghi lên máy chủ**, nhưng bị xoá sạch mỗi lần máy chủ khởi
+> động lại. Đừng nhập thông tin thật và đừng dùng bản này để chạy thử với học sinh thật.
+> Chi tiết ở **[LEGAL.md](LEGAL.md)** — lưu trữ dữ liệu, phạm vi trách nhiệm, và danh
+> sách việc bắt buộc phải làm trước.
 
 ---
 
@@ -67,7 +70,9 @@ Tạo lớp → đọc mã lớp cho học sinh → giao nhiệm vụ → đọc
 
 **Dạy được không cần thiết bị.** Khi giao nhiệm vụ làm tại lớp, có nút **in tài liệu** — kèm hướng dẫn ngắn cho thầy cô. Học sinh chỉ cần giấy và bút. Không có máy in cũng dạy được: đọc to phần bối cảnh, chép câu hỏi lên bảng.
 
-**Quyền riêng tư:** học sinh không nhập mã lớp thì không giáo viên nào xem được bài của em. Đây là mặc định, không phải tuỳ chọn phải đi tìm.
+**Quyền riêng tư — thiết kế là vậy, bản mẫu thì chưa:** ý định của sản phẩm là học sinh không nhập mã lớp thì không giáo viên nào xem được bài của em, và đó là mặc định chứ không phải tuỳ chọn phải đi tìm.
+
+> Nhưng **bản mẫu hiện tại chưa làm được điều đó**, vì chưa có tài khoản riêng cho từng người: mọi người dùng chung ba tài khoản có sẵn. Ranh giới riêng tư giữa các học sinh **chỉ tồn tại trên thiết kế**, chưa có thật trong bản đang chạy. Xem [LEGAL.md](LEGAL.md).
 
 ---
 
@@ -101,4 +106,4 @@ Chạy bộ kiểm thử (không bắt buộc): `pip install -r requirements-dev
 
 ---
 
-*Toàn bộ dữ liệu trong ứng dụng là dữ liệu giả định cho bản mẫu.*
+*Dữ liệu gieo sẵn trong ứng dụng là dữ liệu giả định. Những gì người dùng tự viết thì được ghi lên máy chủ, dùng chung giữa mọi người, và bị xoá mỗi lần máy chủ khởi động lại.*
