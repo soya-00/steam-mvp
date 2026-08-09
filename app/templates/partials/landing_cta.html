@@ -1,13 +1,21 @@
-<section class="cta-fun py-16 md:py-24 -mx-4 px-4 border-t border-hairline text-center relative overflow-hidden">
+<section class="py-16 md:py-24 -mx-4 px-4 border-t border-hairline text-center relative overflow-hidden">
   <div class="cta-confetti absolute inset-0 pointer-events-none" aria-hidden="true">
-    {% for left, top, rot, tone in [
-      ('8%','18%','-18deg','bg-sci-300'), ('17%','62%','24deg','bg-math-300'),
-      ('27%','30%','-8deg','bg-art-300'), ('35%','78%','40deg','bg-tech-300'),
-      ('63%','20%','14deg','bg-eng-300'), ('72%','70%','-30deg','bg-sci-300'),
-      ('83%','36%','8deg','bg-math-300'), ('91%','74%','-14deg','bg-art-300'),
-      ('47%','12%','32deg','bg-tech-300'), ('56%','86%','-22deg','bg-eng-300')
+    {% for left, top, rot, dx, dy, spin, dur, delay, tone in [
+      ('7%','22%','-18deg','18px','-30px','52deg','9s','0s','bg-sci-300'),
+      ('16%','66%','24deg','-14px','-38px','-44deg','11s','1.2s','bg-math-300'),
+      ('26%','34%','-8deg','22px','-22px','38deg','8s','0.4s','bg-art-300'),
+      ('34%','80%','40deg','-18px','-30px','60deg','12s','2.1s','bg-tech-300'),
+      ('45%','14%','32deg','16px','-34px','-50deg','10s','0.9s','bg-eng-300'),
+      ('55%','88%','-22deg','-20px','-26px','46deg','9.5s','1.7s','bg-sci-300'),
+      ('64%','24%','14deg','24px','-32px','-36deg','11.5s','0.2s','bg-math-300'),
+      ('73%','72%','-30deg','-16px','-40px','54deg','8.5s','2.6s','bg-art-300'),
+      ('84%','38%','8deg','20px','-24px','-48deg','10.5s','1.4s','bg-tech-300'),
+      ('92%','76%','-14deg','-22px','-34px','42deg','12.5s','0.7s','bg-eng-300')
     ] %}
-    <span class="{{ tone }}" style="left: {{ left }}; top: {{ top }}; transform: rotate({{ rot }});"></span>
+    <span class="{{ tone }}"
+          style="left: {{ left }}; top: {{ top }};
+                 --rot: {{ rot }}; --dx: {{ dx }}; --dy: {{ dy }};
+                 --spin: {{ spin }}; --dur: {{ dur }}; --delay: {{ delay }};"></span>
     {% endfor %}
   </div>
 

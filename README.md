@@ -102,6 +102,7 @@ Chạy bộ kiểm thử (không bắt buộc): `pip install -r requirements-dev
 - [Nhật ký thiết kế](docs/NHAT-KY-THIET-KE.md) — vì sao sản phẩm được làm như hiện tại: từng giai đoạn, quyết định đã chốt, lỗi đã gặp và hướng đi tiếp
 - [Hướng dẫn kỹ thuật](docs/KY-THUAT.md) — kiến trúc, cách thêm kịch huống, cách deploy, cách bật AI
 - [Việc cần làm tiếp](docs/VIEC-CAN-LAM.md) — khả năng tiếp cận, các nhóm nghề chưa có kịch huống
+- [**Tuyên bố miễn trừ**](DISCLAIMER.md) — bản rút gọn, bốn điều cần biết trước khi dùng
 - [**Tuyên bố pháp lý và dữ liệu**](LEGAL.md) — dữ liệu được lưu ra sao, đi những đâu, ai chịu trách nhiệm, và phải làm gì trước khi dùng với học sinh thật
 
 ---

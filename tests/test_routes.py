@@ -125,12 +125,23 @@ def test_landing_roadmap_has_all_three_stops(client):
     assert page.count("Thay vào đó") == 3
 
 
-def test_about_page_is_honest_about_prototype_limits(client):
+def test_about_page_still_reaches_the_legal_notice(client):
     page = client.get("/ve-chung-toi").text
-    for claim in [
-        "Chưa có tài khoản riêng cho từng người",
-        "bị xoá mỗi lần máy chủ khởi động lại",
-        "không phải công cụ hỗ trợ tâm lý",
-        "LEGAL.md",
-    ]:
-        assert claim in page, claim
+    assert "LEGAL.md" in page
+    assert "Nguyên tắc chúng tôi giữ" in page
+
+
+def test_every_public_page_footer_carries_the_prototype_warning(client):
+    from pathlib import Path
+
+    disclaimer = Path("DISCLAIMER.md").read_text(encoding="utf-8")
+    for heading in ["Chưa có tài khoản riêng cho từng người", "Không bảo đảm"]:
+        assert heading in disclaimer, heading
+    assert "111" in disclaimer
+    assert "LEGAL.md" in disclaimer
+
+    for url in MARKETING:
+        page = client.get(url).text
+        assert "Đây là bản mẫu trình diễn" in page, url
+        assert "ai cũng đọc được bài của người khác" in page, url
+        assert "DISCLAIMER.md" in page, url
