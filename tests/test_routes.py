@@ -92,3 +92,45 @@ def test_field_page_explains_how_scenarios_are_built(client):
         "dữ liệu giả định",
     ]:
         assert claim in page, claim
+
+
+MARKETING = ["/", "/kham-pha", "/linh-vuc", "/ve-chung-toi"]
+
+
+def test_public_pages_open_without_login(client):
+    client.get("/dang-xuat")
+    for url in MARKETING:
+        r = client.get(url)
+        assert r.status_code == 200, url
+        assert "Đăng ký miễn phí" in r.text, url
+        assert "/ve-chung-toi" in r.text, url
+
+
+def test_explore_filters_by_field(client):
+    all_page = client.get("/kham-pha").text
+    assert all_page.count("Bắt đầu tình huống này") == len(all_scenarios())
+
+    one = client.get("/kham-pha?linh_vuc=khoa_hoc").text
+    assert one.count("Bắt đầu tình huống này") == 1
+    assert "Khoa học" in one
+
+    assert client.get("/kham-pha?linh_vuc=khong-co-that").status_code == 200
+
+
+def test_landing_roadmap_has_all_three_stops(client):
+    page = client.get("/").text
+    assert page.count('class="road-stop"') == 3
+    for gone in ["Điểm số", "So sánh với bạn khác", "Đáp án mẫu"]:
+        assert gone in page
+    assert page.count("Thay vào đó") == 3
+
+
+def test_about_page_is_honest_about_prototype_limits(client):
+    page = client.get("/ve-chung-toi").text
+    for claim in [
+        "Chưa có tài khoản riêng cho từng người",
+        "bị xoá mỗi lần máy chủ khởi động lại",
+        "không phải công cụ hỗ trợ tâm lý",
+        "LEGAL.md",
+    ]:
+        assert claim in page, claim

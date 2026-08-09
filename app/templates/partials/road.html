@@ -1,0 +1,65 @@
+<section class="py-16 md:py-24 border-t border-hairline">
+  <div class="max-w-2xl">
+    <p class="text-xs uppercase tracking-[0.18em] font-semibold text-trunk">Quyết định thiết kế</p>
+    <h2 class="mt-3 text-2xl md:text-3xl text-ink">Ba thứ GALS cố tình không có</h2>
+    <p class="mt-3 text-base text-ink-soft">
+      Không phải làm chưa xong. Bỏ đi ba thứ này là có chủ đích — và mỗi chỗ bỏ đi đều được
+      thay bằng một thứ khác.
+    </p>
+  </div>
+
+  <div class="road mt-12 grid gap-10 md:gap-14 max-w-3xl" data-road>
+    <div class="road-spine" aria-hidden="true"></div>
+
+    {% for gone, why, instead in [
+      ('Điểm số',
+       'Một con số không nói được em đã nhận ra giả định của mình lúc nào, hay đã đổi ý sau khi đọc thêm dữ kiện.',
+       'Nhật ký tư duy giữ lại đúng những gì em viết, theo thứ tự em nghĩ ra.'),
+      ('So sánh với bạn khác',
+       'Bị đem ra so làm em viết cho vừa ý người chấm. Trong một việc chưa có lời giải, đó là thói quen sai.',
+       'Thầy cô nhắn riêng cho từng em, không ai khác đọc được.'),
+      ('Đáp án mẫu',
+       'Ngoài đời cũng không có. Đưa ra một đáp án nghĩa là dạy các em rằng bài toán này đã xong.',
+       'Trợ lý chỉ hỏi lại. Chỗ em còn chưa chắc là chỗ đáng quay lại khi có thêm dữ kiện.')
+    ] %}
+    <div class="road-stop" data-stop>
+      <span class="road-node" aria-hidden="true">{{ loop.index }}</span>
+      <div>
+        <p class="text-xs uppercase tracking-wider font-semibold text-ink-faint">Không có</p>
+        <h3 class="mt-1 text-xl md:text-2xl text-ink">{{ gone }}</h3>
+        <p class="mt-2 text-base text-ink-soft">{{ why }}</p>
+        <div class="mt-4 card p-4 branch-bar border-l-teal bg-teal-50 border-teal-100">
+          <p class="text-xs uppercase tracking-wide font-semibold text-teal-700">Thay vào đó</p>
+          <p class="mt-1 text-sm text-ink">{{ instead }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+(function () {
+  var road = document.querySelector("[data-road]");
+  if (!road) return;
+
+  var stops = Array.prototype.slice.call(road.querySelectorAll("[data-stop]"));
+  var spine = road.querySelector(".road-spine");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    stops.forEach(function (s) { s.dataset.seen = "1"; });
+    return;
+  }
+
+  var seen = 0;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting || e.target.dataset.seen === "1") return;
+      e.target.dataset.seen = "1";
+      seen = Math.max(seen, stops.indexOf(e.target) + 1);
+      spine.style.setProperty("--road-progress", Math.round((seen / stops.length) * 100) + "%");
+    });
+  }, { threshold: 0.45, rootMargin: "0px 0px -12% 0px" });
+
+  stops.forEach(function (s) { io.observe(s); });
+})();
+</script>

@@ -4,21 +4,7 @@
 {% block content %}
 <div class="-mt-6 md:-mt-8">
 
-<nav class="sticky top-0 z-40 -mx-4 px-4 bg-paper/90 backdrop-blur border-b border-hairline"
-     aria-label="Điều hướng trang giới thiệu">
-  <div class="flex items-center gap-4 h-14">
-    <a href="/" class="font-display font-extrabold text-lg text-trunk tracking-tight">
-      <span aria-hidden="true">◈</span> GALS
-    </a>
-    <div class="ml-auto hidden md:flex items-center gap-6 text-sm">
-      <a href="#bon-cap-do" class="text-ink-soft hover:text-ink">Bốn cấp độ</a>
-      <a href="#tinh-huong" class="text-ink-soft hover:text-ink">Tình huống</a>
-      <a href="#giao-vien" class="text-ink-soft hover:text-ink">Cho giáo viên</a>
-    </div>
-    <a href="/dang-nhap" class="text-sm font-medium text-trunk hover:underline md:ml-6">Đăng nhập</a>
-    <a href="/dang-ky" class="btn btn-primary text-sm py-2 px-4">Bắt đầu</a>
-  </div>
-</nav>
+{% include "partials/landing_nav.html" %}
 
 <section class="hero-dots -mx-4 px-4 border-b border-hairline">
   <div class="py-12 md:py-20 lg:grid lg:grid-cols-[1fr_26rem] lg:gap-14 lg:items-center">
@@ -110,28 +96,7 @@
   </div>
 </section>
 
-<section class="py-14 md:py-20 border-t border-hairline">
-  <div class="lg:grid lg:grid-cols-2 lg:gap-12">
-    <div>
-      <h2 class="text-2xl md:text-3xl text-ink">Ba thứ GALS cố tình không có</h2>
-      <p class="mt-2 text-base text-ink-soft">
-        Không phải làm chưa xong. Là quyết định thiết kế, vì thứ đáng học nằm ở chỗ khác.
-      </p>
-    </div>
-    <ul class="mt-6 lg:mt-0 grid gap-3">
-      {% for title, why in [
-        ('Điểm số', 'Một con số không nói được em đã nhận ra giả định của mình lúc nào.'),
-        ('So sánh với bạn khác', 'Bị đem ra so làm em viết cho vừa ý người chấm, thay vì viết thật.'),
-        ('Đáp án mẫu', 'Ngoài đời cũng không có. Chỗ em còn chưa chắc là chỗ đáng quay lại.')
-      ] %}
-      <li class="card p-4 branch-bar border-l-slate">
-        <p class="text-base font-display font-extrabold text-ink">{{ title }}</p>
-        <p class="mt-1 text-sm text-ink-soft">{{ why }}</p>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
+{% include "partials/road.html" %}
 
 <section id="giao-vien" class="py-14 md:py-20 border-t border-hairline scroll-mt-20">
   <div class="card p-7 md:p-10 bg-trunk border-trunk">
@@ -153,22 +118,10 @@
   </div>
 </section>
 
-<section class="pb-12 border-t border-hairline pt-10">
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <p class="text-sm text-ink-soft max-w-md">
-      Bản mẫu trình diễn dành cho học sinh và giáo viên Việt Nam. Chưa có tài khoản riêng
-      cho từng người — xem
-      <a href="https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md" target="_blank"
-         rel="noopener" class="text-trunk underline hover:text-ink">tuyên bố pháp lý và dữ liệu</a>
-      trước khi dùng thật.
-    </p>
-    <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-      <a href="/dang-ky" class="text-trunk font-medium hover:underline">Tạo hồ sơ</a>
-      <a href="/dang-nhap" class="text-ink-soft hover:text-ink">Đăng nhập</a>
-      <a href="/demo/giao_vien" class="text-ink-soft hover:text-ink">Dành cho giáo viên</a>
-    </div>
-  </div>
-</section>
+{% include "partials/landing_cta.html" %}
+
 
 </div>
 {% endblock %}
+
+{% block sitefooter %}{% include "partials/landing_footer.html" %}{% endblock %}
