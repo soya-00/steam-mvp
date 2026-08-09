@@ -1,11 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="presentation" aria-hidden="true">
-<defs><clipPath id="c-t"><rect width="320" height="180" rx="14"/></clipPath></defs>
-<g clip-path="url(#c-t)"><rect width="320" height="180" fill="#eeeff8"/>
-
-<g fill="none" stroke="#4a4e9c" stroke-width="4" stroke-linecap="round" opacity=".8">
-<path d="M20 46h58v40h64"/><path d="M20 116h34v-34h58"/><path d="M300 60h-52v52h-46"/><path d="M300 132h-40"/>
-<path d="M142 86v46"/></g>
-<rect x="126" y="66" width="72" height="52" rx="10" fill="#4a4e9c"/>
-<rect x="142" y="82" width="40" height="20" rx="5" fill="#dcdef1"/>
-<g fill="#9fa3d3"><circle cx="20" cy="46" r="7"/><circle cx="20" cy="116" r="7"/><circle cx="300" cy="60" r="7"/><circle cx="300" cy="132" r="7"/></g>
-</g></svg>
+<defs><clipPath id="c-tech"><rect width="320" height="180" rx="14"/></clipPath></defs>
+<g clip-path="url(#c-tech)">
+<rect width="320" height="180" fill="#eceafa"/>
+<g stroke="#a9a1e2" stroke-width="3" fill="none" stroke-linecap="round">
+<path d="M20 46h56v-22M20 90h44M20 134h56v22"/>
+<path d="M300 46h-56v-22M300 90h-44M300 134h-56v22"/>
+</g>
+<g fill="#a9a1e2">
+<circle cx="76" cy="20" r="5"/><circle cx="244" cy="20" r="5"/>
+<circle cx="76" cy="160" r="5"/><circle cx="244" cy="160" r="5"/>
+</g>
+<rect x="104" y="52" width="112" height="76" rx="10" fill="#5a4fc7"/>
+<rect x="122" y="70" width="76" height="40" rx="6" fill="#eceafa" opacity=".25"/>
+<path d="M146 90v-10a14 14 0 0 1 28 0v10" fill="none" stroke="#eceafa" stroke-width="5"/>
+<rect x="140" y="88" width="40" height="26" rx="5" fill="#eceafa"/>
+<circle cx="160" cy="99" r="4" fill="#453b9e"/>
+<path d="M160 101v7" stroke="#453b9e" stroke-width="3" stroke-linecap="round"/>
+</g>
+</svg>

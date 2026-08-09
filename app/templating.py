@@ -45,29 +45,34 @@ PLATFORM_LABELS = {
 
 FIELD_CLASSES = {
     "khoa_hoc": {
-        "bar": "border-l-teal", "chip": "bg-teal-50 text-teal-700", "dot": "bg-teal",
-        "art": "/static/img/fields/khoa_hoc.svg", "wash": "bg-teal-50",
-        "ring": "ring-teal-100", "track": "bg-teal",
+        "bar": "border-l-sci", "chip": "bg-sci-50 text-sci-700", "dot": "bg-sci",
+        "art": "/static/img/fields/khoa_hoc.svg", "wash": "bg-sci-50",
+        "ring": "ring-sci-100", "track": "bg-sci", "top": "border-t-sci",
+        "soft": "bg-sci-50 border-sci-100", "ink": "text-sci-700",
     },
     "cong_nghe": {
-        "bar": "border-l-trunk", "chip": "bg-trunk-50 text-trunk", "dot": "bg-trunk",
-        "art": "/static/img/fields/cong_nghe.svg", "wash": "bg-trunk-50",
-        "ring": "ring-trunk-100", "track": "bg-trunk",
+        "bar": "border-l-tech", "chip": "bg-tech-50 text-tech-700", "dot": "bg-tech",
+        "art": "/static/img/fields/cong_nghe.svg", "wash": "bg-tech-50",
+        "ring": "ring-tech-100", "track": "bg-tech", "top": "border-t-tech",
+        "soft": "bg-tech-50 border-tech-100", "ink": "text-tech-700",
     },
     "ky_thuat": {
-        "bar": "border-l-slate", "chip": "bg-slate-50 text-slate-700", "dot": "bg-slate",
-        "art": "/static/img/fields/ky_thuat.svg", "wash": "bg-slate-50",
-        "ring": "ring-slate-100", "track": "bg-slate",
+        "bar": "border-l-eng", "chip": "bg-eng-50 text-eng-700", "dot": "bg-eng",
+        "art": "/static/img/fields/ky_thuat.svg", "wash": "bg-eng-50",
+        "ring": "ring-eng-100", "track": "bg-eng", "top": "border-t-eng",
+        "soft": "bg-eng-50 border-eng-100", "ink": "text-eng-700",
     },
     "nghe_thuat": {
-        "bar": "border-l-amber", "chip": "bg-amber-50 text-amber-900", "dot": "bg-amber",
-        "art": "/static/img/fields/nghe_thuat.svg", "wash": "bg-amber-50",
-        "ring": "ring-amber-100", "track": "bg-amber",
+        "bar": "border-l-art", "chip": "bg-art-50 text-art-700", "dot": "bg-art",
+        "art": "/static/img/fields/nghe_thuat.svg", "wash": "bg-art-50",
+        "ring": "ring-art-100", "track": "bg-art", "top": "border-t-art",
+        "soft": "bg-art-50 border-art-100", "ink": "text-art-700",
     },
     "toan": {
-        "bar": "border-l-plum", "chip": "bg-plum-50 text-plum-700", "dot": "bg-plum",
-        "art": "/static/img/fields/toan.svg", "wash": "bg-plum-50",
-        "ring": "ring-plum-100", "track": "bg-plum",
+        "bar": "border-l-math", "chip": "bg-math-50 text-math-700", "dot": "bg-math",
+        "art": "/static/img/fields/toan.svg", "wash": "bg-math-50",
+        "ring": "ring-math-100", "track": "bg-math", "top": "border-t-math",
+        "soft": "bg-math-50 border-math-100", "ink": "text-math-700",
     },
 }
 

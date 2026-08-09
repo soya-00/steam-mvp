@@ -1,9 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="presentation" aria-hidden="true">
-<defs><clipPath id="c-m"><rect width="320" height="180" rx="14"/></clipPath></defs>
-<g clip-path="url(#c-m)"><rect width="320" height="180" fill="#f6ecf1"/>
-
-<g stroke="#c99db3" stroke-width="2" opacity=".8">
-<path d="M40 30v120M104 30v120M168 30v120M232 30v120"/><path d="M20 46h280M20 90h280M20 134h280"/></g>
-<path d="M40 132C86 132 90 62 136 62s54 46 100 46 44-40 60-52" fill="none" stroke="#8b4b6b" stroke-width="5" stroke-linecap="round"/>
-<g fill="#6d3b54"><circle cx="40" cy="132" r="8"/><circle cx="136" cy="62" r="8"/><circle cx="236" cy="108" r="8"/><circle cx="296" cy="56" r="8"/></g>
-</g></svg>
+<defs><clipPath id="c-math"><rect width="320" height="180" rx="14"/></clipPath></defs>
+<g clip-path="url(#c-math)">
+<rect width="320" height="180" fill="#fbe9f0"/>
+<circle cx="76" cy="90" r="46" fill="#f6d6e2"/>
+<path d="M76 44a46 46 0 0 1 46 46H76z" fill="#bf4a72"/>
+<path d="M76 90h46a46 46 0 0 1-20 38z" fill="#e3a0ba"/>
+<circle cx="76" cy="90" r="18" fill="#fbe9f0"/>
+<g fill="#bf4a72">
+<rect x="160" y="106" width="22" height="42" rx="4"/>
+<rect x="192" y="76" width="22" height="72" rx="4"/>
+<rect x="224" y="94" width="22" height="54" rx="4"/>
+<rect x="256" y="52" width="22" height="96" rx="4"/>
+</g>
+<path d="M160 66l32-22 32 14 32-30" fill="none" stroke="#983a5b" stroke-width="4"
+      stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<g fill="#983a5b">
+<circle cx="160" cy="66" r="5"/><circle cx="192" cy="44" r="5"/>
+<circle cx="224" cy="58" r="5"/><circle cx="256" cy="28" r="5"/>
+</g>
+</g>
+</svg>
