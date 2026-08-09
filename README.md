@@ -15,8 +15,8 @@ Không cần cài gì, không cần đăng ký. Ở màn hình đăng nhập có
 > một trong ba tài khoản đó, nên **ai cũng đọc được bài của người khác**.
 > Những gì bạn viết **có được ghi lên máy chủ**, nhưng bị xoá sạch mỗi lần máy chủ khởi
 > động lại. Đừng nhập thông tin thật và đừng dùng bản này để chạy thử với học sinh thật.
-> Chi tiết ở **[LEGAL.md](LEGAL.md)** — lưu trữ dữ liệu, phạm vi trách nhiệm, và danh
-> sách việc bắt buộc phải làm trước.
+> Đọc **[DISCLAIMER.md](DISCLAIMER.md)** trước — bốn điều cần biết ngay. Chi tiết đầy đủ về
+> lưu trữ dữ liệu, khung pháp lý và việc bắt buộc phải làm trước: **[LEGAL.md](LEGAL.md)**.
 
 ---
 
