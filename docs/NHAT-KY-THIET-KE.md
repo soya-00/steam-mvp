@@ -164,6 +164,24 @@ Ba điều đáng nói nhất:
 2. **Bộ lọc khủng hoảng tạo ra trách nhiệm chỉ bằng việc tồn tại.** Làm ra một bộ dò là ngầm hứa rằng nó chạy được, trong khi ta vừa chứng minh nó bỏ sót. Cách kiểm soát nằm ở **cách mô tả** nhiều hơn ở mã: không bao giờ quảng cáo GALS là công cụ phát hiện khủng hoảng hay bảo vệ học sinh.
 3. **Trang chia sẻ là công bố, không phải chia sẻ.** Đường dẫn khó đoán không phải là riêng tư về mặt pháp lý. Chỗ hở sắc nhất tìm được: trường ảnh trong nhật ký nhận **đường dẫn tự do** và hiển thị thẳng lên trang công khai, trong khi bộ lọc chỉ soi chữ chứ không soi liên kết.
 
+### Giai đoạn 11 — Mỗi lần một câu hỏi
+
+Bản dựng lại giao diện ứng dụng theo năm bản thiết kế: bảng nhiệm vụ, không gian tư duy, trang nháp, trang nộp và trang dự án. Thay đổi lớn nhất không nằm ở màu sắc.
+
+**Không gian tư duy thôi cuộn như một đoạn hội thoại.** Trước đây toàn bộ mạch — bối cảnh, câu hỏi, câu trả lời, lời của trợ lý — nằm chồng nhau trên một trang dài, và câu hỏi đang phải trả lời trôi xuống tận đáy. Nay **chỉ một câu hỏi trên màn hình**, câu cũ nằm trong mục *Câu đã trả lời* ở cột trái, vẫn mở ra đọc lại được bất cứ lúc nào.
+
+**Nhịp kể chuyện không còn là một bước bấm.** Các nhịp `context` trước đây bắt học sinh bấm "Tôi đã đọc xong" rồi mới đi tiếp — một cú bấm không tạo ra suy nghĩ gì. Nay chúng được gom vào cột **Dữ kiện** bên phải, tích luỹ dần trong cấp độ, và học sinh đi thẳng từ câu hỏi này sang câu hỏi kế. Nhật ký vẫn ghi lại đủ, chỉ là chúng không chiếm một lượt của người học nữa.
+
+**Gợi ý dẫn dắt là câu hỏi, không phải đáp án.** Mỗi cấp độ có ba gợi ý dùng chung cho cả năm kịch huống, viết ở mức *cách nghĩ* chứ không phải *nội dung*. Bài kiểm thử chặn số liệu trong gợi ý — một gợi ý nhắc con số của riêng một kịch huống là gợi ý sai chỗ.
+
+Ba chỗ **cố tình lệch khỏi bản thiết kế**, và lý do:
+
+| Bản thiết kế | Bản dựng | Vì sao |
+|---|---|---|
+| Thẻ vàng "Cấp 2" cạnh tên học sinh | Thẻ ghi vai trò: *Học sinh* / *Giáo viên* | Một con số cấp bậc gắn với người học chính là thứ xếp hạng mà GALS cam kết không có |
+| "Tệp từ giáo viên" kèm PDF/XLSX và dung lượng | *Nhiệm vụ từ giáo viên* — danh sách nhiệm vụ đã giao | Ứng dụng không lưu trữ tệp; dựng ô tải xuống giả là bịa ra một tính năng |
+| "Workspace", "folder đang mở" | *Không gian tư duy*, *đang mở* | Giao diện chỉ dùng tiếng Việt |
+
 ---
 
 ## Những lỗi đáng nhớ

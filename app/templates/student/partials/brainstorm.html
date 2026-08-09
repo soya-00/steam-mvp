@@ -1,19 +1,19 @@
 <div id="brainstorm">
 
-  <div class="grid gap-3" role="log" aria-live="polite" aria-relevant="additions"
+  <div class="grid gap-4" role="log" aria-live="polite" aria-relevant="additions"
        aria-label="Cuộc trò chuyện với trợ lý">
     {% for m in history %}
     {% if m.role == 'user' %}
     <div class="flex justify-end">
-      <div class="card p-3 px-4 bg-trunk-50 border-trunk-100 max-w-[85%]">
-        <p class="text-sm text-ink prose-beat">{{ m.text }}</p>
+      <div class="rounded-xl bg-trunk-50 px-4 py-3 max-w-[85%]">
+        <p class="text-sm text-trunk-700 prose-beat">{{ m.text }}</p>
       </div>
     </div>
     {% else %}
-    <div class="flex items-start gap-2.5">
-      <span class="w-7 h-7 shrink-0 rounded-full bg-amber-100 grid place-items-center text-sm" aria-hidden="true">💭</span>
+    <div class="flex items-start gap-3">
+      {% with cls = 'w-8 h-8' %}{% include "partials/bulb.html" %}{% endwith %}
       <div class="min-w-0 flex-1">
-        <div class="card p-3 px-4 bg-paper-raised border-hairline">
+        <div class="card p-3.5 px-4">
           <p class="text-sm text-ink prose-beat">{{ m.text }}</p>
           {% with report_id = 'bs-' ~ loop.index, reported_text = m.text %}
             {% include "partials/bao_cao_tra_loi.html" %}
@@ -21,26 +21,26 @@
         </div>
 
         {% if m.idea %}
-        <section class="card p-3 px-4 mt-2 bg-amber-50 border-amber-100"
+        <section class="mt-2.5 rounded-xl border border-dashed border-amber-300 bg-amber-50 px-4 py-3"
                  id="goi-y-{{ loop.index }}"
                  aria-labelledby="goi-y-tieu-de-{{ loop.index }}">
-          <p class="text-sm text-amber-900" id="goi-y-tieu-de-{{ loop.index }}">
-            <strong class="font-semibold">Thêm ý tưởng này vào Hồ sơ?</strong>
-          </p>
-          <p class="mt-1 text-sm text-ink">{{ m.idea }}</p>
-          <div class="mt-2 flex flex-wrap gap-2">
-            <button type="button" class="btn btn-primary text-sm py-1.5 px-3"
+          <div class="flex flex-wrap items-center gap-3">
+            <p class="text-sm text-ink flex-1 min-w-0" id="goi-y-tieu-de-{{ loop.index }}">
+              Dán ý này vào Hồ sơ?
+            </p>
+            <button type="button" class="text-sm font-semibold text-trunk hover:underline"
                     hx-post="/ho-so/y-tuong-tu-do/giu"
                     hx-vals='{"y_tuong": {{ m.idea | tojson }}}'
                     hx-target="#goi-y-{{ loop.index }}"
                     hx-swap="outerHTML">
-              Thêm vào hồ sơ
+              Thêm
             </button>
-            <button type="button" class="btn btn-ghost text-sm py-1.5 px-3"
+            <button type="button" class="text-sm text-ink-faint hover:text-ink"
                     onclick="this.closest('section[id^=goi-y-]').remove()">
               Để sau
             </button>
           </div>
+          <p class="mt-1.5 text-xs text-ink-soft prose-beat">{{ m.idea }}</p>
         </section>
         {% endif %}
       </div>
@@ -53,18 +53,22 @@
         hx-target="#brainstorm"
         hx-swap="outerHTML"
         hx-disabled-elt="find button"
-        class="mt-4"
+        class="composer mt-6"
         {% if history %}hx-on::after-request="this.reset()"{% endif %}>
     <label for="tin_nhan" class="sr-only">Tin nhắn của bạn</label>
     <textarea id="tin_nhan" name="tin_nhan" rows="3" required
-              placeholder="{% if history %}Nói tiếp đi…{% else %}Gần đây có chuyện gì làm bạn để ý, thắc mắc hay thấy khó chịu không?{% endif %}"
-              class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
-    <div class="mt-2 flex flex-wrap items-center gap-3">
-      <button type="submit" class="btn btn-primary">Gửi</button>
-      <span class="htmx-indicator text-sm text-ink-soft" role="status">
+              placeholder="Viết câu trả lời của bạn…"
+              class="ruled px-4 pt-1 pb-2 text-ink placeholder:text-ink-faint placeholder:italic"></textarea>
+    <div class="flex flex-wrap items-center gap-3 border-t border-hairline px-4 py-3">
+      <p class="text-xs text-ink-faint">
+        <span aria-hidden="true">✓</span> tự lưu
+        <span class="mx-1" aria-hidden="true">·</span>
+        còn {{ quota }} lượt trong phiên demo
+      </p>
+      <span class="htmx-indicator text-xs text-ink-soft" role="status">
         <span class="spinner-dot" aria-hidden="true">●</span> đang nghĩ…
       </span>
-      <span class="ml-auto text-xs text-ink-faint">còn {{ quota }} lượt trong phiên demo</span>
+      <button type="submit" class="btn btn-primary ml-auto px-6">Gửi</button>
     </div>
   </form>
 

@@ -75,6 +75,7 @@ def freeform_page(
         {
             "user": user,
             "branch": "ho_so",
+            "focus": True,
             "history": _load_history(request),
             "ideas": _ideas(db, user),
             "quota": quota_left(session_key(request)),

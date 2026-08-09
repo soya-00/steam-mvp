@@ -10,6 +10,7 @@ from app.config import (
     TEMPLATES_DIR,
     gemini_enabled,
 )
+from app.scenarios import get_scenario
 
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
@@ -113,4 +114,5 @@ templates.env.globals.update(
     field_classes=field_classes,
     beat_classes=BEAT_CLASSES,
     gemini_enabled=gemini_enabled,
+    scenario_of_id=get_scenario,
 )

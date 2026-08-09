@@ -18,6 +18,36 @@ STAGE_LABELS = {
 }
 
 
+STAGE_HINTS = {
+    "hieu_van_de": (
+        "Thử tách đôi: điều nào bạn đọc thẳng được từ dữ kiện, điều nào bạn đang tự suy ra?",
+        "Con số nào ở đây đang thiếu mẫu số — biết một phần mà không biết trên tổng bao "
+        "nhiêu thì nói lên được điều gì?",
+        "Nếu chỉ được hỏi thêm đúng một câu trước khi kết luận, bạn sẽ hỏi gì?",
+    ),
+    "dong_cam": (
+        "Liệt kê nhanh những người bị ảnh hưởng — kể cả người không xuất hiện trong tình huống.",
+        "Mỗi người đang sợ mất điều gì? Người ta hay im lặng vì sợ chứ không phải vì không biết.",
+        "Câu bạn định hỏi, nếu người nghe đang lo bị đổ lỗi thì họ sẽ hiểu thành gì?",
+    ),
+    "sang_tao": (
+        "Viết ra hai phương án khác hẳn nhau rồi mới chọn — phương án đầu tiên hiếm khi là "
+        "phương án tốt nhất.",
+        "Nếu chỉ còn một tuần và không thêm đồng nào, bạn sẽ cắt phần nào trước?",
+        "Ai là người phải thực hiện đề xuất của bạn? Việc đó có khả thi với họ không?",
+    ),
+    "phan_chieu": (
+        "Nếu điều bạn đang tin là sai, dấu hiệu đầu tiên cho thấy nó sai sẽ là gì?",
+        "Có cách giải thích nào khác cũng khớp với đúng những dữ kiện này không?",
+        "Chỗ nào trong lập luận của bạn đang dựa vào một điều chưa ai kiểm chứng?",
+    ),
+}
+
+
+def stage_hints(stage_key: str) -> tuple[str, ...]:
+    return STAGE_HINTS.get(stage_key, ())
+
+
 class ScenarioError(ValueError):
     pass
 

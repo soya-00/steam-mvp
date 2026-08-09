@@ -23,6 +23,7 @@ from app.config import (
 )
 from app.db import get_db
 from app.models import (
+    Assignment,
     Badge,
     ClassMembership,
     Feedback,
@@ -38,6 +39,7 @@ from app.scenarios import (
     get_scenario,
     load_resources,
     scenarios_for_field,
+    stage_hints,
 )
 from app.templating import templates
 
@@ -176,6 +178,69 @@ def _progress(scenario: Scenario, gs: GuidedSession) -> list[dict]:
     return out
 
 
+def _question_place(scenario: Scenario, gs: GuidedSession) -> tuple[int, int]:
+    stage = scenario.stage_at(gs.stage_index)
+    if stage is None:
+        return 0, 0
+    total = stage.question_count
+    seen = sum(1 for b in stage.beats[: gs.beat_index] if b.needs_answer)
+    return min(seen + 1, total), total
+
+
+def _facts_so_far(scenario: Scenario, gs: GuidedSession) -> list[dict]:
+    stage = scenario.stage_at(gs.stage_index)
+    if stage is None:
+        return []
+    upto = min(gs.beat_index + 1, len(stage.beats))
+    return [
+        {"label": b.label or "Dữ kiện", "text": b.text}
+        for b in stage.beats[:upto]
+        if b.type == "context"
+    ]
+
+
+def _answered(scenario: Scenario, gs: GuidedSession) -> list[dict]:
+    entries = _transcript(gs)
+    out = []
+    for i, t in enumerate(entries):
+        if not t.get("answer"):
+            continue
+        nxt = entries[i + 1] if i + 1 < len(entries) else None
+        reply = nxt.get("text", "") if nxt and nxt.get("kind") == "ai" else ""
+        out.append({**t, "reply": reply})
+    return out
+
+
+def _last_reply(gs: GuidedSession) -> str:
+    for t in reversed(_transcript(gs)):
+        if t.get("kind") == "ai":
+            return t.get("text", "")
+    return ""
+
+
+def _skip_context(scenario: Scenario, gs: GuidedSession, entries: list[dict]) -> None:
+    """Absorb narration beats so the student only ever meets one question."""
+    for _ in range(len(scenario.stages) * 24):
+        stage = scenario.stage_at(gs.stage_index)
+        if gs.finished or stage is None:
+            return
+        if gs.beat_index >= len(stage.beats):
+            return
+        beat = stage.beats[gs.beat_index]
+        if beat.needs_answer:
+            return
+        entries.append(
+            {
+                "kind": beat.type,
+                "stage": stage.name,
+                "label": beat.label or stage.name,
+                "text": beat.text,
+                "answer": "",
+            }
+        )
+        _advance(scenario, gs)
+
+
 @router.get("/trang-ca-nhan", response_class=HTMLResponse)
 def hub(
     request: Request,
@@ -215,12 +280,58 @@ def hub(
         )
     notifications = notif_q.order_by(Notification.created_at.desc()).limit(3).all()
 
+    sessions = db.query(GuidedSession).filter(GuidedSession.student_id == user.id).all()
+    by_scenario = {gs.scenario_id: gs for gs in sessions}
+
+    field_rows = []
+    for f in STEAM_FIELDS:
+        pool = scenarios_for_field(f["name"])
+        states = [by_scenario.get(s.id) for s in pool]
+        field_rows.append(
+            {
+                "field": f,
+                "doing": sum(1 for g in states if g is not None and not g.finished),
+                "done": sum(1 for g in states if g is not None and g.finished),
+                "total": len(pool),
+                "first": pool[0].id if pool else None,
+            }
+        )
+
+    resume = None
+    open_sessions = [g for g in sessions if not g.finished]
+    if open_sessions:
+        latest = max(open_sessions, key=lambda g: g.created_at)
+        scenario = get_scenario(latest.scenario_id)
+        stage = scenario.stage_at(latest.stage_index) if scenario else None
+        if scenario and stage:
+            place, place_total = _question_place(scenario, latest)
+            resume = {
+                "scenario": scenario,
+                "stage": stage,
+                "stage_number": latest.stage_index + 1,
+                "stage_total": len(scenario.stages),
+                "place": place,
+                "place_total": place_total,
+                "left": max(place_total - place + 1, 0),
+                "pct": latest.stage_index * 100 // max(len(scenario.stages), 1),
+            }
+
+    assignments = (
+        db.query(Assignment)
+        .filter(Assignment.class_id.in_(class_ids))
+        .order_by(Assignment.created_at.desc())
+        .limit(3)
+        .all()
+        if class_ids
+        else []
+    )
+
     return templates.TemplateResponse(
         request,
         "student/hub.html",
         {
             "user": user,
-            "branch": None,
+            "branch": "nhiem_vu",
             "entries": entries[:4],
             "entry_count": len(entries),
             "portfolio_count": len(portfolio),
@@ -230,6 +341,10 @@ def hub(
             "feedback": feedback,
             "notifications": notifications,
             "scenarios": all_scenarios(),
+            "field_rows": field_rows,
+            "resume": resume,
+            "assignments": assignments,
+            "open_count": len(open_sessions),
         },
     )
 
@@ -324,6 +439,9 @@ def scenario_intro(
         {
             "user": user,
             "branch": "du_an",
+            "focus": True,
+            "back_href": "/du-an/linh-vuc/" + FIELD_KEY_BY_NAME.get(scenario.field, "khoa_hoc"),
+            "back_label": "Dự án học tập",
             "scenario": scenario,
             "gs": gs,
         },
@@ -359,7 +477,17 @@ def workspace(
         award_badge(db, user.id, "nhap_vai_dau_tien")
         db.commit()
 
+    if not gs.finished:
+        entries = _transcript(gs)
+        before = len(entries)
+        _skip_context(scenario, gs, entries)
+        if len(entries) != before:
+            _save_transcript(gs, entries)
+            db.commit()
+
     stage, beat = _current_beat(scenario, gs)
+    at_closing = _at_closing(scenario, gs)
+    place, place_total = _question_place(scenario, gs)
 
     return templates.TemplateResponse(
         request,
@@ -367,12 +495,26 @@ def workspace(
         {
             "user": user,
             "branch": "du_an",
+            "focus": True,
+            "back_href": f"/du-an/{scenario.id}",
+            "back_label": "Dự án",
+            "crumb_tail": (
+                f"{scenario.field} · Cấp độ {gs.stage_index + 1} · {stage.name}"
+                if stage and not gs.finished
+                else scenario.field
+            ),
             "scenario": scenario,
             "gs": gs,
             "stage": stage,
             "beat": beat,
-            "at_closing": _at_closing(scenario, gs),
-            "transcript": _transcript(gs),
+            "at_closing": at_closing,
+            "question_text": (stage.closing if at_closing else (beat.text if beat else "")),
+            "place": place,
+            "place_total": place_total,
+            "facts": _facts_so_far(scenario, gs),
+            "hints": stage_hints(stage.key) if stage else (),
+            "answered": _answered(scenario, gs),
+            "last_reply": _last_reply(gs),
             "progress": _progress(scenario, gs),
             "loi_nhac": SCREEN_REPLIES.get(nhac),
         },
@@ -457,8 +599,9 @@ def workspace_step(
             }
         )
 
-    _save_transcript(gs, entries)
     _advance(scenario, gs)
+    _skip_context(scenario, gs, entries)
+    _save_transcript(gs, entries)
     _sync_journal(db, gs, scenario, user)
 
     if gs.finished:
@@ -522,15 +665,37 @@ def submit_form(
         .first()
     )
 
+    gs = (
+        db.query(GuidedSession)
+        .filter(
+            GuidedSession.student_id == user.id,
+            GuidedSession.scenario_id == scenario_id,
+        )
+        .first()
+    )
+    answered = _answered(scenario, gs) if gs else []
+
+    membership = (
+        db.query(ClassMembership).filter(ClassMembership.student_id == user.id).first()
+    )
+    teacher_name = membership.klass.teacher.name if membership else ""
+
     return templates.TemplateResponse(
         request,
         "student/du_an_nop.html",
         {
             "user": user,
             "branch": "du_an",
+            "focus": True,
+            "back_href": f"/du-an/{scenario.id}/khong-gian-tu-duy",
+            "back_label": "Không gian tư duy",
             "scenario": scenario,
             "entry": entry,
             "loi": loi,
+            "progress": _progress(scenario, gs) if gs else [],
+            "answered": answered,
+            "last_answer": answered[-1]["answer"] if answered else "",
+            "teacher_name": teacher_name,
         },
     )
 
