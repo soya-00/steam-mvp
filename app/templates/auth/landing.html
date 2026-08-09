@@ -56,8 +56,7 @@
       ('Phản chiếu', 'Cùng bộ dữ liệu đó, có cách giải thích nào khác cũng hợp lý không?', 'bg-amber', 'text-amber-700', 'border-t-amber')
     ] %}
     {% for name, desc, dot, ink, top in levels %}
-    <div class="card p-5 border-t-4 {{ top }} relative">
-      <span class="note-clip" aria-hidden="true"></span>
+    <div class="card p-5 border-t-4 {{ top }}">
       <div class="flex items-center gap-2">
         <span class="w-6 h-6 rounded-full {{ dot }} text-white grid place-items-center text-xs font-semibold"
               aria-hidden="true">{{ loop.index }}</span>

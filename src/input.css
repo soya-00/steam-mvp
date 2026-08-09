@@ -264,16 +264,26 @@
   box-shadow: 0 16px 28px -18px rgba(35, 38, 43, 0.55);
 }
 
-.note-clip {
+
+.cta-fun {
+  background-color: var(--color-paper-raised);
+  background-image:
+    radial-gradient(rgba(35, 38, 43, 0.09) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 12% 22%, var(--color-sci-100) 0, transparent 42%),
+    radial-gradient(circle at 86% 18%, var(--color-tech-100) 0, transparent 40%),
+    radial-gradient(circle at 78% 84%, var(--color-math-100) 0, transparent 44%),
+    radial-gradient(circle at 20% 88%, var(--color-art-100) 0, transparent 42%),
+    radial-gradient(circle at 50% 50%, var(--color-eng-100) 0, transparent 55%);
+  background-size: 26px 26px, cover, cover, cover, cover, cover;
+}
+
+.cta-confetti span {
   position: absolute;
-  top: -0.4rem;
-  right: 1.1rem;
-  width: 2.75rem;
-  height: 1rem;
+  display: block;
+  width: 10px;
+  height: 14px;
   border-radius: 2px;
-  background-color: var(--color-hairline);
-  opacity: 0.75;
-  transform: rotate(6deg);
+  opacity: 0.55;
 }
 
 .road {

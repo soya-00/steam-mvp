@@ -1,5 +1,16 @@
-<section class="py-16 md:py-24 -mx-4 px-4 border-t border-hairline bg-paper-raised text-center relative overflow-hidden">
-  <div class="absolute inset-0 hero-dots opacity-60" aria-hidden="true"></div>
+<section class="cta-fun py-16 md:py-24 -mx-4 px-4 border-t border-hairline text-center relative overflow-hidden">
+  <div class="cta-confetti absolute inset-0 pointer-events-none" aria-hidden="true">
+    {% for left, top, rot, tone in [
+      ('8%','18%','-18deg','bg-sci-300'), ('17%','62%','24deg','bg-math-300'),
+      ('27%','30%','-8deg','bg-art-300'), ('35%','78%','40deg','bg-tech-300'),
+      ('63%','20%','14deg','bg-eng-300'), ('72%','70%','-30deg','bg-sci-300'),
+      ('83%','36%','8deg','bg-math-300'), ('91%','74%','-14deg','bg-art-300'),
+      ('47%','12%','32deg','bg-tech-300'), ('56%','86%','-22deg','bg-eng-300')
+    ] %}
+    <span class="{{ tone }}" style="left: {{ left }}; top: {{ top }}; transform: rotate({{ rot }});"></span>
+    {% endfor %}
+  </div>
+
   <div class="relative">
     <p class="text-xs uppercase tracking-[0.18em] font-semibold text-teal-700">Miễn phí</p>
     <h2 class="mt-3 text-3xl md:text-4xl text-ink">Sẵn sàng thử chưa?</h2>

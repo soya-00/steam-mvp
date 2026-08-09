@@ -1,20 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" role="presentation" aria-hidden="true">
-<defs><clipPath id="c-sci"><rect width="320" height="180" rx="14"/></clipPath></defs>
-<g clip-path="url(#c-sci)">
-<rect width="320" height="180" fill="#e6f2ea"/>
-<path d="M140 34h40v34l38 66a14 14 0 0 1-12 21h-92a14 14 0 0 1-12-21l38-66z" fill="#cfe6d8"/>
-<path d="M140 34h40v34l38 66a14 14 0 0 1-12 21h-92a14 14 0 0 1-12-21l38-66z" fill="none" stroke="#2f8659" stroke-width="4" stroke-linejoin="round"/>
-<path d="M126 118h68l24 42h-92z" fill="#86c3a1" opacity=".85"/>
-<circle cx="152" cy="136" r="6" fill="#e6f2ea" opacity=".9"/>
-<circle cx="172" cy="148" r="4" fill="#e6f2ea" opacity=".8"/>
-<circle cx="186" cy="130" r="3" fill="#e6f2ea" opacity=".7"/>
-<path d="M134 26h52" stroke="#226845" stroke-width="6" stroke-linecap="round"/>
-<g fill="#2f8659" opacity=".5">
-<rect x="44" y="92" width="16" height="52" rx="3"/>
-<rect x="68" y="66" width="16" height="78" rx="3"/>
-</g>
-<g fill="#86c3a1">
-<circle cx="256" cy="52" r="7"/><circle cx="282" cy="80" r="4"/><circle cx="248" cy="86" r="4"/>
-</g>
-</g>
-</svg>
+<defs><clipPath id="c-s"><rect width="320" height="180" rx="14"/></clipPath></defs>
+<g clip-path="url(#c-s)"><rect width="320" height="180" fill="#e6f2ea"/>
+
+<circle cx="160" cy="90" r="26" fill="#2f8659" opacity=".9"/>
+<ellipse cx="160" cy="90" rx="96" ry="40" fill="none" stroke="#2f8659" stroke-width="3" opacity=".55"/>
+<ellipse cx="160" cy="90" rx="96" ry="40" fill="none" stroke="#226845" stroke-width="3" opacity=".45" transform="rotate(58 160 90)"/>
+<ellipse cx="160" cy="90" rx="96" ry="40" fill="none" stroke="#226845" stroke-width="3" opacity=".35" transform="rotate(-58 160 90)"/>
+<circle cx="256" cy="90" r="8" fill="#17492f"/><circle cx="110" cy="41" r="6" fill="#86c3a1"/>
+<circle cx="212" cy="141" r="5" fill="#86c3a1"/>
+</g></svg>
