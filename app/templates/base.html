@@ -24,7 +24,7 @@
     <div class="flex items-center gap-3 h-14">
       <a href="{{ '/giao-vien' if user.is_teacher else '/trang-ca-nhan' }}"
          class="flex items-center gap-2 font-display font-extrabold text-lg tracking-tight">
-        <span aria-hidden="true">◈</span> GALS
+        <span class="wordmark wordmark-light">GALS</span>
       </a>
 
       {% if not user.is_teacher %}

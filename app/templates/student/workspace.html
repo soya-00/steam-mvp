@@ -107,7 +107,8 @@
 
     {% if gs.finished %}
 
-    <div class="card p-6 branch-bar border-l-teal pop">
+    <div class="card p-6 branch-bar border-l-teal pop relative">
+      {% with slot = 'xong-cap-do' %}{% include "partials/confetti_mung.html" %}{% endwith %}
       <p class="text-4xl" aria-hidden="true">🌱</p>
       <h1 class="mt-2 text-2xl text-ink">Bạn đã đi hết bốn cấp độ</h1>
       <p class="mt-2 text-sm text-ink-soft">

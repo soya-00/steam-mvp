@@ -18,7 +18,8 @@
 </div>
 
 {% if just_submitted %}
-<div class="card p-4 mt-5 branch-bar border-l-teal bg-teal-50 border-teal-100">
+<div class="card p-4 mt-5 branch-bar border-l-teal bg-teal-50 border-teal-100 relative">
+  {% with slot = 'vua-nop' %}{% include "partials/confetti_mung.html" %}{% endwith %}
   <p class="text-sm text-teal-900">
     Đã thêm dự án vào hồ sơ. Mục mới mặc định là <strong>riêng tư</strong> — chỉ bạn thấy,
     cho tới khi bạn tự bấm chia sẻ.

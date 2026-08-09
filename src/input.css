@@ -526,3 +526,35 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+.wordmark {
+  position: relative;
+  display: inline-block;
+}
+
+.wordmark::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.32em;
+  height: 0.36em;
+  background-repeat: repeat-x;
+  background-size: 12px 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6' preserveAspectRatio='none'%3E%3Cpath d='M0 4.2c1.5-3 3-3 4.5 0s3 3 4.5 0 3-3 4.5 0' fill='none' stroke='%234a4e9c' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.wordmark-light::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6' preserveAspectRatio='none'%3E%3Cpath d='M0 4.2c1.5-3 3-3 4.5 0s3 3 4.5 0 3-3 4.5 0' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  opacity: 0.7;
+}
+
+.mung-burst {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 5;
+}
