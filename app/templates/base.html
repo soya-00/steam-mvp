@@ -6,18 +6,37 @@
   <title>{% block title %}GALS{% endblock %}</title>
   <meta name="description" content="GALS — nơi học sinh THPT tập tư duy thiết kế qua những tình huống nghề nghiệp có thật.">
   <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/css/app.css">
   <script>
     // Dán cài đặt hiển thị lên <html> trước khi trang vẽ lần đầu, nếu không
-    // người dùng sẽ thấy giao diện nhấp nháy đổi kiểu ngay sau khi tải.
+    // người dùng để nền tối sẽ thấy một nháy trắng mỗi lần tải trang.
+    // Đoạn này chạy chặn và phải đứng trước thẻ nạp bảng kiểu bên dưới.
     (function () {
-      try {
-        var saved = JSON.parse(localStorage.getItem("gals-hien-thi") || "{}");
-        if (saved.motion === "giam") document.documentElement.dataset.motion = "giam";
-        if (saved.nen === "phang") document.documentElement.dataset.nen = "phang";
-      } catch (e) {}
+      var el = document.documentElement;
+      var saved = {};
+      try { saved = JSON.parse(localStorage.getItem("gals-hien-thi") || "{}") || {}; } catch (e) {}
+
+      function hoi(query) {
+        return window.matchMedia && window.matchMedia(query).matches;
+      }
+
+      // Ba trạng thái: sáng, tối, hoặc theo hệ điều hành khi chưa chọn gì.
+      var giao_dien = saved.giao_dien;
+      if (giao_dien !== "sang" && giao_dien !== "toi") {
+        giao_dien = hoi("(prefers-color-scheme: dark)") ? "toi" : "sang";
+      }
+      el.dataset.theme = giao_dien === "toi" ? "dark" : "light";
+
+      var tuong_phan = saved.tuong_phan;
+      if (tuong_phan !== "cao" && tuong_phan !== "thuong") {
+        tuong_phan = hoi("(prefers-contrast: more)") ? "cao" : "thuong";
+      }
+      el.dataset.contrast = tuong_phan;
+
+      if (saved.motion === "giam") el.dataset.motion = "giam";
+      if (saved.nen === "phang") el.dataset.nen = "phang";
     })();
   </script>
+  <link rel="stylesheet" href="/static/css/app.css">
   <script src="/static/js/htmx.min.js" defer></script>
   <script src="/static/js/tai-khoan.js" defer></script>
 </head>

@@ -62,7 +62,7 @@
   <li>
     <a href="/du-an/linh-vuc/{{ row.field.key }}"
        class="lift block h-full rounded-xl border p-4 text-center
-              {{ (fc.soft ~ ' border-2') if active else 'bg-paper border-hairline' }}">
+              {{ (fc.soft ~ ' border-2') if active else 'bg-sunken border-hairline' }}">
       <span class="w-10 h-10 mx-auto rounded-lg bg-paper-raised border border-hairline grid place-items-center {{ fc.ink }}">
         {% with key = row.field.key, cls = 'w-5 h-5' %}{% include "partials/field_icon.html" %}{% endwith %}
       </span>

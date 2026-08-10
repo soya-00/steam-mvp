@@ -50,7 +50,7 @@
             <label for="nx-{{ e.id }}" class="sr-only">Lời nhắn</label>
             <textarea id="nx-{{ e.id }}" name="noi_dung" rows="3" required
                       placeholder="Chỉ em này đọc được. Nhắc một chỗ em nghĩ tốt thường có ích hơn là chỉ ra chỗ sai."
-                      class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint"></textarea>
+                      class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint"></textarea>
             <button type="submit" class="btn btn-primary text-sm py-1.5 px-3 mt-2">Gửi lời nhắn</button>
           </form>
         </details>
@@ -68,10 +68,10 @@
       {% for p in portfolio %}
       <div class="tile p-4">
         <div class="flex flex-wrap items-center gap-2">
-          <span class="chip bg-paper text-ink-soft border border-hairline">
+          <span class="chip bg-sunken text-ink-soft border border-hairline">
             {{ category_labels.get(p.category, p.category) }}
           </span>
-          <span class="chip {{ 'bg-teal-50 text-teal-700' if p.shared else 'bg-paper text-ink-faint border border-hairline' }}">
+          <span class="chip {{ 'bg-teal-50 text-teal-700' if p.shared else 'bg-sunken text-ink-faint border border-hairline' }}">
             {{ 'Em đã chia sẻ' if p.shared else 'Em để riêng tư' }}
           </span>
         </div>
@@ -100,7 +100,7 @@
       <label for="nhan-xet-chung" class="block text-sm font-medium text-ink mb-1">Nhắn chung</label>
       <textarea id="nhan-xet-chung" name="noi_dung" rows="3" required
                 placeholder="Lời nhắn không gắn với bài cụ thể nào."
-                class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint"></textarea>
+                class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint"></textarea>
       <button type="submit" class="btn btn-ghost text-sm py-1.5 px-3 mt-2">Gửi</button>
     </form>
 

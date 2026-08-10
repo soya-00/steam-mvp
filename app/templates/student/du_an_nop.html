@@ -15,7 +15,7 @@
 
     {% with slot = 'nop-du-an' %}{% include "partials/confetti_mung.html" %}{% endwith %}
 
-    <span class="absolute -top-5 -right-4 w-16 h-16 rounded-full bg-teal text-white
+    <span class="absolute -top-5 -right-4 w-16 h-16 rounded-full bg-teal text-on-accent
                  grid place-items-center border-4 border-paper shadow-sm" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
            stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7">
@@ -31,7 +31,7 @@
       {% for p in progress %}
       <li class="flex items-center gap-3 text-base">
         <span class="w-6 h-6 shrink-0 rounded-full grid place-items-center
-                     {{ 'bg-teal text-white' if p.state == 'done' else 'border border-hairline text-ink-faint' }}"
+                     {{ 'bg-teal text-on-accent' if p.state == 'done' else 'border border-hairline text-ink-faint' }}"
               aria-hidden="true">
           {% if p.state == 'done' %}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
@@ -67,7 +67,7 @@
           </label>
           <textarea id="mo_ta" name="mo_ta" rows="5"
                     placeholder="Bạn đã tạo ra {{ scenario.creation_output|lower }} như thế nào? Điều gì bạn còn phân vân?"
-                    class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint">{{ entry.content[:400] if entry and entry.content else '' }}</textarea>
+                    class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">{{ entry.content[:400] if entry and entry.content else '' }}</textarea>
           <p class="mt-1.5 text-xs text-ink-soft">
             Phần này đã được điền sẵn từ nhật ký của bạn. Sửa thoải mái.
           </p>
@@ -79,7 +79,7 @@
           </label>
           <input type="url" id="anh" name="anh" placeholder="https://..."
                  value="{{ entry.image_url if entry else '' }}"
-                 class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint">
+                 class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
         </div>
 
         <div>
@@ -88,7 +88,7 @@
           </label>
           <input type="url" id="video" name="video" placeholder="https://..."
                  value="{{ entry.video_url if entry else '' }}"
-                 class="w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 text-ink placeholder:text-ink-faint">
+                 class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
         </div>
 
         <fieldset>
@@ -98,7 +98,7 @@
             <label class="cursor-pointer">
               <input type="radio" name="phan_loai" value="{{ c.key }}" class="sr-only peer"
                      {% if loop.last %}checked{% endif %}>
-              <span class="block rounded-lg border-2 border-hairline bg-paper px-4 py-3 text-center text-sm font-medium
+              <span class="block rounded-lg border-2 border-field-line bg-sunken px-4 py-3 text-center text-sm font-medium
                            transition peer-checked:border-trunk peer-checked:bg-trunk-50 peer-checked:text-trunk-700">
                 {{ c.label }}
               </span>

@@ -32,8 +32,8 @@
           <label class="cursor-pointer">
             <input type="radio" name="avatar_id" value="{{ a.id }}"
                    class="sr-only peer" {% if loop.first %}checked{% endif %}>
-            <span class="flex flex-col items-center gap-1 rounded-xl border-2 border-hairline
-                         bg-paper py-3 transition peer-checked:border-teal peer-checked:bg-teal-50
+            <span class="flex flex-col items-center gap-1 rounded-xl border-2 border-field-line
+                         bg-sunken py-3 transition peer-checked:border-teal peer-checked:bg-teal-50
                          peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-teal">
               <span class="text-3xl" aria-hidden="true">{{ a.emoji }}</span>
               <span class="text-xs text-ink-soft">{{ a.label }}</span>

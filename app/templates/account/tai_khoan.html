@@ -27,7 +27,7 @@
         <div class="flex-1 min-w-[14rem]">
           <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên hiển thị</label>
           <input type="text" id="ten" name="ten" required maxlength="60" value="{{ user.name }}"
-                 class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2.5 text-ink">
+                 class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2.5 text-ink">
         </div>
         <button type="submit" class="btn btn-ghost">Lưu tên</button>
       </form>
@@ -45,7 +45,7 @@
             <label class="cursor-pointer">
               <input type="radio" name="avatar_id" value="{{ a.id }}" class="sr-only peer"
                      {% if a.id == user.avatar_id %}checked{% endif %}>
-              <span class="flex flex-col items-center gap-1 rounded-xl border-2 border-hairline
+              <span class="flex flex-col items-center gap-1 rounded-xl border-2 border-field-line
                            bg-paper-raised py-2.5 transition peer-checked:border-trunk
                            peer-checked:bg-trunk-50">
                 <span class="text-2xl" aria-hidden="true">{{ a.emoji }}</span>
@@ -63,11 +63,41 @@
   <section id="tro-nang" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Hiển thị và trợ năng</h2>
     <p class="mt-2 text-sm text-ink-soft">
-      Hai cài đặt này lưu trên máy bạn đang dùng và có hiệu lực ngay.
+      Những cài đặt này lưu trên máy bạn đang dùng và có hiệu lực ngay.
     </p>
 
-    <ul class="mt-3 grid gap-2.5">
+    <fieldset class="tile p-4 mt-3">
+      <legend class="text-sm font-semibold text-ink px-1">Giao diện</legend>
+      <p class="mt-1 text-sm text-ink-soft">
+        Chọn &ldquo;Theo hệ thống&rdquo; thì trang sáng hay tối theo cài đặt sẵn có
+        trên máy bạn, kể cả khi máy tự chuyển sang nền tối vào buổi tối.
+      </p>
+      <div class="mt-3 grid gap-2 sm:grid-cols-3">
+        {% for value, title, desc in [
+          ('sang', 'Sáng', 'Nền giấy như hiện tại.'),
+          ('toi', 'Tối', 'Nền tối tông ấm, dịu mắt trong phòng thiếu sáng.'),
+          ('he-thong', 'Theo hệ thống', 'Đi theo cài đặt của máy.')
+        ] %}
+        <label class="cursor-pointer">
+          <input type="radio" name="giao-dien" value="{{ value }}" class="sr-only peer"
+                 {% if value == 'he-thong' %}checked{% endif %}>
+          <span class="block h-full rounded-lg border-2 border-field-line bg-paper-raised
+                       px-3 py-2.5 transition
+                       peer-checked:border-trunk peer-checked:bg-trunk-50
+                       peer-focus-visible:outline peer-focus-visible:outline-2
+                       peer-focus-visible:outline-offset-2">
+            <span class="block text-sm font-semibold text-ink">{{ title }}</span>
+            <span class="block mt-0.5 text-xs text-ink-soft">{{ desc }}</span>
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <ul class="mt-2.5 grid gap-2.5">
       {% for pref, title, desc in [
+        ('tuong_phan', 'Tương phản cao',
+         'Đẩy chữ và viền lên mức tương phản mạnh nhất, bỏ các mảng màu nhạt. Dùng chung được với cả nền sáng và nền tối.'),
         ('motion', 'Giảm chuyển động',
          'Tắt pháo giấy, hiệu ứng trượt và các chuyển động khác. Bật cái này nếu máy bạn không có sẵn cài đặt giảm chuyển động.'),
         ('nen', 'Nền phẳng',
@@ -88,7 +118,8 @@
 
     <noscript>
       <p class="mt-3 text-sm text-ink-faint">
-        Hai công tắc này cần JavaScript. Trang vẫn dùng bình thường khi không có.
+        Phần cài đặt này cần JavaScript. Khi không có, trang dùng nền sáng và vẫn
+        nghe theo cài đặt tương phản cao của hệ điều hành.
       </p>
     </noscript>
   </section>

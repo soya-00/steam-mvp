@@ -20,19 +20,96 @@
     } catch (e) {}
   }
 
+  var el = document.documentElement;
+
+  function hoi(query) {
+    return window.matchMedia ? window.matchMedia(query) : { matches: false, addListener: function () {} };
+  }
+
+  var MQ_TOI = hoi("(prefers-color-scheme: dark)");
+  var MQ_TUONG_PHAN = hoi("(prefers-contrast: more)");
+
+  // Công tắc bật/tắt: không lưu gì nghĩa là tắt.
   var SWITCHES = [
     { name: "motion", on: "giam", attr: "motion" },
-    { name: "nen", on: "phang", attr: "nen" }
+    { name: "nen", on: "phang", attr: "nen" },
+    // Tương phản cao lưu cả hai chiều, vì "chưa chọn" còn có nghĩa thứ ba là
+    // nghe theo hệ điều hành.
+    { name: "tuong_phan", on: "cao", off: "thuong", attr: "contrast", mq: MQ_TUONG_PHAN }
   ];
 
+  function themeOf(prefs) {
+    var chon = prefs.giao_dien;
+    if (chon !== "sang" && chon !== "toi") {
+      chon = MQ_TOI.matches ? "toi" : "sang";
+    }
+    return chon;
+  }
+
   function apply(prefs) {
+    el.dataset.theme = themeOf(prefs) === "toi" ? "dark" : "light";
+
     SWITCHES.forEach(function (s) {
-      if (prefs[s.name] === s.on) {
-        document.documentElement.dataset[s.attr] = s.on;
-      } else {
-        delete document.documentElement.dataset[s.attr];
+      var value = prefs[s.name];
+      if (!s.off) {
+        if (value === s.on) {
+          el.dataset[s.attr] = s.on;
+        } else {
+          delete el.dataset[s.attr];
+        }
+        return;
       }
+      if (value !== s.on && value !== s.off) {
+        value = s.mq.matches ? s.on : s.off;
+      }
+      el.dataset[s.attr] = value;
     });
+  }
+
+  // Cho màu chạy 160ms khi người dùng bấm đổi, nhưng không chạy ở lần vẽ đầu
+  // — nếu không mỗi lần tải trang sẽ thấy cả trang đang tự đổi màu.
+  function applyWithFade(prefs) {
+    el.dataset.doiMau = "1";
+    apply(prefs);
+    window.setTimeout(function () { delete el.dataset.doiMau; }, 220);
+  }
+
+  function bindTheme() {
+    var radios = Array.prototype.slice.call(
+      document.querySelectorAll('input[name="giao-dien"]')
+    );
+    if (!radios.length) return;
+
+    var prefs = readPrefs();
+    var chon = prefs.giao_dien;
+    if (chon !== "sang" && chon !== "toi") chon = "he-thong";
+
+    radios.forEach(function (radio) {
+      radio.checked = radio.value === chon;
+      radio.addEventListener("change", function () {
+        if (!radio.checked) return;
+        var next = readPrefs();
+        if (radio.value === "he-thong") {
+          delete next.giao_dien;
+        } else {
+          next.giao_dien = radio.value;
+        }
+        writePrefs(next);
+        applyWithFade(next);
+      });
+    });
+
+    // Ai để "theo hệ thống" thì phải đổi theo ngay khi máy chuyển sáng/tối,
+    // không đợi tải lại trang.
+    var onChange = function () {
+      if (readPrefs().giao_dien) return;
+      applyWithFade(readPrefs());
+    };
+    if (MQ_TOI.addEventListener) {
+      MQ_TOI.addEventListener("change", onChange);
+    } else if (MQ_TOI.addListener) {
+      MQ_TOI.addListener(onChange);
+    }
   }
 
   function bindSwitches() {
@@ -40,16 +117,22 @@
     SWITCHES.forEach(function (s) {
       var box = document.querySelector('input[data-pref="' + s.name + '"]');
       if (!box) return;
-      box.checked = prefs[s.name] === s.on;
+      var value = prefs[s.name];
+      if (s.off && value !== s.on && value !== s.off) {
+        value = s.mq.matches ? s.on : s.off;
+      }
+      box.checked = value === s.on;
       box.addEventListener("change", function () {
         var next = readPrefs();
-        if (box.checked) {
+        if (s.off) {
+          next[s.name] = box.checked ? s.on : s.off;
+        } else if (box.checked) {
           next[s.name] = s.on;
         } else {
           delete next[s.name];
         }
         writePrefs(next);
-        apply(next);
+        applyWithFade(next);
       });
     });
   }
@@ -115,6 +198,7 @@
 
   function start() {
     apply(readPrefs());
+    bindTheme();
     bindSwitches();
     bindMenu();
   }

@@ -37,8 +37,8 @@
           {% if p.state == 'current' %}aria-current="step"{% endif %}>
         <span aria-hidden="true"
               class="w-6 h-6 shrink-0 rounded-full grid place-items-center text-xs font-semibold
-              {% if p.state == 'done' %}bg-teal text-white
-              {% elif p.state == 'current' %}bg-trunk text-white
+              {% if p.state == 'done' %}bg-teal text-on-accent
+              {% elif p.state == 'current' %}bg-trunk text-on-accent
               {% else %}border border-hairline text-ink-faint{% endif %}">
           {% if p.state == 'done' %}✓{% else %}{{ loop.index }}{% endif %}
         </span>
@@ -105,7 +105,7 @@
 
     <div class="card p-6 md:p-7 pop relative">
       {% with slot = 'xong-cap-do' %}{% include "partials/confetti_mung.html" %}{% endwith %}
-      <span class="w-11 h-11 rounded-full bg-teal text-white grid place-items-center" aria-hidden="true">
+      <span class="w-11 h-11 rounded-full bg-teal text-on-accent grid place-items-center" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
              stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
           <path d="m5 12.5 4.5 4.5L19 7.5"/>

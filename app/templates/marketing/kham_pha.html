@@ -15,14 +15,14 @@
 
   <div class="mt-7 flex flex-wrap gap-2" role="group" aria-label="Lọc theo lĩnh vực">
     <a href="/kham-pha"
-       class="chip px-4 py-2 text-sm {{ 'bg-ink text-white' if not chon else 'bg-paper-raised text-ink-soft border border-hairline hover:border-ink-faint' }}">
+       class="chip px-4 py-2 text-sm {{ 'bg-ink text-on-accent' if not chon else 'bg-paper-raised text-ink-soft border border-hairline hover:border-ink-faint' }}">
       Tất cả
     </a>
     {% for f in steam_fields %}
     {% set fc = field_classes(f.key) %}
     <a href="/kham-pha?linh_vuc={{ f.key }}"
        {% if chon == f.key %}aria-current="page"{% endif %}
-       class="chip px-4 py-2 text-sm {{ 'bg-ink text-white' if chon == f.key else fc.chip ~ ' border border-hairline hover:border-ink-faint' }}">
+       class="chip px-4 py-2 text-sm {{ 'bg-ink text-on-accent' if chon == f.key else fc.chip ~ ' border border-hairline hover:border-ink-faint' }}">
       {{ f.name }}
     </a>
     {% endfor %}

@@ -7,7 +7,10 @@
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if (document.documentElement.dataset.motion === "giam") return;
 
-  var colours = ["#2f8659", "#5a4fc7", "#3a6ea8", "#a87c28", "#bf4a72"];
+  var css = getComputedStyle(document.documentElement);
+  var colours = ["sci", "tech", "eng", "art", "math"].map(function (n) {
+    return css.getPropertyValue("--c-" + n).trim() || "#8b9098";
+  });
   for (var i = 0; i < 40; i++) {
     var piece = document.createElement("span");
     var angle = (Math.PI * 2 * i) / 40 + Math.random() * 0.5;

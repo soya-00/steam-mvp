@@ -80,7 +80,7 @@
     <div>
       <label for="muc_tieu" class="block text-sm font-medium text-ink mb-1">Giao gì</label>
       <select id="muc_tieu" name="muc_tieu"
-              class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2.5 text-ink">
+              class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2.5 text-ink">
         <optgroup label="Một tình huống cụ thể">
           {% for s in scenarios %}
           <option value="kich-huong:{{ s.id }}">{{ s.field }} — {{ s.title }}</option>
@@ -100,7 +100,7 @@
         {% for key, label, note in [('online','Trực tuyến','Các em làm trên GALS'), ('offline','Tại lớp','Có tài liệu in sẵn — chỉ cần giấy và bút')] %}
         <label class="cursor-pointer">
           <input type="radio" name="hinh_thuc" value="{{ key }}" class="sr-only peer" {% if loop.first %}checked{% endif %}>
-          <span class="block rounded-lg border-2 border-hairline bg-paper px-4 py-3 transition
+          <span class="block rounded-lg border-2 border-field-line bg-sunken px-4 py-3 transition
                        peer-checked:border-teal peer-checked:bg-teal-50">
             <span class="block text-sm font-medium text-ink">{{ label }}</span>
             <span class="block text-xs text-ink-soft">{{ note }}</span>
@@ -121,7 +121,7 @@
       </label>
       <textarea id="ghi_chu" name="ghi_chu" rows="2"
                 placeholder="Ví dụ: các em làm theo nhịp của mình, không cần xong trong một buổi."
-                class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
+                class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2.5 text-ink placeholder:text-ink-faint"></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Giao nhiệm vụ</button>

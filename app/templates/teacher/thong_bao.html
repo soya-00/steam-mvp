@@ -60,7 +60,7 @@
         <div>
           <label for="lop" class="block text-sm font-medium text-ink mb-1">Gửi cho lớp</label>
           <select id="lop" name="lop" required
-                  class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink">
+                  class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink">
             {% for c in classes %}
             <option value="{{ c.id }}">{{ c.name }}</option>
             {% endfor %}
@@ -70,7 +70,7 @@
         <div>
           <label for="loai" class="block text-sm font-medium text-ink mb-1">Loại</label>
           <select id="loai" name="loai"
-                  class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink">
+                  class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink">
             <option value="workshop">Hội thảo</option>
             <option value="talkshow">Talkshow</option>
           </select>
@@ -79,13 +79,13 @@
         <div>
           <label for="tieu_de" class="block text-sm font-medium text-ink mb-1">Tiêu đề</label>
           <input type="text" id="tieu_de" name="tieu_de" required
-                 class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink">
+                 class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink">
         </div>
 
         <div>
           <label for="noi_dung" class="block text-sm font-medium text-ink mb-1">Nội dung</label>
           <textarea id="noi_dung" name="noi_dung" rows="3"
-                    class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink"></textarea>
+                    class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink"></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary w-full">Gửi</button>

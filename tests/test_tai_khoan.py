@@ -230,7 +230,34 @@ def test_display_preferences_have_somewhere_to_apply(client):
 
     login_student(client)
     page = client.get("/tai-khoan").text
-    for pref in ['data-pref="motion"', 'data-pref="nen"']:
+    for pref in ['data-pref="motion"', 'data-pref="nen"', 'data-pref="tuong_phan"']:
         assert pref in page, pref
     # Cài đặt phải được dán trước khi trang vẽ, nếu không giao diện sẽ nhấp nháy.
     assert "gals-hien-thi" in page
+
+
+def test_the_theme_picker_offers_all_three_states(client):
+    login_student(client)
+    page = client.get("/tai-khoan").text
+    for value in ("sang", "toi", "he-thong"):
+        assert f'name="giao-dien" value="{value}"' in page, value
+    # Chưa chọn gì thì đi theo hệ điều hành.
+    at = page.index('value="he-thong"')
+    assert "checked" in page[at : at + 120]
+
+
+def test_the_theme_is_stamped_before_the_first_paint(client):
+    # Nếu dán sau khi trang vẽ, người để nền tối sẽ thấy một nháy trắng.
+    page = client.get("/dang-nhap").text
+    head = page[: page.index("</head>")]
+    assert "prefers-color-scheme: dark" in head
+    assert "prefers-contrast: more" in head
+    # Đoạn chặn phải đứng trước bảng kiểu, nếu không nó phải đợi tải xong CSS.
+    assert head.index("dataset.theme") < head.index('rel="stylesheet"')
+
+
+def test_every_page_can_be_switched_without_reloading(client):
+    login_student(client)
+    for url in ("/trang-ca-nhan", "/tai-khoan", "/ho-so", "/huy-hieu"):
+        page = client.get(url).text
+        assert "/static/js/tai-khoan.js" in page, url

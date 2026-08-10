@@ -23,12 +23,12 @@
         class="mt-3">
     <label for="mo-ta-{{ item.id }}" class="sr-only">Mô tả</label>
     <textarea id="mo-ta-{{ item.id }}" name="mo_ta" rows="3"
-              class="w-full rounded-lg border border-hairline bg-paper-raised px-3 py-2 text-sm text-ink">{{ item.description }}</textarea>
+              class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink">{{ item.description }}</textarea>
 
     <div class="mt-2 flex flex-wrap items-center gap-2">
       <label for="pl-{{ item.id }}" class="sr-only">Phân loại</label>
       <select id="pl-{{ item.id }}" name="phan_loai"
-              class="rounded-lg border border-hairline bg-paper-raised px-2 py-1.5 text-sm text-ink">
+              class="rounded-lg border border-field-line bg-paper-raised px-2 py-1.5 text-sm text-ink">
         {% for c in project_categories %}
         <option value="{{ c.key }}" {% if c.key == item.category %}selected{% endif %}>{{ c.label }}</option>
         {% endfor %}

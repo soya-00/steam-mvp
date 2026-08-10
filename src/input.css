@@ -4,78 +4,347 @@
 @source "../app/templates/**/*.html";
 @source "../app/**/*.py";
 
-@theme {
-  --color-trunk-50: #eeeff8;
-  --color-trunk-100: #dcdef1;
-  --color-trunk-300: #9fa3d3;
-  --color-trunk: #4a4e9c;
-  --color-trunk-700: #3a3d7a;
-  --color-trunk-900: #23264c;
+/* ────────────────────────────────────────────────────────────────────────────
+   BẢNG MÀU
 
-  --color-teal-50: #e8f5f1;
-  --color-teal-100: #cfeae3;
-  --color-teal-300: #7fc9b7;
-  --color-teal: #1f8a70;
-  --color-teal-700: #186b57;
-  --color-teal-900: #0f4136;
+   Giá trị thật nằm ở `:root` dưới dạng biến CSS thường; `@theme inline` chỉ
+   trỏ tên tiện ích của Tailwind vào các biến đó. Nhờ vậy đổi giao diện là đổi
+   biến, không cần viết `dark:` ở từng thẻ.
 
-  --color-amber-50: #fbf3e6;
-  --color-amber-100: #f6e7cc;
-  --color-amber-300: #e4bd7f;
-  --color-amber: #c98a2e;
-  --color-amber-700: #9d6b24;
-  --color-amber-900: #5e4016;
+   Nền tối giữ một chút hơi ấm của giấy (hue 30) nhưng chỉ ở bão hoà 3–4%: đủ
+   để không thành xám bệnh viện, không đủ để ngả nâu. Độ sáng giữ nguyên như
+   khi bão hoà còn cao, nên mọi số tương phản đã đo vẫn đúng.
 
-  --color-plum-50: #f6ecf1;
-  --color-plum-100: #edd9e3;
-  --color-plum-300: #c99db3;
-  --color-plum: #8b4b6b;
-  --color-plum-700: #6d3b54;
-  --color-plum-900: #412332;
+   Ở bản tối, thang màu của mỗi nhánh bị lật nghĩa: `-50` là mảng nền tối có
+   ám màu, còn `-700`/`-900` là màu CHỮ sáng đọc trên mảng đó.
+   ──────────────────────────────────────────────────────────────────────── */
 
-  --color-slate-50: #eef2f7;
-  --color-slate-100: #dde5ee;
-  --color-slate-300: #a3b6cd;
-  --color-slate: #4f6f94;
-  --color-slate-700: #3e5774;
-  --color-slate-900: #253445;
+:root {
+  color-scheme: light;
 
-  --color-sci-50: #e6f2ea;
-  --color-sci-100: #cfe6d8;
-  --color-sci-300: #86c3a1;
-  --color-sci: #2f8659;
-  --color-sci-700: #226845;
+  --c-trunk-50: #eeeff8;
+  --c-trunk-100: #dcdef1;
+  --c-trunk-300: #9fa3d3;
+  --c-trunk: #4a4e9c;
+  --c-trunk-700: #3a3d7a;
+  --c-trunk-900: #23264c;
 
-  --color-tech-50: #eceafa;
-  --color-tech-100: #dcd8f4;
-  --color-tech-300: #a9a1e2;
-  --color-tech: #5a4fc7;
-  --color-tech-700: #453b9e;
+  --c-teal-50: #e8f5f1;
+  --c-teal-100: #cfeae3;
+  --c-teal-300: #7fc9b7;
+  --c-teal: #1e856c;
+  --c-teal-700: #186b57;
+  --c-teal-900: #0f4136;
 
-  --color-eng-50: #e8f0fa;
-  --color-eng-100: #d5e3f4;
-  --color-eng-300: #93b6e0;
-  --color-eng: #3a6ea8;
-  --color-eng-700: #2d5684;
+  --c-amber-50: #fbf3e6;
+  --c-amber-100: #f6e7cc;
+  --c-amber-300: #e4bd7f;
+  --c-amber: #c98a2e;
+  --c-amber-700: #966622;
+  --c-amber-900: #5e4016;
 
-  --color-art-50: #f9efdc;
-  --color-art-100: #f3e2c2;
-  --color-art-300: #dfbe80;
-  --color-art: #a87c28;
-  --color-art-700: #85611c;
+  --c-plum-50: #f6ecf1;
+  --c-plum-100: #edd9e3;
+  --c-plum-300: #c99db3;
+  --c-plum: #8b4b6b;
+  --c-plum-700: #6d3b54;
+  --c-plum-900: #412332;
 
-  --color-math-50: #fbe9f0;
-  --color-math-100: #f6d6e2;
-  --color-math-300: #e3a0ba;
-  --color-math: #bf4a72;
-  --color-math-700: #983a5b;
+  --c-slate-50: #eef2f7;
+  --c-slate-100: #dde5ee;
+  --c-slate-300: #a3b6cd;
+  --c-slate: #4f6f94;
+  --c-slate-700: #3e5774;
+  --c-slate-900: #253445;
 
-  --color-paper: #faf8f4;
-  --color-paper-raised: #ffffff;
-  --color-ink: #1e2126;
-  --color-ink-soft: #5b6068;
-  --color-ink-faint: #8b9098;
-  --color-hairline: #e7e3da;
+  --c-sci-50: #e6f2ea;
+  --c-sci-100: #cfe6d8;
+  --c-sci-300: #86c3a1;
+  --c-sci: #2e8458;
+  --c-sci-700: #226845;
+
+  --c-tech-50: #eceafa;
+  --c-tech-100: #dcd8f4;
+  --c-tech-300: #a9a1e2;
+  --c-tech: #5a4fc7;
+  --c-tech-700: #453b9e;
+
+  --c-eng-50: #e8f0fa;
+  --c-eng-100: #d5e3f4;
+  --c-eng-300: #93b6e0;
+  --c-eng: #3a6ea8;
+  --c-eng-700: #2d5684;
+
+  --c-art-50: #f9efdc;
+  --c-art-100: #f3e2c2;
+  --c-art-300: #dfbe80;
+  --c-art: #a87c28;
+  --c-art-700: #85611c;
+
+  --c-math-50: #fbe9f0;
+  --c-math-100: #f6d6e2;
+  --c-math-300: #e3a0ba;
+  --c-math: #bf4a72;
+  --c-math-700: #983a5b;
+
+  --c-paper: #faf8f4;
+  --c-paper-raised: #ffffff;
+  --c-sunken: #faf8f4;
+  --c-raised-2: #ffffff;
+  --c-ink: #1e2126;
+  --c-ink-soft: #5b6068;
+  --c-ink-faint: #6d727b;
+  --c-hairline: #e7e3da;
+  /* Viền ô nhập, rãnh công tắc, ô cấp độ rỗng: những đường kẻ mang thông tin,
+     phải đạt 3:1 với nền — `--c-hairline` chỉ để chia khối, nhạt hơn nhiều. */
+  --c-field-line: #858b93;
+  --c-on-accent: #ffffff;
+  --c-focus: #1e856c;
+  --c-scrim: rgba(30, 33, 38, 0.45);
+  --c-knob: #ffffff;
+
+  /* Dải mời giáo viên ở trang chủ. */
+  --c-band: #4a4e9c;
+  --c-band-line: #4a4e9c;
+  --c-band-ink: #ffffff;
+  --c-band-ink-soft: #dcdef1;
+  --c-band-btn: #ffffff;
+  --c-band-btn-ink: #4a4e9c;
+  --c-band-btn-hover: #eeeff8;
+
+  --shadow-lift: 0 10px 22px -14px rgba(35, 38, 43, 0.4);
+  --shadow-pop: 0 18px 38px -22px rgba(35, 38, 43, 0.55);
+  --shadow-card: 0 6px 16px -12px rgba(35, 38, 43, 0.5);
+
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --c-trunk-50: #373a5a;
+  --c-trunk-100: #474a75;
+  --c-trunk-300: #525698;
+  --c-trunk: #8e91cc;
+  --c-trunk-700: #b5b7e3;
+  --c-trunk-900: #d0d2f0;
+
+  --c-teal-50: #28413b;
+  --c-teal-100: #33544c;
+  --c-teal-300: #529887;
+  --c-teal: #8eccbd;
+  --c-teal-700: #b5e3d8;
+  --c-teal-900: #d0f0e8;
+
+  --c-amber-50: #463b2b;
+  --c-amber-100: #5a4c37;
+  --c-amber-300: #987c52;
+  --c-amber: #ccb48e;
+  --c-amber-700: #e3d1b5;
+  --c-amber-900: #f0e4d0;
+
+  --c-plum-50: #523343;
+  --c-plum-100: #6a4156;
+  --c-plum-300: #985275;
+  --c-plum: #cc8ead;
+  --c-plum-700: #e3b5cc;
+  --c-plum-900: #f0d0e0;
+
+  --c-slate-50: #2e3e4c;
+  --c-slate-100: #3c5061;
+  --c-slate-300: #527598;
+  --c-slate: #8eadcc;
+  --c-slate-700: #b5cce3;
+  --c-slate-900: #d0e0f0;
+
+  --c-sci-50: #284234;
+  --c-sci-100: #345543;
+  --c-sci-300: #529874;
+  --c-sci: #8eccac;
+  --c-sci-700: #b5e3cb;
+
+  --c-tech-50: #3c385c;
+  --c-tech-100: #4d4875;
+  --c-tech-300: #5a5298;
+  --c-tech: #968ecc;
+  --c-tech-700: #bab5e3;
+
+  --c-eng-50: #2f3e4d;
+  --c-eng-100: #3d4f63;
+  --c-eng-300: #527398;
+  --c-eng: #8eabcc;
+  --c-eng-700: #b5cae3;
+
+  --c-art-50: #433c29;
+  --c-art-100: #564d35;
+  --c-art-300: #988252;
+  --c-art: #ccb98e;
+  --c-art-700: #e3d5b5;
+
+  --c-math-50: #52333e;
+  --c-math-100: #6b4150;
+  --c-math-300: #98526c;
+  --c-math: #cc8ea5;
+  --c-math-700: #e3b5c6;
+
+  /* Càng nổi lên càng sáng — ngược lại thì hộp thoại trông như cái lỗ.
+     Cùng lý do đó, các mảng `-50`/`-100` phải sáng hơn mọi bề mặt bên dưới:
+     một mảng có ám màu mà tối hơn thẻ chứa nó thì đọc thành một cái lỗ,
+     chứ không đọc thành "đang chọn". */
+  --c-paper: #181716;
+  --c-paper-raised: #222120;
+  --c-sunken: #2d2c2a;
+  --c-raised-2: #383633;
+  --c-ink: #ecebe9;
+  --c-ink-soft: #bab8b5;
+  --c-ink-faint: #a3a09d;
+  --c-hairline: rgba(255, 255, 255, 0.12);
+  --c-field-line: #84817d;
+  --c-on-accent: #1d1c1b;
+  --c-focus: #8eccbd;
+  --c-scrim: rgba(0, 0, 0, 0.66);
+  --c-knob: #f0eeeb;
+
+  /* Một mảng màu đậm choán cả bề ngang là nguồn chói trong phòng tối, nên ở
+     bản tối dải mời tụt xuống thành mảng nền có ám màu, chữ mới là phần sáng. */
+  --c-band: #1b1c2c;
+  --c-band-line: #6165ad;
+  --c-band-ink: #d0d2f0;
+  --c-band-ink-soft: #b5b7e3;
+  --c-band-btn: #8e91cc;
+  --c-band-btn-ink: #1f1d19;
+  --c-band-btn-hover: #b5b7e3;
+
+  /* Bóng đổ không còn là tín hiệu độ sâu khi nền đã tối; độ sáng bề mặt lo
+     việc đó. Giữ lại một chút để tách khỏi nền, không hơn. */
+  --shadow-lift: 0 10px 22px -16px rgba(0, 0, 0, 0.8);
+  --shadow-pop: 0 18px 38px -20px rgba(0, 0, 0, 0.85);
+  --shadow-card: 0 6px 16px -12px rgba(0, 0, 0, 0.7);
+
+}
+
+/* Tương phản cao — chỉ đè lên những token quyết định việc đọc được hay không,
+   để không phải nuôi thêm một bảng màu thứ ba. */
+:root[data-contrast="cao"] {
+  --c-paper: #ffffff;
+  --c-paper-raised: #ffffff;
+  --c-sunken: #f2f0ec;
+  --c-ink: #0b0d10;
+  --c-ink-soft: #31363d;
+  --c-ink-faint: #4c525a;
+  --c-hairline: #8b9098;
+  --c-field-line: #4c525a;
+  --c-focus: #0b0d10;
+}
+
+/* Không có JavaScript thì thẻ `data-contrast` không được dán, nên bản sáng vẫn
+   nghe theo cài đặt tương phản của hệ điều hành. */
+@media (prefers-contrast: more) {
+  :root:not([data-contrast]) {
+    --c-paper: #ffffff;
+    --c-paper-raised: #ffffff;
+    --c-sunken: #f2f0ec;
+    --c-ink: #0b0d10;
+    --c-ink-soft: #31363d;
+    --c-ink-faint: #4c525a;
+    --c-hairline: #8b9098;
+    --c-field-line: #4c525a;
+    --c-focus: #0b0d10;
+  }
+}
+
+:root[data-theme="dark"][data-contrast="cao"] {
+  --c-paper: #000000;
+  --c-paper-raised: #101215;
+  --c-sunken: #191c20;
+  --c-raised-2: #24272c;
+  --c-ink: #ffffff;
+  --c-ink-soft: #dfe2e8;
+  --c-ink-faint: #b9bec8;
+  --c-hairline: #9aa0aa;
+  --c-field-line: #b9bec8;
+  --c-focus: #ffffff;
+  --c-band: #000000;
+  --c-band-line: #9aa0aa;
+  --c-band-ink: #ffffff;
+  --c-band-ink-soft: #dfe2e8;
+}
+
+@theme inline {
+  --color-trunk-50: var(--c-trunk-50);
+  --color-trunk-100: var(--c-trunk-100);
+  --color-trunk-300: var(--c-trunk-300);
+  --color-trunk: var(--c-trunk);
+  --color-trunk-700: var(--c-trunk-700);
+  --color-trunk-900: var(--c-trunk-900);
+
+  --color-teal-50: var(--c-teal-50);
+  --color-teal-100: var(--c-teal-100);
+  --color-teal-300: var(--c-teal-300);
+  --color-teal: var(--c-teal);
+  --color-teal-700: var(--c-teal-700);
+  --color-teal-900: var(--c-teal-900);
+
+  --color-amber-50: var(--c-amber-50);
+  --color-amber-100: var(--c-amber-100);
+  --color-amber-300: var(--c-amber-300);
+  --color-amber: var(--c-amber);
+  --color-amber-700: var(--c-amber-700);
+  --color-amber-900: var(--c-amber-900);
+
+  --color-plum-50: var(--c-plum-50);
+  --color-plum-100: var(--c-plum-100);
+  --color-plum-300: var(--c-plum-300);
+  --color-plum: var(--c-plum);
+  --color-plum-700: var(--c-plum-700);
+  --color-plum-900: var(--c-plum-900);
+
+  --color-slate-50: var(--c-slate-50);
+  --color-slate-100: var(--c-slate-100);
+  --color-slate-300: var(--c-slate-300);
+  --color-slate: var(--c-slate);
+  --color-slate-700: var(--c-slate-700);
+  --color-slate-900: var(--c-slate-900);
+
+  --color-sci-50: var(--c-sci-50);
+  --color-sci-100: var(--c-sci-100);
+  --color-sci-300: var(--c-sci-300);
+  --color-sci: var(--c-sci);
+  --color-sci-700: var(--c-sci-700);
+
+  --color-tech-50: var(--c-tech-50);
+  --color-tech-100: var(--c-tech-100);
+  --color-tech-300: var(--c-tech-300);
+  --color-tech: var(--c-tech);
+  --color-tech-700: var(--c-tech-700);
+
+  --color-eng-50: var(--c-eng-50);
+  --color-eng-100: var(--c-eng-100);
+  --color-eng-300: var(--c-eng-300);
+  --color-eng: var(--c-eng);
+  --color-eng-700: var(--c-eng-700);
+
+  --color-art-50: var(--c-art-50);
+  --color-art-100: var(--c-art-100);
+  --color-art-300: var(--c-art-300);
+  --color-art: var(--c-art);
+  --color-art-700: var(--c-art-700);
+
+  --color-math-50: var(--c-math-50);
+  --color-math-100: var(--c-math-100);
+  --color-math-300: var(--c-math-300);
+  --color-math: var(--c-math);
+  --color-math-700: var(--c-math-700);
+
+  --color-paper: var(--c-paper);
+  --color-paper-raised: var(--c-paper-raised);
+  --color-sunken: var(--c-sunken);
+  --color-raised-2: var(--c-raised-2);
+  --color-ink: var(--c-ink);
+  --color-ink-soft: var(--c-ink-soft);
+  --color-ink-faint: var(--c-ink-faint);
+  --color-hairline: var(--c-hairline);
+  --color-field-line: var(--c-field-line);
+  --color-on-accent: var(--c-on-accent);
 
   --font-display: "Be Vietnam Pro", system-ui, sans-serif;
   --font-sans: "Lexend", system-ui, sans-serif;
@@ -107,10 +376,40 @@
     letter-spacing: -0.015em;
   }
 
+  /* url() không nội suy được biến CSS, nên hoa văn nền phải khai báo lại cho
+     bản tối thay vì đổi màu qua token. */
+  :root[data-theme="dark"] body {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M18 14h7M21.5 10.5v7'/%3E%3Cpath d='M86 74h7M89.5 70.5v7'/%3E%3Cpath d='M8 82c8-7 17-7 25 0'/%3E%3Cpath d='M70 24c7 6 15 6 22 0'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='62' cy='46' r='1.7'/%3E%3Ccircle cx='104' cy='16' r='1.7'/%3E%3Ccircle cx='36' cy='104' r='1.7'/%3E%3Ccircle cx='108' cy='102' r='1.3'/%3E%3Ccircle cx='48' cy='66' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Nền phẳng và tương phản cao đều bỏ hẳn hoa văn. */
+  :root[data-nen="phang"] body,
+  :root[data-contrast="cao"] body {
+    background-image: none;
+  }
+
+  /* Chữ sáng trên nền tối trông dày hơn chữ tối trên nền sáng ở cùng một độ
+     đậm, nên bản tối bớt đi một nấc và nới nhẹ khoảng cách chữ. */
+  :root[data-theme="dark"] h1,
+  :root[data-theme="dark"] h2,
+  :root[data-theme="dark"] h3,
+  :root[data-theme="dark"] h4 {
+    font-weight: 700;
+  }
+
+  :root[data-theme="dark"] .microlabel {
+    letter-spacing: 0.1em;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-teal);
+    outline: 2px solid var(--c-focus);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-trunk-100);
+    color: var(--color-ink);
   }
 
   .prose-beat {
@@ -143,7 +442,7 @@
 
   .btn-primary {
     background-color: var(--color-trunk);
-    color: #fff;
+    color: var(--color-on-accent);
   }
 
   .btn-primary:hover {
@@ -159,6 +458,28 @@
   .btn-ghost:hover {
     border-color: var(--color-ink-faint);
     color: var(--color-ink);
+  }
+
+  /* Dải mời giáo viên: bản sáng là mảng màu đậm chữ trắng, bản tối lật lại
+     thành mảng nền tối chữ sáng. Cả năm màu đi qua token nên thẻ không cần
+     biết đang ở giao diện nào. */
+  .band {
+    background-color: var(--c-band);
+    border-color: var(--c-band-line);
+    color: var(--c-band-ink-soft);
+  }
+
+  .band h1, .band h2, .band h3 {
+    color: var(--c-band-ink);
+  }
+
+  .band .btn-band {
+    background-color: var(--c-band-btn);
+    color: var(--c-band-btn-ink);
+  }
+
+  .band .btn-band:hover {
+    background-color: var(--c-band-btn-hover);
   }
 
   .chip {
@@ -192,7 +513,7 @@
 
   .lift:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 22px -14px rgba(35, 38, 43, 0.4);
+    box-shadow: var(--shadow-lift);
   }
 
   .art-banner {
@@ -201,6 +522,19 @@
     object-fit: cover;
     border-top-left-radius: var(--radius-card);
     border-top-right-radius: var(--radius-card);
+    transition: filter 200ms ease;
+  }
+
+  /* Tranh minh hoạ được vẽ trên nền kem. Để nguyên ở bản tối thì mỗi thẻ có
+     một ô đèn pin. Hạ sáng xuống, và trả lại khi rê chuột để còn xem được
+     tranh thật. */
+  :root[data-theme="dark"] .art-banner {
+    filter: brightness(0.62) contrast(1.08);
+  }
+
+  :root[data-theme="dark"] a:hover .art-banner,
+  :root[data-theme="dark"] .art-banner:hover {
+    filter: brightness(0.86) contrast(1.02);
   }
 
   .step-track {
@@ -280,7 +614,7 @@
   /* Thẻ con nằm trong .panel — nền trắng trên trắng thì không thấy gì,
      nên thẻ con lấy nền giấy. */
   .tile {
-    background-color: var(--color-paper);
+    background-color: var(--color-sunken);
     border: 1px solid var(--color-hairline);
     border-radius: 0.875rem;
   }
@@ -291,10 +625,10 @@
     right: 0;
     z-index: 40;
     width: 17rem;
-    background-color: var(--color-paper-raised);
+    background-color: var(--color-raised-2);
     border: 1px solid var(--color-hairline);
     border-radius: 0.875rem;
-    box-shadow: 0 18px 38px -22px rgba(35, 38, 43, 0.55);
+    box-shadow: var(--shadow-pop);
     padding: 0.375rem;
   }
 
@@ -313,7 +647,7 @@
 
   .menu-item:hover,
   .menu-item:focus-visible {
-    background-color: var(--color-paper);
+    background-color: var(--color-sunken);
   }
 
   .menu-item svg {
@@ -335,7 +669,7 @@
     width: 2.75rem;
     height: 1.5rem;
     border-radius: 9999px;
-    background-color: var(--color-hairline);
+    background-color: var(--color-field-line);
     transition: background-color 160ms ease;
   }
 
@@ -347,8 +681,8 @@
     width: 1.125rem;
     height: 1.125rem;
     border-radius: 9999px;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(35, 38, 43, 0.35);
+    background-color: var(--c-knob);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
     transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -375,7 +709,7 @@
     width: 1.5rem;
     height: 0.4375rem;
     border-radius: 9999px;
-    background-color: var(--color-hairline);
+    background-color: var(--color-field-line);
   }
 
   .stage-pips span[data-state="done"] {
@@ -395,7 +729,7 @@
     font-size: 0.8125rem;
     font-weight: 600;
     color: var(--color-ink-soft);
-    background-color: var(--color-paper);
+    background-color: var(--color-sunken);
     transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
   }
 
@@ -407,7 +741,7 @@
   .filter-chip[aria-current="true"] {
     background-color: var(--color-trunk);
     border-color: var(--color-trunk);
-    color: #fff;
+    color: var(--color-on-accent);
   }
 
   .composer {
@@ -557,7 +891,7 @@
 .notebook > * {
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 220ms ease;
-  box-shadow: 0 6px 16px -12px rgba(35, 38, 43, 0.5);
+  box-shadow: var(--shadow-card);
 }
 
 .notebook > *:nth-child(4n + 1) { transform: rotate(-1.5deg); }
@@ -568,7 +902,7 @@
 .notebook > *:hover,
 .notebook > *:focus-within {
   transform: rotate(0deg) translateY(-4px);
-  box-shadow: 0 16px 28px -18px rgba(35, 38, 43, 0.55);
+  box-shadow: var(--shadow-pop);
 }
 
 
@@ -764,6 +1098,29 @@
 }
 
 @media print {
+  /* In ra thì luôn dùng bản sáng, dù màn hình đang để nền tối. */
+  :root, :root[data-theme="dark"] {
+    --c-paper: #ffffff;
+    --c-paper-raised: #ffffff;
+    --c-sunken: #ffffff;
+    --c-ink: #000000;
+    --c-ink-soft: #333333;
+    --c-ink-faint: #666666;
+    --c-hairline: #999999;
+    --c-field-line: #666666;
+    --c-on-accent: #ffffff;
+    --c-band: #ffffff;
+    --c-band-line: #999999;
+    --c-band-ink: #000000;
+    --c-band-ink-soft: #333333;
+    --c-band-btn: #ffffff;
+    --c-band-btn-ink: #000000;
+  }
+
+  :root[data-theme="dark"] body {
+    background-image: none !important;
+  }
+
   header, footer, nav, .no-print {
     display: none !important;
   }
@@ -827,6 +1184,43 @@
   }
 }
 
+/* Lúc đổi sáng ↔ tối, cho màu chạy trong 160ms để mắt không bị giật. Chỉ dán
+   khi thật sự đang đổi, và chỉ cho những thuộc tính màu — `transition: all`
+   sẽ kéo cả kích thước và trang trông như đang chảy. */
+html[data-doi-mau] *,
+html[data-doi-mau] *::before,
+html[data-doi-mau] *::after {
+  transition: background-color 160ms ease, border-color 160ms ease,
+              color 160ms ease, fill 160ms ease, stroke 160ms ease,
+              box-shadow 160ms ease !important;
+}
+
+/* Chế độ tương phản ép buộc của Windows tự thay toàn bộ màu. Ở đó những chỗ
+   chỉ dùng nền để phân biệt trạng thái sẽ biến mất, nên phải vẽ thêm viền. */
+@media (forced-colors: active) {
+  .btn-primary,
+  .filter-chip[aria-current="true"],
+  .tab[aria-current="page"] {
+    border: 1px solid currentColor;
+  }
+
+  .step-fill,
+  .stage-pips span[data-state="done"],
+  .stage-pips span[data-state="current"] {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  input:checked + .switch {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .switch {
+    border: 1px solid ButtonText;
+  }
+}
+
 /* Tắt chuyển động: theo cài đặt của hệ điều hành, hoặc theo công tắc trong
    Hiển thị & trợ năng khi máy của học sinh không có cài đặt đó. */
 @media (prefers-reduced-motion: reduce) {
@@ -858,7 +1252,7 @@ html[data-nen="phang"] .bg-amber-50,
 html[data-nen="phang"] .bg-trunk-50,
 html[data-nen="phang"] .bg-plum-50,
 html[data-nen="phang"] .bg-slate-50 {
-  background-color: var(--color-paper);
+  background-color: var(--color-sunken);
 }
 
 .wordmark {
@@ -880,6 +1274,12 @@ html[data-nen="phang"] .bg-slate-50 {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.6C14 2.2 27 2.6 38 6.2s22 3.4 33-.6 20-3.2 27 1.2' fill='none' stroke='%234a4e9c' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
   opacity: 0.9;
   pointer-events: none;
+}
+
+/* Nét gạch chân vẽ tay là ảnh SVG nội tuyến, nên bản tối phải khai lại
+   thay vì đổi màu qua token. */
+:root[data-theme="dark"] .wordmark::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.6C14 2.2 27 2.6 38 6.2s22 3.4 33-.6 20-3.2 27 1.2' fill='none' stroke='%238e91cc' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 .wordmark-light::after {
