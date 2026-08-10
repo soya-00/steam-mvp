@@ -71,7 +71,17 @@ def test_legal_notice_exists_and_is_linked_everywhere(client):
     from pathlib import Path
 
     legal = Path("LEGAL.md").read_text(encoding="utf-8")
-    for heading in ["Tuyên bố về bản mẫu", "Dữ liệu đi những đâu", "Trách nhiệm pháp lý"]:
+    # Xương sống của tài liệu. Mất một mục là mất một nghĩa vụ, nên phép thử
+    # neo vào đây thay vì vào cách đánh số.
+    for heading in [
+        "Dữ liệu nhạy cảm",
+        "Kiến trúc dữ liệu",
+        "Chính sách độ tuổi",
+        "Dữ liệu đi những đâu",
+        "Mô hình trách nhiệm",
+        "Việc cần làm",
+        "Trách nhiệm pháp lý",
+    ]:
         assert heading in legal, heading
     assert "111" in legal
 
@@ -79,6 +89,20 @@ def test_legal_notice_exists_and_is_linked_everywhere(client):
 
     login_independent(client)
     assert "LEGAL.md" in client.get("/trang-ca-nhan").text
+
+
+def test_legal_notice_does_not_cite_the_repealed_decree_as_current():
+    from pathlib import Path
+
+    legal = Path("LEGAL.md").read_text(encoding="utf-8")
+    # Nghị định 13/2023 đã bị thay thế. Được phép nhắc tới nó, nhưng chỉ khi
+    # nói rõ là đã hết hiệu lực — nếu không, tài liệu đang dẫn sai luật.
+    if "13/2023" in legal:
+        assert "hết hiệu lực" in legal or "Thay thế hoàn toàn" in legal, (
+            "LEGAL.md nhắc Nghị định 13/2023 mà không nói nó đã bị thay thế"
+        )
+    for văn_bản in ["91/2025", "356/2025", "134/2025", "116/2025", "147/2024"]:
+        assert văn_bản in legal, văn_bản
 
 
 def test_field_page_explains_how_scenarios_are_built(client):
