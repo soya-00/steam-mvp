@@ -77,20 +77,18 @@
 
     {% if user %}
     <div class="py-6 border-t border-hairline">
-      <div class="tile p-5 max-w-2xl">
-        <h2 class="text-sm font-semibold text-ink">Góp ý cho GALS</h2>
-        <p class="mt-1 text-sm text-ink-soft">
-          {% if user.is_teacher %}
-          Thầy cô thấy chỗ nào vướng khi dùng với lớp, hoặc thiếu thứ gì cần cho buổi dạy?
-          {% else %}
-          Chỗ nào khó dùng, chỗ nào bạn thấy chưa ổn? Nói thẳng cũng được.
-          {% endif %}
-        </p>
-        <div class="mt-3 text-xs text-ink-faint">
-          {% with slot = 'chan-trang', nhan = 'Mở ô góp ý' %}
-            {% include "partials/gop_y.html" %}
-          {% endwith %}
-        </div>
+      <p class="microlabel">Góp ý cho GALS</p>
+      <p class="mt-2 text-sm text-ink-soft max-w-2xl">
+        {% if user.is_teacher %}
+        Thầy cô thấy chỗ nào vướng khi dùng với lớp, hoặc thiếu thứ gì cần cho buổi dạy?
+        {% else %}
+        Chỗ nào khó dùng, chỗ nào bạn thấy chưa ổn? Nói thẳng cũng được.
+        {% endif %}
+      </p>
+      <div class="mt-2 text-xs text-ink-faint">
+        {% with slot = 'chan-trang', nhan = 'Mở ô góp ý' %}
+          {% include "partials/gop_y.html" %}
+        {% endwith %}
       </div>
     </div>
     {% endif %}
