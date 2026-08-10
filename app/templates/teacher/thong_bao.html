@@ -14,7 +14,7 @@
     <h2 class="text-lg text-ink">Bạn đã gửi</h2>
     <div class="mt-3 grid gap-2">
       {% for n in sent %}
-      <div class="card p-4 branch-bar border-l-trunk">
+      <div class="card p-4">
         <div class="flex flex-wrap items-center gap-2">
           <span class="chip bg-slate-50 text-slate-700">
             {{ 'Hội thảo' if n.type == 'workshop' else 'Talkshow' }}
@@ -38,7 +38,7 @@
     </p>
     <div class="mt-3 grid gap-2">
       {% for n in platform %}
-      <div class="card p-4 branch-bar border-l-slate">
+      <div class="card p-4">
         <div class="flex flex-wrap items-center gap-2">
           <span class="chip bg-slate-50 text-slate-700">
             {{ 'Hội thảo' if n.type == 'workshop' else 'Talkshow' }}

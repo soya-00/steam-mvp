@@ -55,19 +55,21 @@
       <span class="wordmark">GALS</span>
     </a>
 
-    <div class="ml-auto flex items-center gap-3">
-      <span class="w-10 h-10 rounded-full border border-hairline bg-paper grid place-items-center text-lg shrink-0"
-            aria-hidden="true">{{ avatar_emoji.get(user.avatar_id, '🦊') }}</span>
-      <div class="min-w-0 hidden sm:block">
+    <div class="ml-auto flex items-center">
+      <div class="min-w-0 hidden sm:block text-right">
         <p class="text-sm font-semibold text-ink leading-tight truncate">{{ user.name }}</p>
         <span class="chip {{ 'bg-trunk-50 text-trunk-700' if user.is_teacher else 'bg-amber-50 text-amber-900' }} mt-0.5">
           {{ 'Giáo viên' if user.is_teacher else 'Học sinh' }}
         </span>
       </div>
+
       <a href="/dang-xuat"
-         class="ml-1 text-sm font-medium text-ink-faint hover:text-ink border border-hairline rounded-lg px-3 py-1.5">
+         class="ml-6 text-sm font-medium text-ink-faint hover:text-ink border border-hairline rounded-lg px-3 py-1.5">
         Đăng xuất
       </a>
+
+      <span class="ml-3 w-10 h-10 rounded-full border border-hairline bg-paper grid place-items-center text-lg shrink-0"
+            aria-hidden="true">{{ avatar_emoji.get(user.avatar_id, '🦊') }}</span>
     </div>
   </div>
 </header>

@@ -105,7 +105,7 @@
 
     {% if gs.finished %}
 
-    <div class="card p-6 md:p-7 branch-bar border-l-teal pop relative">
+    <div class="card p-6 md:p-7 pop relative">
       {% with slot = 'xong-cap-do' %}{% include "partials/confetti_mung.html" %}{% endwith %}
       <span class="w-11 h-11 rounded-full bg-teal text-white grid place-items-center" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
@@ -115,8 +115,8 @@
       </span>
       <h1 class="mt-3.5 text-2xl text-ink">Bạn đã đi hết bốn cấp độ</h1>
       <p class="mt-2 text-sm text-ink-soft">
-        Không có điểm số và cũng không có đáp án mẫu — điều đáng giá nằm ở cách bạn đọc dữ liệu,
-        nhận ra giả định của mình và cân nhắc các bên liên quan.
+        Thứ đáng giá nằm ở cách bạn đọc dữ liệu, nhận ra giả định của mình và cân nhắc
+        các bên liên quan. Ở đây không có điểm số và không có đáp án mẫu.
       </p>
       {% if gs.synthesis %}
       <div class="mt-5 pt-5 border-t border-hairline">
@@ -159,7 +159,7 @@
         {% endfor %}
       </ul>
       <p class="mt-2 text-xs text-ink-faint">
-        Gợi ý ở đây chỉ là câu hỏi để bạn tự nghĩ tiếp — không phải đáp án.
+        Mỗi gợi ý là một câu hỏi để bạn tự nghĩ tiếp. Ở đây không có đáp án mẫu.
       </p>
     </details>
     {% endif %}

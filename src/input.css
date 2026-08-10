@@ -125,11 +125,6 @@
     border-radius: var(--radius-card);
   }
 
-  .branch-bar {
-    border-left-width: 4px;
-    border-left-style: solid;
-  }
-
   .btn {
     display: inline-flex;
     align-items: center;

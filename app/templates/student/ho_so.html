@@ -7,8 +7,8 @@
   <div class="min-w-0">
     <h1 class="text-2xl md:text-3xl text-ink">Hồ sơ năng lực</h1>
     <p class="mt-2 text-base text-ink-soft max-w-xl">
-      Đây không phải bảng thành tích. Đây là chỗ giữ lại <strong class="text-ink">cách bạn
-      đã nghĩ</strong> — bằng chính chữ bạn viết ra, cùng lời nhắn của thầy cô.
+      Chỗ này giữ lại <strong class="text-ink">cách bạn đã nghĩ</strong>, bằng chính chữ
+      bạn viết ra, cùng lời nhắn của thầy cô.
     </p>
   </div>
   <div class="flex flex-wrap gap-2">
@@ -18,7 +18,7 @@
 </div>
 
 {% if just_submitted %}
-<div class="tile p-4 mt-5 branch-bar border-l-teal bg-teal-50 border-teal-100 relative">
+<div class="tile p-4 mt-5 bg-teal-50 border-teal-100 relative">
   {% with slot = 'vua-nop' %}{% include "partials/confetti_mung.html" %}{% endwith %}
   <p class="text-sm text-teal-900">
     Đã thêm dự án vào hồ sơ. Mục mới mặc định là <strong>riêng tư</strong> — chỉ bạn thấy,
@@ -41,7 +41,7 @@
   {% endfor %}
 </ul>
 <p class="mt-2 text-xs text-ink-faint">
-  Đếm cho vui thôi — nhiều hay ít không nói lên điều gì. Phần đáng đọc nằm ở bên dưới.
+  Con số ở đây chỉ để bạn dễ tìm lại. Phần đáng đọc nằm ở bên dưới.
 </p>
 {% endif %}
 
@@ -50,7 +50,7 @@
   <h2 class="microlabel">Thầy cô nhắn riêng cho bạn</h2>
   <div class="mt-3 grid gap-2">
     {% for note in feedback_for.get(0) %}
-    <div class="tile p-4 branch-bar border-l-trunk bg-trunk-50 border-trunk-100">
+    <div class="tile p-4 bg-trunk-50 border-trunk-100">
       <p class="text-sm text-ink prose-beat">{{ note.content }}</p>
       <p class="mt-2 text-xs text-ink-faint">{{ note.created_at.strftime('%d/%m/%Y') }}</p>
     </div>
@@ -63,14 +63,14 @@
 <section class="mt-9">
   <h2 class="microlabel">Cách bạn suy nghĩ</h2>
   <p class="mt-2 text-sm text-ink-soft max-w-2xl">
-    Mỗi tình huống đi qua bốn kiểu suy nghĩ khác nhau. Dưới đây là chính những gì bạn
-    đã viết ở từng chặng — không sửa, không chấm.
+    Mỗi tình huống đi qua bốn kiểu suy nghĩ khác nhau. Dưới đây là những gì bạn đã viết
+    ở từng chặng, giữ nguyên như lúc bạn gửi.
   </p>
 
   <div class="mt-4 grid gap-3">
     {% for j in journeys %}
     {% set fc = field_classes(j.scenario.field) %}
-    <article class="tile p-5 branch-bar {{ fc.bar }}">
+    <article class="tile p-5">
       <div class="flex flex-wrap items-center gap-2">
         <span class="chip {{ fc.chip }}">{{ j.scenario.field }}</span>
         {% if j.finished %}
@@ -172,7 +172,7 @@
       </summary>
       <p class="mt-3 pt-3 border-t border-hairline text-sm text-ink-soft prose-beat">{{ e.content or 'Chưa có nội dung.' }}</p>
       {% for note in feedback_for.get(e.id, []) %}
-      <div class="mt-3 rounded-lg branch-bar border-l-trunk bg-trunk-50 border border-trunk-100 p-3">
+      <div class="mt-3 rounded-lg bg-trunk-50 border border-trunk-100 p-3">
         <p class="microlabel text-trunk-700">Thầy cô nhắn</p>
         <p class="mt-1 text-sm text-ink prose-beat">{{ note.content }}</p>
       </div>

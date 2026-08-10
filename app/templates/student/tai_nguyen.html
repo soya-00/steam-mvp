@@ -35,7 +35,7 @@
     {% for r in items %}
     <li>
       <a href="{{ r.url }}" target="_blank" rel="noopener"
-         class="tile lift block h-full p-4 branch-bar {{ fc.bar }}">
+         class="tile lift block h-full p-4">
         <div class="flex flex-wrap items-center gap-2">
           <span class="chip {{ fc.chip }}">{{ platform_labels.get(r.platform, r.platform) }}</span>
           <span class="chip border border-hairline text-ink-soft">{{ r.skill }}</span>

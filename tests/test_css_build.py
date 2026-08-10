@@ -9,7 +9,7 @@ CSS = pathlib.Path("static/css/app.css").read_text(encoding="utf-8")
 
 # Class component tự định nghĩa — mất một cái là giao diện hỏng âm thầm.
 COMPONENTS = [
-    "card", "btn", "btn-primary", "btn-ghost", "chip", "branch-bar",
+    "card", "btn", "btn-primary", "btn-ghost", "chip",
     "lift", "art-banner", "step-track", "step-fill", "rise", "pop",
     "prose-beat", "htmx-indicator", "spinner-dot",
     "answer-lines", "print-box", "print-page-break", "print-sheet", "no-print",
