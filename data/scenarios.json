@@ -8,7 +8,11 @@
     "protagonist": "An",
     "has_female_protagonist": true,
     "knowledge": "Sinh học – vi sinh vật, cơ chế lây bệnh, hệ miễn dịch, biến số và mối quan hệ nguyên nhân–kết quả.",
-    "domain_skills": ["Phương pháp khoa học", "Dịch tễ học", "Đạo đức nghiên cứu"],
+    "domain_skills": [
+      "Phương pháp khoa học",
+      "Dịch tễ học",
+      "Đạo đức nghiên cứu"
+    ],
     "creation_output": "Kế hoạch điều tra và phòng ngừa",
     "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
     "description": "Một trường nội trú 600 học sinh ghi nhận 38 ca có triệu chứng trong bốn ngày. Phụ huynh đã có kết luận của riêng họ. Bạn thì chưa.",
@@ -20,7 +24,13 @@
           {
             "type": "context",
             "label": "Bối cảnh ban đầu",
-            "text": "Bạn là An, chuyên viên dịch tễ học được mời hỗ trợ một trường nội trú có 600 học sinh. Trong bốn ngày, phòng y tế ghi nhận 38 học sinh đến khám: 29 em đau bụng, 17 em buồn nôn, 8 em sốt và 6 em tiêu chảy. Một học sinh có thể có nhiều triệu chứng. Phụ huynh đang cho rằng bữa trưa ở căng tin là nguyên nhân."
+            "text": "Bạn là An, chuyên viên dịch tễ học được mời hỗ trợ một trường nội trú có 600 học sinh. Trong bốn ngày, phòng y tế ghi nhận 38 học sinh đến khám: 29 em đau bụng, 17 em buồn nôn, 8 em sốt và 6 em tiêu chảy. Một học sinh có thể có nhiều triệu chứng. Phụ huynh đang cho rằng bữa trưa ở căng tin là nguyên nhân.",
+            "facts": [
+              "Trường nội trú 600 học sinh",
+              "38 em đến khám trong 4 ngày",
+              "29 đau bụng · 17 buồn nôn · 8 sốt · 6 tiêu chảy",
+              "Phụ huynh nghi bữa trưa ở căng tin"
+            ]
           },
           {
             "type": "question",
@@ -30,7 +40,12 @@
           {
             "type": "context",
             "label": "Dữ liệu mới",
-            "text": "Trong số 38 học sinh đến khám, 31 em đã ăn ở căng tin. Tuy nhiên, khoảng 80% toàn trường cũng thường xuyên ăn tại đây. Thông tin triệu chứng được thu thập qua biểu mẫu tự khai; học sinh cảm thấy không khỏe có khả năng điền biểu mẫu nhiều hơn những học sinh khác."
+            "text": "Trong số 38 học sinh đến khám, 31 em đã ăn ở căng tin. Tuy nhiên, khoảng 80% toàn trường cũng thường xuyên ăn tại đây. Thông tin triệu chứng được thu thập qua biểu mẫu tự khai; học sinh cảm thấy không khỏe có khả năng điền biểu mẫu nhiều hơn những học sinh khác.",
+            "facts": [
+              "31/38 em có ăn ở căng tin",
+              "Nhưng ~80% toàn trường cũng ăn ở đó",
+              "Triệu chứng do học sinh tự khai"
+            ]
           },
           {
             "type": "question",
@@ -45,7 +60,13 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Các triệu chứng không bắt đầu cùng lúc. Một số học sinh thấy không khỏe trước bữa trưa được cho là có vấn đề. Hai lớp vừa trở về từ chuyến dã ngoại, một lớp đang có nhiều học sinh cảm cúm và tuần này cũng trùng với kỳ kiểm tra cuối kỳ."
+            "text": "Các triệu chứng không bắt đầu cùng lúc. Một số học sinh thấy không khỏe trước bữa trưa được cho là có vấn đề. Hai lớp vừa trở về từ chuyến dã ngoại, một lớp đang có nhiều học sinh cảm cúm và tuần này cũng trùng với kỳ kiểm tra cuối kỳ.",
+            "facts": [
+              "Triệu chứng không khởi phát cùng lúc",
+              "Hai lớp vừa đi dã ngoại về",
+              "Một lớp đang có nhiều ca cảm cúm",
+              "Trùng tuần kiểm tra cuối kỳ"
+            ]
           },
           {
             "type": "question",
@@ -62,7 +83,13 @@
           {
             "type": "context",
             "label": "Bối cảnh stakeholder",
-            "text": "Y tá trường đang phải tiếp nhận nhiều học sinh cùng lúc nhưng không thể công khai thông tin sức khỏe cá nhân. Nhân viên căng tin lo bị đổ lỗi và mất việc. Một số học sinh giấu triệu chứng vì không muốn bỏ kỳ kiểm tra. Phụ huynh yêu cầu đóng cửa căng tin ngay, trong khi 450 học sinh nội trú phụ thuộc vào nơi này để ăn hằng ngày."
+            "text": "Y tá trường đang phải tiếp nhận nhiều học sinh cùng lúc nhưng không thể công khai thông tin sức khỏe cá nhân. Nhân viên căng tin lo bị đổ lỗi và mất việc. Một số học sinh giấu triệu chứng vì không muốn bỏ kỳ kiểm tra. Phụ huynh yêu cầu đóng cửa căng tin ngay, trong khi 450 học sinh nội trú phụ thuộc vào nơi này để ăn hằng ngày.",
+            "facts": [
+              "Y tá không được công khai thông tin sức khoẻ",
+              "Nhân viên căng tin sợ bị đổ lỗi, mất việc",
+              "Có em giấu bệnh để không lỡ kiểm tra",
+              "450 em nội trú phụ thuộc căng tin"
+            ]
           },
           {
             "type": "question",
@@ -72,7 +99,11 @@
           {
             "type": "context",
             "label": "Dữ liệu quan sát",
-            "text": "Một nhân viên căng tin nói quy trình luôn được thực hiện đúng. Tuy nhiên, sổ ghi nhiệt độ tủ lạnh bị bỏ trống trong hai ngày. Y tá cho biết một số học sinh chỉ báo đau bụng sau khi tin đồn về ngộ độc xuất hiện trong nhóm chat."
+            "text": "Một nhân viên căng tin nói quy trình luôn được thực hiện đúng. Tuy nhiên, sổ ghi nhiệt độ tủ lạnh bị bỏ trống trong hai ngày. Y tá cho biết một số học sinh chỉ báo đau bụng sau khi tin đồn về ngộ độc xuất hiện trong nhóm chat.",
+            "facts": [
+              "Sổ ghi nhiệt độ tủ lạnh bỏ trống 2 ngày",
+              "Một số ca chỉ báo bệnh sau khi tin đồn lan trong nhóm chat"
+            ]
           },
           {
             "type": "question",
@@ -87,7 +118,11 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Nếu công bố danh sách học sinh bị bệnh, nhóm có thể tìm ra các hoạt động chung nhanh hơn nhưng vi phạm quyền riêng tư. Nếu chỉ sử dụng dữ liệu ẩn danh, việc xác định mối liên hệ giữa các ca bệnh sẽ khó hơn."
+            "text": "Nếu công bố danh sách học sinh bị bệnh, nhóm có thể tìm ra các hoạt động chung nhanh hơn nhưng vi phạm quyền riêng tư. Nếu chỉ sử dụng dữ liệu ẩn danh, việc xác định mối liên hệ giữa các ca bệnh sẽ khó hơn.",
+            "facts": [
+              "Công bố danh sách: nối các ca nhanh hơn nhưng lộ quyền riêng tư",
+              "Ẩn danh: an toàn hơn nhưng khó tìm mối liên hệ"
+            ]
           },
           {
             "type": "question",
@@ -104,7 +139,13 @@
           {
             "type": "context",
             "label": "Ràng buộc thực tế",
-            "text": "Nhà trường cần một kế hoạch hành động trong ba giờ. Phòng xét nghiệm chỉ có thể phân tích 10 mẫu và cần ít nhất 48 giờ để trả kết quả. Nhóm không thể bắt buộc học sinh cung cấp mẫu hoặc trả lời phỏng vấn. Đóng toàn bộ căng tin sẽ ảnh hưởng đến 450 học sinh, nhưng tiếp tục hoạt động cũng có thể tạo rủi ro nếu thực phẩm thực sự là nguyên nhân."
+            "text": "Nhà trường cần một kế hoạch hành động trong ba giờ. Phòng xét nghiệm chỉ có thể phân tích 10 mẫu và cần ít nhất 48 giờ để trả kết quả. Nhóm không thể bắt buộc học sinh cung cấp mẫu hoặc trả lời phỏng vấn. Đóng toàn bộ căng tin sẽ ảnh hưởng đến 450 học sinh, nhưng tiếp tục hoạt động cũng có thể tạo rủi ro nếu thực phẩm thực sự là nguyên nhân.",
+            "facts": [
+              "Cần kế hoạch trong 3 giờ",
+              "Phòng xét nghiệm chỉ nhận 10 mẫu, chờ 48 giờ",
+              "Không ép được học sinh lấy mẫu hay phỏng vấn",
+              "Đóng căng tin ảnh hưởng 450 em"
+            ]
           },
           {
             "type": "question",
@@ -114,7 +155,12 @@
           {
             "type": "context",
             "label": "Dữ liệu tiếp theo",
-            "text": "Nhóm có thể thu thập mẫu thức ăn, nước uống hoặc mẫu từ người có triệu chứng. Tuy nhiên, thức ăn được phục vụ bốn ngày trước không còn đầy đủ. Các mẫu còn lại đã được bảo quản trong những điều kiện khác nhau nên kết quả âm tính chưa chắc chứng minh thực phẩm an toàn."
+            "text": "Nhóm có thể thu thập mẫu thức ăn, nước uống hoặc mẫu từ người có triệu chứng. Tuy nhiên, thức ăn được phục vụ bốn ngày trước không còn đầy đủ. Các mẫu còn lại đã được bảo quản trong những điều kiện khác nhau nên kết quả âm tính chưa chắc chứng minh thực phẩm an toàn.",
+            "facts": [
+              "Thức ăn 4 ngày trước không còn đủ để lấy mẫu",
+              "Mẫu còn lại bảo quản mỗi nơi một kiểu",
+              "Âm tính chưa chứng minh thực phẩm an toàn"
+            ]
           },
           {
             "type": "question",
@@ -129,7 +175,12 @@
           {
             "type": "context",
             "label": "Nhiều quyết định đồng thời",
-            "text": "Ngoài điều tra nguyên nhân, nhóm còn phải quyết định cách tổ chức bữa ăn tạm thời, theo dõi ca bệnh mới và thông báo cho phụ huynh mà không tạo hoảng loạn hoặc đổ lỗi khi chưa đủ bằng chứng."
+            "text": "Ngoài điều tra nguyên nhân, nhóm còn phải quyết định cách tổ chức bữa ăn tạm thời, theo dõi ca bệnh mới và thông báo cho phụ huynh mà không tạo hoảng loạn hoặc đổ lỗi khi chưa đủ bằng chứng.",
+            "facts": [
+              "Còn phải lo bữa ăn tạm thời",
+              "Theo dõi ca bệnh mới",
+              "Báo phụ huynh mà không gây hoảng loạn"
+            ]
           },
           {
             "type": "question",
@@ -151,7 +202,14 @@
           {
             "type": "context",
             "label": "Kết quả ban đầu",
-            "text": "Sau 48 giờ:\n• Ba trong tám mẫu từ học sinh phát hiện cùng một loại virus đường ruột.\n• Hai mẫu thức ăn không phát hiện vi khuẩn, nhưng đều được thu thập muộn.\n• Số lượt đến phòng y tế giảm từ 11 xuống còn 4 lượt mỗi ngày.\n• Căng tin đã tạm ngừng phục vụ trong cùng khoảng thời gian.\n• Một trường gần đó cũng báo cáo học sinh có triệu chứng tương tự."
+            "text": "Sau 48 giờ:\n• Ba trong tám mẫu từ học sinh phát hiện cùng một loại virus đường ruột.\n• Hai mẫu thức ăn không phát hiện vi khuẩn, nhưng đều được thu thập muộn.\n• Số lượt đến phòng y tế giảm từ 11 xuống còn 4 lượt mỗi ngày.\n• Căng tin đã tạm ngừng phục vụ trong cùng khoảng thời gian.\n• Một trường gần đó cũng báo cáo học sinh có triệu chứng tương tự.",
+            "facts": [
+              "3/8 mẫu học sinh có cùng một virus đường ruột",
+              "2 mẫu thức ăn âm tính, nhưng lấy muộn",
+              "Lượt khám giảm từ 11 xuống 4 mỗi ngày",
+              "Căng tin cũng ngừng phục vụ trong cùng khoảng thời gian",
+              "Một trường gần đó có triệu chứng tương tự"
+            ]
           },
           {
             "type": "question",
@@ -166,7 +224,11 @@
           {
             "type": "context",
             "label": "Giới hạn của dữ liệu",
-            "text": "Không phải tất cả học sinh có triệu chứng đều được xét nghiệm. Việc số ca giảm có thể liên quan đến việc đóng căng tin, quá trình tự nhiên của đợt bệnh hoặc việc học sinh không tiếp tục báo cáo triệu chứng."
+            "text": "Không phải tất cả học sinh có triệu chứng đều được xét nghiệm. Việc số ca giảm có thể liên quan đến việc đóng căng tin, quá trình tự nhiên của đợt bệnh hoặc việc học sinh không tiếp tục báo cáo triệu chứng.",
+            "facts": [
+              "Không phải ca nào cũng được xét nghiệm",
+              "Số ca giảm có thể do đóng căng tin, do đợt bệnh tự hết, hoặc do học sinh thôi báo cáo"
+            ]
           },
           {
             "type": "question",
@@ -192,7 +254,11 @@
     "protagonist": "Hoa",
     "has_female_protagonist": true,
     "knowledge": "Nguyên lý thị giác, kỹ thuật thiết kế, nghiên cứu người dùng và kiểm chứng giả định.",
-    "domain_skills": ["Nguyên lý thị giác", "Kỹ thuật thiết kế", "Nghiên cứu người dùng"],
+    "domain_skills": [
+      "Nguyên lý thị giác",
+      "Kỹ thuật thiết kế",
+      "Nghiên cứu người dùng"
+    ],
     "creation_output": "Bản mẫu đơn giản để kiểm tra giả định quan trọng nhất",
     "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
     "description": "Nhà tài trợ muốn giảm 20% lượng hàng bỏ đi trong sáu tuần. Trưởng nhóm đã có sẵn ý tưởng. Bạn chưa chắc ý tưởng đó giải đúng vấn đề.",
@@ -204,7 +270,12 @@
           {
             "type": "context",
             "label": "Bối cảnh ban đầu",
-            "text": "Bạn là Hoa, Product Designer trong một nhóm công nghệ gồm bốn người. Một ban quản lý chợ muốn nhóm xây dựng công cụ giúp tiểu thương giảm lãng phí và quản lý hàng tồn kho. Nhà tài trợ kỳ vọng lượng hàng bị bỏ đi giảm 20% sau sáu tuần. Trưởng nhóm đã đề xuất xây dựng ứng dụng nhập số lượng hàng mỗi ngày."
+            "text": "Bạn là Hoa, Product Designer trong một nhóm công nghệ gồm bốn người. Một ban quản lý chợ muốn nhóm xây dựng công cụ giúp tiểu thương giảm lãng phí và quản lý hàng tồn kho. Nhà tài trợ kỳ vọng lượng hàng bị bỏ đi giảm 20% sau sáu tuần. Trưởng nhóm đã đề xuất xây dựng ứng dụng nhập số lượng hàng mỗi ngày.",
+            "facts": [
+              "Nhóm công nghệ 4 người",
+              "Nhà tài trợ kỳ vọng giảm 20% hàng bỏ đi sau 6 tuần",
+              "Trưởng nhóm đã chốt hướng: app nhập số lượng hằng ngày"
+            ]
           },
           {
             "type": "question",
@@ -214,7 +285,14 @@
           {
             "type": "context",
             "label": "Dữ liệu mới",
-            "text": "Nhóm đã khảo sát 20 tiểu thương. Trong đó, 14 người nói rằng họ không luôn biết chính xác lượng hàng còn lại, 11 người từng nhập thừa hàng trong tuần gần nhất và 6 người sẵn sàng nhập dữ liệu vào ứng dụng mỗi ngày.\n\nNhững người tham gia gồm 12 quán ăn, 5 sạp rau quả và 3 cửa hàng đồ gia dụng. Một người có thể thuộc nhiều nhóm kết quả khác nhau. Khảo sát được thực hiện sau một buổi hướng dẫn kỹ năng số, vì vậy người tham gia có thể quan tâm đến công nghệ hơn các tiểu thương khác."
+            "text": "Nhóm đã khảo sát 20 tiểu thương. Trong đó, 14 người nói rằng họ không luôn biết chính xác lượng hàng còn lại, 11 người từng nhập thừa hàng trong tuần gần nhất và 6 người sẵn sàng nhập dữ liệu vào ứng dụng mỗi ngày.\n\nNhững người tham gia gồm 12 quán ăn, 5 sạp rau quả và 3 cửa hàng đồ gia dụng. Một người có thể thuộc nhiều nhóm kết quả khác nhau. Khảo sát được thực hiện sau một buổi hướng dẫn kỹ năng số, vì vậy người tham gia có thể quan tâm đến công nghệ hơn các tiểu thương khác.",
+            "facts": [
+              "Khảo sát 20 tiểu thương",
+              "14 người không nắm chắc lượng hàng còn lại",
+              "11 người từng nhập thừa trong tuần gần nhất",
+              "Chỉ 6 người sẵn sàng nhập liệu mỗi ngày",
+              "Khảo sát làm ngay sau buổi hướng dẫn kỹ năng số"
+            ]
           },
           {
             "type": "question",
@@ -224,7 +302,12 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Khi xem lại câu trả lời, Hoa phát hiện “nhập thừa hàng” không phải lúc nào cũng xuất phát từ việc quên kiểm tra tồn kho. Một số tiểu thương nhập thêm vì sợ giá tăng, muốn giữ quan hệ với nhà cung cấp hoặc phải đạt số lượng tối thiểu để được giao hàng miễn phí. Một số trường hợp thiếu hàng lại do nhà cung cấp giao muộn hoặc lượng khách tăng bất ngờ."
+            "text": "Khi xem lại câu trả lời, Hoa phát hiện “nhập thừa hàng” không phải lúc nào cũng xuất phát từ việc quên kiểm tra tồn kho. Một số tiểu thương nhập thêm vì sợ giá tăng, muốn giữ quan hệ với nhà cung cấp hoặc phải đạt số lượng tối thiểu để được giao hàng miễn phí. Một số trường hợp thiếu hàng lại do nhà cung cấp giao muộn hoặc lượng khách tăng bất ngờ.",
+            "facts": [
+              "'Nhập thừa' không chỉ vì quên kiểm tồn",
+              "Có người nhập thêm vì sợ giá tăng, giữ quan hệ, hoặc để đủ mức giao miễn phí",
+              "Thiếu hàng có khi do nhà cung cấp giao muộn"
+            ]
           },
           {
             "type": "question",
@@ -246,7 +329,12 @@
           {
             "type": "context",
             "label": "Bối cảnh ban đầu",
-            "text": "Hoa dành một ca làm việc cùng cô Lan, chủ quán bún. Cô bắt đầu chuẩn bị từ 4 giờ 30 sáng, nhận nguyên liệu lúc 5 giờ 15 và bán đông nhất từ 6 giờ đến 9 giờ. Trong giờ cao điểm, quán có thể phục vụ khoảng 40 khách mỗi giờ với ba người làm việc. Lượng thịt và rau trong mỗi bát được ước lượng bằng tay, không được cân chính xác."
+            "text": "Hoa dành một ca làm việc cùng cô Lan, chủ quán bún. Cô bắt đầu chuẩn bị từ 4 giờ 30 sáng, nhận nguyên liệu lúc 5 giờ 15 và bán đông nhất từ 6 giờ đến 9 giờ. Trong giờ cao điểm, quán có thể phục vụ khoảng 40 khách mỗi giờ với ba người làm việc. Lượng thịt và rau trong mỗi bát được ước lượng bằng tay, không được cân chính xác.",
+            "facts": [
+              "Cô Lan chuẩn bị từ 4h30, nhận nguyên liệu 5h15",
+              "Đông nhất 6h–9h, khoảng 40 khách mỗi giờ với 3 người làm",
+              "Thịt và rau ước lượng bằng tay, không cân"
+            ]
           },
           {
             "type": "question",
@@ -256,7 +344,12 @@
           {
             "type": "context",
             "label": "Dữ liệu quan sát",
-            "text": "Cô Lan nói rằng mình “nhớ được hết” nguyên liệu còn lại. Tuy nhiên, lúc 9 giờ 15, cô gọi cho con gái để hỏi còn bao nhiêu bún trong tủ. Khi nhà cung cấp thịt giao muộn, cô thay đổi khẩu phần thay vì ngừng bán. Cuốn sổ bên cạnh quầy chủ yếu ghi tiền khách nợ và tiền phải trả nhà cung cấp, không ghi số lượng nguyên liệu."
+            "text": "Cô Lan nói rằng mình “nhớ được hết” nguyên liệu còn lại. Tuy nhiên, lúc 9 giờ 15, cô gọi cho con gái để hỏi còn bao nhiêu bún trong tủ. Khi nhà cung cấp thịt giao muộn, cô thay đổi khẩu phần thay vì ngừng bán. Cuốn sổ bên cạnh quầy chủ yếu ghi tiền khách nợ và tiền phải trả nhà cung cấp, không ghi số lượng nguyên liệu.",
+            "facts": [
+              "Nói 'nhớ được hết' nhưng 9h15 phải gọi con hỏi còn bao nhiêu bún",
+              "Thịt giao muộn thì đổi khẩu phần chứ không ngừng bán",
+              "Sổ bên quầy chỉ ghi nợ, không ghi nguyên liệu"
+            ]
           },
           {
             "type": "question",
@@ -271,7 +364,13 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Điện thoại của cô Lan cũng dùng để nhận đơn qua Zalo và đôi khi được con gái mang đi. Trong giờ bán hàng, tay cô thường ướt hoặc dính thức ăn. Cô không muốn nhân viên thời vụ nhìn thấy giá nhập và lợi nhuận. Ngoài ra, quyết định nhập hàng phải được đưa ra trước 7 giờ sáng để được nhà cung cấp cho nợ. Lượng khách lại thay đổi theo thời tiết và lịch học của trường gần đó."
+            "text": "Điện thoại của cô Lan cũng dùng để nhận đơn qua Zalo và đôi khi được con gái mang đi. Trong giờ bán hàng, tay cô thường ướt hoặc dính thức ăn. Cô không muốn nhân viên thời vụ nhìn thấy giá nhập và lợi nhuận. Ngoài ra, quyết định nhập hàng phải được đưa ra trước 7 giờ sáng để được nhà cung cấp cho nợ. Lượng khách lại thay đổi theo thời tiết và lịch học của trường gần đó.",
+            "facts": [
+              "Điện thoại dùng chung, con gái hay mang đi",
+              "Giờ bán tay thường ướt hoặc dính thức ăn",
+              "Không muốn nhân viên thời vụ thấy giá nhập",
+              "Phải quyết định nhập hàng trước 7h sáng"
+            ]
           },
           {
             "type": "question",
@@ -293,7 +392,13 @@
           {
             "type": "context",
             "label": "Bối cảnh và ràng buộc",
-            "text": "Nhóm chỉ có hai tuần để tạo bản mẫu. Công cụ phải hoạt động trên điện thoại Android cũ, có thể sử dụng khi mạng không ổn định và không yêu cầu mua thêm cân điện tử hoặc máy quét. Mỗi tiểu thương chỉ có tối đa 15 phút để học cách sử dụng. Việc ghi nhận dữ liệu nên diễn ra trước hoặc sau giờ cao điểm."
+            "text": "Nhóm chỉ có hai tuần để tạo bản mẫu. Công cụ phải hoạt động trên điện thoại Android cũ, có thể sử dụng khi mạng không ổn định và không yêu cầu mua thêm cân điện tử hoặc máy quét. Mỗi tiểu thương chỉ có tối đa 15 phút để học cách sử dụng. Việc ghi nhận dữ liệu nên diễn ra trước hoặc sau giờ cao điểm.",
+            "facts": [
+              "Hai tuần để làm bản mẫu",
+              "Chạy trên Android cũ, mạng chập chờn",
+              "Không được mua thêm cân hay máy quét",
+              "Học dùng trong tối đa 15 phút"
+            ]
           },
           {
             "type": "question",
@@ -303,7 +408,14 @@
           {
             "type": "context",
             "label": "Mục tiêu của các bên",
-            "text": "Các bên liên quan lại muốn những kết quả khác nhau:\n• Cô Lan muốn biết nên nhập bao nhiêu hàng mà không phải ghi thêm quá nhiều.\n• Ban quản lý chợ muốn xem dữ liệu tổng hợp về lượng thực phẩm bị bỏ đi.\n• Nhà tài trợ muốn chứng minh dự án tạo ra tác động có thể đo lường.\n• Trưởng nhóm muốn có một ứng dụng hoàn chỉnh để trình bày.\n• Lập trình viên muốn giới hạn số tính năng để kịp thời hạn."
+            "text": "Các bên liên quan lại muốn những kết quả khác nhau:\n• Cô Lan muốn biết nên nhập bao nhiêu hàng mà không phải ghi thêm quá nhiều.\n• Ban quản lý chợ muốn xem dữ liệu tổng hợp về lượng thực phẩm bị bỏ đi.\n• Nhà tài trợ muốn chứng minh dự án tạo ra tác động có thể đo lường.\n• Trưởng nhóm muốn có một ứng dụng hoàn chỉnh để trình bày.\n• Lập trình viên muốn giới hạn số tính năng để kịp thời hạn.",
+            "facts": [
+              "Cô Lan: biết nên nhập bao nhiêu, đừng bắt ghi nhiều",
+              "Ban quản lý chợ: số liệu tổng hợp",
+              "Nhà tài trợ: tác động đo được",
+              "Trưởng nhóm: một app hoàn chỉnh để trình bày",
+              "Lập trình viên: ít tính năng để kịp hạn"
+            ]
           },
           {
             "type": "question",
@@ -313,7 +425,13 @@
           {
             "type": "context",
             "label": "Tình tiết kỹ thuật",
-            "text": "Nhập bằng giọng nói có thể khó hoạt động trong môi trường ồn. Ảnh chụp không thể hiện được nguyên liệu nằm bên dưới hoặc trong tủ. Dữ liệu số món bán ra cũng không phản ánh chính xác lượng nguyên liệu đã dùng vì khẩu phần thay đổi. Các tiểu thương còn sử dụng những đơn vị khác nhau như kilôgam, túi, rổ, bó hoặc “đủ cho khoảng 20 bát”."
+            "text": "Nhập bằng giọng nói có thể khó hoạt động trong môi trường ồn. Ảnh chụp không thể hiện được nguyên liệu nằm bên dưới hoặc trong tủ. Dữ liệu số món bán ra cũng không phản ánh chính xác lượng nguyên liệu đã dùng vì khẩu phần thay đổi. Các tiểu thương còn sử dụng những đơn vị khác nhau như kilôgam, túi, rổ, bó hoặc “đủ cho khoảng 20 bát”.",
+            "facts": [
+              "Nhập bằng giọng nói khó dùng ở chợ ồn",
+              "Ảnh không thấy nguyên liệu bên dưới hoặc trong tủ",
+              "Số món bán ra không suy ra được lượng nguyên liệu",
+              "Đơn vị đo mỗi người một kiểu: kg, túi, rổ, bó"
+            ]
           },
           {
             "type": "question",
@@ -328,7 +446,12 @@
           {
             "type": "context",
             "label": "Trường hợp ngoại lệ",
-            "text": "Một số quán cho nhau mượn nguyên liệu giữa ngày. Hàng thừa có thể được dùng vào hôm sau, bán giảm giá, cho nhân viên hoặc bỏ đi. Nhân viên nhập hàng không nhất thiết là người quyết định mua hàng."
+            "text": "Một số quán cho nhau mượn nguyên liệu giữa ngày. Hàng thừa có thể được dùng vào hôm sau, bán giảm giá, cho nhân viên hoặc bỏ đi. Nhân viên nhập hàng không nhất thiết là người quyết định mua hàng.",
+            "facts": [
+              "Các quán cho nhau mượn nguyên liệu giữa ngày",
+              "Hàng thừa có thể dùng hôm sau, bán rẻ, cho nhân viên hoặc bỏ đi",
+              "Người nhập hàng không phải người quyết định mua"
+            ]
           },
           {
             "type": "question",
@@ -345,7 +468,14 @@
           {
             "type": "context",
             "label": "Kết quả thử nghiệm",
-            "text": "Nhóm thử bản mẫu trong bảy ngày với tám tiểu thương: bốn quán ăn, hai sạp rau và hai cửa hàng đồ gia dụng.\n• Sáu người hoàn thành hướng dẫn sử dụng.\n• Năm người dùng sản phẩm trong hai ngày đầu.\n• Ba người tiếp tục sử dụng ít nhất năm ngày.\n• Ba người thường xuyên kiểm tra báo cáo.\n• Hai người nhờ con hoặc nhân viên nhập dữ liệu thay.\n• Hai báo cáo không chính xác vì cách đo nguyên liệu không phù hợp.\n• Một người ngừng sử dụng vì lo nhân viên nhìn thấy giá nhập hàng."
+            "text": "Nhóm thử bản mẫu trong bảy ngày với tám tiểu thương: bốn quán ăn, hai sạp rau và hai cửa hàng đồ gia dụng.\n• Sáu người hoàn thành hướng dẫn sử dụng.\n• Năm người dùng sản phẩm trong hai ngày đầu.\n• Ba người tiếp tục sử dụng ít nhất năm ngày.\n• Ba người thường xuyên kiểm tra báo cáo.\n• Hai người nhờ con hoặc nhân viên nhập dữ liệu thay.\n• Hai báo cáo không chính xác vì cách đo nguyên liệu không phù hợp.\n• Một người ngừng sử dụng vì lo nhân viên nhìn thấy giá nhập hàng.",
+            "facts": [
+              "Thử bản mẫu 7 ngày với 8 tiểu thương",
+              "6 người hoàn thành hướng dẫn, 5 người dùng trong 2 ngày đầu",
+              "3 người dùng tiếp ít nhất 5 ngày",
+              "2 người nhờ con hoặc nhân viên nhập thay",
+              "1 người dừng vì sợ nhân viên thấy giá nhập"
+            ]
           },
           {
             "type": "question",
@@ -360,7 +490,13 @@
           {
             "type": "context",
             "label": "Tình tiết gây nhiễu",
-            "text": "Lượng thực phẩm bị bỏ đi được ghi nhận giảm khoảng 12% tại các quán ăn. Tuy nhiên, trong tuần thử nghiệm, lượng khách tăng khoảng 9% vì có lễ hội gần khu chợ. Nhóm không ghi nhận lượng lãng phí trước khi thử nghiệm theo cùng một phương pháp và cũng không có nhóm đối chứng."
+            "text": "Lượng thực phẩm bị bỏ đi được ghi nhận giảm khoảng 12% tại các quán ăn. Tuy nhiên, trong tuần thử nghiệm, lượng khách tăng khoảng 9% vì có lễ hội gần khu chợ. Nhóm không ghi nhận lượng lãng phí trước khi thử nghiệm theo cùng một phương pháp và cũng không có nhóm đối chứng.",
+            "facts": [
+              "Lãng phí ở các quán ăn giảm khoảng 12%",
+              "Nhưng lượng khách tăng khoảng 9% vì có lễ hội gần chợ",
+              "Không đo lãng phí trước đó bằng cùng phương pháp",
+              "Không có nhóm đối chứng"
+            ]
           },
           {
             "type": "question",
@@ -375,7 +511,12 @@
           {
             "type": "context",
             "label": "Phản hồi trái chiều",
-            "text": "Một tiểu thương cho rằng báo cáo giúp họ chuẩn bị tốt hơn. Một người khác nói rằng họ chỉ sử dụng vì Hoa đến quan sát mỗi ngày. Hai người muốn tiếp tục nếu ứng dụng tích hợp cả tiền nợ, trong khi một người cho rằng thêm tính năng sẽ khiến sản phẩm quá phức tạp."
+            "text": "Một tiểu thương cho rằng báo cáo giúp họ chuẩn bị tốt hơn. Một người khác nói rằng họ chỉ sử dụng vì Hoa đến quan sát mỗi ngày. Hai người muốn tiếp tục nếu ứng dụng tích hợp cả tiền nợ, trong khi một người cho rằng thêm tính năng sẽ khiến sản phẩm quá phức tạp.",
+            "facts": [
+              "Một người thấy báo cáo giúp chuẩn bị tốt hơn",
+              "Một người nói chỉ dùng vì có Hoa đến quan sát mỗi ngày",
+              "Hai người muốn thêm phần tiền nợ, một người sợ thành phức tạp"
+            ]
           },
           {
             "type": "question",
@@ -396,7 +537,11 @@
     "protagonist": "Hằng",
     "has_female_protagonist": true,
     "knowledge": "Vật lý – công suất, điện năng, lưu trữ; tính toán kỹ thuật; tiêu chuẩn an toàn điện và bảo quản vắc-xin.",
-    "domain_skills": ["Vật lý", "Tính toán kỹ thuật", "Tiêu chuẩn an toàn"],
+    "domain_skills": [
+      "Vật lý",
+      "Tính toán kỹ thuật",
+      "Tiêu chuẩn an toàn"
+    ],
     "creation_output": "Phương án hệ thống và kế hoạch thử nghiệm",
     "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
     "description": "Ai cũng bảo ắc quy hỏng, thay là xong. Nhưng số liệu chưa nói như vậy — và ngoài đảo, mua nhầm một lần là mất cả tháng.",
@@ -408,7 +553,13 @@
           {
             "type": "context",
             "label": "Bối cảnh ban đầu",
-            "text": "Bạn là Hằng, kỹ sư năng lượng được mời hỗ trợ một trạm y tế xã đảo. Trạm dùng hệ điện mặt trời 5 kWp kèm bộ ắc quy 20 kWh, lắp cách đây bốn năm. Trong sáu tuần gần nhất, tủ bảo quản vắc-xin bị mất điện 9 lần, mỗi lần từ 40 phút đến 3 giờ. Vắc-xin phải giữ trong khoảng 2–8°C liên tục. Ban quản lý cho rằng ắc quy đã hỏng và muốn duyệt kinh phí mua bộ mới."
+            "text": "Bạn là Hằng, kỹ sư năng lượng được mời hỗ trợ một trạm y tế xã đảo. Trạm dùng hệ điện mặt trời 5 kWp kèm bộ ắc quy 20 kWh, lắp cách đây bốn năm. Trong sáu tuần gần nhất, tủ bảo quản vắc-xin bị mất điện 9 lần, mỗi lần từ 40 phút đến 3 giờ. Vắc-xin phải giữ trong khoảng 2–8°C liên tục. Ban quản lý cho rằng ắc quy đã hỏng và muốn duyệt kinh phí mua bộ mới.",
+            "facts": [
+              "Điện mặt trời 5 kWp, ắc quy 20 kWh, lắp 4 năm trước",
+              "Tủ vắc-xin mất điện 9 lần trong 6 tuần, mỗi lần 40 phút–3 giờ",
+              "Vắc-xin phải giữ 2–8°C liên tục",
+              "Ban quản lý muốn duyệt kinh phí mua ắc quy mới"
+            ]
           },
           {
             "type": "question",
@@ -418,7 +569,13 @@
           {
             "type": "context",
             "label": "Dữ liệu mới",
-            "text": "Sổ vận hành cho thấy 7 trong 9 lần mất điện rơi vào khoảng 17–20 giờ. Ba lần trùng với những ngày nhiều mây. Lần đo dung lượng gần nhất, cách đây một tháng, cho kết quả ắc quy còn khoảng 82% so với thiết kế. Tháng 4 vừa rồi trạm lắp thêm hai máy điều hoà cho phòng khám."
+            "text": "Sổ vận hành cho thấy 7 trong 9 lần mất điện rơi vào khoảng 17–20 giờ. Ba lần trùng với những ngày nhiều mây. Lần đo dung lượng gần nhất, cách đây một tháng, cho kết quả ắc quy còn khoảng 82% so với thiết kế. Tháng 4 vừa rồi trạm lắp thêm hai máy điều hoà cho phòng khám.",
+            "facts": [
+              "7/9 lần mất điện rơi vào khoảng 17–20 giờ",
+              "3 lần trùng những ngày nhiều mây",
+              "Đo cách đây một tháng: ắc quy còn khoảng 82% thiết kế",
+              "Tháng 4 vừa lắp thêm 2 máy điều hoà"
+            ]
           },
           {
             "type": "question",
@@ -433,7 +590,12 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Hệ thống không có đồng hồ đo riêng cho từng nhánh tải, nên không biết thiết bị nào tiêu thụ bao nhiêu. Số liệu bức xạ mặt trời lấy từ trạm khí tượng cách đó 12 km. Ngoài ra, một nhân viên cho biết đôi khi họ tắt bộ nghịch lưu vào ban đêm để 'đỡ hao'."
+            "text": "Hệ thống không có đồng hồ đo riêng cho từng nhánh tải, nên không biết thiết bị nào tiêu thụ bao nhiêu. Số liệu bức xạ mặt trời lấy từ trạm khí tượng cách đó 12 km. Ngoài ra, một nhân viên cho biết đôi khi họ tắt bộ nghịch lưu vào ban đêm để 'đỡ hao'.",
+            "facts": [
+              "Không có đồng hồ đo riêng cho từng nhánh tải",
+              "Số liệu bức xạ lấy từ trạm khí tượng cách 12 km",
+              "Nhân viên đôi khi tắt bộ nghịch lưu ban đêm cho 'đỡ hao'"
+            ]
           },
           {
             "type": "question",
@@ -450,7 +612,13 @@
           {
             "type": "context",
             "label": "Bối cảnh stakeholder",
-            "text": "Trạm trưởng chịu trách nhiệm trực tiếp nếu lô vắc-xin hỏng, và đang rất muốn có kết luận nhanh. Nhân viên phụ trách kỹ thuật là y sĩ kiêm nhiệm, học cách vận hành qua lời chỉ lại chứ chưa từng được đào tạo. Ngân sách năm của xã đã phân bổ cho việc khác. Người dân thấy đèn phòng khám vẫn sáng nên nghĩ hệ thống điện vẫn tốt."
+            "text": "Trạm trưởng chịu trách nhiệm trực tiếp nếu lô vắc-xin hỏng, và đang rất muốn có kết luận nhanh. Nhân viên phụ trách kỹ thuật là y sĩ kiêm nhiệm, học cách vận hành qua lời chỉ lại chứ chưa từng được đào tạo. Ngân sách năm của xã đã phân bổ cho việc khác. Người dân thấy đèn phòng khám vẫn sáng nên nghĩ hệ thống điện vẫn tốt.",
+            "facts": [
+              "Trạm trưởng chịu trách nhiệm nếu vắc-xin hỏng, muốn kết luận nhanh",
+              "Phụ trách kỹ thuật là y sĩ kiêm nhiệm, chưa từng được đào tạo",
+              "Ngân sách năm của xã đã phân bổ cho việc khác",
+              "Dân thấy đèn phòng khám vẫn sáng nên nghĩ hệ thống vẫn tốt"
+            ]
           },
           {
             "type": "question",
@@ -460,7 +628,12 @@
           {
             "type": "context",
             "label": "Dữ liệu quan sát",
-            "text": "Nhân viên kỹ thuật nói rằng tuần nào cũng kiểm tra ắc quy. Tuy nhiên sổ theo dõi bị bỏ trống bốn tuần liên tiếp. Hằng thấy có ổ cắm nối thêm phía sau tủ, đang dùng để sạc điện thoại và cắm ấm siêu tốc. Bảng điều khiển bộ nghịch lưu hiển thị toàn tiếng Anh, và không ai ở trạm đọc được các mã cảnh báo."
+            "text": "Nhân viên kỹ thuật nói rằng tuần nào cũng kiểm tra ắc quy. Tuy nhiên sổ theo dõi bị bỏ trống bốn tuần liên tiếp. Hằng thấy có ổ cắm nối thêm phía sau tủ, đang dùng để sạc điện thoại và cắm ấm siêu tốc. Bảng điều khiển bộ nghịch lưu hiển thị toàn tiếng Anh, và không ai ở trạm đọc được các mã cảnh báo.",
+            "facts": [
+              "Nói tuần nào cũng kiểm tra, nhưng sổ trống 4 tuần liên tiếp",
+              "Có ổ cắm nối thêm sau tủ: sạc điện thoại, cắm ấm siêu tốc",
+              "Bảng điều khiển toàn tiếng Anh, không ai đọc được mã cảnh báo"
+            ]
           },
           {
             "type": "question",
@@ -475,7 +648,11 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Nếu Hằng ghi rõ trong báo cáo rằng hệ thống bị dùng sai tải, nhân viên có thể bị kiểm điểm. Nhưng nếu bỏ qua chi tiết đó, phương án mới sẽ lại được tính trên một con số tải sai, và sự cố sẽ lặp lại sau vài tháng."
+            "text": "Nếu Hằng ghi rõ trong báo cáo rằng hệ thống bị dùng sai tải, nhân viên có thể bị kiểm điểm. Nhưng nếu bỏ qua chi tiết đó, phương án mới sẽ lại được tính trên một con số tải sai, và sự cố sẽ lặp lại sau vài tháng.",
+            "facts": [
+              "Ghi rõ hệ thống bị dùng sai tải: nhân viên có thể bị kiểm điểm",
+              "Bỏ qua chi tiết đó: phương án mới lại tính trên một con số tải sai"
+            ]
           },
           {
             "type": "question",
@@ -492,7 +669,14 @@
           {
             "type": "context",
             "label": "Bối cảnh và ràng buộc",
-            "text": "Kinh phí tối đa 60 triệu đồng. Tàu chở hàng ra đảo mỗi tháng một chuyến, nên thiết bị đặt nhầm là mất thêm một tháng. Trên đảo không có thợ điện chuyên trách. Vắc-xin vẫn phải giữ 2–8°C trong suốt thời gian sửa chữa. Hằng phải nộp đề xuất trong hai tuần."
+            "text": "Kinh phí tối đa 60 triệu đồng. Tàu chở hàng ra đảo mỗi tháng một chuyến, nên thiết bị đặt nhầm là mất thêm một tháng. Trên đảo không có thợ điện chuyên trách. Vắc-xin vẫn phải giữ 2–8°C trong suốt thời gian sửa chữa. Hằng phải nộp đề xuất trong hai tuần.",
+            "facts": [
+              "Kinh phí tối đa 60 triệu đồng",
+              "Tàu chở hàng ra đảo mỗi tháng một chuyến",
+              "Trên đảo không có thợ điện chuyên trách",
+              "Vắc-xin vẫn phải giữ 2–8°C suốt thời gian sửa",
+              "Nộp đề xuất trong 2 tuần"
+            ]
           },
           {
             "type": "question",
@@ -502,7 +686,13 @@
           {
             "type": "context",
             "label": "Mục tiêu của các bên",
-            "text": "Các bên mong đợi những kết quả khác nhau:\n• Trạm trưởng muốn tủ vắc-xin không bao giờ mất điện nữa.\n• Nhân viên kỹ thuật muốn hệ thống đơn giản, ít thao tác, có cảnh báo bằng tiếng Việt.\n• Lãnh đạo xã muốn chi một lần, không phát sinh chi phí hằng năm.\n• Đơn vị tài trợ muốn con số chứng minh hiệu quả.\n• Phòng khám muốn giữ lại hai máy điều hoà."
+            "text": "Các bên mong đợi những kết quả khác nhau:\n• Trạm trưởng muốn tủ vắc-xin không bao giờ mất điện nữa.\n• Nhân viên kỹ thuật muốn hệ thống đơn giản, ít thao tác, có cảnh báo bằng tiếng Việt.\n• Lãnh đạo xã muốn chi một lần, không phát sinh chi phí hằng năm.\n• Đơn vị tài trợ muốn con số chứng minh hiệu quả.\n• Phòng khám muốn giữ lại hai máy điều hoà.",
+            "facts": [
+              "Trạm trưởng: tủ vắc-xin không bao giờ mất điện nữa",
+              "Nhân viên kỹ thuật: đơn giản, cảnh báo bằng tiếng Việt",
+              "Lãnh đạo xã: chi một lần, không phát sinh hằng năm",
+              "Phòng khám: giữ lại hai máy điều hoà"
+            ]
           },
           {
             "type": "question",
@@ -512,7 +702,13 @@
           {
             "type": "context",
             "label": "Tình tiết kỹ thuật",
-            "text": "Mỗi hướng đều kéo theo hệ quả riêng. Tăng dung lượng ắc quy làm tăng khối lượng vận chuyển và chi phí thay thế sau khoảng năm năm. Lắp thêm tấm pin đòi hỏi mái có đủ khả năng chịu lực và diện tích hướng nắng. Máy phát dự phòng cần nhiên liệu và người vận hành định kỳ. Cắt điều hoà thì phòng khám có thể lên tới 34°C vào buổi trưa."
+            "text": "Mỗi hướng đều kéo theo hệ quả riêng. Tăng dung lượng ắc quy làm tăng khối lượng vận chuyển và chi phí thay thế sau khoảng năm năm. Lắp thêm tấm pin đòi hỏi mái có đủ khả năng chịu lực và diện tích hướng nắng. Máy phát dự phòng cần nhiên liệu và người vận hành định kỳ. Cắt điều hoà thì phòng khám có thể lên tới 34°C vào buổi trưa.",
+            "facts": [
+              "Thêm ắc quy: nặng hơn khi vận chuyển, 5 năm sau lại tốn tiền thay",
+              "Thêm tấm pin: cần mái chịu lực và diện tích hướng nắng",
+              "Máy phát dự phòng: cần nhiên liệu và người vận hành",
+              "Cắt điều hoà: phòng khám có thể lên 34°C vào buổi trưa"
+            ]
           },
           {
             "type": "question",
@@ -527,7 +723,12 @@
           {
             "type": "context",
             "label": "Trường hợp ngoại lệ",
-            "text": "Vào mùa mưa bão, đảo có thể không có nắng trong 5 ngày liên tiếp. Trong các đợt tiêm chủng, lượng vắc-xin cần bảo quản tăng gần gấp đôi. Đã có lần tàu không ra đảo được trong ba tuần vì biển động."
+            "text": "Vào mùa mưa bão, đảo có thể không có nắng trong 5 ngày liên tiếp. Trong các đợt tiêm chủng, lượng vắc-xin cần bảo quản tăng gần gấp đôi. Đã có lần tàu không ra đảo được trong ba tuần vì biển động.",
+            "facts": [
+              "Mùa mưa bão có thể không nắng 5 ngày liên tiếp",
+              "Đợt tiêm chủng: lượng vắc-xin cần bảo quản tăng gần gấp đôi",
+              "Đã có lần tàu không ra đảo được trong 3 tuần vì biển động"
+            ]
           },
           {
             "type": "question",
@@ -544,7 +745,14 @@
           {
             "type": "context",
             "label": "Kết quả sau tám tuần",
-            "text": "Hằng chưa mua ắc quy mới. Thay vào đó, nhóm lắp ba đồng hồ đo riêng cho từng nhánh tải, dán nhãn tiếng Việt lên bảng điều khiển và đổi lịch vận hành. Kết quả:\n• Số lần tủ vắc-xin mất điện giảm từ 9 xuống còn 2.\n• Tải buổi tối đo được cao gấp khoảng 2,3 lần so với ước tính trong thiết kế ban đầu.\n• Đo lại dung lượng ắc quy: còn khoảng 79%.\n• Trong tám tuần đó có ba tuần nắng liên tục.\n• Hai lần mất điện còn lại đều rơi vào ngày mưa kéo dài."
+            "text": "Hằng chưa mua ắc quy mới. Thay vào đó, nhóm lắp ba đồng hồ đo riêng cho từng nhánh tải, dán nhãn tiếng Việt lên bảng điều khiển và đổi lịch vận hành. Kết quả:\n• Số lần tủ vắc-xin mất điện giảm từ 9 xuống còn 2.\n• Tải buổi tối đo được cao gấp khoảng 2,3 lần so với ước tính trong thiết kế ban đầu.\n• Đo lại dung lượng ắc quy: còn khoảng 79%.\n• Trong tám tuần đó có ba tuần nắng liên tục.\n• Hai lần mất điện còn lại đều rơi vào ngày mưa kéo dài.",
+            "facts": [
+              "Chưa mua ắc quy mới; lắp 3 đồng hồ đo, dán nhãn tiếng Việt, đổi lịch vận hành",
+              "Mất điện tủ vắc-xin giảm từ 9 xuống 2",
+              "Tải buổi tối đo được cao gấp khoảng 2,3 lần thiết kế",
+              "Đo lại ắc quy: còn khoảng 79%",
+              "Trong 8 tuần đó có 3 tuần nắng liên tục"
+            ]
           },
           {
             "type": "question",
@@ -559,7 +767,12 @@
           {
             "type": "context",
             "label": "Giới hạn của dữ liệu",
-            "text": "Ba tuần nắng liên tục không đại diện cho mùa mưa. Nhóm đã thay đổi nhiều thứ cùng lúc — đo tải, dán nhãn, đổi lịch vận hành — nên khó tách riêng tác dụng của từng thay đổi. Không có giai đoạn đối chứng nào được ghi nhận bằng cùng một phương pháp."
+            "text": "Ba tuần nắng liên tục không đại diện cho mùa mưa. Nhóm đã thay đổi nhiều thứ cùng lúc — đo tải, dán nhãn, đổi lịch vận hành — nên khó tách riêng tác dụng của từng thay đổi. Không có giai đoạn đối chứng nào được ghi nhận bằng cùng một phương pháp.",
+            "facts": [
+              "Ba tuần nắng liên tục không đại diện cho mùa mưa",
+              "Đổi nhiều thứ cùng lúc nên khó tách tác dụng của từng thay đổi",
+              "Không có giai đoạn đối chứng đo bằng cùng phương pháp"
+            ]
           },
           {
             "type": "question",
@@ -585,7 +798,11 @@
     "protagonist": "Quyên",
     "has_female_protagonist": true,
     "knowledge": "Kiến trúc hệ thống, nhật ký truy cập, xác thực và phân quyền, quyền riêng tư của người dùng vị thành niên.",
-    "domain_skills": ["Lập trình", "Kiến trúc hệ thống", "Bảo mật"],
+    "domain_skills": [
+      "Lập trình",
+      "Kiến trúc hệ thống",
+      "Bảo mật"
+    ],
     "creation_output": "Quy trình phản ứng sự cố",
     "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
     "description": "23 tài khoản đăng nhập lúc nửa đêm. Ban giám hiệu muốn đổi mật khẩu toàn trường ngay trong đêm. Bạn có 24 giờ và một hệ thống chỉ lưu log 14 ngày.",
@@ -597,7 +814,13 @@
           {
             "type": "context",
             "label": "Bối cảnh ban đầu",
-            "text": "Bạn là Quyên, chuyên viên an ninh mạng được mời hỗ trợ một trường THPT có 1.800 học sinh. Hệ thống học tập trực tuyến của trường ghi nhận 23 tài khoản học sinh có hoạt động đăng nhập bất thường trong mười ngày. Phòng công nghệ thông tin cho rằng trường 'bị hack'. Ban giám hiệu muốn buộc toàn bộ 1.800 tài khoản đổi mật khẩu ngay trong đêm."
+            "text": "Bạn là Quyên, chuyên viên an ninh mạng được mời hỗ trợ một trường THPT có 1.800 học sinh. Hệ thống học tập trực tuyến của trường ghi nhận 23 tài khoản học sinh có hoạt động đăng nhập bất thường trong mười ngày. Phòng công nghệ thông tin cho rằng trường 'bị hack'. Ban giám hiệu muốn buộc toàn bộ 1.800 tài khoản đổi mật khẩu ngay trong đêm.",
+            "facts": [
+              "Trường THPT 1.800 học sinh",
+              "23 tài khoản có đăng nhập bất thường trong 10 ngày",
+              "Phòng công nghệ thông tin cho rằng trường 'bị hack'",
+              "Ban giám hiệu muốn đổi mật khẩu cả 1.800 tài khoản ngay trong đêm"
+            ]
           },
           {
             "type": "question",
@@ -607,7 +830,12 @@
           {
             "type": "context",
             "label": "Dữ liệu mới",
-            "text": "Trong 23 tài khoản, 19 lượt đăng nhập đến từ cùng một dải địa chỉ IP, trong khoảng 22 giờ đến 1 giờ sáng. Tuy nhiên dải IP đó thuộc một nhà mạng phổ biến ở địa phương, nên hàng nghìn hộ gia đình quanh trường cũng dùng chung dải này. Hệ thống chỉ lưu nhật ký truy cập trong 14 ngày, và 9 ngày đầu của đợt việc đã sắp hết hạn lưu."
+            "text": "Trong 23 tài khoản, 19 lượt đăng nhập đến từ cùng một dải địa chỉ IP, trong khoảng 22 giờ đến 1 giờ sáng. Tuy nhiên dải IP đó thuộc một nhà mạng phổ biến ở địa phương, nên hàng nghìn hộ gia đình quanh trường cũng dùng chung dải này. Hệ thống chỉ lưu nhật ký truy cập trong 14 ngày, và 9 ngày đầu của đợt việc đã sắp hết hạn lưu.",
+            "facts": [
+              "19/23 lượt đăng nhập từ cùng một dải IP, khoảng 22h–1h",
+              "Dải IP đó của một nhà mạng phổ biến — hàng nghìn hộ quanh trường cũng dùng chung",
+              "Nhật ký chỉ lưu 14 ngày, 9 ngày đầu sắp hết hạn"
+            ]
           },
           {
             "type": "question",
@@ -622,7 +850,13 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Tuần trước trường có một cuộc thi trực tuyến. Nhiều học sinh đã cho bạn mượn tài khoản để 'hỗ trợ làm bài'. Máy tính ở phòng chờ giáo viên được dùng chung và trình duyệt lưu sẵn mật khẩu. Một giáo viên cho biết thỉnh thoảng vẫn đăng nhập hộ những em quên mật khẩu."
+            "text": "Tuần trước trường có một cuộc thi trực tuyến. Nhiều học sinh đã cho bạn mượn tài khoản để 'hỗ trợ làm bài'. Máy tính ở phòng chờ giáo viên được dùng chung và trình duyệt lưu sẵn mật khẩu. Một giáo viên cho biết thỉnh thoảng vẫn đăng nhập hộ những em quên mật khẩu.",
+            "facts": [
+              "Tuần trước trường có một cuộc thi trực tuyến",
+              "Nhiều em cho bạn mượn tài khoản để 'hỗ trợ làm bài'",
+              "Máy ở phòng chờ giáo viên dùng chung, trình duyệt lưu sẵn mật khẩu",
+              "Có giáo viên đăng nhập hộ em quên mật khẩu"
+            ]
           },
           {
             "type": "question",
@@ -639,7 +873,13 @@
           {
             "type": "context",
             "label": "Bối cảnh stakeholder",
-            "text": "Học sinh sợ bị kỷ luật vì đã chia sẻ tài khoản, nên có xu hướng không khai. Giáo viên chủ nhiệm lo lớp mình mang tiếng. Người phụ trách công nghệ thông tin là giáo viên tin học kiêm nhiệm, không có thời gian trực hệ thống ban đêm. Phụ huynh muốn biết ngay thông tin của con mình có bị lộ không. Ban giám hiệu lo sự việc lan ra ngoài trước kỳ tuyển sinh."
+            "text": "Học sinh sợ bị kỷ luật vì đã chia sẻ tài khoản, nên có xu hướng không khai. Giáo viên chủ nhiệm lo lớp mình mang tiếng. Người phụ trách công nghệ thông tin là giáo viên tin học kiêm nhiệm, không có thời gian trực hệ thống ban đêm. Phụ huynh muốn biết ngay thông tin của con mình có bị lộ không. Ban giám hiệu lo sự việc lan ra ngoài trước kỳ tuyển sinh.",
+            "facts": [
+              "Học sinh sợ bị kỷ luật nên có xu hướng không khai",
+              "Giáo viên chủ nhiệm lo lớp mình mang tiếng",
+              "Phụ trách kỹ thuật là giáo viên tin học kiêm nhiệm, không trực đêm",
+              "Ban giám hiệu lo lộ ra ngoài trước kỳ tuyển sinh"
+            ]
           },
           {
             "type": "question",
@@ -649,7 +889,13 @@
           {
             "type": "context",
             "label": "Dữ liệu quan sát",
-            "text": "Nhật ký cho thấy 4 tài khoản đã đổi mật khẩu ngay sau lượt đăng nhập lạ — nhưng không rõ ai đổi. Một học sinh nói 'em chỉ cho bạn mượn thôi'. Hệ thống chưa bật xác thực hai lớp cho tài khoản học sinh, và cũng không gửi cảnh báo khi có đăng nhập từ thiết bị mới. Mật khẩu mặc định khi cấp tài khoản là ngày sinh của học sinh."
+            "text": "Nhật ký cho thấy 4 tài khoản đã đổi mật khẩu ngay sau lượt đăng nhập lạ — nhưng không rõ ai đổi. Một học sinh nói 'em chỉ cho bạn mượn thôi'. Hệ thống chưa bật xác thực hai lớp cho tài khoản học sinh, và cũng không gửi cảnh báo khi có đăng nhập từ thiết bị mới. Mật khẩu mặc định khi cấp tài khoản là ngày sinh của học sinh.",
+            "facts": [
+              "4 tài khoản đổi mật khẩu ngay sau lượt đăng nhập lạ — không rõ ai đổi",
+              "Chưa bật xác thực hai lớp cho tài khoản học sinh",
+              "Không có cảnh báo khi đăng nhập từ thiết bị mới",
+              "Mật khẩu mặc định khi cấp tài khoản là ngày sinh"
+            ]
           },
           {
             "type": "question",
@@ -664,7 +910,11 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Nếu đọc toàn bộ nhật ký hoạt động và nội dung tin nhắn trong hệ thống, nhóm sẽ dựng lại sự việc nhanh hơn nhiều — nhưng đó là dữ liệu của người chưa thành niên, và phần lớn các em không liên quan. Nếu chỉ dùng dữ liệu tối thiểu, việc xác định phạm vi ảnh hưởng sẽ chậm và có thể bỏ sót."
+            "text": "Nếu đọc toàn bộ nhật ký hoạt động và nội dung tin nhắn trong hệ thống, nhóm sẽ dựng lại sự việc nhanh hơn nhiều — nhưng đó là dữ liệu của người chưa thành niên, và phần lớn các em không liên quan. Nếu chỉ dùng dữ liệu tối thiểu, việc xác định phạm vi ảnh hưởng sẽ chậm và có thể bỏ sót.",
+            "facts": [
+              "Đọc hết nhật ký và tin nhắn: dựng lại nhanh hơn, nhưng đó là dữ liệu của người chưa thành niên",
+              "Dùng dữ liệu tối thiểu: chậm hơn và có thể bỏ sót"
+            ]
           },
           {
             "type": "question",
@@ -681,7 +931,13 @@
           {
             "type": "context",
             "label": "Bối cảnh và ràng buộc",
-            "text": "Nhà trường cần một quy trình xử lý trong vòng 24 giờ. Không có ngân sách mua công cụ giám sát. Chỉ một người phụ trách kỹ thuật, và người đó vẫn phải dạy đủ tiết. Tuần này là tuần thi, nên không thể bắt 1.800 học sinh đổi mật khẩu cùng lúc. Hệ thống hiện tại không hỗ trợ xác thực hai lớp cho tài khoản học sinh."
+            "text": "Nhà trường cần một quy trình xử lý trong vòng 24 giờ. Không có ngân sách mua công cụ giám sát. Chỉ một người phụ trách kỹ thuật, và người đó vẫn phải dạy đủ tiết. Tuần này là tuần thi, nên không thể bắt 1.800 học sinh đổi mật khẩu cùng lúc. Hệ thống hiện tại không hỗ trợ xác thực hai lớp cho tài khoản học sinh.",
+            "facts": [
+              "Cần quy trình xử lý trong 24 giờ",
+              "Không có ngân sách mua công cụ giám sát",
+              "Chỉ một người phụ trách kỹ thuật, vẫn phải dạy đủ tiết",
+              "Đang tuần thi, không thể bắt 1.800 em đổi mật khẩu cùng lúc"
+            ]
           },
           {
             "type": "question",
@@ -691,7 +947,13 @@
           {
             "type": "context",
             "label": "Mục tiêu của các bên",
-            "text": "Các bên muốn những kết quả khác nhau:\n• Ban giám hiệu muốn tuyên bố sự việc đã được xử lý.\n• Phụ huynh muốn biết dữ liệu của con mình có bị lộ hay không.\n• Học sinh muốn không bị kỷ luật và không mất bài thi.\n• Người phụ trách kỹ thuật muốn số việc phát sinh nằm trong khả năng một người làm được.\n• Bạn muốn giữ lại đủ bằng chứng để hiểu chuyện gì đã thật sự xảy ra."
+            "text": "Các bên muốn những kết quả khác nhau:\n• Ban giám hiệu muốn tuyên bố sự việc đã được xử lý.\n• Phụ huynh muốn biết dữ liệu của con mình có bị lộ hay không.\n• Học sinh muốn không bị kỷ luật và không mất bài thi.\n• Người phụ trách kỹ thuật muốn số việc phát sinh nằm trong khả năng một người làm được.\n• Bạn muốn giữ lại đủ bằng chứng để hiểu chuyện gì đã thật sự xảy ra.",
+            "facts": [
+              "Ban giám hiệu: tuyên bố sự việc đã xử lý xong",
+              "Phụ huynh: dữ liệu của con có bị lộ hay không",
+              "Học sinh: không bị kỷ luật, không mất bài thi",
+              "Phụ trách kỹ thuật: khối lượng việc một người làm nổi"
+            ]
           },
           {
             "type": "question",
@@ -701,7 +963,12 @@
           {
             "type": "context",
             "label": "Tình tiết kỹ thuật",
-            "text": "Buộc đổi mật khẩu hàng loạt sẽ tạo ra hàng trăm yêu cầu hỗ trợ mà một người không kịp xử lý, và nhiều em sẽ đặt lại mật khẩu còn yếu hơn. Khoá ngay 23 tài khoản có thể khoá nhầm những em không làm gì sai, giữa tuần thi. Nhật ký của 9 ngày đầu sắp bị xoá theo chu kỳ lưu trữ, và không thể khôi phục sau đó."
+            "text": "Buộc đổi mật khẩu hàng loạt sẽ tạo ra hàng trăm yêu cầu hỗ trợ mà một người không kịp xử lý, và nhiều em sẽ đặt lại mật khẩu còn yếu hơn. Khoá ngay 23 tài khoản có thể khoá nhầm những em không làm gì sai, giữa tuần thi. Nhật ký của 9 ngày đầu sắp bị xoá theo chu kỳ lưu trữ, và không thể khôi phục sau đó.",
+            "facts": [
+              "Đổi mật khẩu hàng loạt: hàng trăm yêu cầu hỗ trợ, nhiều em đặt lại mật khẩu còn yếu hơn",
+              "Khoá ngay 23 tài khoản: có thể khoá nhầm em vô can giữa tuần thi",
+              "Nhật ký 9 ngày đầu sắp bị xoá và không khôi phục được"
+            ]
           },
           {
             "type": "question",
@@ -716,7 +983,12 @@
           {
             "type": "context",
             "label": "Trường hợp ngoại lệ",
-            "text": "Một số học sinh dùng chung máy tính ở thư viện và ký túc xá, nên nhiều tài khoản đăng nhập từ cùng một thiết bị là chuyện bình thường. Có em đang đi thi đấu ở tỉnh khác nên đăng nhập từ địa chỉ lạ là hợp lý. Ngược lại, nếu thật sự có người ngoài truy cập, họ có thể đã đọc được thông tin liên lạc của gia đình học sinh."
+            "text": "Một số học sinh dùng chung máy tính ở thư viện và ký túc xá, nên nhiều tài khoản đăng nhập từ cùng một thiết bị là chuyện bình thường. Có em đang đi thi đấu ở tỉnh khác nên đăng nhập từ địa chỉ lạ là hợp lý. Ngược lại, nếu thật sự có người ngoài truy cập, họ có thể đã đọc được thông tin liên lạc của gia đình học sinh.",
+            "facts": [
+              "Học sinh dùng chung máy ở thư viện và ký túc xá",
+              "Có em đang thi đấu ở tỉnh khác nên đăng nhập từ địa chỉ lạ là hợp lý",
+              "Nếu thật sự có người ngoài, họ đã đọc được thông tin liên lạc của gia đình học sinh"
+            ]
           },
           {
             "type": "question",
@@ -733,7 +1005,14 @@
           {
             "type": "context",
             "label": "Kết quả sau hai tuần",
-            "text": "Nhóm không đổi mật khẩu toàn trường. Thay vào đó, họ bật cảnh báo đăng nhập từ thiết bị mới, đổi mật khẩu mặc định cho tài khoản cấp mới, sao lưu nhật ký trước khi hết hạn, và gặp riêng từng em trong danh sách. Kết quả:\n• 15 em thừa nhận đã tự cho bạn mượn tài khoản.\n• 2 tài khoản xác định là bị người khác dùng mà chủ tài khoản không biết.\n• 6 trường hợp không kết luận được vì nhật ký đã bị xoá.\n• Số lượt đăng nhập bất thường giảm còn khoảng 1 lượt mỗi tuần.\n• Không tìm thấy dấu hiệu dữ liệu bị tải xuống hàng loạt."
+            "text": "Nhóm không đổi mật khẩu toàn trường. Thay vào đó, họ bật cảnh báo đăng nhập từ thiết bị mới, đổi mật khẩu mặc định cho tài khoản cấp mới, sao lưu nhật ký trước khi hết hạn, và gặp riêng từng em trong danh sách. Kết quả:\n• 15 em thừa nhận đã tự cho bạn mượn tài khoản.\n• 2 tài khoản xác định là bị người khác dùng mà chủ tài khoản không biết.\n• 6 trường hợp không kết luận được vì nhật ký đã bị xoá.\n• Số lượt đăng nhập bất thường giảm còn khoảng 1 lượt mỗi tuần.\n• Không tìm thấy dấu hiệu dữ liệu bị tải xuống hàng loạt.",
+            "facts": [
+              "Không đổi mật khẩu toàn trường; bật cảnh báo thiết bị mới, đổi mật khẩu mặc định, sao lưu nhật ký, gặp riêng từng em",
+              "15 em thừa nhận đã cho bạn mượn tài khoản",
+              "2 tài khoản bị người khác dùng mà chủ không biết",
+              "6 trường hợp không kết luận được vì nhật ký đã bị xoá",
+              "Đăng nhập bất thường còn khoảng 1 lượt mỗi tuần"
+            ]
           },
           {
             "type": "question",
@@ -748,7 +1027,12 @@
           {
             "type": "context",
             "label": "Tình tiết gây nhiễu",
-            "text": "Kỳ thi kết thúc đúng vào tuần thứ hai, nên hoạt động ban đêm của học sinh giảm hẳn một cách tự nhiên. Việc bật cảnh báo cũng có thể khiến những em hay mượn tài khoản của bạn tự dừng lại, bất kể có ai xâm nhập hay không. 'Không tìm thấy dấu hiệu' cũng không giống với 'chắc chắn không xảy ra'."
+            "text": "Kỳ thi kết thúc đúng vào tuần thứ hai, nên hoạt động ban đêm của học sinh giảm hẳn một cách tự nhiên. Việc bật cảnh báo cũng có thể khiến những em hay mượn tài khoản của bạn tự dừng lại, bất kể có ai xâm nhập hay không. 'Không tìm thấy dấu hiệu' cũng không giống với 'chắc chắn không xảy ra'.",
+            "facts": [
+              "Kỳ thi kết thúc đúng tuần thứ hai, hoạt động ban đêm giảm tự nhiên",
+              "Bật cảnh báo cũng khiến những em hay mượn tài khoản tự dừng lại",
+              "'Không tìm thấy dấu hiệu' không giống 'chắc chắn không xảy ra'"
+            ]
           },
           {
             "type": "question",
@@ -774,7 +1058,11 @@
     "protagonist": "Ngọc",
     "has_female_protagonist": true,
     "knowledge": "Thống kê mô tả, thiết kế tiêu chí và trọng số, phân tích rủi ro, sai lệch trong dữ liệu tự khai.",
-    "domain_skills": ["Thống kê", "Mô hình tài chính", "Phân tích rủi ro"],
+    "domain_skills": [
+      "Thống kê",
+      "Mô hình tài chính",
+      "Phân tích rủi ro"
+    ],
     "creation_output": "Mô hình phân bổ ngân sách",
     "disclaimer": "Các dữ liệu sau là dữ liệu giả định cho prototype.",
     "description": "\"Trao cho em khó khăn nhất và học giỏi nhất\" nghe rất hợp lý — cho đến khi bạn phải biến nó thành một quy tắc giải thích được cho phụ huynh.",
@@ -786,7 +1074,12 @@
           {
             "type": "context",
             "label": "Bối cảnh ban đầu",
-            "text": "Bạn là Ngọc, chuyên viên phân tích dữ liệu, hỗ trợ một quỹ học bổng địa phương. Quỹ có 900 triệu đồng cho năm nay và nhận được 240 hồ sơ. Ban điều hành mô tả tiêu chí là 'trao cho những em có hoàn cảnh khó khăn nhất và học lực tốt nhất'. Năm ngoái quỹ trao 60 suất, mỗi suất 15 triệu đồng."
+            "text": "Bạn là Ngọc, chuyên viên phân tích dữ liệu, hỗ trợ một quỹ học bổng địa phương. Quỹ có 900 triệu đồng cho năm nay và nhận được 240 hồ sơ. Ban điều hành mô tả tiêu chí là 'trao cho những em có hoàn cảnh khó khăn nhất và học lực tốt nhất'. Năm ngoái quỹ trao 60 suất, mỗi suất 15 triệu đồng.",
+            "facts": [
+              "Quỹ có 900 triệu đồng, nhận 240 hồ sơ",
+              "Tiêu chí: 'khó khăn nhất và học lực tốt nhất'",
+              "Năm ngoái trao 60 suất, mỗi suất 15 triệu"
+            ]
           },
           {
             "type": "question",
@@ -796,7 +1089,14 @@
           {
             "type": "context",
             "label": "Dữ liệu mới",
-            "text": "Trong 240 hồ sơ: 180 em có giấy chứng nhận hộ nghèo hoặc cận nghèo, 95 em có điểm trung bình từ 8,0 trở lên, và 62 em thuộc cả hai nhóm. Thông tin thu nhập gia đình là do người nộp tự khai. Các em đến từ 11 trường khác nhau."
+            "text": "Trong 240 hồ sơ: 180 em có giấy chứng nhận hộ nghèo hoặc cận nghèo, 95 em có điểm trung bình từ 8,0 trở lên, và 62 em thuộc cả hai nhóm. Thông tin thu nhập gia đình là do người nộp tự khai. Các em đến từ 11 trường khác nhau.",
+            "facts": [
+              "180/240 em có giấy hộ nghèo hoặc cận nghèo",
+              "95 em có điểm trung bình từ 8,0 trở lên",
+              "62 em thuộc cả hai nhóm",
+              "Thu nhập gia đình do người nộp tự khai",
+              "Hồ sơ đến từ 11 trường khác nhau"
+            ]
           },
           {
             "type": "question",
@@ -811,7 +1111,12 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Nhiều gia đình làm nông hoặc lao động tự do nên không có bảng lương để đối chiếu. Việc một hộ có giấy chứng nhận cận nghèo hay không còn phụ thuộc vào quy trình xét duyệt của từng xã, vốn không giống nhau. Ngoài ra, một số em có điểm thấp chính vì phải đi làm thêm phụ giúp gia đình — nghĩa là hai tiêu chí 'khó khăn' và 'học lực tốt' có thể kéo ngược nhau."
+            "text": "Nhiều gia đình làm nông hoặc lao động tự do nên không có bảng lương để đối chiếu. Việc một hộ có giấy chứng nhận cận nghèo hay không còn phụ thuộc vào quy trình xét duyệt của từng xã, vốn không giống nhau. Ngoài ra, một số em có điểm thấp chính vì phải đi làm thêm phụ giúp gia đình — nghĩa là hai tiêu chí 'khó khăn' và 'học lực tốt' có thể kéo ngược nhau.",
+            "facts": [
+              "Nhiều gia đình làm nông, không có bảng lương để đối chiếu",
+              "Xét cận nghèo mỗi xã một quy trình",
+              "Có em điểm thấp vì phải đi làm thêm — hai tiêu chí kéo ngược nhau"
+            ]
           },
           {
             "type": "question",
@@ -828,7 +1133,14 @@
           {
             "type": "context",
             "label": "Bối cảnh stakeholder",
-            "text": "Ban điều hành muốn một con số đẹp để báo cáo nhà tài trợ vào cuối năm. Nhà tài trợ muốn thấy bằng chứng rằng tiền tạo ra thay đổi. Giáo viên giới thiệu học sinh thường hiểu rõ hoàn cảnh nhưng cũng thiên về lớp mình. Nhiều em ngại kể chi tiết về gia đình trong đơn. Một số phụ huynh không biết quỹ tồn tại nên không nộp hồ sơ."
+            "text": "Ban điều hành muốn một con số đẹp để báo cáo nhà tài trợ vào cuối năm. Nhà tài trợ muốn thấy bằng chứng rằng tiền tạo ra thay đổi. Giáo viên giới thiệu học sinh thường hiểu rõ hoàn cảnh nhưng cũng thiên về lớp mình. Nhiều em ngại kể chi tiết về gia đình trong đơn. Một số phụ huynh không biết quỹ tồn tại nên không nộp hồ sơ.",
+            "facts": [
+              "Ban điều hành muốn một con số đẹp để báo cáo",
+              "Nhà tài trợ muốn bằng chứng rằng tiền tạo ra thay đổi",
+              "Giáo viên hiểu hoàn cảnh nhưng thiên về lớp mình",
+              "Nhiều em ngại kể chi tiết gia đình trong đơn",
+              "Có phụ huynh không biết quỹ tồn tại nên không nộp"
+            ]
           },
           {
             "type": "question",
@@ -838,7 +1150,12 @@
           {
             "type": "context",
             "label": "Dữ liệu quan sát",
-            "text": "Ngọc nhận thấy 12 đơn có nét chữ giống nhau — hỏi ra thì một giáo viên đã viết hộ cho những em ngại viết. Những đơn đó trình bày hoàn cảnh rõ ràng và thuyết phục hơn hẳn. Một số em viết rất ngắn, không phải vì hoàn cảnh nhẹ hơn mà vì không quen kể về mình. Có hai em thuộc cùng một gia đình cùng nộp hồ sơ."
+            "text": "Ngọc nhận thấy 12 đơn có nét chữ giống nhau — hỏi ra thì một giáo viên đã viết hộ cho những em ngại viết. Những đơn đó trình bày hoàn cảnh rõ ràng và thuyết phục hơn hẳn. Một số em viết rất ngắn, không phải vì hoàn cảnh nhẹ hơn mà vì không quen kể về mình. Có hai em thuộc cùng một gia đình cùng nộp hồ sơ.",
+            "facts": [
+              "12 đơn cùng nét chữ — một giáo viên viết hộ, và những đơn đó thuyết phục hơn hẳn",
+              "Có em viết rất ngắn vì không quen kể về mình",
+              "Hai em cùng một gia đình cùng nộp hồ sơ"
+            ]
           },
           {
             "type": "question",
@@ -853,7 +1170,11 @@
           {
             "type": "context",
             "label": "Tình tiết phức tạp",
-            "text": "Nếu hỏi sâu hơn về thu nhập và tài sản, quỹ sẽ có dữ liệu chính xác hơn nhưng đặt các em vào tình thế phải chứng minh mình nghèo trước mặt người lạ. Nếu không hỏi, mô hình sẽ dựa trên số liệu tự khai mà ai cũng biết là không đồng đều."
+            "text": "Nếu hỏi sâu hơn về thu nhập và tài sản, quỹ sẽ có dữ liệu chính xác hơn nhưng đặt các em vào tình thế phải chứng minh mình nghèo trước mặt người lạ. Nếu không hỏi, mô hình sẽ dựa trên số liệu tự khai mà ai cũng biết là không đồng đều.",
+            "facts": [
+              "Hỏi sâu về thu nhập: chính xác hơn nhưng bắt các em chứng minh mình nghèo trước người lạ",
+              "Không hỏi: mô hình dựa trên số tự khai không đồng đều"
+            ]
           },
           {
             "type": "question",
@@ -870,7 +1191,13 @@
           {
             "type": "context",
             "label": "Bối cảnh và ràng buộc",
-            "text": "Tổng ngân sách cố định ở 900 triệu đồng. Quyết định phải xong trong ba tuần. Không thể xác minh thu nhập tại nhà cho cả 240 hồ sơ. Ban điều hành yêu cầu quy tắc phải giải thích được cho phụ huynh trong vài câu, và không chấp nhận một công thức mà chính họ không hiểu."
+            "text": "Tổng ngân sách cố định ở 900 triệu đồng. Quyết định phải xong trong ba tuần. Không thể xác minh thu nhập tại nhà cho cả 240 hồ sơ. Ban điều hành yêu cầu quy tắc phải giải thích được cho phụ huynh trong vài câu, và không chấp nhận một công thức mà chính họ không hiểu.",
+            "facts": [
+              "Ngân sách cố định 900 triệu đồng",
+              "Quyết định phải xong trong 3 tuần",
+              "Không xác minh tại nhà được cả 240 hồ sơ",
+              "Quy tắc phải giải thích được cho phụ huynh trong vài câu"
+            ]
           },
           {
             "type": "question",
@@ -880,7 +1207,14 @@
           {
             "type": "context",
             "label": "Mục tiêu của các bên",
-            "text": "Các bên muốn những kết quả khác nhau:\n• Học sinh muốn khoản hỗ trợ đủ lớn để thật sự thay đổi được điều gì đó.\n• Ban điều hành muốn số suất trao càng nhiều càng tốt.\n• Nhà tài trợ muốn tác động đo lường được.\n• Giáo viên muốn những em mình biết rõ không bị bỏ sót.\n• Phụ huynh muốn hiểu vì sao con mình được hoặc không được."
+            "text": "Các bên muốn những kết quả khác nhau:\n• Học sinh muốn khoản hỗ trợ đủ lớn để thật sự thay đổi được điều gì đó.\n• Ban điều hành muốn số suất trao càng nhiều càng tốt.\n• Nhà tài trợ muốn tác động đo lường được.\n• Giáo viên muốn những em mình biết rõ không bị bỏ sót.\n• Phụ huynh muốn hiểu vì sao con mình được hoặc không được.",
+            "facts": [
+              "Học sinh: khoản hỗ trợ đủ lớn để thật sự thay đổi được điều gì đó",
+              "Ban điều hành: càng nhiều suất càng tốt",
+              "Nhà tài trợ: tác động đo lường được",
+              "Giáo viên: những em mình biết rõ không bị bỏ sót",
+              "Phụ huynh: hiểu vì sao con được hoặc không được"
+            ]
           },
           {
             "type": "question",
@@ -890,7 +1224,13 @@
           {
             "type": "context",
             "label": "Tình tiết kỹ thuật",
-            "text": "Mỗi cách làm đều có mặt trái. Chia đều cho cả 240 em thì mỗi suất chỉ còn 3,75 triệu, có thể không đủ để thay đổi quyết định đi học. Xếp hạng theo điểm sẽ loại chính nhóm khó khăn nhất. Dùng trọng số thì phải giải thích được vì sao chọn trọng số đó chứ không phải con số khác. Đặt ngưỡng cứng sẽ tạo ra 'vách đá': hai em chênh nhau 0,1 điểm nhận kết quả hoàn toàn khác nhau."
+            "text": "Mỗi cách làm đều có mặt trái. Chia đều cho cả 240 em thì mỗi suất chỉ còn 3,75 triệu, có thể không đủ để thay đổi quyết định đi học. Xếp hạng theo điểm sẽ loại chính nhóm khó khăn nhất. Dùng trọng số thì phải giải thích được vì sao chọn trọng số đó chứ không phải con số khác. Đặt ngưỡng cứng sẽ tạo ra 'vách đá': hai em chênh nhau 0,1 điểm nhận kết quả hoàn toàn khác nhau.",
+            "facts": [
+              "Chia đều cho 240 em: mỗi suất còn 3,75 triệu",
+              "Xếp hạng theo điểm: loại chính nhóm khó khăn nhất",
+              "Dùng trọng số: phải giải thích được vì sao chọn con số đó",
+              "Ngưỡng cứng tạo 'vách đá': chênh 0,1 điểm, kết quả khác hẳn"
+            ]
           },
           {
             "type": "question",
@@ -905,7 +1245,13 @@
           {
             "type": "context",
             "label": "Trường hợp ngoại lệ",
-            "text": "Có em cần tiền gấp giữa năm học vì gia đình gặp biến cố. Có em đã nhận học bổng từ nguồn khác. Hai anh em cùng một nhà cùng nộp đơn. Một em đủ điều kiện nhưng nộp hồ sơ muộn ba ngày vì nhà xa."
+            "text": "Có em cần tiền gấp giữa năm học vì gia đình gặp biến cố. Có em đã nhận học bổng từ nguồn khác. Hai anh em cùng một nhà cùng nộp đơn. Một em đủ điều kiện nhưng nộp hồ sơ muộn ba ngày vì nhà xa.",
+            "facts": [
+              "Có em cần tiền gấp giữa năm vì gia đình gặp biến cố",
+              "Có em đã nhận học bổng từ nguồn khác",
+              "Hai anh em cùng nhà cùng nộp đơn",
+              "Một em đủ điều kiện nhưng nộp muộn 3 ngày vì nhà xa"
+            ]
           },
           {
             "type": "question",
@@ -922,7 +1268,15 @@
           {
             "type": "context",
             "label": "Kết quả sau một năm",
-            "text": "Quỹ áp dụng mô hình của Ngọc cho 60 suất. Sau một năm học:\n• 54 trong 60 em vẫn đi học đầy đủ.\n• 4 em bỏ học, 2 em chuyển trường.\n• Điểm trung bình của nhóm nhận học bổng tăng 0,3.\n• Điểm trung bình của nhóm nộp đơn nhưng không nhận cũng tăng 0,2.\n• 11 gia đình cho biết khoản tiền giúp con giảm số giờ đi làm thêm.\n• Quỹ nhận 3 khiếu nại về việc bị loại."
+            "text": "Quỹ áp dụng mô hình của Ngọc cho 60 suất. Sau một năm học:\n• 54 trong 60 em vẫn đi học đầy đủ.\n• 4 em bỏ học, 2 em chuyển trường.\n• Điểm trung bình của nhóm nhận học bổng tăng 0,3.\n• Điểm trung bình của nhóm nộp đơn nhưng không nhận cũng tăng 0,2.\n• 11 gia đình cho biết khoản tiền giúp con giảm số giờ đi làm thêm.\n• Quỹ nhận 3 khiếu nại về việc bị loại.",
+            "facts": [
+              "Quỹ áp dụng mô hình cho 60 suất",
+              "54/60 em vẫn đi học đầy đủ; 4 em bỏ học, 2 em chuyển trường",
+              "Điểm trung bình nhóm nhận tăng 0,3",
+              "Nhóm nộp đơn nhưng không nhận cũng tăng 0,2",
+              "11 gia đình cho biết con giảm số giờ đi làm thêm",
+              "Quỹ nhận 3 khiếu nại về việc bị loại"
+            ]
           },
           {
             "type": "question",
@@ -937,7 +1291,13 @@
           {
             "type": "context",
             "label": "Giới hạn của dữ liệu",
-            "text": "Nhóm nhận và nhóm không nhận vốn đã khác nhau từ đầu, vì chính mô hình đã chọn ra nhóm nhận — nên không thể coi nhóm còn lại là nhóm đối chứng. Trong năm đó, sở giáo dục cũng thay đổi cách tính điểm trung bình. Một năm là quá ngắn để thấy tác động lên việc học tiếp sau THPT. Bốn em bỏ học không trả lời khảo sát nên không rõ lý do."
+            "text": "Nhóm nhận và nhóm không nhận vốn đã khác nhau từ đầu, vì chính mô hình đã chọn ra nhóm nhận — nên không thể coi nhóm còn lại là nhóm đối chứng. Trong năm đó, sở giáo dục cũng thay đổi cách tính điểm trung bình. Một năm là quá ngắn để thấy tác động lên việc học tiếp sau THPT. Bốn em bỏ học không trả lời khảo sát nên không rõ lý do.",
+            "facts": [
+              "Nhóm nhận và nhóm không nhận đã khác nhau từ đầu — không coi được là nhóm đối chứng",
+              "Sở giáo dục đổi cách tính điểm trung bình trong chính năm đó",
+              "Một năm là quá ngắn để thấy tác động sau THPT",
+              "4 em bỏ học không trả lời khảo sát"
+            ]
           },
           {
             "type": "question",

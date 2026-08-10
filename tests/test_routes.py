@@ -92,3 +92,56 @@ def test_field_page_explains_how_scenarios_are_built(client):
         "dữ liệu giả định",
     ]:
         assert claim in page, claim
+
+
+MARKETING = ["/", "/kham-pha", "/linh-vuc", "/ve-chung-toi"]
+
+
+def test_public_pages_open_without_login(client):
+    client.get("/dang-xuat")
+    for url in MARKETING:
+        r = client.get(url)
+        assert r.status_code == 200, url
+        assert "Đăng ký miễn phí" in r.text, url
+        assert "/ve-chung-toi" in r.text, url
+
+
+def test_explore_filters_by_field(client):
+    all_page = client.get("/kham-pha").text
+    assert all_page.count("Bắt đầu tình huống này") == len(all_scenarios())
+
+    one = client.get("/kham-pha?linh_vuc=khoa_hoc").text
+    assert one.count("Bắt đầu tình huống này") == 1
+    assert "Khoa học" in one
+
+    assert client.get("/kham-pha?linh_vuc=khong-co-that").status_code == 200
+
+
+def test_landing_roadmap_has_all_three_stops(client):
+    page = client.get("/").text
+    assert page.count('class="road-stop"') == 3
+    for gone in ["Điểm số", "So sánh với bạn khác", "Đáp án mẫu"]:
+        assert gone in page
+    assert page.count("Thay vào đó") == 3
+
+
+def test_about_page_still_reaches_the_legal_notice(client):
+    page = client.get("/ve-chung-toi").text
+    assert "LEGAL.md" in page
+    assert "Nguyên tắc chúng tôi giữ" in page
+
+
+def test_every_public_page_footer_carries_the_prototype_warning(client):
+    from pathlib import Path
+
+    disclaimer = Path("DISCLAIMER.md").read_text(encoding="utf-8")
+    for heading in ["Chưa có tài khoản riêng cho từng người", "Không bảo đảm"]:
+        assert heading in disclaimer, heading
+    assert "111" in disclaimer
+    assert "LEGAL.md" in disclaimer
+
+    for url in MARKETING:
+        page = client.get(url).text
+        assert "Đây là bản mẫu trình diễn" in page, url
+        assert "ai cũng đọc được bài của người khác" in page, url
+        assert "DISCLAIMER.md" in page, url

@@ -1,0 +1,22 @@
+<nav class="sticky top-0 z-40 -mx-4 px-4 bg-paper/90 backdrop-blur border-b border-hairline"
+     aria-label="Điều hướng trang giới thiệu">
+  <div class="flex items-center gap-4 h-14">
+    <a href="/" class="font-display font-extrabold text-lg text-trunk tracking-tight">
+      <span class="wordmark">GALS</span>
+    </a>
+    <div class="ml-auto hidden md:flex items-center gap-6 text-sm">
+      {% for href, label, key in [
+        ('/kham-pha', 'Khám phá', 'kham_pha'),
+        ('/linh-vuc', 'Lĩnh vực', 'linh_vuc'),
+        ('/ve-chung-toi', 'Về chúng tôi', 've_chung_toi')
+      ] %}
+      <a href="{{ href }}"
+         {% if page == key %}aria-current="page" class="font-medium text-trunk"{% else %}class="text-ink-soft hover:text-ink"{% endif %}>
+        {{ label }}
+      </a>
+      {% endfor %}
+    </div>
+    <a href="/dang-nhap" class="text-sm font-medium text-trunk hover:underline md:ml-6">Đăng nhập</a>
+    <a href="/dang-ky" class="btn btn-primary text-sm py-2 px-4">Bắt đầu</a>
+  </div>
+</nav>

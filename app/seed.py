@@ -235,6 +235,101 @@ def _seed(db: Session) -> None:
     )
     db.add(linh_session)
 
+    toan = by_field["Toán"]
+    ngoc_answers = [
+        "Em thấy 'khó khăn nhất' và 'học lực tốt nhất' là hai tiêu chí khác nhau, mà đề "
+        "bài lại nói như thể chúng luôn đi cùng nhau. Em muốn hỏi lại ban điều hành: một "
+        "em rất khó khăn nhưng học lực chỉ trung bình thì có được xét không?",
+        "Em biết được có 62 em thuộc cả hai nhóm, tức là nếu chỉ trao cho nhóm đó thì vừa "
+        "đủ 60 suất như năm ngoái. Nhưng em chưa biết trong 180 em hộ nghèo thì mức khó "
+        "khăn chênh nhau ra sao, vì thu nhập là do người nộp tự khai.",
+        "Em nghĩ là không so trực tiếp được. Mỗi trường ra đề và chấm khác nhau, nên 8,0 ở "
+        "trường này chưa chắc bằng 8,0 ở trường kia. Muốn so thì có lẽ phải xếp hạng trong "
+        "từng trường trước rồi mới ghép lại.",
+        "Bài toán không còn là chọn 60 em nghèo nhất và giỏi nhất nữa. Giấy chứng nhận cận "
+        "nghèo phụ thuộc vào quy trình của từng xã, còn điểm thấp có khi lại là dấu hiệu "
+        "của hoàn cảnh khó chứ không phải của học kém.",
+        "Em phát biểu lại là: chia 900 triệu sao cho tiền tới được những em mà khoản này "
+        "thay đổi được nhiều nhất, trong điều kiện dữ liệu về hoàn cảnh không chính xác "
+        "đều nhau giữa các hồ sơ. Giả định của em là quỹ chấp nhận trao ít suất hơn nhưng "
+        "mỗi suất lớn hơn.",
+        "Em muốn nghe giáo viên giới thiệu trước, vì họ biết hoàn cảnh thật của các em hơn "
+        "tờ đơn. Nhưng mỗi thầy cô chỉ biết lớp mình, nên nghe xong em vẫn phải đối chiếu "
+        "lại với hồ sơ.",
+    ]
+    ngoc_replies = [
+        "Bạn vừa tách được hai tiêu chí mà đề bài gộp làm một. Nếu ban điều hành trả lời "
+        "rằng phải đủ cả hai, số hồ sơ còn lại sẽ thay đổi thế nào?",
+        "Chỗ bạn dừng lại ở 'thu nhập là tự khai' là chỗ đáng dừng. Có dấu hiệu nào khác "
+        "trong hồ sơ giúp bạn đoán được mức tin cậy của phần tự khai đó không?",
+        "Bạn đã nghĩ tới việc xếp hạng trong từng trường. Nếu một trường chỉ có ba em nộp "
+        "đơn thì thứ hạng ở đó nói lên được điều gì?",
+        "Bạn vừa nhận ra hai tiêu chí có thể kéo ngược nhau. Nếu đúng như vậy, khi buộc "
+        "phải chọn thì bạn nghiêng về nhóm nào, và vì sao?",
+        "Cách phát biểu lại của bạn đã hỏi về tác động chứ không chỉ về xếp loại. Ai sẽ là "
+        "người chịu thiệt nếu số suất giảm xuống?",
+        "Bạn tự nêu giới hạn của nguồn tin ngay khi chọn nó. Ngoài giáo viên, còn ai biết "
+        "hoàn cảnh của các em mà chưa xuất hiện trong danh sách của bạn?",
+    ]
+
+    ngoc_entries: list[dict] = []
+    answer_index = 0
+    for stage_index, stage in enumerate(toan.stages[:2]):
+        last_beat = 3 if stage_index == 1 else len(stage.beats)
+        for beat in stage.beats[:last_beat]:
+            ngoc_entries.append(
+                {
+                    "kind": beat.type,
+                    "stage": stage.name,
+                    "label": beat.label or stage.name,
+                    "text": beat.text,
+                    "answer": ngoc_answers[answer_index] if beat.needs_answer else "",
+                }
+            )
+            if beat.needs_answer:
+                ngoc_entries.append(
+                    {
+                        "kind": "ai",
+                        "stage": stage.name,
+                        "label": "Người đồng hành",
+                        "text": ngoc_replies[answer_index],
+                        "answer": "",
+                    }
+                )
+                answer_index += 1
+        if stage_index == 0 and stage.closing:
+            ngoc_entries.append(
+                {
+                    "kind": "closing",
+                    "stage": stage.name,
+                    "label": f"Câu kết cấp độ · {stage.name}",
+                    "text": stage.closing,
+                    "answer": ngoc_answers[answer_index],
+                }
+            )
+            ngoc_entries.append(
+                {
+                    "kind": "ai",
+                    "stage": stage.name,
+                    "label": "Người đồng hành",
+                    "text": ngoc_replies[answer_index],
+                    "answer": "",
+                }
+            )
+            answer_index += 1
+
+    db.add(
+        GuidedSession(
+            student_id=linh.id,
+            scenario_id=toan.id,
+            stage_index=1,
+            beat_index=3,
+            finished=False,
+            transcript=json.dumps(ngoc_entries, ensure_ascii=False),
+            created_at=now - timedelta(hours=6),
+        )
+    )
+
     db.add(
         Feedback(
             teacher_id=teacher.id,

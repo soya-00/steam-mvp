@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Về chúng tôi — GALS{% endblock %}
+
+{% block content %}
+<div class="-mt-6 md:-mt-8">
+
+{% include "partials/landing_nav.html" %}
+
+<section class="py-12 md:py-20 max-w-3xl">
+  <p class="text-xs uppercase tracking-[0.18em] font-semibold text-trunk">Về chúng tôi</p>
+  <h1 class="mt-3 text-3xl md:text-4xl text-ink leading-tight">
+    Học sinh được hỏi &ldquo;em thích nghề gì?&rdquo;<br>trước khi kịp biết nghề đó làm gì.
+  </h1>
+  <p class="mt-5 text-lg text-ink-soft">
+    Phần lớn thông tin hướng nghiệp ở Việt Nam dừng lại ở mô tả: nghề này cần bằng gì, lương
+    khoảng bao nhiêu, học khối nào. Rất ít chỗ cho học sinh biết được điều quan trọng hơn —
+    <strong class="text-ink">một ngày làm nghề đó thật ra trông như thế nào</strong>, và khi
+    dữ liệu chưa đủ thì người trong nghề quyết định ra sao.
+  </p>
+</section>
+
+<section class="py-12 md:py-16 border-t border-hairline">
+  <h2 class="text-2xl md:text-3xl text-ink">GALS làm gì</h2>
+  <div class="mt-7 grid gap-4 md:grid-cols-3">
+    {% for title, body in [
+      ('Đặt em vào trong tình huống',
+       'Không đọc về nghề, mà nhập vai một người đang làm nghề đó và tự xử lý một tình thế có thật của họ.'),
+      ('Giữ nguyên chỗ khó',
+       'Dữ kiện cố tình chưa đủ để kết luận. Ngoài đời hiếm khi đủ mà vẫn phải quyết — chỗ đó mới là chỗ đáng học.'),
+      ('Ghi lại cách em nghĩ',
+       'Mọi câu trả lời được giữ lại theo đúng thứ tự em nghĩ ra, để em và thầy cô đọc lại được.')
+    ] %}
+    <div class="card p-5">
+      <h3 class="text-base text-ink">{{ title }}</h3>
+      <p class="mt-2 text-sm text-ink-soft">{{ body }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="py-12 md:py-16 border-t border-hairline">
+  <div class="max-w-3xl">
+    <h2 class="text-2xl md:text-3xl text-ink">Nguyên tắc chúng tôi giữ</h2>
+    <div class="mt-7 grid gap-5">
+      {% for title, body in [
+        ('Mỗi nghề có cách tìm bằng chứng riêng',
+         'Chuyên viên dịch tễ so sánh giữa các nhóm. Kỹ sư năng lượng đo tải theo giờ. Chuyên viên an ninh mạng lần theo nhật ký hệ thống. Không nghề nào bị quy về “đi hỏi vài người rồi làm một cái app”.'),
+        ('Không chấm điểm, và điều đó là có chủ ý',
+         'Một con số không nói được em đã nhận ra giả định của mình lúc nào. Thầy cô đọc được cách em suy nghĩ, không phải kết quả đúng sai.'),
+        ('Riêng tư là mặc định, không phải tuỳ chọn',
+         'Học sinh không nhập mã lớp thì không giáo viên nào đọc được nhật ký của em. Mục hồ sơ muốn cho người khác xem phải tự bấm chia sẻ.'),
+        ('Dạy được cả khi không có thiết bị',
+         'Có bản in đầy đủ cho buổi học tại lớp. Học sinh chỉ cần giấy và bút; không có máy in thì đọc to và chép bảng vẫn dạy được.'),
+        ('Mọi lĩnh vực mở với mọi học sinh',
+         'Trợ lý không bao giờ ám chỉ ai đó hợp hay không hợp với một nghề vì giới tính. Cả năm nhân vật chính trong các tình huống hiện tại đều là nữ.')
+      ] %}
+      <div class="flex gap-4">
+        <span class="shrink-0 w-8 h-8 rounded-full bg-trunk-50 text-trunk grid place-items-center
+                     font-display font-extrabold text-sm" aria-hidden="true">{{ loop.index }}</span>
+        <div>
+          <h3 class="text-base text-ink">{{ title }}</h3>
+          <p class="mt-1 text-sm text-ink-soft">{{ body }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "partials/landing_cta.html" %}
+
+</div>
+{% endblock %}
+
+{% block sitefooter %}{% include "partials/landing_footer.html" %}{% endblock %}

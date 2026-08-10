@@ -1,0 +1,116 @@
+{% set project_links = [
+  ('/ve-chung-toi', 'Về chúng tôi'),
+  ('https://github.com/soya-00/steam-mvp/blob/main/DISCLAIMER.md', 'Tuyên bố miễn trừ'),
+  ('https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md', 'Pháp lý và dữ liệu'),
+  ('https://github.com/soya-00/steam-mvp', 'Mã nguồn')
+] %}
+
+<footer class="mt-12 bg-paper-raised border-t border-hairline" aria-label="Chân trang">
+  <div class="mx-auto w-full max-w-6xl px-4">
+
+    <div class="py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="font-display font-extrabold text-lg text-ink">
+          <span class="wordmark">GALS</span>
+        </p>
+        <p class="mt-3 text-sm text-ink-soft max-w-xs">
+          Thử làm nghề trước khi phải chọn nghề. Dành cho học sinh và giáo viên THPT Việt Nam.
+        </p>
+      </div>
+
+      {% if user and user.is_teacher %}
+      {% set nav_heading, nav_links = 'Lớp học', [
+        ('/giao-vien', 'Lớp của tôi'),
+        ('/giao-vien/tien-do', 'Tiến độ'),
+        ('/giao-vien/tai-lieu', 'Tài liệu in'),
+        ('/giao-vien/thong-bao', 'Thông báo'),
+        ('/giao-vien/huong-dan', 'Hướng dẫn cho thầy cô')
+      ] %}
+      {% elif user %}
+      {% set nav_heading, nav_links = 'Đi tới', [
+        ('/trang-ca-nhan', 'Nhiệm vụ'),
+        ('/ho-so', 'Hồ sơ'),
+        ('/huy-hieu', 'Huy hiệu'),
+        ('/tai-nguyen', 'Tài nguyên'),
+        ('/ho-so/y-tuong-tu-do', 'Ý tưởng tự do')
+      ] %}
+      {% else %}
+      {% set nav_heading, nav_links = 'Khám phá', [
+        ('/kham-pha', 'Tất cả tình huống'),
+        ('/linh-vuc', 'Năm lĩnh vực STEAM'),
+        ('/dang-ky', 'Đăng ký miễn phí'),
+        ('/dang-nhap', 'Đăng nhập')
+      ] %}
+      {% endif %}
+
+      {% if user %}
+      {% set account_links = [
+        ('/tai-khoan#ho-so', 'Hồ sơ cá nhân'),
+        ('/tai-khoan#tro-nang', 'Hiển thị và trợ năng'),
+        ('/tai-khoan/du-lieu', 'Tải dữ liệu của tôi'),
+        ('/dang-xuat', 'Đăng xuất')
+      ] %}
+      {% else %}
+      {% set account_links = [] %}
+      {% endif %}
+
+      {% for heading, links in [
+        (nav_heading, nav_links),
+        ('Tài khoản', account_links),
+        ('Về dự án', project_links)
+      ] %}
+      {% if links %}
+      <div>
+        <p class="microlabel">{{ heading }}</p>
+        <ul class="mt-3 grid gap-2 text-sm">
+          {% for href, label in links %}
+          <li>
+            <a href="{{ href }}" class="text-ink-soft hover:text-ink hover:underline"
+               {% if href.startswith('http') %}target="_blank" rel="noopener"{% endif %}>{{ label }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if user %}
+    <div class="py-6 border-t border-hairline">
+      <p class="microlabel">Góp ý cho GALS</p>
+      <p class="mt-2 text-sm text-ink-soft max-w-2xl">
+        {% if user.is_teacher %}
+        Thầy cô thấy chỗ nào vướng khi dùng với lớp, hoặc thiếu thứ gì cần cho buổi dạy?
+        {% else %}
+        Chỗ nào khó dùng, chỗ nào bạn thấy chưa ổn? Nói thẳng cũng được.
+        {% endif %}
+      </p>
+      <div class="mt-2 text-xs text-ink-faint">
+        {% with slot = 'chan-trang', nhan = 'Mở ô góp ý' %}
+          {% include "partials/gop_y.html" %}
+        {% endwith %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="py-6 border-t border-hairline">
+      <p class="text-sm text-ink-soft max-w-3xl" role="note">
+        <strong class="text-ink">Đây là bản mẫu trình diễn.</strong>
+        Dữ liệu gieo sẵn là giả định. Bài bạn viết được ghi lên máy chủ, mọi người dùng
+        chung tài khoản nên không riêng tư, và bị xoá khi máy chủ khởi động lại. Đừng nhập
+        thông tin thật.
+        <a class="text-trunk underline hover:text-ink whitespace-nowrap"
+           href="https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md"
+           target="_blank" rel="noopener">Tuyên bố pháp lý và dữ liệu</a>
+      </p>
+
+      <div class="mt-4 flex flex-wrap gap-x-6 gap-y-1 justify-between text-xs text-ink-faint">
+        <p>GALS · bản mẫu trình diễn cho học sinh và giáo viên Việt Nam.</p>
+        {% if not gemini_enabled() %}
+        <p>Đang chạy ở chế độ demo ngoại tuyến — phần trò chuyện dùng kịch bản dựng sẵn.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</footer>

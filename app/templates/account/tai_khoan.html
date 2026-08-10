@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block title %}Tài khoản — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+
+  <h1 class="text-2xl md:text-3xl text-ink">Tài khoản</h1>
+  <p class="mt-2 text-base text-ink-soft">
+    Tên hiển thị, avatar, cách hiển thị trang và dữ liệu của bạn.
+  </p>
+
+  {% if loi %}
+  <div class="tile p-4 mt-5 bg-amber-50 border-amber-100" role="alert">
+    <p class="text-sm text-ink">{{ loi }}</p>
+  </div>
+  {% elif da_luu %}
+  <div class="tile p-4 mt-5 bg-teal-50 border-teal-100" role="status">
+    <p class="text-sm text-teal-900">Đã lưu.</p>
+  </div>
+  {% endif %}
+
+  <section id="ho-so" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Hồ sơ cá nhân</h2>
+
+    <div class="tile p-5 mt-3">
+      <form method="post" action="/tai-khoan/ten" class="flex flex-wrap items-end gap-3">
+        <div class="flex-1 min-w-[14rem]">
+          <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên hiển thị</label>
+          <input type="text" id="ten" name="ten" required maxlength="60" value="{{ user.name }}"
+                 class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2.5 text-ink">
+        </div>
+        <button type="submit" class="btn btn-ghost">Lưu tên</button>
+      </form>
+      <p class="mt-2 text-xs text-ink-faint">
+        Tên này hiện ở đầu trang và trong lớp của bạn. Dùng tên gọi hoặc biệt danh cũng được.
+      </p>
+    </div>
+
+    <div class="tile p-5 mt-3">
+      <form method="post" action="/tai-khoan/avatar">
+        <fieldset>
+          <legend class="text-sm font-medium text-ink mb-3">Avatar</legend>
+          <div class="grid grid-cols-4 sm:grid-cols-8 gap-2.5">
+            {% for a in avatars %}
+            <label class="cursor-pointer">
+              <input type="radio" name="avatar_id" value="{{ a.id }}" class="sr-only peer"
+                     {% if a.id == user.avatar_id %}checked{% endif %}>
+              <span class="flex flex-col items-center gap-1 rounded-xl border-2 border-field-line
+                           bg-paper-raised py-2.5 transition peer-checked:border-trunk
+                           peer-checked:bg-trunk-50">
+                <span class="text-2xl" aria-hidden="true">{{ a.emoji }}</span>
+                <span class="text-[0.6875rem] text-ink-soft">{{ a.label }}</span>
+              </span>
+            </label>
+            {% endfor %}
+          </div>
+        </fieldset>
+        <button type="submit" class="btn btn-ghost mt-4">Lưu avatar</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="tro-nang" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Hiển thị và trợ năng</h2>
+    <p class="mt-2 text-sm text-ink-soft">
+      Những cài đặt này lưu trên máy bạn đang dùng và có hiệu lực ngay.
+    </p>
+
+    <fieldset class="tile p-4 mt-3">
+      <legend class="text-sm font-semibold text-ink px-1">Giao diện</legend>
+      <p class="mt-1 text-sm text-ink-soft">
+        Chọn &ldquo;Theo hệ thống&rdquo; thì trang sáng hay tối theo cài đặt sẵn có
+        trên máy bạn, kể cả khi máy tự chuyển sang nền tối vào buổi tối.
+      </p>
+      <div class="mt-3 grid gap-2 sm:grid-cols-3">
+        {% for value, title, desc in [
+          ('sang', 'Sáng', 'Nền giấy như hiện tại.'),
+          ('toi', 'Tối', 'Nền tối tông ấm, dịu mắt trong phòng thiếu sáng.'),
+          ('he-thong', 'Theo hệ thống', 'Đi theo cài đặt của máy.')
+        ] %}
+        <label class="cursor-pointer">
+          <input type="radio" name="giao-dien" value="{{ value }}" class="sr-only peer"
+                 {% if value == 'he-thong' %}checked{% endif %}>
+          <span class="block h-full rounded-lg border-2 border-field-line bg-paper-raised
+                       px-3 py-2.5 transition
+                       peer-checked:border-trunk peer-checked:bg-trunk-50
+                       peer-focus-visible:outline peer-focus-visible:outline-2
+                       peer-focus-visible:outline-offset-2">
+            <span class="block text-sm font-semibold text-ink">{{ title }}</span>
+            <span class="block mt-0.5 text-xs text-ink-soft">{{ desc }}</span>
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <ul class="mt-2.5 grid gap-2.5">
+      {% for pref, title, desc in [
+        ('tuong_phan', 'Tương phản cao',
+         'Đẩy chữ và viền lên mức tương phản mạnh nhất, bỏ các mảng màu nhạt. Dùng chung được với cả nền sáng và nền tối.'),
+        ('motion', 'Giảm chuyển động',
+         'Tắt pháo giấy, hiệu ứng trượt và các chuyển động khác. Bật cái này nếu máy bạn không có sẵn cài đặt giảm chuyển động.'),
+        ('nen', 'Nền phẳng',
+         'Bỏ hoa văn giấy và các mảng màu nhạt, để trang chỉ còn chữ trên nền trơn.')
+      ] %}
+      <li class="tile p-4">
+        <label class="flex items-start gap-4 cursor-pointer">
+          <input type="checkbox" data-pref="{{ pref }}" class="sr-only">
+          <span class="switch mt-0.5" aria-hidden="true"></span>
+          <span class="min-w-0">
+            <span class="block text-sm font-semibold text-ink">{{ title }}</span>
+            <span class="block mt-0.5 text-sm text-ink-soft">{{ desc }}</span>
+          </span>
+        </label>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <noscript>
+      <p class="mt-3 text-sm text-ink-faint">
+        Phần cài đặt này cần JavaScript. Khi không có, trang dùng nền sáng và vẫn
+        nghe theo cài đặt tương phản cao của hệ điều hành.
+      </p>
+    </noscript>
+  </section>
+
+  {% if not user.is_teacher %}
+  <section id="rieng-tu" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Quyền riêng tư</h2>
+
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Ai đọc được bài của bạn</h3>
+      {% if readers %}
+      <ul class="mt-3 grid gap-2">
+        {% for r in readers %}
+        <li class="text-sm text-ink">
+          <strong class="font-semibold">{{ r.teacher.name }}</strong>
+          <span class="text-ink-soft">— giáo viên lớp {{ r.klass.name }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mt-3 text-xs text-ink-faint">
+        Giáo viên của lớp bạn đã vào đọc được nhật ký tư duy của bạn. Rời lớp thì
+        thầy cô không còn đọc được nữa.
+      </p>
+      {% else %}
+      <p class="mt-2 text-sm text-ink-soft">
+        Bạn chưa vào lớp nào, nên hiện chưa giáo viên nào đọc được bài của bạn.
+      </p>
+      {% endif %}
+    </div>
+
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Mục đang chia sẻ công khai</h3>
+      <p class="mt-1 text-sm text-ink-soft">
+        Mục được chia sẻ nằm sau một đường dẫn công khai: ai có link cũng xem được.
+      </p>
+      {% set public = items | selectattr('shared') | list %}
+      {% if public %}
+      <ul class="mt-3 grid gap-2">
+        {% for item in public %}
+        <li class="flex flex-wrap items-center gap-2.5">
+          <span class="text-sm text-ink flex-1 min-w-0 truncate">
+            {{ item.journal_entry.title or 'Chưa đặt tên' }}
+          </span>
+          <form method="post" action="/ho-so/{{ item.id }}/chia-se">
+            <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
+              Ngừng chia sẻ
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="mt-3 text-sm text-ink-soft">Chưa có mục nào được chia sẻ công khai.</p>
+      {% endif %}
+      <a href="/ho-so/chia-se" class="mt-4 inline-block text-sm font-semibold text-trunk hover:underline">
+        Quản lý ở trang chia sẻ <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+  {% endif %}
+
+  <section id="du-lieu" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Dữ liệu của bạn</h2>
+
+    <div class="tile p-5 mt-3">
+      {% if user.is_teacher %}
+      <p class="text-sm text-ink">
+        Tải về một thư mục nén gồm ba bảng: tiến độ bài làm của lớp, nhận xét bạn đã
+        viết, và các nhiệm vụ bạn đã giao. Mở được bằng Excel hoặc Google Sheets.
+      </p>
+      <p class="mt-2 text-sm text-ink-soft">
+        Thư mục này <strong class="text-ink">không chứa bài viết của học sinh</strong>,
+        chỉ chứa thông tin về bài làm. Muốn đọc bài của một em, mở trang của em đó.
+      </p>
+      {% else %}
+      <p class="text-sm text-ink">
+        Tải về toàn bộ những gì bạn đã viết trong GALS, kèm lời nhắn của thầy cô.
+      </p>
+      {% endif %}
+      <a href="/tai-khoan/du-lieu" class="btn btn-primary mt-4">
+        {{ 'Tải dữ liệu lớp' if user.is_teacher else 'Tải dữ liệu của tôi' }}
+      </a>
+    </div>
+
+    {% if user.is_teacher and roster %}
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Bảng đối chiếu mã học sinh</h3>
+      <p class="mt-1 text-sm text-ink-soft">
+        Trong tệp tải về, học sinh được ghi bằng mã ẩn danh. Bảng đối chiếu này
+        <strong class="text-ink">chỉ hiện ở đây</strong> và không nằm trong tệp.
+      </p>
+      {% for group in roster %}
+      <details class="disclose mt-4">
+        <summary class="text-sm font-medium text-ink-soft hover:text-ink">
+          {{ group.klass.name }} ({{ group.rows | length }} học sinh)
+        </summary>
+        <ul class="mt-2.5 grid gap-1.5">
+          {% for row in group.rows %}
+          <li class="flex items-center gap-3 text-sm">
+            <code class="text-xs text-ink-soft">{{ row.code }}</code>
+            <span class="text-ink">{{ row.name }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}

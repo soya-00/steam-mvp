@@ -11,7 +11,7 @@
 
       <label for="ly-do-{{ report_id }}" class="sr-only">Lý do báo cáo</label>
       <select id="ly-do-{{ report_id }}" name="ly_do"
-              class="rounded-lg border border-hairline bg-paper px-2 py-1.5 text-xs text-ink">
+              class="rounded-lg border border-field-line bg-sunken px-2 py-1.5 text-xs text-ink">
         <option value="khong_phu_hop">Nội dung không phù hợp</option>
         <option value="sai_lech">Thông tin sai lệch</option>
         <option value="kho_hieu">Câu trả lời khó hiểu</option>
@@ -21,7 +21,7 @@
       <label for="ghi-chu-{{ report_id }}" class="sr-only">Ghi chú thêm</label>
       <input type="text" id="ghi-chu-{{ report_id }}" name="ghi_chu" maxlength="600"
              placeholder="Muốn nói thêm gì không? Không bắt buộc."
-             class="rounded-lg border border-hairline bg-paper px-2 py-1.5 text-xs text-ink placeholder:text-ink-faint">
+             class="rounded-lg border border-field-line bg-sunken px-2 py-1.5 text-xs text-ink placeholder:text-ink-faint">
 
       <button type="submit" class="btn btn-ghost text-xs py-1 px-2 justify-self-start">
         Gửi báo cáo

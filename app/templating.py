@@ -2,16 +2,52 @@ from __future__ import annotations
 
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
+from itsdangerous import BadSignature, URLSafeSerializer
 
 from app.config import (
     FIELD_KEY_BY_NAME,
     PROJECT_CATEGORIES,
     STEAM_FIELDS,
     TEMPLATES_DIR,
+    SECRET_KEY,
+    SESSION_COOKIE,
     gemini_enabled,
 )
+from app.scenarios import get_scenario
 
-templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+_session = URLSafeSerializer(SECRET_KEY, salt="gals-session")
+
+
+def menu_context(request: Request) -> dict:
+    """Danh sách lớp cho bảng tài khoản. Chỉ truy vấn khi người đang đăng nhập
+    là giáo viên — học sinh và khách không tốn thêm câu truy vấn nào."""
+    raw = request.cookies.get(SESSION_COOKIE)
+    if not raw:
+        return {}
+    try:
+        uid = _session.loads(raw).get("uid")
+    except BadSignature:
+        return {}
+    if uid is None:
+        return {}
+
+    from app.db import SessionLocal
+    from app.models import Class, User
+
+    with SessionLocal() as db:
+        viewer = db.get(User, uid)
+        if viewer is None or not viewer.is_teacher:
+            return {}
+        classes = (
+            db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
+        )
+        return {"menu_classes": [{"id": c.id, "name": c.name} for c in classes]}
+
+
+templates = Jinja2Templates(
+    directory=str(TEMPLATES_DIR),
+    context_processors=[menu_context],
+)
 
 BADGE_LABELS = {
     "nhap_vai_dau_tien": "Lần nhập vai đầu tiên",
@@ -45,29 +81,34 @@ PLATFORM_LABELS = {
 
 FIELD_CLASSES = {
     "khoa_hoc": {
-        "bar": "border-l-teal", "chip": "bg-teal-50 text-teal-700", "dot": "bg-teal",
-        "art": "/static/img/fields/khoa_hoc.svg", "wash": "bg-teal-50",
-        "ring": "ring-teal-100", "track": "bg-teal",
+        "chip": "bg-sci-50 text-sci-700", "dot": "bg-sci",
+        "art": "/static/img/fields/khoa_hoc.svg", "wash": "bg-sci-50",
+        "ring": "ring-sci-100", "track": "bg-sci", "top": "border-t-sci",
+        "soft": "bg-sci-50 border-sci-100", "ink": "text-sci-700",
     },
     "cong_nghe": {
-        "bar": "border-l-trunk", "chip": "bg-trunk-50 text-trunk", "dot": "bg-trunk",
-        "art": "/static/img/fields/cong_nghe.svg", "wash": "bg-trunk-50",
-        "ring": "ring-trunk-100", "track": "bg-trunk",
+        "chip": "bg-tech-50 text-tech-700", "dot": "bg-tech",
+        "art": "/static/img/fields/cong_nghe.svg", "wash": "bg-tech-50",
+        "ring": "ring-tech-100", "track": "bg-tech", "top": "border-t-tech",
+        "soft": "bg-tech-50 border-tech-100", "ink": "text-tech-700",
     },
     "ky_thuat": {
-        "bar": "border-l-slate", "chip": "bg-slate-50 text-slate-700", "dot": "bg-slate",
-        "art": "/static/img/fields/ky_thuat.svg", "wash": "bg-slate-50",
-        "ring": "ring-slate-100", "track": "bg-slate",
+        "chip": "bg-eng-50 text-eng-700", "dot": "bg-eng",
+        "art": "/static/img/fields/ky_thuat.svg", "wash": "bg-eng-50",
+        "ring": "ring-eng-100", "track": "bg-eng", "top": "border-t-eng",
+        "soft": "bg-eng-50 border-eng-100", "ink": "text-eng-700",
     },
     "nghe_thuat": {
-        "bar": "border-l-amber", "chip": "bg-amber-50 text-amber-900", "dot": "bg-amber",
-        "art": "/static/img/fields/nghe_thuat.svg", "wash": "bg-amber-50",
-        "ring": "ring-amber-100", "track": "bg-amber",
+        "chip": "bg-art-50 text-art-700", "dot": "bg-art",
+        "art": "/static/img/fields/nghe_thuat.svg", "wash": "bg-art-50",
+        "ring": "ring-art-100", "track": "bg-art", "top": "border-t-art",
+        "soft": "bg-art-50 border-art-100", "ink": "text-art-700",
     },
     "toan": {
-        "bar": "border-l-plum", "chip": "bg-plum-50 text-plum-700", "dot": "bg-plum",
-        "art": "/static/img/fields/toan.svg", "wash": "bg-plum-50",
-        "ring": "ring-plum-100", "track": "bg-plum",
+        "chip": "bg-math-50 text-math-700", "dot": "bg-math",
+        "art": "/static/img/fields/toan.svg", "wash": "bg-math-50",
+        "ring": "ring-math-100", "track": "bg-math", "top": "border-t-math",
+        "soft": "bg-math-50 border-math-100", "ink": "text-math-700",
     },
 }
 
@@ -108,4 +149,5 @@ templates.env.globals.update(
     field_classes=field_classes,
     beat_classes=BEAT_CLASSES,
     gemini_enabled=gemini_enabled,
+    scenario_of_id=get_scenario,
 )

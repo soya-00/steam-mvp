@@ -5,8 +5,9 @@ import string
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
+from app import progress as progress_of
 from app.auth import get_current_user
 from app.config import FIELD_NAME_BY_KEY, STEAM_FIELDS
 from app.db import get_db
@@ -16,6 +17,7 @@ from app.models import (
     Class,
     ClassMembership,
     Feedback,
+    GuidedSession,
     JournalEntry,
     Notification,
     PortfolioEntry,
@@ -298,6 +300,253 @@ def leave_feedback(
     )
     db.commit()
     return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
+
+
+@router.get("/huong-dan", response_class=HTMLResponse)
+def teacher_guide(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+    return templates.TemplateResponse(
+        request,
+        "teacher/huong_dan.html",
+        {"user": user, "branch": "lop"},
+    )
+
+
+@router.get("/ma-lop", response_class=HTMLResponse)
+def class_codes(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    classes = db.query(Class).filter(Class.teacher_id == user.id).order_by(Class.name).all()
+    return templates.TemplateResponse(
+        request,
+        "teacher/ma_lop.html",
+        {
+            "user": user,
+            "branch": "lop",
+            "rows": [{"klass": c, "student_count": len(c.students)} for c in classes],
+        },
+    )
+
+
+def _my_classes(db: Session, teacher: User) -> list[Class]:
+    """Nạp sẵn danh sách học sinh: nếu để lười, mỗi em là một câu truy vấn và
+    một trường 200 em sẽ ngốn hàng trăm câu cho mỗi lần mở trang."""
+    return (
+        db.query(Class)
+        .filter(Class.teacher_id == teacher.id)
+        .options(selectinload(Class.memberships).selectinload(ClassMembership.student))
+        .order_by(Class.name)
+        .all()
+    )
+
+
+def _scope(db: Session, teacher: User, lop: str) -> tuple[list[Class], Class | None, list[Class]]:
+    classes = _my_classes(db, teacher)
+    selected = None
+    if lop.isdigit():
+        # Chỉ chọn được trong số lớp của chính mình — id lạ thì rơi về tất cả.
+        selected = next((c for c in classes if c.id == int(lop)), None)
+    return ([selected] if selected else classes), selected, classes
+
+
+def _sessions_for(db: Session, classes: list[Class]) -> dict[tuple[int, str], GuidedSession]:
+    ids = [s.id for klass in classes for s in klass.students]
+    if not ids:
+        return {}
+    return {
+        (gs.student_id, gs.scenario_id): gs
+        for gs in db.query(GuidedSession).filter(GuidedSession.student_id.in_(ids)).all()
+    }
+
+
+def _tally(classes: list[Class], sessions: dict, scenario) -> dict:
+    counts = {"chua_bat_dau": 0, "dang_lam": 0, "da_xong": 0}
+    for klass in classes:
+        for student in klass.students:
+            gs = sessions.get((student.id, scenario.id))
+            counts[progress_of.status(gs)] += 1
+    counts["tong"] = sum(counts[k] for k in ("chua_bat_dau", "dang_lam", "da_xong"))
+    return counts
+
+
+@router.get("/tien-do", response_class=HTMLResponse)
+def progress_fields(
+    request: Request,
+    lop: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    classes, selected, all_classes = _scope(db, user, lop)
+    sessions = _sessions_for(db, classes)
+    assignments = [a for klass in classes for a in klass.assignments]
+
+    rows = []
+    for field in STEAM_FIELDS:
+        pool = [s for s in all_scenarios() if s.field == field["name"]]
+        assigned = 0
+        for a in assignments:
+            if a.field == field["name"]:
+                assigned += 1
+            elif a.scenario_id and (sc := get_scenario(a.scenario_id)) and sc.field == field["name"]:
+                assigned += 1
+
+        active = finished = 0
+        for scenario in pool:
+            tally = _tally(classes, sessions, scenario)
+            active += tally["dang_lam"]
+            finished += tally["da_xong"]
+
+        rows.append(
+            {
+                "field": field,
+                "scenario_count": len(pool),
+                "assigned": assigned,
+                "active": active,
+                "finished": finished,
+            }
+        )
+
+    return templates.TemplateResponse(
+        request,
+        "teacher/tien_do.html",
+        {
+            "user": user,
+            "branch": "tien_do",
+            "rows": rows,
+            "all_classes": all_classes,
+            "selected": selected,
+        },
+    )
+
+
+@router.get("/tien-do/{field_key}", response_class=HTMLResponse)
+def progress_field(
+    request: Request,
+    field_key: str,
+    lop: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    field_name = FIELD_NAME_BY_KEY.get(field_key)
+    if field_name is None:
+        return RedirectResponse("/giao-vien/tien-do", status_code=303)
+
+    classes, selected, all_classes = _scope(db, user, lop)
+    sessions = _sessions_for(db, classes)
+    pool = [s for s in all_scenarios() if s.field == field_name]
+
+    cards, covered = [], set()
+    for klass in classes:
+        for a in sorted(klass.assignments, key=lambda x: x.created_at, reverse=True):
+            if a.field == field_name:
+                targets = pool
+            elif a.scenario_id and (sc := get_scenario(a.scenario_id)) and sc.field == field_name:
+                targets = [sc]
+            else:
+                continue
+            covered.update(s.id for s in targets)
+            cards.append(
+                {
+                    "assignment": a,
+                    "klass": klass,
+                    "whole_field": a.field == field_name,
+                    "targets": [
+                        {"scenario": s, "tally": _tally([klass], sessions, s)} for s in targets
+                    ],
+                }
+            )
+
+    loose = []
+    for scenario in pool:
+        if scenario.id in covered:
+            continue
+        tally = _tally(classes, sessions, scenario)
+        if tally["dang_lam"] or tally["da_xong"]:
+            loose.append({"scenario": scenario, "tally": tally})
+
+    return templates.TemplateResponse(
+        request,
+        "teacher/tien_do_linh_vuc.html",
+        {
+            "user": user,
+            "branch": "tien_do",
+            "field_key": field_key,
+            "field_name": field_name,
+            "cards": cards,
+            "loose": loose,
+            "all_classes": all_classes,
+            "selected": selected,
+        },
+    )
+
+
+@router.get("/tien-do/{field_key}/{scenario_id}", response_class=HTMLResponse)
+def progress_scenario(
+    request: Request,
+    field_key: str,
+    scenario_id: str,
+    lop: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    scenario = get_scenario(scenario_id)
+    if scenario is None or FIELD_NAME_BY_KEY.get(field_key) != scenario.field:
+        return RedirectResponse("/giao-vien/tien-do", status_code=303)
+
+    classes, selected, all_classes = _scope(db, user, lop)
+    sessions = _sessions_for(db, classes)
+
+    rows = []
+    for klass in classes:
+        for student in klass.students:
+            gs = sessions.get((student.id, scenario.id))
+            rows.append(
+                {
+                    "student": student,
+                    "klass": klass,
+                    "summary": progress_of.summary(scenario, gs),
+                }
+            )
+    rows.sort(key=lambda r: r["student"].name)
+
+    counts = {"chua_bat_dau": 0, "dang_lam": 0, "da_xong": 0}
+    for row in rows:
+        counts[row["summary"]["status"]] += 1
+
+    return templates.TemplateResponse(
+        request,
+        "teacher/tien_do_tinh_huong.html",
+        {
+            "user": user,
+            "branch": "tien_do",
+            "field_key": field_key,
+            "scenario": scenario,
+            "rows": rows,
+            "counts": counts,
+            "status_labels": progress_of.STATUS_LABELS,
+            "all_classes": all_classes,
+            "selected": selected,
+        },
+    )
 
 
 @router.get("/tai-lieu", response_class=HTMLResponse)

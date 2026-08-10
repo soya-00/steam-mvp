@@ -3,7 +3,6 @@
 
 {% block content %}
 
-{% with crumbs = [("/trang-ca-nhan", "Trang cá nhân"), (None, "Dự án học tập")] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
 <h1 class="text-3xl md:text-4xl text-ink">Bạn muốn thử lĩnh vực nào?</h1>
 <p class="mt-3 text-base text-ink-soft max-w-2xl">
@@ -11,14 +10,13 @@
   lĩnh vực, thử một tình huống, rồi đổi sang lĩnh vực khác bất cứ lúc nào.
 </p>
 
-<section class="card p-5 mt-5 branch-bar border-l-teal max-w-3xl"
+<section class="card p-5 mt-5 max-w-3xl"
          aria-labelledby="cach-dung-tinh-huong">
   <h2 id="cach-dung-tinh-huong" class="text-base font-display font-extrabold text-ink">
     Các tình huống ở đây được dựng thế nào
   </h2>
   <p class="mt-2 text-sm text-ink-soft">
-    Không phải đề bài bịa ra cho có. Mỗi tình huống dựng theo một tình thế có thật mà
-    người trong nghề hay gặp, và giữ đúng <strong class="text-ink">đặc thù</strong> của
+    Mỗi tình huống dựng theo một tình thế có thật mà người trong nghề hay gặp, và giữ đúng <strong class="text-ink">đặc thù</strong> của
     nghề đó ở ba chỗ:
   </p>
   <ul class="mt-3 grid gap-2 text-sm text-ink-soft list-disc pl-5">

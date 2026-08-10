@@ -1,0 +1,28 @@
+<div id="mung-{{ slot }}" class="mung-burst" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var host = document.getElementById("mung-{{ slot }}");
+  if (!host) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (document.documentElement.dataset.motion === "giam") return;
+
+  var css = getComputedStyle(document.documentElement);
+  var colours = ["sci", "tech", "eng", "art", "math"].map(function (n) {
+    return css.getPropertyValue("--c-" + n).trim() || "#8b9098";
+  });
+  for (var i = 0; i < 40; i++) {
+    var piece = document.createElement("span");
+    var angle = (Math.PI * 2 * i) / 40 + Math.random() * 0.5;
+    var dist = 120 + Math.random() * 170;
+    piece.className = "confetti-piece go";
+    piece.style.background = colours[i % colours.length];
+    piece.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+    piece.style.setProperty("--dy", Math.sin(angle) * dist * 0.85 - 40 + "px");
+    piece.style.setProperty("--rot", Math.round(Math.random() * 720 - 360) + "deg");
+    piece.style.animationDelay = Math.round(Math.random() * 180) + "ms";
+    host.appendChild(piece);
+  }
+  setTimeout(function () { host.remove(); }, 2600);
+})();
+</script>

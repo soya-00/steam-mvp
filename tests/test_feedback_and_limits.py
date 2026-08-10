@@ -210,13 +210,23 @@ def test_feedback_box_is_reachable_from_both_dashboards(client):
     assert 'hx-post="/phan-hoi/gop-y"' in board
 
 
-def test_two_feedback_boxes_on_a_page_do_not_share_an_id(client):
+def test_exactly_one_feedback_box_per_page(client):
+    # Trước đây có hai ô góp ý trên cùng một trang; giờ chỉ còn ô ở chân trang,
+    # nên id không thể trùng nhau nữa.
+    from tests.conftest import login_teacher
+
     login_independent(client)
-    page = client.get("/trang-ca-nhan").text
-    assert page.count('id="gop-y-bang-dieu-khien"') == 1
-    assert page.count('id="gop-y-chan-trang"') == 1
-    assert page.count('id="gop-y-noi-dung-bang-dieu-khien"') == 1
-    assert page.count('id="gop-y-noi-dung-chan-trang"') == 1
+    for url in ["/trang-ca-nhan", "/ho-so", "/huy-hieu", "/tai-nguyen"]:
+        page = client.get(url).text
+        assert page.count('hx-post="/phan-hoi/gop-y"') == 1, url
+        assert page.count('id="gop-y-chan-trang"') == 1, url
+        assert page.count('id="gop-y-noi-dung-chan-trang"') == 1, url
+        assert 'id="gop-y-bang-dieu-khien"' not in page, url
+
+    login_teacher(client)
+    board = client.get("/giao-vien").text
+    assert board.count('hx-post="/phan-hoi/gop-y"') == 1
+    assert 'id="gop-y-bang-dieu-khien"' not in board
 
 
 def test_log_labels_are_ascii_so_they_are_searchable(client, caplog):

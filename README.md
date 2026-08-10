@@ -15,8 +15,8 @@ Không cần cài gì, không cần đăng ký. Ở màn hình đăng nhập có
 > một trong ba tài khoản đó, nên **ai cũng đọc được bài của người khác**.
 > Những gì bạn viết **có được ghi lên máy chủ**, nhưng bị xoá sạch mỗi lần máy chủ khởi
 > động lại. Đừng nhập thông tin thật và đừng dùng bản này để chạy thử với học sinh thật.
-> Chi tiết ở **[LEGAL.md](LEGAL.md)** — lưu trữ dữ liệu, phạm vi trách nhiệm, và danh
-> sách việc bắt buộc phải làm trước.
+> Đọc **[DISCLAIMER.md](DISCLAIMER.md)** trước — bốn điều cần biết ngay. Chi tiết đầy đủ về
+> lưu trữ dữ liệu, khung pháp lý và việc bắt buộc phải làm trước: **[LEGAL.md](LEGAL.md)**.
 
 ---
 
@@ -102,6 +102,7 @@ Chạy bộ kiểm thử (không bắt buộc): `pip install -r requirements-dev
 - [Nhật ký thiết kế](docs/NHAT-KY-THIET-KE.md) — vì sao sản phẩm được làm như hiện tại: từng giai đoạn, quyết định đã chốt, lỗi đã gặp và hướng đi tiếp
 - [Hướng dẫn kỹ thuật](docs/KY-THUAT.md) — kiến trúc, cách thêm kịch huống, cách deploy, cách bật AI
 - [Việc cần làm tiếp](docs/VIEC-CAN-LAM.md) — khả năng tiếp cận, các nhóm nghề chưa có kịch huống
+- [**Tuyên bố miễn trừ**](DISCLAIMER.md) — bản rút gọn, bốn điều cần biết trước khi dùng
 - [**Tuyên bố pháp lý và dữ liệu**](LEGAL.md) — dữ liệu được lưu ra sao, đi những đâu, ai chịu trách nhiệm, và phải làm gì trước khi dùng với học sinh thật
 
 ---

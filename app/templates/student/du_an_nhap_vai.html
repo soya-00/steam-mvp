@@ -4,66 +4,77 @@
 {% block content %}
 {% set fc = field_classes(scenario.field) %}
 
-{% with crumbs = [("/du-an", "Dự án học tập"), ("/du-an/linh-vuc/" ~ field_key[scenario.field], scenario.field), (None, scenario.title)] %}{% include "partials/breadcrumb.html" %}{% endwith %}
+<div class="max-w-3xl mx-auto">
 
-<div class="max-w-2xl">
-  <div class="card overflow-hidden">
-    {% with art_class = 'art-banner h-40 md:h-48' %}
-      {% include "student/partials/scenario_art.html" %}
-    {% endwith %}
-    <div class="p-6">
-      <span class="chip {{ fc.chip }}">Nhập vai</span>
-      <h1 class="mt-3 text-2xl md:text-3xl text-ink">{{ scenario.title }}</h1>
-    </div>
-  </div>
-
-  <div class="card p-5 mt-4 branch-bar {{ fc.bar }}">
-    <p class="text-sm text-ink-soft">Trong tình huống này bạn là</p>
-    <p class="mt-1 font-display font-extrabold text-xl text-ink">
-      {{ scenario.protagonist }} — {{ scenario.role }}
-    </p>
-    {% if scenario.knowledge %}
-    <p class="mt-3 text-sm text-ink-soft">
-      <strong class="font-medium text-ink">Kiến thức liên quan:</strong> {{ scenario.knowledge }}
-    </p>
-    {% endif %}
-    <p class="mt-3 text-sm text-ink-soft">
-      <strong class="font-medium text-ink">Ở cấp độ Sáng tạo bạn sẽ tạo ra:</strong>
-      {{ scenario.creation_output }}
-    </p>
-  </div>
-
-  <p class="mt-5 text-base text-ink-soft">{{ scenario.description }}</p>
-
-  <h2 class="mt-8 text-lg text-ink">Bạn sẽ đi qua bốn cấp độ</h2>
-  <ol class="mt-3 grid gap-2">
-    {% for st in scenario.stages %}
-    <li class="card p-4 flex items-start gap-3">
-      <span class="w-7 h-7 shrink-0 rounded-full bg-paper grid place-items-center text-sm font-display font-extrabold text-ink-soft">
-        {{ loop.index }}
-      </span>
-      <div>
-        <p class="font-medium text-ink">{{ st.name }}</p>
-        <p class="text-sm text-ink-soft">{{ st.question_count }} câu hỏi</p>
+  <section class="rounded-2xl {{ fc.soft }} border p-4 md:p-5">
+    <h2 class="microlabel {{ fc.ink }}">{{ scenario.field }} — đang mở</h2>
+    <div class="card mt-3 p-5 md:p-6">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip {{ fc.chip }}">{{ scenario.role }}</span>
+        {% if gs and gs.finished %}
+        <span class="chip bg-teal-50 text-teal-700">Đã đi hết 4 cấp độ</span>
+        {% elif gs %}
+        <span class="chip bg-amber-50 text-amber-900">Đang dở</span>
+        {% else %}
+        <span class="chip bg-sunken text-ink-soft">Chưa mở</span>
+        {% endif %}
       </div>
-    </li>
-    {% endfor %}
-  </ol>
+      <h1 class="mt-3 text-2xl md:text-3xl text-ink leading-tight">{{ scenario.title }}</h1>
+      <p class="mt-3 text-base text-ink-soft">{{ scenario.description }}</p>
+    </div>
+  </section>
 
-  {% if scenario.disclaimer %}
-  <p class="mt-5 chip bg-amber-50 text-amber-900">{{ scenario.disclaimer }}</p>
-  {% endif %}
+  <section class="card mt-4 p-5 md:p-6 sm:grid sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
+    <div class="card role-card p-4 text-center self-start mb-5 sm:mb-0">
+      <span class="{{ fc.ink }} inline-block" aria-hidden="true">
+        {% with cls = 'w-8 h-8' %}{% include "partials/face.html" %}{% endwith %}
+      </span>
+      <p class="mt-2 text-sm font-display font-extrabold text-ink">{{ scenario.protagonist }}</p>
+      <p class="mt-1 text-xs text-ink-soft">thẻ vai — ghim ở không gian tư duy</p>
+    </div>
 
-  <div class="mt-7 flex flex-wrap gap-3">
-    <a href="/du-an/{{ scenario.id }}/khong-gian-tu-duy" class="btn btn-primary">
-      {% if gs and not gs.finished %}Tiếp tục ở cấp độ {{ gs.stage_index + 1 }}{% else %}Bắt đầu{% endif %}
-    </a>
-    <a href="/ho-so/y-tuong-tu-do" class="btn btn-ghost">Hoặc brainstorm tự do</a>
-  </div>
+    <div class="min-w-0">
+      <h2 class="text-xl text-ink leading-snug">
+        Vào vai {{ scenario.protagonist }}, {{ scenario.role|lower }}
+      </h2>
+      {% if scenario.knowledge %}
+      <p class="mt-2.5 text-sm text-ink-soft">
+        <strong class="font-medium text-ink">Kiến thức liên quan:</strong> {{ scenario.knowledge }}
+      </p>
+      {% endif %}
+      <p class="mt-2 text-sm text-ink-soft">
+        Bạn sẽ đi qua bốn cấp độ tư duy: {% for st in scenario.stages %}{{ st.name|lower }}{% if not loop.last %}, {% endif %}{% endfor %}.
+        Ở đây không có điểm số và không có đáp án mẫu.
+      </p>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="chip border border-hairline text-ink-soft">
+          {{ scenario.stage_count }} cấp độ
+        </span>
+        <span class="chip border border-hairline text-ink-soft">
+          Bạn tạo ra: {{ scenario.creation_output }}
+        </span>
+      </div>
+
+      {% if scenario.disclaimer %}
+      <p class="mt-4 text-xs text-ink-faint">{{ scenario.disclaimer }}</p>
+      {% endif %}
+
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href="/du-an/{{ scenario.id }}/khong-gian-tu-duy" class="btn btn-primary">
+          {% if gs and gs.finished %}Xem lại tình huống
+          {% elif gs %}Tiếp tục cấp độ {{ gs.stage_index + 1 }}
+          {% else %}Bắt đầu cấp độ 1{% endif %}
+        </a>
+        <a href="/ho-so/y-tuong-tu-do" class="btn btn-ghost">Brainstorm tự do</a>
+      </div>
+    </div>
+  </section>
 
   <p class="mt-4 text-sm text-ink-soft">
     Không có giới hạn thời gian. Đóng tab lúc nào cũng được — nhật ký tự lưu lại những gì bạn đã viết.
   </p>
+
 </div>
 
 {% endblock %}

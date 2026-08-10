@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Tiến độ — GALS{% endblock %}
+
+{% block content %}
+
+<h1 class="text-2xl md:text-3xl text-ink">Tiến độ</h1>
+<p class="mt-2 text-base text-ink-soft max-w-2xl">
+  Chọn một nhánh để xem bạn đã giao gì ở đó và các em đang đi tới đâu.
+  {% if selected %}Đang xem lớp <strong class="text-ink">{{ selected.name }}</strong>.{% endif %}
+</p>
+
+{% with base = '/giao-vien/tien-do' %}{% include "teacher/partials/loc_lop.html" %}{% endwith %}
+
+<ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  {% for row in rows %}
+  {% set fc = field_classes(row.field.key) %}
+  <li>
+    <a href="/giao-vien/tien-do/{{ row.field.key }}{{ '?lop=' ~ selected.id if selected else '' }}"
+       class="tile lift block h-full p-5 {{ fc.soft if row.active or row.finished else '' }}">
+      <div class="flex items-start gap-3">
+        <span class="w-11 h-11 shrink-0 rounded-xl bg-paper-raised border border-hairline grid place-items-center {{ fc.ink }}">
+          {% with key = row.field.key, cls = 'w-5 h-5' %}{% include "partials/field_icon.html" %}{% endwith %}
+        </span>
+        <div class="min-w-0">
+          <p class="font-display font-extrabold text-ink">{{ row.field.name }}</p>
+          <p class="mt-0.5 text-xs text-ink-soft">
+            {{ row.scenario_count }} tình huống
+            <span aria-hidden="true">·</span>
+            {{ row.assigned }} nhiệm vụ đã giao
+          </p>
+        </div>
+      </div>
+
+      <p class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-soft">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-teal" aria-hidden="true"></span>
+          {{ row.finished }} đã xong
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-trunk" aria-hidden="true"></span>
+          {{ row.active }} đang làm
+        </span>
+      </p>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<p class="mt-6 text-xs text-ink-faint max-w-2xl">
+  Các con số ở đây là để biết em nào cần hỗ trợ, không phải để xếp loại. GALS không
+  chấm điểm và không so sánh học sinh với nhau.
+</p>
+
+{% endblock %}

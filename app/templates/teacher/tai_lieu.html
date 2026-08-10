@@ -3,13 +3,13 @@
 
 {% block content %}
 
-<h1 class="text-2xl text-ink">Tài liệu in cho buổi học tại lớp</h1>
+<h1 class="text-2xl md:text-3xl text-ink">Tài liệu in cho buổi học tại lớp</h1>
 <p class="mt-2 text-sm text-ink-soft max-w-2xl">
   Dạy được mà không cần máy tính, điện thoại hay mạng. Học sinh chỉ cần giấy và bút.
   Mỗi tình huống có một bản in kèm hướng dẫn ngắn cho thầy cô.
 </p>
 
-<div class="card p-5 mt-5 branch-bar border-l-amber">
+<div class="tile p-5 mt-5">
   <h2 class="text-base text-ink">Không có máy in cũng dạy được</h2>
   <p class="mt-2 text-sm text-ink-soft">
     Phần bối cảnh <strong class="text-ink">đọc to cho cả lớp</strong>, câu hỏi thì
@@ -20,11 +20,11 @@
 </div>
 
 <section class="mt-8">
-  <h2 class="text-lg text-ink">Gợi ý khi dạy</h2>
+  <h2 class="microlabel">Gợi ý khi dạy</h2>
   <p class="mt-1 text-sm text-ink-soft">
     Bốn điều hay được hỏi nhất. Phần này cũng nằm trong bản in, ở trang dành riêng cho thầy cô.
   </p>
-  <div class="card p-5 mt-3 max-w-3xl">
+  <div class="tile p-5 mt-3 max-w-3xl">
     {% include "teacher/partials/huong_dan.html" %}
   </div>
 </section>
@@ -34,7 +34,7 @@
   {% for s in scenarios %}
   <li>
     <a href="/giao-vien/tai-lieu/{{ s.id }}"
-       class="card p-4 hover:border-ink-faint transition block">
+       class="tile p-4 hover:border-ink-faint transition block">
       <div class="flex flex-wrap items-center gap-2">
         <span class="chip {{ field_classes(s.field).chip }}">{{ s.field }}</span>
         <span class="text-xs text-ink-faint">{{ s.role }}</span>
