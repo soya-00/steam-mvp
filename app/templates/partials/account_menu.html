@@ -1,0 +1,108 @@
+{% set icon = 'w-4 h-4 shrink-0' %}
+<div class="relative">
+  <button type="button" id="nut-tai-khoan"
+          aria-haspopup="menu" aria-expanded="false" aria-controls="bang-tai-khoan"
+          class="w-10 h-10 rounded-full border border-hairline bg-paper grid place-items-center
+                 text-lg hover:border-ink-faint transition">
+    <span aria-hidden="true">{{ avatar_emoji.get(user.avatar_id, '🦊') }}</span>
+    <span class="sr-only">Mở bảng tài khoản của {{ user.name }}</span>
+  </button>
+
+  <div id="bang-tai-khoan" role="menu" aria-labelledby="nut-tai-khoan" hidden
+       class="menu-panel text-left">
+
+    <div class="px-2.5 py-2">
+      <p class="text-sm font-semibold text-ink truncate">{{ user.name }}</p>
+      <p class="text-xs text-ink-faint truncate">{{ user.email }}</p>
+      <span class="chip {{ 'bg-trunk-50 text-trunk-700' if user.is_teacher else 'bg-amber-50 text-amber-900' }} mt-1.5">
+        {{ 'Giáo viên' if user.is_teacher else 'Học sinh' }}
+      </span>
+    </div>
+
+    <div class="menu-sep"></div>
+
+    <a href="/tai-khoan#ho-so" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <circle cx="12" cy="8.5" r="3.6"/>
+        <path d="M4.8 20c1.2-3.6 3.9-5.4 7.2-5.4s6 1.8 7.2 5.4"/>
+      </svg>
+      Hồ sơ cá nhân
+    </a>
+
+    <a href="/tai-khoan#tro-nang" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7v10M7 12h10"/>
+      </svg>
+      Hiển thị và trợ năng
+    </a>
+
+    {% if not user.is_teacher %}
+    <a href="/tai-khoan#rieng-tu" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <rect x="4.5" y="10.5" width="15" height="9.5" rx="2.2"/>
+        <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/>
+      </svg>
+      Quyền riêng tư
+    </a>
+    {% endif %}
+
+    <a href="/tai-khoan/du-lieu" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <path d="M12 4v11"/>
+        <path d="m7.5 10.5 4.5 4.5 4.5-4.5"/>
+        <path d="M5 19.5h14"/>
+      </svg>
+      Tải dữ liệu của tôi
+    </a>
+
+    {% if user.is_teacher %}
+    <div class="menu-sep"></div>
+
+    <a href="/giao-vien/huong-dan" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <path d="M4.5 5.5h5a3 3 0 0 1 2.5 1.3A3 3 0 0 1 14.5 5.5h5v12h-5a3 3 0 0 0-2.5 1.3A3 3 0 0 0 9.5 17.5h-5z"/>
+        <path d="M12 6.8v12"/>
+      </svg>
+      Hướng dẫn cho thầy cô
+    </a>
+
+    <a href="/giao-vien/ma-lop" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <circle cx="8.5" cy="13.5" r="3.5"/>
+        <path d="M12 13.5h8M17 13.5v3M20 13.5v2.5"/>
+      </svg>
+      Mã lớp của tôi
+    </a>
+
+    <a href="/giao-vien#tao-lop" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <path d="M12 5.5v13M5.5 12h13"/>
+      </svg>
+      Tạo lớp mới
+    </a>
+
+    {% if menu_classes %}
+    <div class="menu-sep"></div>
+    <p class="microlabel px-2.5 pt-1 pb-1.5">Danh sách lớp</p>
+    {% for c in menu_classes %}
+    <a href="/giao-vien/lop/{{ c.id }}" role="menuitem" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" class="{{ icon }}" aria-hidden="true">
+        <path d="M4 8.5 12 5l8 3.5-8 3.5z"/>
+        <path d="M7 11v4.5c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V11"/>
+      </svg>
+      <span class="truncate">{{ c.name }}</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Tiến độ {{ field_name }} — GALS{% endblock %}
+
+{% block content %}
+{% set fc = field_classes(field_key) %}
+{% set q = '?lop=' ~ selected.id if selected else '' %}
+
+<a href="/giao-vien/tien-do{{ q }}" class="text-sm font-semibold text-ink-soft hover:text-ink">
+  <span aria-hidden="true">←</span> Tiến độ
+</a>
+
+<h1 class="mt-3 text-2xl md:text-3xl text-ink flex items-center gap-3">
+  <span class="{{ fc.ink }}" aria-hidden="true">
+    {% with key = field_key, cls = 'w-7 h-7' %}{% include "partials/field_icon.html" %}{% endwith %}
+  </span>
+  {{ field_name }}
+</h1>
+
+{% with base = '/giao-vien/tien-do/' ~ field_key %}{% include "teacher/partials/loc_lop.html" %}{% endwith %}
+
+<h2 class="microlabel mt-7">Nhiệm vụ đã giao</h2>
+
+{% if cards %}
+<div class="mt-3 grid gap-3">
+  {% for card in cards %}
+  <article class="tile p-5">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="chip {{ fc.chip }}">{{ card.klass.name }}</span>
+      <span class="chip border border-hairline text-ink-soft">
+        {{ 'làm ở lớp' if card.assignment.mode == 'offline' else 'làm online' }}
+      </span>
+      {% if card.whole_field %}
+      <span class="chip border border-hairline text-ink-soft">cả nhánh</span>
+      {% endif %}
+      <span class="ml-auto text-xs text-ink-faint">
+        giao ngày {{ card.assignment.created_at.strftime('%d/%m/%Y') }}
+      </span>
+    </div>
+
+    {% if card.assignment.note %}
+    <p class="mt-3 text-sm text-ink prose-beat">{{ card.assignment.note }}</p>
+    {% endif %}
+
+    <ul class="mt-4 grid gap-2">
+      {% for target in card.targets %}
+      <li class="rounded-xl border border-hairline bg-paper-raised p-4">
+        <a href="/giao-vien/tien-do/{{ field_key }}/{{ target.scenario.id }}{{ q }}"
+           class="font-medium text-ink hover:underline">
+          {{ target.scenario.title }}
+        </a>
+        {% with tally = target.tally %}{% include "teacher/partials/tally.html" %}{% endwith %}
+      </li>
+      {% endfor %}
+    </ul>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="tile p-6 mt-3">
+  <p class="text-sm text-ink-soft">
+    Bạn chưa giao nhiệm vụ nào ở nhánh này. Mở một lớp rồi bấm
+    <strong class="text-ink">Giao nhiệm vụ</strong> để bắt đầu.
+  </p>
+</div>
+{% endif %}
+
+{% if loose %}
+<h2 class="microlabel mt-9">Đang làm mà chưa được giao</h2>
+<p class="mt-2 text-sm text-ink-soft max-w-2xl">
+  Học sinh tự chọn những tình huống này. Bạn vẫn đọc được bài của các em như bình thường.
+</p>
+<ul class="mt-3 grid gap-2">
+  {% for row in loose %}
+  <li class="tile p-4">
+    <a href="/giao-vien/tien-do/{{ field_key }}/{{ row.scenario.id }}{{ q }}"
+       class="font-medium text-ink hover:underline">{{ row.scenario.title }}</a>
+    {% with tally = row.tally %}{% include "teacher/partials/tally.html" %}{% endwith %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

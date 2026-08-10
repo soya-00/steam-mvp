@@ -57,7 +57,12 @@
   var stage = document.getElementById("demo");
   if (!stage) return;
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var reduced = {
+    get matches() {
+      return reducedQuery.matches || document.documentElement.dataset.motion === "giam";
+    }
+  };
   var text = document.getElementById("demo-text");
   var caret = document.getElementById("demo-caret");
   var box = document.getElementById("demo-box");

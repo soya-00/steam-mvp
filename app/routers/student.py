@@ -21,6 +21,7 @@ from app.config import (
     SECRET_KEY,
     STEAM_FIELDS,
 )
+from app import progress as progress_of
 from app.db import get_db
 from app.models import (
     Assignment,
@@ -83,10 +84,7 @@ def student_from_token(token: str) -> int | None:
 
 
 def _transcript(gs: GuidedSession) -> list[dict]:
-    try:
-        return json.loads(gs.transcript or "[]")
-    except json.JSONDecodeError:
-        return []
+    return progress_of.transcript(gs)
 
 
 def _save_transcript(gs: GuidedSession, entries: list[dict]) -> None:
@@ -169,13 +167,7 @@ def _answers_by_stage(scenario: Scenario, gs: GuidedSession) -> list[dict]:
 
 
 def _progress(scenario: Scenario, gs: GuidedSession) -> list[dict]:
-    out = []
-    for i, st in enumerate(scenario.stages):
-        state = "done" if (gs.finished or i < gs.stage_index) else (
-            "current" if i == gs.stage_index else "todo"
-        )
-        out.append({"name": st.name, "state": state, "index": i})
-    return out
+    return progress_of.stage_states(scenario, gs)
 
 
 def _question_place(scenario: Scenario, gs: GuidedSession) -> tuple[int, int]:

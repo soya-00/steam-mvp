@@ -285,6 +285,107 @@
     border-radius: 0.875rem;
   }
 
+  .menu-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 40;
+    width: 17rem;
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-hairline);
+    border-radius: 0.875rem;
+    box-shadow: 0 18px 38px -22px rgba(35, 38, 43, 0.55);
+    padding: 0.375rem;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    width: 100%;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-align: left;
+  }
+
+  .menu-item:hover,
+  .menu-item:focus-visible {
+    background-color: var(--color-paper);
+  }
+
+  .menu-item svg {
+    flex-shrink: 0;
+    color: var(--color-ink-faint);
+  }
+
+  .menu-sep {
+    height: 1px;
+    margin: 0.375rem 0.25rem;
+    background-color: var(--color-hairline);
+  }
+
+  /* Công tắc bật/tắt — dùng checkbox thật để bàn phím và trình đọc màn hình
+     hiểu được, phần nhìn vẽ bằng CSS. */
+  .switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background-color: var(--color-hairline);
+    transition: background-color 160ms ease;
+  }
+
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 0.1875rem;
+    left: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(35, 38, 43, 0.35);
+    transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  input:checked + .switch {
+    background-color: var(--color-trunk);
+  }
+
+  input:checked + .switch::after {
+    transform: translateX(1.25rem);
+  }
+
+  input:focus-visible + .switch {
+    outline: 2px solid var(--color-trunk);
+    outline-offset: 2px;
+  }
+
+  /* Bốn ô cấp độ trong trang tiến độ. */
+  .stage-pips {
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+
+  .stage-pips span {
+    width: 1.5rem;
+    height: 0.4375rem;
+    border-radius: 9999px;
+    background-color: var(--color-hairline);
+  }
+
+  .stage-pips span[data-state="done"] {
+    background-color: var(--color-teal);
+  }
+
+  .stage-pips span[data-state="current"] {
+    background-color: var(--color-trunk);
+  }
+
   .filter-chip {
     display: inline-flex;
     align-items: center;
@@ -726,11 +827,38 @@
   }
 }
 
+/* Tắt chuyển động: theo cài đặt của hệ điều hành, hoặc theo công tắc trong
+   Hiển thị & trợ năng khi máy của học sinh không có cài đặt đó. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+html[data-motion="giam"] *,
+html[data-motion="giam"] *::before,
+html[data-motion="giam"] *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Nền phẳng: bỏ hoa văn giấy và các mảng màu nhạt của năm nhánh. */
+html[data-nen="phang"] body {
+  background-image: none;
+}
+
+html[data-nen="phang"] .bg-sci-50,
+html[data-nen="phang"] .bg-tech-50,
+html[data-nen="phang"] .bg-eng-50,
+html[data-nen="phang"] .bg-art-50,
+html[data-nen="phang"] .bg-math-50,
+html[data-nen="phang"] .bg-teal-50,
+html[data-nen="phang"] .bg-amber-50,
+html[data-nen="phang"] .bg-trunk-50,
+html[data-nen="phang"] .bg-plum-50,
+html[data-nen="phang"] .bg-slate-50 {
+  background-color: var(--color-paper);
 }
 
 .wordmark {

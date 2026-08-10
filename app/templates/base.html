@@ -7,7 +7,19 @@
   <meta name="description" content="GALS — nơi học sinh THPT tập tư duy thiết kế qua những tình huống nghề nghiệp có thật.">
   <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/css/app.css">
+  <script>
+    // Dán cài đặt hiển thị lên <html> trước khi trang vẽ lần đầu, nếu không
+    // người dùng sẽ thấy giao diện nhấp nháy đổi kiểu ngay sau khi tải.
+    (function () {
+      try {
+        var saved = JSON.parse(localStorage.getItem("gals-hien-thi") || "{}");
+        if (saved.motion === "giam") document.documentElement.dataset.motion = "giam";
+        if (saved.nen === "phang") document.documentElement.dataset.nen = "phang";
+      } catch (e) {}
+    })();
+  </script>
   <script src="/static/js/htmx.min.js" defer></script>
+  <script src="/static/js/tai-khoan.js" defer></script>
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -68,8 +80,9 @@
         Đăng xuất
       </a>
 
-      <span class="ml-3 w-10 h-10 rounded-full border border-hairline bg-paper grid place-items-center text-lg shrink-0"
-            aria-hidden="true">{{ avatar_emoji.get(user.avatar_id, '🦊') }}</span>
+      <div class="ml-3">
+        {% include "partials/account_menu.html" %}
+      </div>
     </div>
   </div>
 </header>
@@ -78,15 +91,17 @@
 <main id="noi-dung" tabindex="-1" class="flex-1 mx-auto w-full max-w-6xl px-4 {{ 'py-5 md:py-7' if tabbed else 'py-6 md:py-8' }}">
 
   {% if tabbed and user.is_teacher %}
-  <nav aria-label="Điều hướng giáo viên" class="app-tabs border-b border-hairline mb-6">
+  <nav aria-label="Điều hướng giáo viên" class="app-tabs">
     {% for href, label, keys in [
       ('/giao-vien', 'Lớp của tôi', ['lop']),
+      ('/giao-vien/tien-do', 'Tiến độ', ['tien_do']),
       ('/giao-vien/tai-lieu', 'Tài liệu in', ['tai_lieu']),
       ('/giao-vien/thong-bao', 'Thông báo', ['thong_bao'])
     ] %}
     <a href="{{ href }}" class="tab" {% if branch in keys %}aria-current="page"{% endif %}>{{ label }}</a>
     {% endfor %}
   </nav>
+  <div class="panel p-5 md:p-7">
   {% elif tabbed %}
   <nav aria-label="Bốn nhánh trải nghiệm" class="app-tabs">
     {% for href, label, keys in [
@@ -103,7 +118,7 @@
 
   {% block content %}{% endblock %}
 
-  {% if tabbed and not user.is_teacher %}
+  {% if tabbed %}
   </div>
   {% endif %}
 </main>

@@ -2,17 +2,52 @@ from __future__ import annotations
 
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
+from itsdangerous import BadSignature, URLSafeSerializer
 
 from app.config import (
     FIELD_KEY_BY_NAME,
     PROJECT_CATEGORIES,
     STEAM_FIELDS,
     TEMPLATES_DIR,
+    SECRET_KEY,
+    SESSION_COOKIE,
     gemini_enabled,
 )
 from app.scenarios import get_scenario
 
-templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+_session = URLSafeSerializer(SECRET_KEY, salt="gals-session")
+
+
+def menu_context(request: Request) -> dict:
+    """Danh sách lớp cho bảng tài khoản. Chỉ truy vấn khi người đang đăng nhập
+    là giáo viên — học sinh và khách không tốn thêm câu truy vấn nào."""
+    raw = request.cookies.get(SESSION_COOKIE)
+    if not raw:
+        return {}
+    try:
+        uid = _session.loads(raw).get("uid")
+    except BadSignature:
+        return {}
+    if uid is None:
+        return {}
+
+    from app.db import SessionLocal
+    from app.models import Class, User
+
+    with SessionLocal() as db:
+        viewer = db.get(User, uid)
+        if viewer is None or not viewer.is_teacher:
+            return {}
+        classes = (
+            db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
+        )
+        return {"menu_classes": [{"id": c.id, "name": c.name} for c in classes]}
+
+
+templates = Jinja2Templates(
+    directory=str(TEMPLATES_DIR),
+    context_processors=[menu_context],
+)
 
 BADGE_LABELS = {
     "nhap_vai_dau_tien": "Lần nhập vai đầu tiên",

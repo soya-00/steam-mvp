@@ -1,0 +1,13 @@
+{% if all_classes | length > 1 %}
+<nav aria-label="Lọc theo lớp" class="mt-5 flex flex-wrap gap-2">
+  <a href="{{ base }}" class="filter-chip" {% if not selected %}aria-current="true"{% endif %}>
+    Tất cả lớp
+  </a>
+  {% for c in all_classes %}
+  <a href="{{ base }}?lop={{ c.id }}" class="filter-chip"
+     {% if selected and selected.id == c.id %}aria-current="true"{% endif %}>
+    {{ c.name }}
+  </a>
+  {% endfor %}
+</nav>
+{% endif %}

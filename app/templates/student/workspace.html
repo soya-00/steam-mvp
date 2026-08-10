@@ -2,9 +2,7 @@
 {% block title %}Không gian tư duy — {{ scenario.title }}{% endblock %}
 
 {% block focusaction %}
-<span class="w-9 h-9 rounded-full border border-hairline bg-paper grid place-items-center text-base"
-      aria-hidden="true">{{ avatar_emoji.get(user.avatar_id, '🦊') }}</span>
-<span class="sr-only">{{ user.name }}</span>
+{% include "partials/account_menu.html" %}
 {% endblock %}
 
 {% block content %}

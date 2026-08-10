@@ -45,7 +45,8 @@
 
   var stops = Array.prototype.slice.call(road.querySelectorAll("[data-stop]"));
   var spine = road.querySelector(".road-spine");
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      document.documentElement.dataset.motion === "giam") {
     stops.forEach(function (s) { s.dataset.seen = "1"; });
     return;
   }

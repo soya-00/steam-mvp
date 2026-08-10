@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Mã lớp — GALS{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl md:text-3xl text-ink">Mã lớp của tôi</h1>
+<p class="mt-2 text-base text-ink-soft max-w-2xl">
+  Đọc mã này cho học sinh nhập khi đăng ký. Em nào không nhập mã thì vẫn dùng được
+  GALS một mình, chỉ là bài của em không hiện trong lớp của bạn.
+</p>
+
+{% if rows %}
+<ul class="mt-6 grid gap-3 sm:grid-cols-2">
+  {% for row in rows %}
+  <li class="tile p-5">
+    <p class="text-sm font-semibold text-ink">{{ row.klass.name }}</p>
+    <p class="mt-3 font-display font-extrabold text-3xl tracking-wider text-trunk"
+       id="ma-{{ row.klass.id }}">{{ row.klass.class_code }}</p>
+    <p class="mt-2 text-xs text-ink-faint">{{ row.student_count }} học sinh đã vào</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button type="button" class="btn btn-ghost text-sm py-1.5 px-3"
+              data-sao-chep="{{ row.klass.class_code }}">
+        Sao chép mã
+      </button>
+      <a href="/giao-vien/lop/{{ row.klass.id }}" class="btn btn-ghost text-sm py-1.5 px-3">
+        Mở lớp
+      </a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="tile p-6 mt-6 max-w-xl">
+  <p class="text-sm text-ink-soft">
+    Bạn chưa có lớp nào.
+    <a href="/giao-vien#tao-lop" class="text-trunk font-semibold hover:underline">Tạo lớp đầu tiên</a>
+    rồi quay lại đây lấy mã.
+  </p>
+</div>
+{% endif %}
+
+<script>
+(function () {
+  document.querySelectorAll("[data-sao-chep]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var code = button.getAttribute("data-sao-chep");
+      var done = function () {
+        var was = button.textContent;
+        button.textContent = "Đã chép";
+        setTimeout(function () { button.textContent = was; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(done, function () {});
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}

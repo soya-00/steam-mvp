@@ -5,6 +5,7 @@
   var host = document.getElementById("mung-{{ slot }}");
   if (!host) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (document.documentElement.dataset.motion === "giam") return;
 
   var colours = ["#2f8659", "#5a4fc7", "#3a6ea8", "#a87c28", "#bf4a72"];
   for (var i = 0; i < 40; i++) {
