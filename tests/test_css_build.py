@@ -13,9 +13,9 @@ COMPONENTS = [
     "lift", "art-banner", "step-track", "step-fill", "rise", "pop",
     "prose-beat", "htmx-indicator", "spinner-dot",
     "answer-lines", "print-box", "print-page-break", "print-sheet", "no-print",
-    "microlabel", "app-tabs", "tab", "panel", "composer", "ruled",
+    "microlabel", "app-tabs", "tab", "panel", "composer", "ruled", "tile", "filter-chip",
     "role-card", "fact-item", "dashed-slot", "ring-track", "disclose",
-    "wordmark", "mung-burst",
+    "wordmark", "mung-burst", "disclose-corner",
 ]
 
 

@@ -3,20 +3,19 @@
 
 {% block content %}
 
-<h1 class="text-2xl text-ink">Tài nguyên miễn phí</h1>
-<p class="mt-2 text-sm text-ink-soft max-w-2xl">
+<h1 class="text-2xl md:text-3xl text-ink">Tài nguyên miễn phí</h1>
+<p class="mt-2 text-base text-ink-soft max-w-2xl">
   Khoá học và video tuyển chọn từ Khan Academy, Coursera và YouTube. Tất cả đều mở,
   không cần tài khoản GALS để học.
 </p>
 
 <nav aria-label="Lọc theo lĩnh vực" class="mt-5 flex flex-wrap gap-2">
-  <a href="/tai-nguyen"
-     class="chip {% if not selected %}bg-slate text-white{% else %}bg-paper text-ink-soft border border-hairline hover:border-ink-faint{% endif %}">
+  <a href="/tai-nguyen" class="filter-chip" {% if not selected %}aria-current="true"{% endif %}>
     Tất cả
   </a>
   {% for f in steam_fields %}
-  <a href="/tai-nguyen?linh_vuc={{ f.key }}"
-     class="chip {% if selected_key == f.key %}bg-slate text-white{% else %}bg-paper text-ink-soft border border-hairline hover:border-ink-faint{% endif %}">
+  <a href="/tai-nguyen?linh_vuc={{ f.key }}" class="filter-chip"
+     {% if selected_key == f.key %}aria-current="true"{% endif %}>
     {{ f.name }}
   </a>
   {% endfor %}
@@ -24,58 +23,70 @@
 
 {% for field_name, items in shown.items() %}
 {% if items %}
+{% set fc = field_classes(field_name) %}
 <section class="mt-8">
-  <h2 class="text-lg text-ink">{{ field_name }}</h2>
-  <div class="mt-3 grid gap-2">
+  <h2 class="microlabel flex items-center gap-2">
+    <span class="{{ fc.ink }}" aria-hidden="true">
+      {% with key = field_key[field_name], cls = 'w-4 h-4' %}{% include "partials/field_icon.html" %}{% endwith %}
+    </span>
+    {{ field_name }}
+  </h2>
+  <ul class="mt-3 grid gap-2 md:grid-cols-2">
     {% for r in items %}
-    <a href="{{ r.url }}" target="_blank" rel="noopener"
-       class="card p-4 branch-bar border-l-slate hover:border-slate-300 transition block">
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="chip bg-slate-50 text-slate-700">{{ platform_labels.get(r.platform, r.platform) }}</span>
-        <span class="chip bg-paper text-ink-soft border border-hairline">{{ r.skill }}</span>
-        {% if r.free %}
-        <span class="chip bg-teal-50 text-teal-700">Miễn phí</span>
-        {% else %}
-        <span class="chip bg-amber-50 text-amber-900">Có phần trả phí</span>
-        {% endif %}
-      </div>
-      <p class="mt-2 font-medium text-sm text-ink">{{ r.title }}</p>
-      <p class="mt-0.5 text-xs text-ink-faint">{{ r.level }} · {{ r.duration }}</p>
-    </a>
+    <li>
+      <a href="{{ r.url }}" target="_blank" rel="noopener"
+         class="tile lift block h-full p-4 branch-bar {{ fc.bar }}">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip {{ fc.chip }}">{{ platform_labels.get(r.platform, r.platform) }}</span>
+          <span class="chip border border-hairline text-ink-soft">{{ r.skill }}</span>
+          {% if r.free %}
+          <span class="chip bg-teal-50 text-teal-700">Miễn phí</span>
+          {% else %}
+          <span class="chip bg-amber-50 text-amber-900">Có phần trả phí</span>
+          {% endif %}
+        </div>
+        <p class="mt-2.5 font-medium text-sm text-ink">{{ r.title }}</p>
+        <p class="mt-1 text-xs text-ink-faint">
+          {{ r.level }} <span aria-hidden="true">·</span> {{ r.duration }}
+          <span class="ml-1" aria-hidden="true">↗</span>
+          <span class="sr-only">mở ở tab mới</span>
+        </p>
+      </a>
+    </li>
     {% endfor %}
-  </div>
+  </ul>
 </section>
 {% endif %}
 {% endfor %}
 
-<section class="mt-12">
-  <h2 class="text-lg text-ink">Hội thảo &amp; talkshow</h2>
-  <p class="mt-1 text-sm text-ink-soft">
+<section class="mt-10 pt-7 border-t border-hairline">
+  <h2 class="microlabel">Hội thảo và talkshow</h2>
+  <p class="mt-2 text-sm text-ink-soft">
     Những buổi liên quan tới lĩnh vực bạn đang theo dõi.
   </p>
-  <div class="mt-3 grid gap-2">
+  <ul class="mt-3 grid gap-2 md:grid-cols-2">
     {% for n in notifications %}
-    <div class="card p-4 branch-bar border-l-slate">
+    <li class="tile p-4 h-full">
       <div class="flex flex-wrap items-center gap-2">
-        <span class="chip bg-slate-50 text-slate-700">
+        <span class="chip bg-trunk-50 text-trunk-700">
           {{ 'Hội thảo' if n.type == 'workshop' else 'Talkshow' }}
         </span>
         {% if n.field %}
         <span class="chip {{ field_classes(n.field).chip }}">{{ n.field }}</span>
         {% endif %}
         {% if n.class_id %}
-        <span class="chip bg-trunk-50 text-trunk">Của lớp bạn</span>
+        <span class="chip border border-hairline text-ink-soft">Của lớp bạn</span>
         {% endif %}
       </div>
-      <p class="mt-2 font-medium text-sm text-ink">{{ n.title }}</p>
+      <p class="mt-2.5 font-medium text-sm text-ink">{{ n.title }}</p>
       <p class="mt-1 text-sm text-ink-soft">{{ n.content }}</p>
-    </div>
+    </li>
     {% else %}
-    <div class="card p-5">
+    <li class="tile p-5">
       <p class="text-sm text-ink-soft">Hiện chưa có thông báo nào.</p>
-    </div>
+    </li>
     {% endfor %}
-  </div>
+  </ul>
 </section>
 
 {% endblock %}

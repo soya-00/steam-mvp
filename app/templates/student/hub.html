@@ -81,7 +81,7 @@
 
 <div class="mt-6 grid gap-3 lg:grid-cols-3">
 
-  <section class="card p-4">
+  <section class="tile p-4">
     <h2 class="sr-only">Lời nhắn từ giáo viên</h2>
     {% if feedback %}
     {% set note = feedback[0] %}
@@ -101,7 +101,7 @@
     {% endif %}
   </section>
 
-  <section class="card p-4">
+  <section class="tile p-4">
     <h2 class="text-sm font-semibold text-ink">Nhiệm vụ từ giáo viên</h2>
     {% if assignments %}
     <ul class="mt-3 grid gap-2.5">
@@ -133,7 +133,7 @@
     {% endif %}
   </section>
 
-  <section class="card p-4">
+  <section class="tile p-4">
     <h2 class="text-sm font-semibold text-ink flex items-center gap-2">
       <span class="text-ink-faint" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"

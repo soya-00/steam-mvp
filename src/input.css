@@ -88,8 +88,11 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* Nền giấy có hoa văn rất nhạt: chấm, dấu cộng và một nét cong mảnh.
+     Đủ để nền không phẳng lì, nhạt tới mức không cạnh tranh với chữ. */
   body {
     background-color: var(--color-paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%2323262b' stroke-opacity='0.035' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M18 14h7M21.5 10.5v7'/%3E%3Cpath d='M86 74h7M89.5 70.5v7'/%3E%3Cpath d='M8 82c8-7 17-7 25 0'/%3E%3Cpath d='M70 24c7 6 15 6 22 0'/%3E%3C/g%3E%3Cg fill='%2323262b' fill-opacity='0.05'%3E%3Ccircle cx='62' cy='46' r='1.7'/%3E%3Ccircle cx='104' cy='16' r='1.7'/%3E%3Ccircle cx='36' cy='104' r='1.7'/%3E%3Ccircle cx='108' cy='102' r='1.3'/%3E%3Ccircle cx='48' cy='66' r='1.3'/%3E%3C/g%3E%3C/svg%3E");
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-weight: 400;
@@ -279,6 +282,38 @@
     border-radius: var(--radius-card);
   }
 
+  /* Thẻ con nằm trong .panel — nền trắng trên trắng thì không thấy gì,
+     nên thẻ con lấy nền giấy. */
+  .tile {
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-hairline);
+    border-radius: 0.875rem;
+  }
+
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--color-hairline);
+    padding: 0.3125rem 0.8125rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    background-color: var(--color-paper);
+    transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+  }
+
+  .filter-chip:hover {
+    border-color: var(--color-ink-faint);
+    color: var(--color-ink);
+  }
+
+  .filter-chip[aria-current="true"] {
+    background-color: var(--color-trunk);
+    border-color: var(--color-trunk);
+    color: #fff;
+  }
+
   .composer {
     border: 1.5px solid var(--color-trunk);
     border-radius: 0.875rem;
@@ -384,6 +419,23 @@
 
   .disclose[open] > summary::after {
     transform: rotate(90deg);
+  }
+
+  /* Khi phần tóm tắt dài hơn một dòng, mũi tên đứng ở góc thay vì rơi
+     xuống một dòng trống của riêng nó. */
+  .disclose-corner {
+    position: relative;
+  }
+
+  .disclose-corner > summary {
+    padding-right: 1.5rem;
+  }
+
+  .disclose-corner > summary::after {
+    position: absolute;
+    right: 0;
+    top: 0.1rem;
+    margin-left: 0;
   }
 }
 
@@ -691,23 +743,25 @@
   display: inline-block;
 }
 
+/* Một nét gạch chân vẽ tay, kéo giãn theo bề ngang chữ — không lặp ô,
+   nên nó không đọc thành một dãy chữ M. */
 .wordmark::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -0.32em;
-  height: 0.36em;
-  background-repeat: repeat-x;
-  background-size: 12px 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6' preserveAspectRatio='none'%3E%3Cpath d='M0 4.2c1.5-3 3-3 4.5 0s3 3 4.5 0 3-3 4.5 0' fill='none' stroke='%234a4e9c' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
-  opacity: 0.85;
+  left: 0.02em;
+  right: 0.02em;
+  bottom: -0.2em;
+  height: 0.22em;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.6C14 2.2 27 2.6 38 6.2s22 3.4 33-.6 20-3.2 27 1.2' fill='none' stroke='%234a4e9c' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  opacity: 0.9;
   pointer-events: none;
 }
 
 .wordmark-light::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6' preserveAspectRatio='none'%3E%3Cpath d='M0 4.2c1.5-3 3-3 4.5 0s3 3 4.5 0 3-3 4.5 0' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
-  opacity: 0.7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6.6C14 2.2 27 2.6 38 6.2s22 3.4 33-.6 20-3.2 27 1.2' fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  opacity: 0.75;
 }
 
 .mung-burst {

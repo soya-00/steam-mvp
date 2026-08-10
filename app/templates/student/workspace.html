@@ -185,13 +185,27 @@
   <aside class="mt-8 lg:mt-0">
     <h2 class="microlabel">Dữ kiện</h2>
     {% if facts %}
-    <ul class="mt-2.5 grid gap-3">
+    <ul class="mt-2.5 grid gap-2">
       {% for f in facts %}
+      {% for line in f.facts %}
       <li class="fact-item {{ fc.ink }}">
-        <p class="text-xs leading-relaxed text-ink-soft prose-beat">{{ f.text }}</p>
+        <p class="text-sm leading-snug text-ink">{{ line }}</p>
       </li>
       {% endfor %}
+      {% endfor %}
     </ul>
+
+    <details class="disclose mt-4">
+      <summary class="text-xs text-ink-faint hover:text-ink">Đọc nguyên văn bối cảnh</summary>
+      <div class="mt-2.5 grid gap-3">
+        {% for f in facts %}
+        <div>
+          <p class="microlabel">{{ f.label }}</p>
+          <p class="mt-1 text-xs leading-relaxed text-ink-soft prose-beat">{{ f.text }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </details>
     {% else %}
     <p class="mt-2.5 text-sm text-ink-faint">Cấp độ này chưa thêm dữ kiện mới.</p>
     {% endif %}

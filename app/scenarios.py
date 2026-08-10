@@ -57,6 +57,7 @@ class Beat:
     type: str
     label: str
     text: str
+    facts: tuple[str, ...] = ()
 
     @property
     def needs_answer(self) -> bool:
@@ -120,7 +121,17 @@ def _parse_beat(raw: dict, ctx: str) -> Beat:
     text = str(_require(raw, "text", ctx)).strip()
     if not text:
         raise ScenarioError(f"{ctx}: 'text' rỗng")
-    return Beat(type=btype, label=str(raw.get("label", "")).strip(), text=text)
+
+    facts = tuple(str(f).strip() for f in raw.get("facts", []) if str(f).strip())
+    if btype == "context" and not facts:
+        raise ScenarioError(f"{ctx}: nhịp bối cảnh phải có 'facts' để tóm tắt ở cột dữ kiện")
+
+    return Beat(
+        type=btype,
+        label=str(raw.get("label", "")).strip(),
+        text=text,
+        facts=facts,
+    )
 
 
 def _parse_stage(raw: dict, ctx: str) -> Stage:

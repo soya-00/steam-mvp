@@ -37,13 +37,33 @@ def test_narration_never_becomes_a_step_of_its_own(client):
         client.post(f"/du-an/{scenario.id}/tiep", data={"tra_loi": "Em nghĩ là chưa đủ."})
 
 
-def test_narration_shows_up_as_data_in_the_side_rail(client):
+def test_narration_shows_up_as_summarised_data_in_the_side_rail(client):
     login_independent(client)
     scenario = all_scenarios()[0]
     opening = next(b for b in scenario.stages[0].beats if b.type == "context")
     page = client.get(f"/du-an/{scenario.id}/khong-gian-tu-duy").text
+
     assert "Dữ kiện" in page
-    assert opening.text[:60] in page
+    # Cột dữ kiện dẫn bằng bản tóm tắt…
+    for fact in opening.facts:
+        assert fact in page, fact
+    # …nguyên văn vẫn đọc lại được, nhưng phải mở ra.
+    assert "Đọc nguyên văn bối cảnh" in page
+
+
+def test_every_context_beat_carries_a_short_summary():
+    for scenario in all_scenarios():
+        for stage in scenario.stages:
+            for beat in stage.beats:
+                where = f"{scenario.id} · {stage.key} · {beat.label}"
+                if beat.type != "context":
+                    continue
+                assert beat.facts, where
+                for fact in beat.facts:
+                    assert len(fact) <= 140, (where, len(fact), fact)
+                    assert fact != beat.text, where
+                joined = " ".join(beat.facts)
+                assert len(joined) < len(beat.text), where
 
 
 def test_answered_questions_stay_reachable_from_the_side_nav(client):

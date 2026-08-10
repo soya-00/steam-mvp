@@ -172,6 +172,8 @@ Bản dựng lại giao diện ứng dụng theo năm bản thiết kế: bảng
 
 **Nhịp kể chuyện không còn là một bước bấm.** Các nhịp `context` trước đây bắt học sinh bấm "Tôi đã đọc xong" rồi mới đi tiếp — một cú bấm không tạo ra suy nghĩ gì. Nay chúng được gom vào cột **Dữ kiện** bên phải, tích luỹ dần trong cấp độ, và học sinh đi thẳng từ câu hỏi này sang câu hỏi kế. Nhật ký vẫn ghi lại đủ, chỉ là chúng không chiếm một lượt của người học nữa.
 
+**Cột dữ kiện tóm tắt, không chép nguyên văn.** Lần dựng đầu tiên đổ thẳng cả đoạn bối cảnh vào cột phải — đúng nội dung nhưng đọc như một bức tường chữ, và học sinh sẽ bỏ qua. Nay mỗi nhịp `context` trong `scenarios.json` mang thêm trường **`facts`**: vài dòng ngắn rút ra từ chính đoạn đó, chủ yếu là con số và điều kiện. Tổng cộng 220 dòng cho 60 nhịp bối cảnh của 5 kịch huống. Nguyên văn không mất đi — nằm sau mục *Đọc nguyên văn bối cảnh*. Bộ đọc kịch huống **từ chối tải** một nhịp bối cảnh không có `facts`, nên chỗ này không thể quên khi viết kịch huống mới.
+
 **Gợi ý dẫn dắt là câu hỏi, không phải đáp án.** Mỗi cấp độ có ba gợi ý dùng chung cho cả năm kịch huống, viết ở mức *cách nghĩ* chứ không phải *nội dung*. Bài kiểm thử chặn số liệu trong gợi ý — một gợi ý nhắc con số của riêng một kịch huống là gợi ý sai chỗ.
 
 Ba chỗ **cố tình lệch khỏi bản thiết kế**, và lý do:
@@ -181,6 +183,10 @@ Ba chỗ **cố tình lệch khỏi bản thiết kế**, và lý do:
 | Thẻ vàng "Cấp 2" cạnh tên học sinh | Thẻ ghi vai trò: *Học sinh* / *Giáo viên* | Một con số cấp bậc gắn với người học chính là thứ xếp hạng mà GALS cam kết không có |
 | "Tệp từ giáo viên" kèm PDF/XLSX và dung lượng | *Nhiệm vụ từ giáo viên* — danh sách nhiệm vụ đã giao | Ứng dụng không lưu trữ tệp; dựng ô tải xuống giả là bịa ra một tính năng |
 | "Workspace", "folder đang mở" | *Không gian tư duy*, *đang mở* | Giao diện chỉ dùng tiếng Việt |
+
+Ba trang còn lại — **Hồ sơ, Huy hiệu, Tài nguyên** — giữ nguyên bố cục cũ, chỉ đổi sang bộ phần tử mới: tiêu đề mục thành nhãn chữ nhỏ in hoa, thẻ con dùng nền giấy (`.tile`) vì thẻ trắng nằm trên tấm trắng thì không thấy đường viền, và huy hiệu bỏ emoji để dùng cùng bộ biểu tượng nét với năm nhánh STEAM.
+
+Nền giấy nhận thêm một lớp hoa văn SVG rất nhạt — chấm, dấu cộng và vài nét cong. Gạch chân dưới chữ GALS được vẽ lại thành **một nét duy nhất kéo giãn theo bề ngang chữ**; bản trước lặp một ô sóng 12px nên ở cỡ chữ lớn nó đọc thành một dãy chữ M.
 
 ---
 

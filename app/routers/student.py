@@ -193,7 +193,7 @@ def _facts_so_far(scenario: Scenario, gs: GuidedSession) -> list[dict]:
         return []
     upto = min(gs.beat_index + 1, len(stage.beats))
     return [
-        {"label": b.label or "Dữ kiện", "text": b.text}
+        {"label": b.label or "Dữ kiện", "facts": b.facts, "text": b.text}
         for b in stage.beats[:upto]
         if b.type == "context"
     ]
