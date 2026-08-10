@@ -60,7 +60,8 @@ Ba nhóm nghề trong bảng phân loại **chưa có kịch huống**:
 - [ ] Quy hoạch, môi trường — *sản phẩm cấp 3: kịch bản sử dụng không gian hoặc giao thông*
 - [ ] Truyền thông, ngôn ngữ — *sản phẩm cấp 3: thông điệp cho từng nhóm đối tượng*
 
-Cách viết xem [Hướng dẫn kỹ thuật](KY-THUAT.md#thêm-kịch-huống-mới).
+Định dạng kịch huống nằm trong `data/scenarios.json`; các trường bắt buộc và
+phần kiểm tra khi nạp nằm ở `app/scenarios.py`.
 
 ---
 
