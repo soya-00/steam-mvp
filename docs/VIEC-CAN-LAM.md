@@ -10,14 +10,39 @@ Tài liệu này theo dõi trạng thái thật của dự án. Một mục ch�
 
 ## Chặn đường — chưa xong thì chưa được có học sinh thật
 
-Bốn việc này đứng trước mọi việc khác. Không phải vì khó nhất, mà vì mọi thứ còn lại đều vô nghĩa nếu thiếu chúng.
+Năm việc này đứng trước mọi việc khác. Không phải vì khó nhất, mà vì mọi thứ còn lại đều vô nghĩa nếu thiếu chúng.
 
 - [ ] **Pháp nhân bảo trợ.** Không có pháp nhân thì không ai ký được hợp đồng với nhà trường và không ai nộp được hồ sơ đánh giá tác động. Xem [LEGAL.md](../LEGAL.md).
 - [ ] **Sửa lỗi dùng chung tài khoản.** Cả ứng dụng chỉ có ba tài khoản mẫu; hai người cùng nhập mã lớp là cùng một tài khoản và đọc được bài của nhau. **Việc gấp nhất về mặt kỹ thuật.**
 - [ ] **PostgreSQL và chỉ gieo dữ liệu khi trống.** Hiện `reset_and_seed()` gọi `drop_all()` trong vòng đời FastAPI — mỗi lần khởi động lại là xoá sạch.
 - [ ] **Đăng nhập thật, có mật khẩu, kèm CSRF.** Hiện chỉ là cookie có chữ ký.
+- [ ] **Chuyển mã nguồn sang OpenAI.** Nhà cung cấp đã được chốt là OpenAI và `LEGAL.md` viết theo đó, nhưng mã nguồn vẫn đang gọi Gemini: `app/gemini.py`, gói `google-genai`, biến `GEMINI_API_KEY`, hàm `gemini_enabled()` dùng trong template và dòng báo chế độ ngoại tuyến ở chân trang. Xem mục [Nhà cung cấp AI](#nhà-cung-cấp-ai).
 
 Chưa có **file LICENSE**. Không có giấy phép thì mặc định là giữ toàn bộ quyền, dù README mời mọi người clone về chạy. Cần chọn riêng cho mã nguồn và cho nội dung kịch huống.
+
+---
+
+## Nhà cung cấp AI
+
+Đã chốt: **OpenAI**. `LEGAL.md` Mục 6 viết theo lựa chọn này. Phần còn lại là đưa mã nguồn và cấu hình tài khoản về đúng như tài liệu đã mô tả.
+
+### Chuyển mã nguồn
+
+- [ ] Thay `app/gemini.py` bằng đường gọi OpenAI, giữ nguyên hai chế độ (nhập vai và tự do) cùng toàn bộ chế độ ngoại tuyến dựng sẵn.
+- [ ] Đổi tên biến môi trường, hàm `gemini_enabled()` và dòng báo ngoại tuyến ở chân trang sang tên trung lập với nhà cung cấp.
+- [ ] Giữ nguyên các bất biến đã có phép thử: lọc emoji bằng mã, không chấm điểm, chỉ gửi câu hỏi và câu trả lời hiện tại.
+- [ ] Cập nhật `tests/test_gemini_offline.py` theo tên mới.
+
+### Cấu hình tài khoản — bắt buộc trước khi có học sinh thật
+
+Theo `LEGAL.md` Mục 6:
+
+- [ ] **Bật Zero Data Retention (ZDR)** trên tài khoản API.
+- [ ] **Tài khoản API do người trưởng thành đứng tên** — cùng người giữ vai "người trưởng thành chịu trách nhiệm" ở Mục 8.
+- [ ] **Đặt hạn mức chi tiêu cứng** trên tài khoản.
+- [ ] **Thêm lớp kiểm duyệt của nhà cung cấp**, chồng lên bộ lọc cụm từ đang có.
+- [ ] **Chỉ gửi nội dung Kho A.** Cần phép thử tự động chặn Kho B lọt vào lời nhắc.
+- [ ] **Ghi nhật ký siêu dữ liệu** của các lần chuyển dữ liệu, phục vụ hồ sơ chuyển dữ liệu xuyên biên giới.
 
 ---
 
@@ -92,8 +117,7 @@ Ba nhóm nghề trong bảng phân loại **chưa có kịch huống**:
 
 - [ ] **Màn hình giáo viên được suy ra từ mô hình dữ liệu**, vì sơ đồ luồng giáo viên không được cung cấp. Cần đối chiếu với sơ đồ gốc.
 - [ ] **Đường gọi AI thật** mới chỉ thử được vài lượt trước khi hết hạn mức của khoá miễn phí. Bộ chặn phía máy chủ đã kiểm thử đầy đủ, nhưng **hành vi của chính mô hình thì chưa** — nhất là các rào an toàn về trẻ vị thành niên và định kiến giới.
-- [ ] **Chốt nhà cung cấp AI.** `LEGAL.md` mô tả OpenAI; mã nguồn hiện dùng Gemini (`app/gemini.py`, gói `google-genai`, biến `GEMINI_API_KEY`). Một trong hai phải đổi.
-- [ ] **Điều khoản của nhà cung cấp cấm đúng ca sử dụng này.** Điều khoản Gemini API yêu cầu người phát triển từ 18 tuổi và cấm dùng trong ứng dụng hướng tới người dưới 18 tuổi. Khuyến nghị: **thí điểm với trợ lý AI tắt hẳn**, dùng chế độ ngoại tuyến đã có sẵn.
+- [ ] **Đối chiếu điều khoản của OpenAI về người dùng chưa thành niên** trong triển khai qua nhà trường, và lấy xác nhận bằng văn bản chứ không suy ra từ trang giới thiệu.
 
 ---
 
