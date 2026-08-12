@@ -19,6 +19,15 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(20))
     avatar_id: Mapped[str] = mapped_column(String(40), default="avatar-1")
 
+    # Rỗng với tài khoản đăng nhập bằng Google — người đó chưa từng đặt mật khẩu.
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Nhà cung cấp OAuth và định danh ổn định bên đó. Không dùng email làm khoá
+    # nối, vì trường học đổi email cho học sinh là chuyện thường.
+    oauth_provider: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    oauth_sub: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
     memberships: Mapped[list["ClassMembership"]] = relationship(
         back_populates="student", cascade="all, delete-orphan"
     )

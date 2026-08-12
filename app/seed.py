@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import json
 import logging
 from datetime import datetime, timedelta
@@ -411,10 +413,40 @@ def _seed(db: Session) -> None:
 
 
 def reset_and_seed() -> None:
+    """Xoá sạch rồi gieo lại. Chỉ dùng cho kiểm thử và cho môi trường dev."""
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
+        _seed(db)
+    finally:
+        db.close()
+
+
+def seed_if_empty() -> None:
+    """Tạo bảng nếu chưa có, và chỉ gieo dữ liệu mẫu khi chưa có người dùng nào.
+
+    Đây là điểm khác biệt giữa bản mẫu và bản dùng thật: trước đây mỗi lần khởi
+    động lại là `drop_all()`, nên tài khoản thật và bài học sinh viết đều bay
+    sạch. Từ giờ khởi động lại không đụng vào dữ liệu đã có.
+
+    Đặt `GALS_RESET_DB=1` nếu thật sự muốn xoá và gieo lại — hữu ích khi chạy
+    tại máy, nguy hiểm ở nơi có dữ liệu thật.
+    """
+    if os.getenv("GALS_RESET_DB", "").strip() == "1":
+        log.warning("GALS_RESET_DB=1 — xoá toàn bộ dữ liệu và gieo lại từ đầu.")
+        reset_and_seed()
+        return
+
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        if db.query(User).first() is not None:
+            log.info(
+                "Cơ sở dữ liệu đã có sẵn %d người dùng — không gieo lại.",
+                db.query(User).count(),
+            )
+            return
         _seed(db)
     finally:
         db.close()

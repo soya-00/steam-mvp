@@ -15,7 +15,7 @@ from app.routers import phan_hoi as phan_hoi_router
 from app.routers import student as student_router
 from app.routers import tai_khoan as tai_khoan_router
 from app.routers import teacher as teacher_router
-from app.seed import reset_and_seed
+from app.seed import seed_if_empty
 from app.templating import templates
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(message)s")
@@ -24,7 +24,7 @@ log = logging.getLogger("gals")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    reset_and_seed()
+    seed_if_empty()
     if gemini_enabled():
         from app.gemini import resolve_model
 
