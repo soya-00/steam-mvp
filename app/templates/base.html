@@ -40,7 +40,11 @@
   <script src="/static/js/htmx.min.js" defer></script>
   <script src="/static/js/tai-khoan.js" defer></script>
 </head>
-<body class="min-h-screen flex flex-col">
+{# Vé CSRF gắn sẵn vào mọi yêu cầu HTMX. Biểu mẫu thường mang vé bằng ô ẩn,
+   nhưng có vài chỗ hx-post đặt thẳng trên nút chứ không nằm trong biểu mẫu —
+   những chỗ đó chỉ có header này che. #}
+<body class="min-h-screen flex flex-col"
+      hx-headers='{"X-CSRF-Token": "{{ csrf_token }}"}'>
 
 <a href="#noi-dung"
    class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2

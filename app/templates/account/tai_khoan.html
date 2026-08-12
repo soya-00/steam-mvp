@@ -24,6 +24,7 @@
 
     <div class="tile p-5 mt-3">
       <form method="post" action="/tai-khoan/ten" class="flex flex-wrap items-end gap-3">
+        {% include "partials/csrf.html" %}
         <div class="flex-1 min-w-[14rem]">
           <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên hiển thị</label>
           <input type="text" id="ten" name="ten" required maxlength="60" value="{{ user.name }}"
@@ -38,6 +39,7 @@
 
     <div class="tile p-5 mt-3">
       <form method="post" action="/tai-khoan/avatar">
+        {% include "partials/csrf.html" %}
         <fieldset>
           <legend class="text-sm font-medium text-ink mb-3">Avatar</legend>
           <div class="grid grid-cols-4 sm:grid-cols-8 gap-2.5">
@@ -164,6 +166,7 @@
             {{ item.journal_entry.title or 'Chưa đặt tên' }}
           </span>
           <form method="post" action="/ho-so/{{ item.id }}/chia-se">
+            {% include "partials/csrf.html" %}
             <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
               Ngừng chia sẻ
             </button>

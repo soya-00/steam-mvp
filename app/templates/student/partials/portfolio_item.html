@@ -21,6 +21,7 @@
         hx-target="#muc-{{ item.id }}"
         hx-swap="outerHTML"
         class="mt-3">
+    {% include "partials/csrf.html" %}
     <label for="mo-ta-{{ item.id }}" class="sr-only">Mô tả</label>
     <textarea id="mo-ta-{{ item.id }}" name="mo_ta" rows="3"
               class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink">{{ item.description }}</textarea>

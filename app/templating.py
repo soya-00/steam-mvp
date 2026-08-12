@@ -13,6 +13,7 @@ from app.config import (
     SESSION_COOKIE,
     gemini_enabled,
 )
+from app.csrf import csrf_context
 from app.scenarios import get_scenario
 
 _session = URLSafeSerializer(SECRET_KEY, salt="gals-session")
@@ -46,7 +47,7 @@ def menu_context(request: Request) -> dict:
 
 templates = Jinja2Templates(
     directory=str(TEMPLATES_DIR),
-    context_processors=[menu_context],
+    context_processors=[menu_context, csrf_context],
 )
 
 BADGE_LABELS = {

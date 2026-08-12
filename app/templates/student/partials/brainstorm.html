@@ -55,6 +55,7 @@
         hx-disabled-elt="find button"
         class="composer mt-6"
         {% if history %}hx-on::after-request="this.reset()"{% endif %}>
+    {% include "partials/csrf.html" %}
     <label for="tin_nhan" class="sr-only">Tin nhắn của bạn</label>
     <textarea id="tin_nhan" name="tin_nhan" rows="3" required
               placeholder="Viết câu trả lời của bạn…"

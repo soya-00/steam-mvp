@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import STATIC_DIR, gemini_enabled
+from app.csrf import CSRFMiddleware
 from app.routers import auth as auth_router
 from app.routers import chat as chat_router
 from app.routers import marketing as marketing_router
@@ -38,6 +39,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="GALS", lifespan=lifespan, docs_url=None, redoc_url=None)
+
+app.add_middleware(CSRFMiddleware)
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 

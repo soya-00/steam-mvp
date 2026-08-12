@@ -12,6 +12,7 @@
 
   <form method="post" action="/du-an/{{ scenario.id }}/nop"
         class="card relative p-6 md:p-8 pop">
+    {% include "partials/csrf.html" %}
 
     {% with slot = 'nop-du-an' %}{% include "partials/confetti_mung.html" %}{% endwith %}
 

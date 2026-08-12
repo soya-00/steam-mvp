@@ -77,6 +77,7 @@
     Hệ thống sinh mã lớp; bạn đọc mã đó cho học sinh nhập khi đăng ký.
   </p>
   <form method="post" action="/giao-vien/lop/tao" class="mt-3 flex flex-wrap gap-2">
+    {% include "partials/csrf.html" %}
     <label for="ten_lop" class="sr-only">Tên lớp</label>
     <input type="text" id="ten_lop" name="ten_lop" required
            placeholder="Ví dụ: 11A3 — Chuyên đề STEAM"

@@ -76,6 +76,7 @@
 <section class="mt-8 max-w-xl">
   <h2 class="microlabel">Giao nhiệm vụ mới</h2>
   <form method="post" action="/giao-vien/lop/{{ klass.id }}/giao" class="mt-3 space-y-4">
+    {% include "partials/csrf.html" %}
 
     <div>
       <label for="muc_tieu" class="block text-sm font-medium text-ink mb-1">Giao gì</label>

@@ -1,0 +1,3 @@
+{# Vé chống giả mạo yêu cầu. Mọi biểu mẫu POST đều phải có dòng này.
+   tests/test_csrf.py quét cây bản mẫu để không biểu mẫu nào bị bỏ sót. #}
+<input type="hidden" name="_csrf" value="{{ csrf_token }}">

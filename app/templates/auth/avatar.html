@@ -24,6 +24,7 @@
     {% endif %}
 
     <form method="post" action="/chon-avatar" class="mt-5">
+      {% include "partials/csrf.html" %}
       <input type="hidden" name="ma_lop" value="{{ ma_lop }}">
       <fieldset>
         <legend class="sr-only">Danh sách avatar</legend>

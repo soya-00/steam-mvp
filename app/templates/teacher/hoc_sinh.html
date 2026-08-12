@@ -46,6 +46,7 @@
             Nhắn riêng về bài này
           </summary>
           <form method="post" action="/giao-vien/hoc-sinh/{{ student.id }}/nhan-xet" class="mt-2">
+            {% include "partials/csrf.html" %}
             <input type="hidden" name="journal_entry_id" value="{{ e.id }}">
             <label for="nx-{{ e.id }}" class="sr-only">Lời nhắn</label>
             <textarea id="nx-{{ e.id }}" name="noi_dung" rows="3" required
@@ -97,6 +98,7 @@
     </div>
 
     <form method="post" action="/giao-vien/hoc-sinh/{{ student.id }}/nhan-xet" class="mt-4">
+      {% include "partials/csrf.html" %}
       <label for="nhan-xet-chung" class="block text-sm font-medium text-ink mb-1">Nhắn chung</label>
       <textarea id="nhan-xet-chung" name="noi_dung" rows="3" required
                 placeholder="Lời nhắn không gắn với bài cụ thể nào."

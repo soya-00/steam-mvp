@@ -15,6 +15,7 @@
     {% include "partials/loi.html" %}
 
     <form method="post" action="/dang-ky" class="mt-5 space-y-4">
+      {% include "partials/csrf.html" %}
       <div>
         <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên của bạn</label>
         <input type="text" id="ten" name="ten" required maxlength="60"

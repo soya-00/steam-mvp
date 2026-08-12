@@ -23,6 +23,7 @@
     </div>
     {% else %}
     <form method="post" action="/dang-ky/giao-vien" class="mt-5 space-y-4">
+      {% include "partials/csrf.html" %}
       <div>
         <label for="ten" class="block text-sm font-medium text-ink mb-1">Họ và tên</label>
         <input type="text" id="ten" name="ten" required maxlength="60"

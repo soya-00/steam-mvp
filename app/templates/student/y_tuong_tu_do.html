@@ -5,6 +5,7 @@
 {% if history %}
 <form method="post" action="/ho-so/y-tuong-tu-do/xoa-lich-su"
       onsubmit="return confirm('Bắt đầu trang mới? Cuộc trò chuyện này sẽ được dọn đi, những ý tưởng bạn đã thêm vào hồ sơ vẫn được giữ lại.')">
+  {% include "partials/csrf.html" %}
   <button type="submit" class="text-sm font-semibold text-ink-soft hover:text-ink">
     <span aria-hidden="true">+</span> Trang mới
   </button>
