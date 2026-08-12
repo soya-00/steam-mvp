@@ -23,10 +23,14 @@ def over_https(request: Request) -> bool:
     return request.url.scheme == "https"
 
 
-def set_session(request: Request, response, user_id: int) -> None:
+def _pw_stamp(user) -> str:
+    return user.password_changed_at.isoformat() if user and user.password_changed_at else ""
+
+
+def set_session(request: Request, response, user_id: int, user=None) -> None:
     response.set_cookie(
         SESSION_COOKIE,
-        _serializer.dumps({"uid": user_id}),
+        _serializer.dumps({"uid": user_id, "pw": _pw_stamp(user)}),
         httponly=True,
         samesite="lax",
         secure=over_https(request),
@@ -38,23 +42,37 @@ def clear_session(response) -> None:
     response.delete_cookie(SESSION_COOKIE)
 
 
-def _user_id_from_request(request: Request) -> int | None:
+def _payload(request: Request) -> dict:
     raw = request.cookies.get(SESSION_COOKIE)
     if not raw:
-        return None
+        return {}
     try:
-        return _serializer.loads(raw).get("uid")
+        data = _serializer.loads(raw)
     except BadSignature:
-        return None
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _user_id_from_request(request: Request) -> int | None:
+    return _payload(request).get("uid")
 
 
 def get_current_user(
     request: Request, db: Session = Depends(get_db)
 ) -> User | None:
-    uid = _user_id_from_request(request)
+    data = _payload(request)
+    uid = data.get("uid")
     if uid is None:
         return None
-    return db.get(User, uid)
+    user = db.get(User, uid)
+    if user is None:
+        return None
+    # Cookie phát trước lần đổi mật khẩu gần nhất coi như hết giá trị. Đây là
+    # cách duy nhất đuổi được kẻ đang giữ phiên cũ, vì cookie đã ký thì không
+    # thu hồi từ phía máy chủ được.
+    if data.get("pw", "") != _pw_stamp(user):
+        return None
+    return user
 
 
 def session_key(request: Request) -> str:

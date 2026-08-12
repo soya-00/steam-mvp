@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, Form, Request
@@ -20,6 +21,8 @@ from app.accounts import (
     parse_age,
 )
 from app.auth import clear_session, get_current_user, set_session
+from app.dat_lai import dat_lai, doc_ve, tao_ve, than_thu
+from app.mail import gui as gui_thu
 from app.oauth import bat as oauth_bat
 from app.oauth import dang_bat as oauth_dang_bat
 from app.oauth import doc_userinfo, noi_tai_khoan
@@ -30,6 +33,8 @@ from app.scenarios import all_scenarios
 from app.schools import truong_dang_nhan, truong_theo_ma
 from app.security import hash_password, needs_rehash, verify_password
 from app.templating import templates
+
+log = logging.getLogger("gals.auth")
 
 router = APIRouter()
 
@@ -50,7 +55,7 @@ templates.env.globals["avatar_emoji"] = AVATAR_EMOJI
 
 def _signed_in(request: Request, user: User, destination: str) -> RedirectResponse:
     response = RedirectResponse(destination, status_code=303)
-    set_session(request, response, user.id)
+    set_session(request, response, user.id, user)
     return response
 
 
@@ -221,6 +226,77 @@ def signup_submit(
         _join_class(db, user, code)
 
     return _signed_in(request, user, "/chon-avatar")
+
+
+@router.get("/quen-mat-khau", response_class=HTMLResponse)
+def forgot_form(request: Request, loi: str = "", da_gui: str = ""):
+    return templates.TemplateResponse(
+        request,
+        "auth/quen_mat_khau.html",
+        {"user": None, "loi": message_for(loi), "da_gui": bool(da_gui)},
+    )
+
+
+@router.post("/quen-mat-khau")
+def forgot_submit(
+    request: Request,
+    email: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    address = normalise_email(email)
+    key = f"quen:ip:{_client_ip(request)}"
+    if throttle.blocked(key):
+        return RedirectResponse("/quen-mat-khau?loi=thu_lai_sau", status_code=303)
+    throttle.record_failure(key)
+
+    user = find_by_email(db, address)
+    if user is not None:
+        token = tao_ve(db, user)
+        lien_ket = str(request.url_for("reset_form")) + f"?token={token}"
+        tieu_de, than = than_thu(lien_ket)
+        if not gui_thu(user.email, tieu_de, than):
+            # Chưa cấu hình dịch vụ thư. Vé vẫn có thật, và
+            # `python -m app.quan_tri dat-lai <email>` in lại được liên kết.
+            log.warning("Không gửi được thư đặt lại mật khẩu cho user id=%s.", user.id)
+
+    # Trả lời y hệt nhau dù địa chỉ có tồn tại hay không. Trang đăng nhập đã
+    # cẩn thận để không thành công cụ dò email; để lộ ở đây thì công cốc.
+    return RedirectResponse("/quen-mat-khau?da_gui=1", status_code=303)
+
+
+@router.get("/dat-lai-mat-khau", response_class=HTMLResponse, name="reset_form")
+def reset_form(request: Request, token: str = "", loi: str = "", db: Session = Depends(get_db)):
+    return templates.TemplateResponse(
+        request,
+        "auth/dat_lai_mat_khau.html",
+        {
+            "user": None,
+            "token": token,
+            "hop_le": doc_ve(db, token) is not None,
+            "loi": message_for(loi),
+        },
+    )
+
+
+@router.post("/dat-lai-mat-khau")
+def reset_submit(
+    request: Request,
+    token: str = Form(""),
+    mat_khau: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    ve = doc_ve(db, token)
+    if ve is None:
+        return RedirectResponse("/dat-lai-mat-khau?loi=ve_hong", status_code=303)
+    if (problem := check_password(mat_khau)) is not None:
+        return RedirectResponse(
+            f"/dat-lai-mat-khau?token={token}&loi={problem}", status_code=303
+        )
+
+    user = dat_lai(db, ve, mat_khau)
+    # Đăng nhập lại ngay với cookie mang dấu thời gian mới; mọi cookie cũ vừa
+    # hết giá trị, kể cả cookie đang nằm trong tay người chiếm tài khoản.
+    return _signed_in(request, user, _home_for(user))
 
 
 @router.get("/dang-nhap/{provider}")

@@ -124,10 +124,13 @@ def test_no_client_secret_is_ever_committed():
     """Khoá chỉ sống trong bảng biến môi trường của nơi triển khai."""
     import subprocess
 
+    # Ghép từ hai mảnh, nếu không thì chính file này sẽ khớp với chính nó.
+    tien_to = "GOCSPX" + "-"
+
     theo_doi = subprocess.run(
         ["git", "ls-files"], capture_output=True, text=True, check=True
     ).stdout.split()
     for ten in theo_doi:
         if ten.endswith((".py", ".html", ".json", ".yaml", ".yml", ".md")):
             noi_dung = open(ten, encoding="utf-8", errors="ignore").read()
-            assert "GOCSPX-" not in noi_dung, ten  # tiền tố khoá của Google
+            assert tien_to not in noi_dung, ten

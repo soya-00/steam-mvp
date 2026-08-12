@@ -39,6 +39,7 @@ LOI = {
     "ma_giao_vien_sai": "Mã này không dùng được. Nhờ trường liên hệ với GALS để lấy mã mới.",
     "truong_sai": "Bạn chọn trường giúp mình nhé.",
     "chua_dong_y": "Bạn cần đồng ý với hai văn bản trước khi tạo tài khoản.",
+    "ve_hong": "Liên kết này đã hết hạn hoặc đã dùng rồi. Bạn xin liên kết mới nhé.",
 }
 
 

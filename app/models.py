@@ -56,6 +56,10 @@ class User(Base):
     oauth_sub: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # Cookie phiên là chuỗi đã ký, không thu hồi được. Mốc này đi kèm trong
+    # cookie, nên đổi mật khẩu là mọi cookie cũ hết giá trị ngay — nếu không
+    # thì đặt lại mật khẩu sau khi bị chiếm tài khoản chẳng đuổi được ai.
+    password_changed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     memberships: Mapped[list["ClassMembership"]] = relationship(
         back_populates="student", cascade="all, delete-orphan"
@@ -247,3 +251,53 @@ class GuidedSession(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
     student: Mapped["User"] = relationship()
+
+
+class PasswordReset(Base):
+    """Vé đặt lại mật khẩu, chỉ dùng được một lần và sống ba mươi phút.
+
+    Bảng chỉ giữ **bản băm** của vé. Nếu giữ vé gốc thì một lần lộ cơ sở dữ
+    liệu là trao luôn mọi đường đặt lại đang mở.
+    """
+
+    __tablename__ = "password_resets"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class Consent(Base):
+    """Bằng chứng đã đồng ý, chứ không phải một ô tích không để lại dấu vết.
+
+    Không lưu địa chỉ máy: bản thân nó đã là dữ liệu cá nhân, mà cặp
+    phiên bản + thời điểm đã đủ chứng minh đồng ý với đúng văn bản nào.
+    """
+
+    __tablename__ = "consents"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    loai: Mapped[str] = mapped_column(String(30))          # rieng_tu | dieu_khoan
+    phien_ban: Mapped[str] = mapped_column(String(20))
+    dong_y_luc: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+
+class YeuCauXoa(Base):
+    """Yêu cầu xoá tài khoản.
+
+    Học sinh không tự xoá được tài khoản — đó là quyết định có chủ ý. Nhưng
+    quyền được xoá không mất đi vì thế, nên đường đi là một yêu cầu, và việc
+    xoá thật do `python -m app.quan_tri xoa` thực hiện.
+    """
+
+    __tablename__ = "yeu_cau_xoa"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    ly_do: Mapped[str] = mapped_column(Text, default="")
+    tao_luc: Mapped[datetime] = mapped_column(DateTime, default=_now)
+    xu_ly_luc: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
