@@ -81,13 +81,14 @@ def test_the_documents_do_not_still_read_as_placeholders(client):
 def test_the_privacy_policy_states_the_retention_position_plainly(client):
     """Chưa có hạn lưu trữ là điểm yếu thật. Nói ra, chứ không lờ đi."""
     page = client.get("/chinh-sach-rieng-tu").text
-    assert "cho tới khi tài khoản bị xoá" in page
+    assert "lưu trữ cho đến khi tài khoản bị xoá" in page
 
 
 def test_the_privacy_policy_says_what_happens_when_a_school_leaves(client):
     """Câu hỏi đầu tiên một hiệu phó sẽ hỏi."""
     page = client.get("/chinh-sach-rieng-tu").text
-    assert "vẫn thuộc về học sinh" in page
+    assert "vẫn thuộc về từng học sinh" in page
+    assert "quyền truy cập của giáo viên bị thu hồi" in page
 
 
 def test_the_terms_say_gals_is_not_a_counselling_service(client):
@@ -98,7 +99,7 @@ def test_the_terms_say_gals_is_not_a_counselling_service(client):
 
 def test_the_terms_promise_no_training_on_student_writing(client):
     page = client.get("/dieu-khoan").text
-    assert "huấn luyện mô hình AI" in page
+    assert "huấn luyện mô hình trí tuệ nhân tạo" in page
 
 
 def test_the_privacy_page_names_the_same_ai_vendor_as_legal_md(client):
@@ -143,10 +144,10 @@ def test_the_privacy_page_hands_cookies_off_to_the_cookie_policy(client):
 
 def test_the_privacy_page_lists_what_is_stored_about_a_person(client):
     page = client.get("/chinh-sach-rieng-tu").text
-    for thu in ["Tài khoản", "Nhật ký", "Bằng chứng đồng ý"]:
+    for thu in ["Định danh tài khoản", "Nhật ký tư duy", "Bằng chứng đồng ý"]:
         assert thu in page, thu
     # Không lưu IP là một cam kết, nên phải nói ra chứ không chỉ làm thầm.
-    assert "không lưu địa chỉ IP" in page.lower() or "không lưu địa chỉ ip" in page.lower()
+    assert "không lưu trữ địa chỉ ip" in page.lower()
 
 
 def test_the_notice_bar_makes_no_promise_it_cannot_keep(client):

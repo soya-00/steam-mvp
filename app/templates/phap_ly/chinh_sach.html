@@ -1,181 +1,411 @@
 {% extends "base.html" %}
-{% block title %}Chính sách riêng tư — GALS{% endblock %}
+{% block title %}Chính sách bảo vệ dữ liệu cá nhân — GALS{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto prose-doc">
+<div class="max-w-3xl mx-auto prose-doc">
 
-  <h1 class="text-3xl text-ink">Chính sách riêng tư</h1>
+  <h1 class="text-3xl text-ink">Chính sách bảo vệ dữ liệu cá nhân</h1>
   <p class="mt-2 text-sm text-ink-faint">
-    Phiên bản {{ phien_ban_rieng_tu }} · áp dụng cho www.gals.com.vn
+    Phiên bản {{ phien_ban_rieng_tu }} · Có hiệu lực kể từ ngày {{ ngay_hieu_luc }}, và thay
+    thế cho các chính sách đã được công bố trước đó.
   </p>
 
   <p class="mt-5 text-ink-soft">
-    Văn bản này nói thật về những gì GALS lưu, gửi đi đâu, ai đọc được, và bạn
-    làm gì được với dữ liệu của mình. Chỗ nào chúng mình chưa làm được thì cũng
-    ghi rõ là chưa làm được.
+    GALS — nền tảng hướng nghiệp dành cho học sinh trung học phổ thông, vận hành tại địa chỉ
+    <strong>www.gals.com.vn</strong>, do <em>[Cần điền: tên đơn vị vận hành]</em>, trụ sở tại
+    <em>[Cần điền: địa chỉ]</em> (sau đây gọi là <strong>“GALS”</strong>) — hiểu tầm quan
+    trọng của dữ liệu cá nhân mà bạn đã tin tưởng cung cấp. Chính sách bảo vệ dữ liệu cá nhân
+    này (<strong>“Chính sách”</strong>) thể hiện nghĩa vụ tuân thủ của GALS đối với học sinh,
+    giáo viên, nhà trường và bất kỳ cá nhân nào có liên quan đến việc trao đổi hoặc chuyển
+    giao dữ liệu với GALS (sau đây gọi là <strong>“Chủ thể dữ liệu”</strong> hoặc
+    <strong>“Bạn”</strong>).
   </p>
 
-  <h2 class="text-xl text-ink mt-9">1. Ai chịu trách nhiệm</h2>
-  {% include "partials/danh_tinh.html" %}
-  <p class="mt-3 text-ink-soft">
-    Với học sinh tham gia <strong>qua lớp của thầy cô</strong>, nhà trường là
-    <strong>bên kiểm soát dữ liệu</strong> và GALS là <strong>bên xử lý</strong> theo thoả
-    thuận hợp tác. Nhà trường quyết định việc thu thập; chúng mình chỉ chạy phần kỹ thuật.
-    Với người <strong>tự đăng ký</strong>, GALS là bên kiểm soát.
+  <p class="mt-4 text-ink-soft">Với các nội dung chính sau đây:</p>
+  <ul class="mt-2 grid gap-1 text-ink-soft list-none">
+    {% for muc in [
+      ('i', 'I. Quy định chung'),
+      ('ii', 'II. Giải thích từ ngữ'),
+      ('iii', 'III. Dữ liệu cá nhân được thu thập'),
+      ('iv', 'IV. Cách thức thu thập dữ liệu'),
+      ('v', 'V. Xử lý dữ liệu cá nhân'),
+      ('vi', 'VI. Hậu quả, thiệt hại không mong muốn có thể xảy ra'),
+      ('vii', 'VII. Chuyển dữ liệu cá nhân xuyên biên giới'),
+      ('viii', 'VIII. Quyền và nghĩa vụ của chủ thể dữ liệu'),
+      ('ix', 'IX. Người tiêu dùng dễ bị tổn thương'),
+      ('x', 'X. Thông tin về trẻ em'),
+      ('xi', 'XI. Cập nhật, sửa đổi chính sách'),
+      ('xii', 'XII. Liên hệ với GALS')
+    ] %}
+    <li><a href="#{{ muc[0] }}" class="text-teal hover:underline">{{ muc[1] }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <p class="mt-4 text-ink-soft">
+    Vui lòng đọc kỹ Chính sách này trước khi cung cấp dữ liệu cá nhân cho GALS, để đảm bảo
+    bạn hiểu được cách GALS thu thập, sử dụng, chia sẻ, chuyển giao, lưu trữ và các hoạt động
+    khác có liên quan đến xử lý dữ liệu cá nhân mà bạn đã cung cấp ở thời điểm hiện tại hoặc
+    trong tương lai.
   </p>
 
-  <h2 class="text-xl text-ink mt-9">2. Chúng mình lưu những gì</h2>
+  <h2 id="i" class="text-xl text-ink mt-10 scroll-mt-20">I. QUY ĐỊNH CHUNG</h2>
+  <p class="mt-2 text-ink-soft"><strong>1.1</strong> Chính sách này nhằm đáp ứng yêu cầu của
+    pháp luật Việt Nam về bảo vệ dữ liệu cá nhân, có thể được cập nhật hoặc thay thế trong
+    từng thời kỳ. Với bất kỳ cập nhật nào khác với phiên bản này, GALS sẽ thực hiện thông báo
+    công khai trên www.gals.com.vn.</p>
+  <p class="mt-2 text-ink-soft"><strong>1.2</strong> Chính sách này là một phần không thể
+    tách rời của thoả thuận giữa GALS và Chủ thể dữ liệu, được áp dụng cùng với
+    <a href="/dieu-khoan" class="text-teal hover:underline">Điều khoản sử dụng</a>,
+    <a href="/chinh-sach-cookie" class="text-teal hover:underline">Chính sách cookie</a> và
+    các thoả thuận hợp tác đã ký với nhà trường.</p>
+  <p class="mt-2 text-ink-soft"><strong>1.3</strong> Bằng việc đăng ký tài khoản, tham gia
+    lớp học bằng mã lớp và/hoặc truy cập nền tảng của GALS, bạn xác nhận đã đọc, hiểu và đồng
+    ý cho GALS thu thập, sử dụng và xử lý dữ liệu cá nhân của bạn như mô tả tại Chính sách
+    này. Việc đồng ý được ghi nhận cùng với phiên bản văn bản và thời điểm đồng ý.</p>
+  <p class="mt-2 text-ink-soft">TRONG TRƯỜNG HỢP TỪ CHỐI VIỆC XỬ LÝ DỮ LIỆU CÁ NHÂN ĐƯỢC MÔ
+    TẢ TẠI CHÍNH SÁCH NÀY, VUI LÒNG LIÊN HỆ VỚI GALS QUA info@gals.com.vn.</p>
+  <p class="mt-2 text-ink-soft"><strong>1.4</strong> Phạm vi áp dụng bao gồm:</p>
+  <ul class="mt-2 grid gap-1.5 text-ink-soft list-disc list-inside">
+    <li>Học sinh tự đăng ký tài khoản trên nền tảng;</li>
+    <li>Học sinh tham gia thông qua lớp học do nhà trường đối tác tổ chức;</li>
+    <li>Giáo viên được nhà trường đối tác cấp quyền sử dụng;</li>
+    <li>Hoạt động xử lý bao gồm: đăng ký và xác thực tài khoản, lưu trữ bài làm và nhật ký tư
+      duy, quản lý lớp học, nhận xét của giáo viên, cookie kỹ thuật, và việc gọi dịch vụ trí
+      tuệ nhân tạo của bên thứ ba để sinh câu hỏi gợi mở.</li>
+  </ul>
+  <p class="mt-2 text-ink-soft"><strong>1.5</strong> GALS cam kết tuân thủ các nguyên tắc sau
+    khi xử lý dữ liệu cá nhân:</p>
+  <ul class="mt-2 grid gap-1.5 text-ink-soft list-none pl-4">
+    <li>a. Thu thập đúng mục đích cụ thể, rõ ràng, hợp pháp, trong phạm vi các mục đích nêu
+      tại Chính sách này;</li>
+    <li>b. Chỉ thu thập dữ liệu ở mức tối thiểu cần thiết cho mục đích giáo dục của nền tảng;</li>
+    <li>c. Bảo đảm tính chính xác của dữ liệu và cho phép Chủ thể dữ liệu chỉnh sửa, cập nhật;</li>
+    <li>d. Áp dụng và cập nhật các biện pháp kỹ thuật để bảo vệ dữ liệu;</li>
+    <li>đ. Lưu trữ trong phạm vi cần thiết và phù hợp với mục đích xử lý;</li>
+    <li>e. Tuân thủ đầy đủ các quy định về bảo vệ dữ liệu cá nhân của trẻ em, do phần lớn Chủ
+      thể dữ liệu của GALS là người chưa thành niên.</li>
+  </ul>
+
+  <h2 id="ii" class="text-xl text-ink mt-10 scroll-mt-20">II. GIẢI THÍCH TỪ NGỮ</h2>
+  <p class="mt-2 text-ink-soft"><strong>2.1 “Dữ liệu cá nhân”</strong> là dữ liệu số hoặc
+    thông tin dưới dạng khác xác định hoặc giúp xác định một con người cụ thể, bao gồm dữ
+    liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.2 “Xử lý dữ liệu cá nhân”</strong> là hoạt động tác
+    động đến dữ liệu cá nhân, bao gồm thu thập, phân tích, mã hoá, chỉnh sửa, xoá, huỷ, khử
+    nhận dạng, cung cấp, công khai, chuyển giao và các hoạt động khác.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.3 “Chủ thể dữ liệu cá nhân”</strong> là người được
+    dữ liệu cá nhân phản ánh.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.4 “Bên kiểm soát dữ liệu cá nhân”</strong> là tổ
+    chức, cá nhân quyết định mục đích và phương tiện xử lý dữ liệu cá nhân.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.5 “Bên xử lý dữ liệu cá nhân”</strong> là tổ chức,
+    cá nhân thực hiện việc xử lý dữ liệu theo yêu cầu của Bên kiểm soát thông qua hợp đồng.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.6 “Bên thứ ba”</strong> là tổ chức, cá nhân ngoài
+    Chủ thể dữ liệu, Bên kiểm soát và Bên xử lý, tham gia vào việc xử lý dữ liệu cá nhân.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.7 “Trẻ em”</strong> là người dưới 16 tuổi theo quy
+    định của Luật Trẻ em.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.8 “Nhật ký tư duy”</strong> là phần văn bản do học
+    sinh tự viết trong quá trình xử lý tình huống nghề nghiệp trên nền tảng, chưa được nộp
+    hoặc chia sẻ.</p>
+  <p class="mt-2 text-ink-soft"><strong>2.9 “Mã lớp”</strong> là chuỗi ký tự do giáo viên cấp
+    cho học sinh để tham gia một lớp học trên nền tảng.
+    <strong>“Mã giáo viên”</strong> là chuỗi ký tự có thời hạn do GALS cấp cho nhà trường đối
+    tác để giáo viên của trường đó tạo tài khoản.</p>
+
+  <h2 id="iii" class="text-xl text-ink mt-10 scroll-mt-20">III. DỮ LIỆU CÁ NHÂN ĐƯỢC THU THẬP</h2>
+  <p class="mt-2 text-ink-soft"><strong>3.1</strong> GALS
+    <strong>không thu thập dữ liệu cá nhân nhạy cảm</strong> theo quy định của pháp luật. Cụ
+    thể, GALS không thu thập số căn cước công dân, dữ liệu sinh trắc học, tình trạng sức
+    khoẻ, quan điểm chính trị hay tôn giáo, dữ liệu tài chính, hay vị trí địa lý.</p>
+  <p class="mt-2 text-ink-soft"><strong>3.2</strong> Dữ liệu cá nhân cơ bản được thu thập:</p>
   <div class="mt-3 overflow-x-auto">
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-hairline text-left">
-          <th class="py-2 pr-3 font-semibold text-ink">Nhóm dữ liệu</th>
-          <th class="py-2 pr-3 font-semibold text-ink">Cụ thể là gì</th>
-          <th class="py-2 font-semibold text-ink">Vì sao cần</th>
+          <th class="py-2 pr-3 font-semibold text-ink">Loại dữ liệu</th>
+          <th class="py-2 pr-3 font-semibold text-ink">Nội dung</th>
+          <th class="py-2 font-semibold text-ink">Bắt buộc</th>
         </tr>
       </thead>
       <tbody class="text-ink-soft">
         <tr class="border-b border-hairline">
-          <td class="py-2 pr-3 align-top">Tài khoản</td>
-          <td class="py-2 pr-3 align-top">Tên hiển thị, email, mật khẩu đã băm, ảnh đại diện, tuổi tự khai</td>
-          <td class="py-2 align-top">Để bạn đăng nhập lại được và thầy cô biết ai là ai trong lớp</td>
+          <td class="py-2 pr-3 align-top">Định danh tài khoản</td>
+          <td class="py-2 pr-3 align-top">Tên hiển thị, địa chỉ thư điện tử, ảnh đại diện
+            (chọn từ danh sách có sẵn)</td>
+          <td class="py-2 align-top">Có</td>
         </tr>
         <tr class="border-b border-hairline">
-          <td class="py-2 pr-3 align-top">Bài làm trong tình huống</td>
-          <td class="py-2 pr-3 align-top">Câu trả lời bạn viết, sản phẩm cuối, phần bạn nộp</td>
-          <td class="py-2 align-top">Là nội dung chính của việc học; thầy cô lớp bạn đọc được phần này</td>
+          <td class="py-2 pr-3 align-top">Xác thực</td>
+          <td class="py-2 pr-3 align-top">Mật khẩu ở dạng đã băm bằng thuật toán Argon2id.
+            GALS <strong>không lưu mật khẩu ở dạng đọc được</strong> và không thể khôi phục
+            mật khẩu gốc.</td>
+          <td class="py-2 align-top">Có</td>
         </tr>
         <tr class="border-b border-hairline">
-          <td class="py-2 pr-3 align-top">Nhật ký và ý tưởng tự do</td>
-          <td class="py-2 pr-3 align-top">Phần bạn viết cho riêng mình, chưa nộp</td>
-          <td class="py-2 align-top">Của riêng bạn. Không ai đọc trừ khi bạn nộp hoặc chia sẻ</td>
+          <td class="py-2 pr-3 align-top">Độ tuổi tự khai</td>
+          <td class="py-2 pr-3 align-top">Số tuổi do người dùng tự nhập, dùng để định tuyến
+            người dưới 16 tuổi sang con đường tham gia qua nhà trường</td>
+          <td class="py-2 align-top">Có</td>
         </tr>
         <tr class="border-b border-hairline">
-          <td class="py-2 pr-3 align-top">Lớp học</td>
-          <td class="py-2 pr-3 align-top">Bạn thuộc lớp nào, thầy cô giao gì, nhận xét của thầy cô</td>
-          <td class="py-2 align-top">Để lớp chạy được</td>
+          <td class="py-2 pr-3 align-top">Nội dung do người dùng tạo</td>
+          <td class="py-2 pr-3 align-top">Câu trả lời trong tình huống, sản phẩm cuối, nhật ký
+            tư duy, mục hồ sơ năng lực</td>
+          <td class="py-2 align-top">Phát sinh khi sử dụng</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top">Dữ liệu lớp học</td>
+          <td class="py-2 pr-3 align-top">Lớp đang tham gia, nhiệm vụ được giao, nhận xét của
+            giáo viên</td>
+          <td class="py-2 align-top">Chỉ khi tham gia lớp</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top">Dữ liệu vận hành</td>
+          <td class="py-2 pr-3 align-top">Thời điểm tạo tài khoản, thời điểm đăng nhập gần
+            nhất, thời điểm hoạt động trên từng tình huống</td>
+          <td class="py-2 align-top">Tự động</td>
         </tr>
         <tr>
           <td class="py-2 pr-3 align-top">Bằng chứng đồng ý</td>
-          <td class="py-2 pr-3 align-top">Bạn đã đồng ý với bản nào của văn bản nào, vào lúc nào</td>
-          <td class="py-2 align-top">Luật đòi hỏi chứng minh được là đã có đồng ý</td>
+          <td class="py-2 pr-3 align-top">Loại văn bản, phiên bản và thời điểm Chủ thể dữ
+            liệu đã đồng ý</td>
+          <td class="py-2 align-top">Tự động</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <p class="mt-3 text-ink-soft">
-    <strong>Chúng mình không lưu địa chỉ IP của bạn</strong>, không có công cụ đo lường,
-    không có quảng cáo, và không bán dữ liệu cho ai.
-  </p>
-  <p class="mt-2 text-ink-soft">
-    Mật khẩu được băm bằng Argon2id. Kể cả người trong nhóm cũng không đọc lại được mật
-    khẩu của bạn — nếu quên thì phải đặt lại chứ không ai tra ra được.
-  </p>
+  <p class="mt-3 text-ink-soft"><strong>3.3</strong> GALS
+    <strong>không thu thập và không lưu trữ địa chỉ IP</strong> của Chủ thể dữ liệu, không sử
+    dụng công cụ đo lường hành vi, không sử dụng cookie quảng cáo, và không tích hợp mã theo
+    dõi của bên thứ ba.</p>
+  <p class="mt-2 text-ink-soft"><strong>3.4</strong> Các tình huống nghề nghiệp trên nền tảng
+    sử dụng số liệu giả định. Chủ thể dữ liệu
+    <strong>không được nhập dữ liệu cá nhân của người thứ ba</strong> vào phần nội dung tự
+    viết. GALS có áp dụng bộ lọc kỹ thuật nhưng bộ lọc này không thay thế được nghĩa vụ nêu
+    trên của Chủ thể dữ liệu.</p>
 
-  <h2 class="text-xl text-ink mt-9">3. Đừng nhập thông tin thật của người khác</h2>
-  <p class="mt-2 text-ink-soft">
-    Các tình huống trong GALS là giả định. Khi viết, bạn đừng nhập tên thật, số điện thoại,
-    địa chỉ hay chuyện riêng của bạn bè, người thân hay ai khác. Có bộ lọc chặn một phần,
-    nhưng bộ lọc không thay được sự cẩn thận của bạn.
-  </p>
+  <h2 id="iv" class="text-xl text-ink mt-10 scroll-mt-20">IV. CÁCH THỨC THU THẬP DỮ LIỆU</h2>
+  <p class="mt-2 text-ink-soft"><strong>4.1 Từ biểu mẫu đăng ký:</strong> khi Chủ thể dữ liệu
+    tạo tài khoản trên www.gals.com.vn.</p>
+  <p class="mt-2 text-ink-soft"><strong>4.2 Trong quá trình sử dụng dịch vụ:</strong> nội dung
+    Chủ thể dữ liệu tự viết khi thực hiện các tình huống nghề nghiệp.</p>
+  <p class="mt-2 text-ink-soft"><strong>4.3 Từ nhà trường đối tác:</strong> khi giáo viên tạo
+    lớp học và cấp mã lớp cho học sinh. Trong trường hợp này, nhà trường bảo đảm đã hoàn tất
+    thủ tục xin ý kiến cha, mẹ hoặc người giám hộ theo quy định.</p>
+  <p class="mt-2 text-ink-soft"><strong>4.4 Từ nhà cung cấp dịch vụ đăng nhập:</strong> nếu
+    Chủ thể dữ liệu chọn đăng nhập bằng tài khoản Google hoặc Microsoft, GALS tiếp nhận định
+    danh ổn định, địa chỉ thư điện tử và tên hiển thị từ nhà cung cấp đó. GALS
+    <strong>không nhận và không lưu mật khẩu</strong> của các tài khoản này.</p>
+  <p class="mt-2 text-ink-soft"><strong>4.5 Từ cookie kỹ thuật:</strong> chi tiết tại
+    <a href="/chinh-sach-cookie" class="text-teal hover:underline">Chính sách cookie</a>.</p>
 
-  <h2 class="text-xl text-ink mt-9">4. Ai đọc được bài của bạn</h2>
-  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
-    <li><strong>Bạn</strong> — toàn bộ, lúc nào cũng được.</li>
-    <li><strong>Thầy cô lớp bạn</strong> — chỉ khi bạn đã vào lớp bằng mã lớp, và chỉ phần
-      bạn nộp. Rời lớp thì thầy cô không đọc được nữa.</li>
-    <li><strong>Người có đường dẫn chia sẻ</strong> — chỉ những mục bạn tự bấm chia sẻ.
-      Đường dẫn khó đoán nhưng ai có nó cũng xem được, kể cả người không đăng nhập.
-      Bạn tắt chia sẻ lúc nào cũng được.</li>
-    <li><strong>Nhóm vận hành GALS</strong> — chỉ khi cần sửa lỗi kỹ thuật, và chỉ đúng
-      phần liên quan.</li>
+  <h2 id="v" class="text-xl text-ink mt-10 scroll-mt-20">V. XỬ LÝ DỮ LIỆU CÁ NHÂN</h2>
+  <p class="mt-3 text-ink font-semibold">5.1 Mục đích xử lý dữ liệu cá nhân</p>
+  <ul class="mt-2 grid gap-1.5 text-ink-soft list-none pl-4">
+    <li>a. Tạo, xác thực và quản lý tài khoản của Chủ thể dữ liệu;</li>
+    <li>b. Lưu trữ và hiển thị lại nội dung do Chủ thể dữ liệu tạo ra, phục vụ mục đích học tập;</li>
+    <li>c. Vận hành lớp học: giao nhiệm vụ, theo dõi tiến độ ở mức tổng hợp, và truyền đạt
+      nhận xét của giáo viên;</li>
+    <li>d. Sinh câu hỏi gợi mở bằng dịch vụ trí tuệ nhân tạo của bên thứ ba;</li>
+    <li>đ. Bảo đảm an toàn thông tin: phát hiện và ngăn chặn truy cập trái phép, dò mật khẩu,
+      và sử dụng sai mã giáo viên;</li>
+    <li>e. Thực hiện nghĩa vụ pháp lý và cung cấp thông tin theo yêu cầu hợp pháp của cơ quan
+      nhà nước có thẩm quyền.</li>
   </ul>
-  <p class="mt-3 text-ink-soft">
-    <strong>Không có bảng xếp hạng, không có điểm số, không có so sánh giữa các bạn.</strong>
-    Học sinh trong cùng một lớp không đọc được bài của nhau.
-  </p>
+  <p class="mt-3 text-ink-soft">GALS <strong>không</strong> sử dụng dữ liệu cá nhân cho mục
+    đích quảng cáo, tiếp thị, chấm điểm, xếp hạng học sinh, hoặc bán cho bất kỳ bên nào.</p>
 
-  <h2 class="text-xl text-ink mt-9">5. Dữ liệu có ra khỏi Việt Nam không</h2>
-  <p class="mt-2 text-ink-soft">
-    Có, một phần. Khi bạn dùng trợ lý AI, <strong>câu hỏi hiện tại và câu trả lời hiện tại
-    của bạn</strong> được gửi tới <strong>OpenAI</strong>, nhà cung cấp đặt tại Hoa Kỳ, để
-    sinh câu hỏi gợi mở tiếp theo. Chỉ hai thứ đó — không gửi cả cuốn nhật ký, không gửi
-    tên, không gửi email.
-  </p>
-  <p class="mt-2 text-ink-soft">
-    Đây là <strong>chuyển dữ liệu cá nhân ra nước ngoài</strong> theo Nghị định 356/2025.
-    Khi máy chủ không có khoá API, GALS chạy hoàn toàn ngoại tuyến bằng kịch bản dựng sẵn
-    và <strong>không gửi gì đi đâu cả</strong>.
-  </p>
-  <p class="mt-2 text-ink-soft">
-    <em>[Cần điền: tình trạng hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài.]</em>
-  </p>
+  <p class="mt-4 text-ink font-semibold">5.2 Cung cấp dữ liệu cá nhân</p>
+  <p class="mt-2 text-ink-soft">Dữ liệu cá nhân có thể được cung cấp cho các bên sau, trong
+    phạm vi cần thiết:</p>
+  <ol class="mt-2 grid gap-1.5 text-ink-soft list-decimal list-inside">
+    <li><strong>Giáo viên của lớp học mà Chủ thể dữ liệu đã tham gia</strong> — chỉ với phần
+      nội dung đã nộp. Giáo viên không truy cập được nhật ký tư duy chưa nộp, và không truy
+      cập được dữ liệu của lớp do giáo viên khác phụ trách.</li>
+    <li><strong>Nhà trường đối tác</strong> — với tư cách Bên kiểm soát dữ liệu đối với học
+      sinh tham gia qua lớp học.</li>
+    <li><strong>Nhà cung cấp dịch vụ trí tuệ nhân tạo</strong> — xem Mục VII.</li>
+    <li><strong>Nhà cung cấp hạ tầng máy chủ và cơ sở dữ liệu</strong>, trên cơ sở hợp đồng có
+      điều khoản bảo mật.</li>
+    <li><strong>Nhà cung cấp dịch vụ thư điện tử giao dịch</strong>, chỉ với địa chỉ thư điện
+      tử, và chỉ khi Chủ thể dữ liệu yêu cầu đặt lại mật khẩu.</li>
+    <li><strong>Cơ quan nhà nước có thẩm quyền</strong>, khi có yêu cầu hợp pháp.</li>
+  </ol>
+  <p class="mt-2 text-ink-soft">Học sinh trong cùng một lớp
+    <strong>không truy cập được dữ liệu của nhau</strong>. Nền tảng không có bảng xếp hạng,
+    không có điểm số và không có chức năng so sánh giữa các Chủ thể dữ liệu.</p>
+  <p class="mt-2 text-ink-soft">Trường hợp Chủ thể dữ liệu chủ động sử dụng chức năng chia sẻ
+    một mục hồ sơ, mục đó sẽ truy cập được qua một đường dẫn công khai khó đoán mà
+    <strong>không yêu cầu đăng nhập</strong>. Chủ thể dữ liệu có quyền huỷ chia sẻ bất kỳ lúc
+    nào.</p>
 
-  <h2 class="text-xl text-ink mt-9">6. Cookie</h2>
-  <p class="mt-2 text-ink-soft">
-    GALS chỉ dùng cookie thiết yếu — không có cookie theo dõi hay quảng cáo. Chi tiết từng
-    cookie nằm ở <a href="/chinh-sach-cookie" class="font-medium text-teal hover:underline">Chính
-    sách cookie</a>.
-  </p>
+  <p class="mt-4 text-ink font-semibold">5.3 Cách thức xử lý</p>
+  <p class="mt-2 text-ink-soft">Dữ liệu được xử lý bằng phương thức tự động trên hệ thống máy
+    chủ của GALS. Mật khẩu được băm bằng Argon2id. Kết nối giữa trình duyệt và máy chủ được
+    mã hoá bằng HTTPS. Hệ thống áp dụng cơ chế chống giả mạo yêu cầu liên trang và giới hạn
+    số lần thử đăng nhập.</p>
 
-  <h2 class="text-xl text-ink mt-9">7. Giữ trong bao lâu</h2>
-  <p class="mt-2 text-ink-soft">
-    Hiện tại GALS <strong>giữ dữ liệu cho tới khi tài khoản bị xoá</strong>. Chưa có cơ chế
-    tự động xoá tài khoản lâu không dùng.
-  </p>
-  <p class="mt-2 text-ink-soft">
-    Nói thẳng: đây là điểm yếu nhất của văn bản này, và chúng mình biết. Khi có đủ người
-    dùng thật để biết một khoảng thời gian hợp lý là bao lâu, chúng mình sẽ đặt hạn lưu trữ
-    và báo trước khi áp dụng.
-  </p>
+  <p class="mt-4 text-ink font-semibold">5.4 Thời gian xử lý và lưu trữ</p>
+  <p class="mt-2 text-ink-soft">GALS bắt đầu xử lý dữ liệu cá nhân kể từ thời điểm Chủ thể dữ
+    liệu cung cấp và <strong>lưu trữ cho đến khi tài khoản bị xoá</strong>. GALS hiện chưa áp
+    dụng thời hạn lưu trữ tự động. Khi thời hạn này được xác lập, GALS sẽ thông báo công khai
+    trước khi áp dụng theo Mục XI.</p>
 
-  <h2 class="text-xl text-ink mt-9">8. Quyền của bạn</h2>
-  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
-    <li><strong>Xem và tải về</strong> — nút tải dữ liệu trong trang tài khoản, ra tệp đọc được.</li>
-    <li><strong>Sửa</strong> — đổi tên hiển thị và ảnh đại diện bất cứ lúc nào.</li>
-    <li><strong>Xoá</strong> — gửi yêu cầu trong trang tài khoản. Bạn không tự bấm xoá được,
-      để tránh xoá nhầm thứ không dựng lại được; chúng mình xoá vĩnh viễn rồi báo lại. Đổi ý
-      thì huỷ yêu cầu được.</li>
-    <li><strong>Rút lại đồng ý</strong> — rời lớp thì thầy cô không còn đọc được bài của bạn.</li>
-    <li><strong>Khiếu nại</strong> — gửi về info@gals.com.vn. Nếu không hài lòng với cách
-      chúng mình xử lý, bạn có quyền khiếu nại lên cơ quan quản lý nhà nước có thẩm quyền.</li>
+  <p class="mt-4 text-ink font-semibold">5.5 Chấm dứt hợp tác với nhà trường</p>
+  <p class="mt-2 text-ink-soft">Khi thoả thuận hợp tác giữa GALS và một nhà trường chấm dứt,
+    các lớp học của nhà trường đó được đóng lại và
+    <strong>quyền truy cập của giáo viên bị thu hồi</strong>.</p>
+  <p class="mt-2 text-ink-soft">Bài làm, nhật ký tư duy và hồ sơ năng lực
+    <strong>vẫn thuộc về từng học sinh</strong> và được giữ nguyên trong tài khoản cá nhân của
+    học sinh đó. Nội dung do học sinh tạo ra không phải là tài sản của nhà trường và không bị
+    xoá theo việc chấm dứt hợp tác.</p>
+
+  <h2 id="vi" class="text-xl text-ink mt-10 scroll-mt-20">VI. HẬU QUẢ, THIỆT HẠI KHÔNG MONG
+    MUỐN CÓ THỂ XẢY RA</h2>
+  <p class="mt-2 text-ink-soft"><strong>6.1</strong> GALS nhận thức được trách nhiệm bảo vệ
+    dữ liệu cá nhân và cam kết áp dụng các biện pháp kỹ thuật phù hợp. Tuy nhiên, không hệ
+    thống nào an toàn tuyệt đối. Các rủi ro có thể xảy ra bao gồm:</p>
+  <ul class="mt-2 grid gap-1.5 text-ink-soft list-disc list-inside">
+    <li>Truy cập trái phép vào tài khoản do Chủ thể dữ liệu để lộ mật khẩu hoặc dùng chung
+      thiết bị;</li>
+    <li>Nội dung đã được chia sẻ công khai theo lựa chọn của Chủ thể dữ liệu bị sao chép, lưu
+      lại hoặc phát tán bởi người có đường dẫn;</li>
+    <li>Sự cố kỹ thuật tại nhà cung cấp hạ tầng dẫn đến gián đoạn hoặc mất dữ liệu;</li>
+    <li>Bản dữ liệu tổng hợp mà giáo viên đã tải xuống thiết bị cá nhân nằm ngoài phạm vi
+      kiểm soát kỹ thuật của GALS kể từ thời điểm tải.</li>
   </ul>
+  <p class="mt-2 text-ink-soft"><strong>6.2</strong> GALS
+    <strong>hiện chưa có cơ chế sao lưu định kỳ</strong>. Chủ thể dữ liệu được khuyến nghị sử
+    dụng chức năng tải dữ liệu về đối với các nội dung quan trọng.</p>
+  <p class="mt-2 text-ink-soft"><strong>6.3</strong> Khi xảy ra sự cố xâm phạm dữ liệu cá
+    nhân, GALS sẽ thông báo cho Chủ thể dữ liệu bị ảnh hưởng, nhà trường có liên quan và cơ
+    quan nhà nước có thẩm quyền theo quy định của pháp luật.</p>
+
+  <h2 id="vii" class="text-xl text-ink mt-10 scroll-mt-20">VII. CHUYỂN DỮ LIỆU CÁ NHÂN XUYÊN
+    BIÊN GIỚI</h2>
+  <p class="mt-2 text-ink-soft"><strong>7.1</strong> Khi Chủ thể dữ liệu sử dụng chức năng trợ
+    lý trí tuệ nhân tạo, <strong>câu hỏi hiện tại và câu trả lời hiện tại</strong> được chuyển
+    tới máy chủ của nhà cung cấp dịch vụ đặt ngoài lãnh thổ nước Cộng hoà xã hội chủ nghĩa
+    Việt Nam để sinh câu hỏi gợi mở tiếp theo.</p>
+  <p class="mt-2 text-ink-soft"><strong>7.2</strong> Nhà cung cấp được sử dụng là
+    <strong>OpenAI</strong> (Hoa Kỳ). Trong giai đoạn chuyển đổi kỹ thuật hiện tại, dữ liệu có
+    thể được xử lý bởi <strong>Google LLC</strong> (dịch vụ Gemini API, Hoa Kỳ). Chính sách
+    này sẽ được cập nhật khi việc chuyển đổi hoàn tất.</p>
+  <p class="mt-2 text-ink-soft"><strong>7.3</strong> Phạm vi dữ liệu chuyển đi được giới hạn ở
+    mức tối thiểu: <strong>không chuyển</strong> tên, địa chỉ thư điện tử, định danh tài
+    khoản, toàn bộ nhật ký tư duy, hay bất kỳ dữ liệu nào về lớp học.</p>
+  <p class="mt-2 text-ink-soft"><strong>7.4</strong> Trường hợp hệ thống không được cấu hình
+    khoá truy cập dịch vụ trí tuệ nhân tạo, nền tảng hoạt động hoàn toàn bằng kịch bản dựng
+    sẵn và <strong>không phát sinh chuyển dữ liệu ra nước ngoài</strong>.</p>
+  <p class="mt-2 text-ink-soft"><strong>7.5</strong> <em>[Cần điền: tình trạng lập và gửi Hồ
+    sơ đánh giá tác động chuyển dữ liệu cá nhân ra nước ngoài tới cơ quan có thẩm quyền.]</em></p>
+
+  <h2 id="viii" class="text-xl text-ink mt-10 scroll-mt-20">VIII. QUYỀN VÀ NGHĨA VỤ CỦA CHỦ
+    THỂ DỮ LIỆU</h2>
+  <p class="mt-3 text-ink font-semibold">8.1 Quyền của Chủ thể dữ liệu</p>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li><strong>Quyền được biết:</strong> được thông tin về hoạt động xử lý dữ liệu cá nhân
+      của mình. Chính sách này nhằm bảo đảm tính minh bạch đó.</li>
+    <li><strong>Quyền đồng ý và rút lại sự đồng ý:</strong> Chủ thể dữ liệu tham gia qua lớp
+      học có thể rút lại sự đồng ý đối với việc giáo viên truy cập bài làm bằng cách rời khỏi
+      lớp.</li>
+    <li><strong>Quyền truy cập và mang dữ liệu đi:</strong> tải toàn bộ dữ liệu của mình dưới
+      dạng tệp đọc được, tại trang tài khoản.</li>
+    <li><strong>Quyền chỉnh sửa:</strong> sửa tên hiển thị và ảnh đại diện bất kỳ lúc nào.</li>
+    <li><strong>Quyền xoá dữ liệu:</strong> gửi yêu cầu xoá tài khoản tại trang tài khoản
+      hoặc qua info@gals.com.vn. Chức năng xoá tức thời không được cung cấp nhằm phòng ngừa
+      việc xoá nhầm dữ liệu không thể khôi phục; GALS thực hiện xoá vĩnh viễn và thông báo
+      lại. Chủ thể dữ liệu có quyền huỷ yêu cầu trước khi được xử lý.</li>
+    <li><strong>Quyền hạn chế và phản đối xử lý dữ liệu.</strong></li>
+    <li><strong>Quyền khiếu nại, tố cáo, khởi kiện và yêu cầu bồi thường thiệt hại</strong>
+      theo quy định của pháp luật.</li>
+  </ul>
+  <p class="mt-3 text-ink-soft">GALS tiếp nhận và trả lời yêu cầu thực hiện quyền trong thời
+    hạn <strong>30 ngày</strong> kể từ ngày nhận được yêu cầu. GALS có thể yêu cầu xác minh
+    danh tính trước khi thực hiện yêu cầu.</p>
+  <p class="mt-2 text-ink-soft">Chủ thể dữ liệu lưu ý rằng việc xoá tài khoản
+    <strong>không thu hồi được</strong> các bản dữ liệu mà giáo viên đã tải xuống thiết bị cá
+    nhân trước thời điểm xoá.</p>
+
+  <p class="mt-4 text-ink font-semibold">8.2 Nghĩa vụ của Chủ thể dữ liệu</p>
+  <ul class="mt-2 grid gap-1.5 text-ink-soft list-disc list-inside">
+    <li>Tự bảo vệ dữ liệu cá nhân của mình, không chia sẻ mật khẩu cho người khác;</li>
+    <li>Tôn trọng và bảo vệ dữ liệu cá nhân của người khác, không nhập thông tin cá nhân của
+      người thứ ba vào nội dung tự viết;</li>
+    <li>Cung cấp dữ liệu chính xác và cập nhật khi có thay đổi;</li>
+    <li>Không sử dụng mã lớp hoặc mã giáo viên sai mục đích, không chuyển mã giáo viên cho
+      người không thuộc nhà trường đối tác;</li>
+    <li>Thông báo ngay cho GALS khi phát hiện hoặc nghi ngờ tài khoản bị truy cập trái phép.</li>
+  </ul>
+
+  <h2 id="ix" class="text-xl text-ink mt-10 scroll-mt-20">IX. NGƯỜI TIÊU DÙNG DỄ BỊ TỔN
+    THƯƠNG</h2>
+  <p class="mt-2 text-ink-soft"><strong>9.1</strong> Theo Luật Bảo vệ quyền lợi người tiêu
+    dùng 2023, <strong>trẻ em thuộc nhóm người tiêu dùng dễ bị tổn thương</strong>. Do đối
+    tượng sử dụng chính của GALS là học sinh trung học phổ thông, trong đó một phần là người
+    dưới 16 tuổi, GALS xác định nhóm này là trọng tâm bảo vệ của Chính sách.</p>
+  <p class="mt-2 text-ink-soft"><strong>9.2</strong> GALS
+    <strong>áp dụng mức bảo vệ dành cho trẻ em đối với toàn bộ tài khoản</strong>, không phân
+    biệt độ tuổi đã khai, vì độ tuổi là thông tin tự khai và GALS không có phương tiện xác
+    minh.</p>
+  <p class="mt-2 text-ink-soft"><strong>9.3</strong> Các biện pháp bảo vệ tăng cường đang
+    được áp dụng:</p>
+  <ul class="mt-2 grid gap-1.5 text-ink-soft list-disc list-inside">
+    <li>Không có chức năng nhắn tin, bình luận hay kết bạn giữa các Chủ thể dữ liệu;</li>
+    <li>Không có hồ sơ công khai mặc định; việc chia sẻ chỉ diễn ra khi Chủ thể dữ liệu chủ
+      động thực hiện;</li>
+    <li>Không quảng cáo, không tiếp thị, không phân tích hành vi;</li>
+    <li>Bộ lọc nội dung nhằm hạn chế việc nhập thông tin nhận dạng và ngôn từ không phù hợp.</li>
+  </ul>
+  <p class="mt-2 text-ink-soft"><strong>9.4</strong> GALS ưu tiên tiếp nhận và giải quyết yêu
+    cầu của người tiêu dùng dễ bị tổn thương, và cam kết không từ chối yêu cầu vì lý do khác
+    biệt về ngôn ngữ, phong tục hay tập quán.</p>
+  <p class="mt-2 text-ink-soft"><strong>9.5</strong> Nền tảng
+    <strong>không phải là công cụ hỗ trợ tâm lý</strong> và không có chức năng cảnh báo tự
+    động tới giáo viên, nhà trường hay gia đình. Trường hợp cần trợ giúp khẩn cấp, vui lòng
+    liên hệ <strong>Tổng đài quốc gia bảo vệ trẻ em 111</strong> (miễn phí, hoạt động 24/7).</p>
+
+  <h2 id="x" class="text-xl text-ink mt-10 scroll-mt-20">X. THÔNG TIN VỀ TRẺ EM</h2>
+  <p class="mt-2 text-ink-soft"><strong>10.1</strong> GALS
+    <strong>không cho phép người dưới 16 tuổi tự đăng ký tài khoản</strong>. Biểu mẫu đăng ký
+    có câu hỏi về độ tuổi; trường hợp khai dưới 16 tuổi và không có mã lớp hợp lệ, hệ thống
+    không tạo tài khoản và hướng dẫn Chủ thể dữ liệu liên hệ nhà trường.</p>
+  <p class="mt-2 text-ink-soft"><strong>10.2</strong> Người dưới 16 tuổi tham gia GALS
+    <strong>thông qua lớp học do nhà trường đối tác tổ chức</strong>. Trong trường hợp này,
+    nhà trường là Bên kiểm soát dữ liệu và bảo đảm đã hoàn tất thủ tục xin ý kiến của cha, mẹ
+    hoặc người giám hộ theo quy định của pháp luật.</p>
+  <p class="mt-2 text-ink-soft"><strong>10.3</strong> GALS
+    <strong>không cung cấp giao diện dành cho cha, mẹ hoặc người giám hộ</strong> để đọc nội
+    dung do trẻ em viết. Đây là quyết định có chủ đích: nhật ký tư duy là không gian riêng
+    của người học, và ngay cả giáo viên cũng không truy cập được phần chưa nộp. Quan hệ với
+    gia đình được thực hiện thông qua nhà trường ở khâu chấp thuận, không phải ở khâu nội
+    dung.</p>
+  <p class="mt-2 text-ink-soft"><strong>10.4</strong> Cha, mẹ hoặc người giám hộ có quyền yêu
+    cầu xem, chỉnh sửa hoặc xoá dữ liệu cá nhân của trẻ em thuộc quyền giám hộ của mình bằng
+    cách liên hệ nhà trường hoặc gửi yêu cầu tới info@gals.com.vn kèm tài liệu chứng minh
+    quan hệ giám hộ.</p>
+  <p class="mt-2 text-ink-soft"><strong>10.5</strong> Khi phát hiện một tài khoản do người
+    dưới 16 tuổi tự tạo mà không thông qua nhà trường, GALS sẽ tạm khoá tài khoản đó và xoá
+    dữ liệu liên quan.</p>
+
+  <h2 id="xi" class="text-xl text-ink mt-10 scroll-mt-20">XI. CẬP NHẬT, SỬA ĐỔI CHÍNH SÁCH</h2>
+  <p class="mt-2 text-ink-soft"><strong>11.1</strong> GALS có quyền sửa đổi, bổ sung hoặc cập
+    nhật Chính sách này. Mỗi phiên bản được ghi số hiệu và ngày hiệu lực ở đầu văn bản.</p>
+  <p class="mt-2 text-ink-soft"><strong>11.2</strong> Đối với các thay đổi đáng kể, GALS
+    <strong>yêu cầu Chủ thể dữ liệu xác nhận đồng ý lại</strong> ở lần đăng nhập kế tiếp,
+    thay vì mặc định coi việc tiếp tục sử dụng là đã đồng ý. Việc đồng ý với từng phiên bản
+    được lưu lại làm bằng chứng.</p>
+
+  <h2 id="xii" class="text-xl text-ink mt-10 scroll-mt-20">XII. LIÊN HỆ VỚI GALS</h2>
+  {% include "partials/danh_tinh.html" %}
   <p class="mt-3 text-ink-soft">
-    Một điều xoá không với tới được: nếu thầy cô đã tải bản tổng hợp của lớp về máy trước
-    đó, bản ấy đã rời khỏi hệ thống từ lúc bấm tải và chúng mình không thu hồi được.
-  </p>
-
-  <h2 class="text-xl text-ink mt-9">9. Người dưới 16 tuổi</h2>
-  <p class="mt-2 text-ink-soft">
-    Theo Luật Trẻ em 2016, người dưới 16 tuổi là trẻ em. GALS <strong>không cho tự đăng
-    ký</strong> ở tuổi đó — con đường duy nhất là qua lớp của thầy cô, nơi nhà trường đứng ra
-    xin phép gia đình.
+    Mọi thắc mắc, yêu cầu thực hiện quyền của Chủ thể dữ liệu, hoặc khiếu nại liên quan đến
+    Chính sách này, vui lòng gửi tới <strong>info@gals.com.vn</strong>. Để yêu cầu được xử lý
+    nhanh, vui lòng ghi rõ nội dung ở tiêu đề thư, ví dụ
+    <em>“Yêu cầu thực hiện quyền chủ thể dữ liệu”</em>.
   </p>
   <p class="mt-2 text-ink-soft">
-    Tuổi là do bạn tự khai và <strong>chúng mình không có cách nào kiểm chứng</strong>. Đó là
-    một câu hỏi để chỉ đường, không phải một biện pháp xác minh. Vì thế GALS áp dụng mức bảo
-    vệ dành cho trẻ em <strong>cho mọi tài khoản</strong>, bất kể khai bao nhiêu tuổi.
-  </p>
-
-  <h2 class="text-xl text-ink mt-9">10. Khi hợp tác với nhà trường kết thúc</h2>
-  <p class="mt-2 text-ink-soft">
-    Lớp được đóng lại và thầy cô không còn quyền đọc. <strong>Bài viết và hồ sơ của từng học
-    sinh vẫn thuộc về học sinh đó</strong> và ở lại trong tài khoản của các em. Phần các em
-    viết chưa bao giờ là tài sản của nhà trường để lấy đi.
-  </p>
-
-  <h2 class="text-xl text-ink mt-9">11. GALS không phải công cụ hỗ trợ tâm lý</h2>
-  <p class="mt-2 text-ink-soft">
-    Trợ lý AI không phải chuyên gia tư vấn, và GALS <strong>không báo cho ai cả</strong> khi
-    bạn viết điều gì đáng lo — không báo thầy cô, không báo phụ huynh, không báo nhà trường.
-    Nếu bạn hoặc ai đó đang cần giúp đỡ khẩn cấp, gọi <strong>Tổng đài quốc gia bảo vệ trẻ em
-    111</strong> (miễn phí, 24/7).
-  </p>
-
-  <h2 class="text-xl text-ink mt-9">12. Khi văn bản này thay đổi</h2>
-  <p class="mt-2 text-ink-soft">
-    Mỗi bản có một số phiên bản ghi ở đầu trang. Khi có thay đổi đáng kể, chúng mình sẽ hỏi
-    lại bạn ở lần đăng nhập kế tiếp chứ không mặc định là bạn đã đồng ý.
+    Trường hợp không hài lòng với cách GALS xử lý yêu cầu, Chủ thể dữ liệu có quyền khiếu nại
+    tới cơ quan nhà nước có thẩm quyền về bảo vệ dữ liệu cá nhân.
   </p>
 
 </div>

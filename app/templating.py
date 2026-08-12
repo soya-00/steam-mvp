@@ -6,6 +6,7 @@ from itsdangerous import BadSignature, URLSafeSerializer
 
 from app.config import (
     FIELD_KEY_BY_NAME,
+    NGAY_HIEU_LUC,
     PHIEN_BAN_DIEU_KHOAN,
     PHIEN_BAN_RIENG_TU,
     PROJECT_CATEGORIES,
@@ -166,4 +167,5 @@ templates.env.globals.update(
     scenario_of_id=get_scenario,
     phien_ban_rieng_tu=PHIEN_BAN_RIENG_TU,
     phien_ban_dieu_khoan=PHIEN_BAN_DIEU_KHOAN,
+    ngay_hieu_luc=NGAY_HIEU_LUC,
 )
