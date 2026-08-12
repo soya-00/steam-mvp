@@ -51,6 +51,25 @@ def test_the_privacy_page_names_the_same_ai_vendor_as_legal_md(client):
     assert tren_trang & trong_legal, f"Trang nói {tren_trang}, LEGAL.md nói {trong_legal}."
 
 
+def test_the_docs_admit_it_when_the_code_calls_a_different_vendor():
+    """Nhà cung cấp đã chốt là OpenAI, nhưng mã vẫn đang gọi Gemini.
+
+    Chừng nào còn lệch thì LEGAL.md phải nói thẳng ra. Chuyển mã xong thì bài
+    này tự hết tác dụng — không còn `app/gemini.py` thì không còn gì để khai.
+    """
+    goc = Path(__file__).resolve().parent.parent
+    con_goi_gemini = (goc / "app" / "gemini.py").exists()
+    legal = (goc / "LEGAL.md").read_text(encoding="utf-8")
+
+    if con_goi_gemini:
+        assert "app/gemini.py" in legal, (
+            "Mã còn gọi Gemini mà LEGAL.md không nói. Hoặc chuyển mã sang "
+            "OpenAI, hoặc khai rõ tình trạng hiện tại."
+        )
+    else:
+        assert "Gemini" not in legal, "Đã bỏ Gemini khỏi mã thì bỏ khỏi LEGAL.md luôn."
+
+
 def test_the_privacy_page_lists_exactly_what_the_browser_stores(client):
     page = client.get("/chinh-sach-rieng-tu").text
     for thu in ["Cookie đăng nhập", "chống giả mạo", "Cài đặt hiển thị"]:

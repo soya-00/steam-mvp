@@ -80,7 +80,7 @@ Bảng người dùng có trường **tên** và **email**. Nhật ký chứa **
 
 Ba đường ra, cần biết rõ:
 
-**1. Sang máy chủ của Google (trợ lý AI).** Khi bật trợ lý AI, câu trả lời của học sinh được gửi tới Gemini API để sinh câu hỏi phản hồi. Đây là **chuyển dữ liệu ra ngoài lãnh thổ Việt Nam**. Ứng dụng cố tình gửi ít nhất có thể: chỉ câu hỏi hiện tại và câu trả lời hiện tại, không gửi cả cuốn nhật ký. Khi không có khoá API, ứng dụng chạy hoàn toàn ngoại tuyến bằng kịch bản dựng sẵn và **không gửi gì đi đâu cả**.
+**1. Sang máy chủ của nhà cung cấp AI (OpenAI).** Khi bật trợ lý AI, câu trả lời của học sinh được gửi tới OpenAI để sinh câu hỏi phản hồi. **Lưu ý về tình trạng hiện tại:** nhà cung cấp đã chốt là OpenAI, nhưng `app/gemini.py` vẫn đang gọi Gemini API của Google; cho tới khi phần mã đó được chuyển, dữ liệu thực tế đi tới Google. Đây là **chuyển dữ liệu ra ngoài lãnh thổ Việt Nam**. Ứng dụng cố tình gửi ít nhất có thể: chỉ câu hỏi hiện tại và câu trả lời hiện tại, không gửi cả cuốn nhật ký. Khi không có khoá API, ứng dụng chạy hoàn toàn ngoại tuyến bằng kịch bản dựng sẵn và **không gửi gì đi đâu cả**.
 
 **2. Ra trang chia sẻ công khai.** Học sinh có thể bấm chia sẻ một mục hồ sơ. Mục đó nhận một đường dẫn khó đoán và **ai có đường dẫn cũng xem được, không cần đăng nhập**.
 
@@ -166,7 +166,8 @@ Nếu bạn triển khai GALS cho học sinh có thật, **bạn hoặc nhà tr�
 
 **Về AI**
 
-- [ ] **Hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài** cho việc gọi Gemini.
+- [ ] **Chuyển mã từ Gemini sang OpenAI** — nhà cung cấp đã chốt, mã thì chưa theo.
+- [ ] **Hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài** cho nhà cung cấp AI.
 - [ ] Đối chiếu **điều khoản của nhà cung cấp AI về người dùng chưa thành niên**.
 - [ ] Có nút **báo cáo câu trả lời không phù hợp**.
 
