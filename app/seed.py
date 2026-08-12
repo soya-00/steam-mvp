@@ -486,7 +486,13 @@ def seed_if_empty() -> None:
         reset_and_seed()
         return
 
-    Base.metadata.create_all(bind=engine)
+    if is_sqlite:
+        # Ở máy cá nhân thì dựng bảng ngay cho tiện. Trên Postgres thì không:
+        # create_all() tạo được bảng còn thiếu nhưng **không** thêm được cột
+        # vào bảng đã có, nên nó sẽ im lặng bỏ qua mọi thay đổi lược đồ về sau.
+        # Nơi triển khai chạy `alembic upgrade head` trước khi mở cổng.
+        Base.metadata.create_all(bind=engine)
+
     db = SessionLocal()
     try:
         if db.query(User).first() is not None:
