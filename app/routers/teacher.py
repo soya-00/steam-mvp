@@ -29,11 +29,24 @@ from app.templating import templates
 router = APIRouter(prefix="/giao-vien")
 
 
-def _guard(user: User | None):
+def _guard(user: User | None, request: Request | None = None):
+    """Cửa duy nhất dẫn vào toàn bộ /giao-vien.
+
+    Tài khoản bị đình chỉ nhận một trang 403 chứ không phải chuyển hướng: bên
+    học sinh đá giáo viên sang /giao-vien, nên chuyển hướng ngược lại
+    /trang-ca-nhan sẽ thành vòng lặp vô tận.
+    """
     if user is None:
         return RedirectResponse("/dang-nhap", status_code=303)
     if not user.is_teacher:
         return RedirectResponse("/trang-ca-nhan", status_code=303)
+    if not user.can_teach:
+        return templates.TemplateResponse(
+            request,
+            "teacher/tam_khoa.html",
+            {"user": user, "focus": True},
+            status_code=403,
+        )
     return None
 
 
@@ -77,7 +90,7 @@ def teacher_home(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     classes = db.query(Class).filter(Class.teacher_id == user.id).all()
@@ -108,11 +121,12 @@ def teacher_home(
 
 @router.post("/lop/tao")
 def create_class(
+    request: Request,
     ten_lop: str = Form(""),
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     name = ten_lop.strip() or "Lớp chưa đặt tên"
@@ -129,7 +143,7 @@ def class_detail(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     klass = _class_or_none(db, class_id, user)
@@ -158,6 +172,7 @@ def class_detail(
 
 @router.post("/lop/{class_id}/giao")
 def assign_work(
+    request: Request,
     class_id: int,
     muc_tieu: str = Form(""),
     hinh_thuc: str = Form("online"),
@@ -165,7 +180,7 @@ def assign_work(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     klass = _class_or_none(db, class_id, user)
@@ -203,7 +218,7 @@ def student_detail(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     my_class_ids = [c.id for c in db.query(Class).filter(Class.teacher_id == user.id).all()]
@@ -257,13 +272,14 @@ def student_detail(
 
 @router.post("/hoc-sinh/{student_id}/nhan-xet")
 def leave_feedback(
+    request: Request,
     student_id: int,
     noi_dung: str = Form(""),
     journal_entry_id: str = Form(""),
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     content = noi_dung.strip()
@@ -308,7 +324,7 @@ def teacher_guide(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
     return templates.TemplateResponse(
         request,
@@ -323,7 +339,7 @@ def class_codes(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     classes = db.query(Class).filter(Class.teacher_id == user.id).order_by(Class.name).all()
@@ -386,7 +402,7 @@ def progress_fields(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     classes, selected, all_classes = _scope(db, user, lop)
@@ -440,7 +456,7 @@ def progress_field(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     field_name = FIELD_NAME_BY_KEY.get(field_key)
@@ -505,7 +521,7 @@ def progress_scenario(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     scenario = get_scenario(scenario_id)
@@ -555,7 +571,7 @@ def materials_index(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
     return templates.TemplateResponse(
         request,
@@ -571,7 +587,7 @@ def printable_materials(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     scenario = get_scenario(scenario_id)
@@ -591,7 +607,7 @@ def notifications_view(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     classes = db.query(Class).filter(Class.teacher_id == user.id).all()
@@ -627,6 +643,7 @@ def notifications_view(
 
 @router.post("/thong-bao")
 def send_notification(
+    request: Request,
     lop: str = Form(""),
     loai: str = Form("workshop"),
     tieu_de: str = Form(""),
@@ -634,7 +651,7 @@ def send_notification(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     title = tieu_de.strip()

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Đăng ký cho giáo viên — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+
+  <a href="/" class="font-display font-extrabold text-xl text-trunk"><span class="wordmark">GALS</span></a>
+
+  <div class="card p-6 mt-6">
+    <h1 class="text-2xl text-ink">Tài khoản giáo viên</h1>
+    <p class="mt-1 text-sm text-ink-soft">
+      Tài khoản giáo viên đọc được nhật ký của học sinh, nên nó đi qua nhà trường chứ không
+      tự đăng ký được. Trường đã ký hợp tác với GALS sẽ có một mã riêng cho giáo viên.
+    </p>
+
+    {% include "partials/loi.html" %}
+
+    {% if not truong %}
+    <div class="tile p-4 mt-5 bg-amber-50 border-amber-100">
+      <p class="text-sm text-amber-900">
+        Hiện chưa có trường nào trong danh sách. Trường của bạn liên hệ với GALS để bắt đầu nhé.
+      </p>
+    </div>
+    {% else %}
+    <form method="post" action="/dang-ky/giao-vien" class="mt-5 space-y-4">
+      <div>
+        <label for="ten" class="block text-sm font-medium text-ink mb-1">Họ và tên</label>
+        <input type="text" id="ten" name="ten" required maxlength="60"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+      </div>
+      <div>
+        <label for="truong_id" class="block text-sm font-medium text-ink mb-1">Trường của bạn</label>
+        <select id="truong_id" name="truong_id" required
+                class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink">
+          <option value="">— Chọn trường —</option>
+          {% for t in truong %}
+          <option value="{{ t.id }}">{{ t.ten }}{% if t.tinh_thanh %} — {{ t.tinh_thanh }}{% endif %}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="ma_truong" class="block text-sm font-medium text-ink mb-1">Mã giáo viên của trường</label>
+        <input type="text" id="ma_truong" name="ma_truong" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint uppercase">
+        <p class="mt-1.5 text-xs text-ink-soft">
+          Mã này khác mã lớp, và chỉ dùng được trong ba ngày kể từ lúc trường nhận. Hết hạn
+          thì nhà trường liên hệ GALS để lấy mã mới. Đừng chuyển mã cho ai ngoài giáo viên
+          của trường.
+        </p>
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
+        <input type="email" id="email" name="email" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+      </div>
+      <div>
+        <label for="mat_khau" class="block text-sm font-medium text-ink mb-1">Mật khẩu</label>
+        <input type="password" id="mat_khau" name="mat_khau" required minlength="8"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Tạo tài khoản</button>
+    </form>
+    {% endif %}
+
+    <p class="mt-4 text-sm text-ink-soft">
+      Không thấy trường của bạn?
+      <a href="/ve-chung-toi" class="font-medium text-teal hover:underline">Liên hệ với chúng mình</a>
+      để trường đăng ký hợp tác.
+    </p>
+    <p class="mt-2 text-sm text-ink-soft">
+      Đã có tài khoản?
+      <a href="/dang-nhap" class="font-medium text-teal hover:underline">Đăng nhập</a>
+    </p>
+  </div>
+
+</div>
+{% endblock %}

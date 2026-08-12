@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Tài khoản đang tạm khoá — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+  <div class="card p-6 mt-6">
+    <h1 class="text-2xl text-ink">Tài khoản đang tạm khoá</h1>
+    <p class="mt-3 text-sm text-ink-soft">
+      Tài khoản này hiện không mở được phần dành cho giáo viên. Lớp, bài của học sinh và
+      nhận xét bạn đã viết vẫn còn nguyên — chỉ là chưa truy cập được cho tới khi mở lại.
+    </p>
+    <p class="mt-3 text-sm text-ink-soft">
+      Việc này thường xảy ra khi mã giáo viên của trường bị dùng ngoài dự kiến. Nhà trường
+      liên hệ với GALS để xử lý nhé.
+    </p>
+    <div class="mt-5">
+      <a href="/dang-xuat" class="btn btn-ghost">Đăng xuất</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

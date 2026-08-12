@@ -12,11 +12,23 @@
       Không cần biết mình thích gì trước. Cứ thử một tình huống rồi tính tiếp.
     </p>
 
+    {% include "partials/loi.html" %}
+
     <form method="post" action="/dang-ky" class="mt-5 space-y-4">
       <div>
         <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên của bạn</label>
-        <input type="text" id="ten" name="ten" required
+        <input type="text" id="ten" name="ten" required maxlength="60"
                class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+      </div>
+      <div>
+        <label for="tuoi" class="block text-sm font-medium text-ink mb-1">Bạn bao nhiêu tuổi?</label>
+        <input type="number" id="tuoi" name="tuoi" required min="5" max="100" inputmode="numeric"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+        <p class="mt-1.5 text-xs text-ink-soft">
+          Dưới {{ tuoi_toi_thieu }} tuổi thì tham gia qua lớp của thầy cô, vì lúc đó nhà trường
+          là bên đứng ra xin phép gia đình. Chúng mình không có cách nào kiểm chứng tuổi bạn
+          điền — đây là câu hỏi để chỉ đường, không phải để xác minh.
+        </p>
       </div>
       <div>
         <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
@@ -48,7 +60,6 @@
     </p>
   </div>
 
-  {% include "partials/demo_nhanh.html" %}
 
 </div>
 {% endblock %}

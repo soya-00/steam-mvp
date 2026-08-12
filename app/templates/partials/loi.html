@@ -1,0 +1,11 @@
+{# Ô báo lỗi dùng chung cho các biểu mẫu tài khoản.
+
+   Câu chữ đến từ app/accounts.py:LOI, tra theo mã ngắn trên URL. Không bao giờ
+   đưa thẳng câu trả lời của bộ lọc nội dung vào đây: có phán quyết trả về cả
+   một lời nhắn dài về đường dây 111, mà ô báo lỗi cạnh ô nhập tên không phải
+   chỗ để trả lời chuyện đó. #}
+{% if loi %}
+<div role="alert" class="tile p-3 mt-4 bg-amber-50 border-amber-100">
+  <p class="text-sm text-amber-900">{{ loi }}</p>
+</div>
+{% endif %}

@@ -58,7 +58,7 @@ def _guard(user: User | None):
 
 
 def _classes_of(db: Session, user: User) -> list[Class]:
-    if user.is_teacher:
+    if user.can_teach:
         return (
             db.query(Class)
             .filter(Class.teacher_id == user.id)
@@ -455,7 +455,7 @@ def export_data(
 
     today = datetime.now().strftime("%Y-%m-%d")
 
-    if user.is_teacher:
+    if user.can_teach:
         return Response(
             content=_teacher_zip(db, user),
             media_type="application/zip",

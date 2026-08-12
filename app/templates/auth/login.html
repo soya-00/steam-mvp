@@ -10,6 +10,8 @@
     <h1 class="text-2xl text-ink">Chào bạn quay lại</h1>
     <p class="mt-1 text-sm text-ink-soft">Đăng nhập để tiếp tục ở đúng chỗ bạn đang dừng.</p>
 
+    {% include "partials/loi.html" %}
+
     <form method="post" action="/dang-nhap" class="mt-5 space-y-4">
       <div>
         <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
@@ -30,10 +32,11 @@
       Chưa có tài khoản?
       <a href="/dang-ky" class="font-medium text-teal hover:underline">Đăng ký</a>
     </p>
+    <p class="mt-2 text-sm text-ink-soft">
+      Bạn là giáo viên?
+      <a href="/dang-ky/giao-vien" class="font-medium text-teal hover:underline">Đăng ký qua trường</a>
+    </p>
   </div>
-
-  {% include "partials/demo_nhanh.html" %}
-
 
 </div>
 {% endblock %}

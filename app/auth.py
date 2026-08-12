@@ -10,21 +10,26 @@ from app.models import User
 
 _serializer = URLSafeSerializer(SECRET_KEY, salt="gals-session")
 
-DEMO_ACCOUNTS = {
-    "giao_vien": "co.mai@gals.demo",
-    "hoc_sinh_co_lop": "linh@gals.demo",
-    "hoc_sinh_doc_lap": "trang@gals.demo",
-}
 
-DEFAULT_STUDENT_EMAIL = DEMO_ACCOUNTS["hoc_sinh_co_lop"]
+def over_https(request: Request) -> bool:
+    """Bật cờ Secure khi đang chạy thật, nhưng vẫn cho chạy HTTP ở máy cá nhân.
+
+    Render đứng trước ứng dụng và chuyển tiếp giao thức gốc qua
+    X-Forwarded-Proto, nên chỉ nhìn request.url.scheme là thấy 'http'.
+    """
+    forwarded = request.headers.get("x-forwarded-proto", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip() == "https"
+    return request.url.scheme == "https"
 
 
-def set_session(response, user_id: int) -> None:
+def set_session(request: Request, response, user_id: int) -> None:
     response.set_cookie(
         SESSION_COOKIE,
         _serializer.dumps({"uid": user_id}),
         httponly=True,
         samesite="lax",
+        secure=over_https(request),
         max_age=60 * 60 * 24 * 7,
     )
 

@@ -36,7 +36,7 @@ def menu_context(request: Request) -> dict:
 
     with SessionLocal() as db:
         viewer = db.get(User, uid)
-        if viewer is None or not viewer.is_teacher:
+        if viewer is None or not viewer.can_teach:
             return {}
         classes = (
             db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
