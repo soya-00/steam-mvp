@@ -2,6 +2,7 @@
   ('/ve-chung-toi', 'Về chúng tôi'),
   ('/chinh-sach-rieng-tu', 'Chính sách riêng tư'),
   ('/dieu-khoan', 'Điều khoản sử dụng'),
+  ('/chinh-sach-cookie', 'Chính sách cookie'),
   ('https://github.com/soya-00/steam-mvp/blob/main/DISCLAIMER.md', 'Tuyên bố miễn trừ'),
   ('https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md', 'Pháp lý và dữ liệu'),
   ('https://github.com/soya-00/steam-mvp', 'Mã nguồn')
@@ -97,17 +98,15 @@
 
     <div class="py-6 border-t border-hairline">
       <p class="text-sm text-ink-soft max-w-3xl" role="note">
-        <strong class="text-ink">Đây là bản mẫu trình diễn.</strong>
-        Dữ liệu gieo sẵn là giả định. Bài bạn viết được ghi lên máy chủ, mọi người dùng
-        chung tài khoản nên không riêng tư, và bị xoá khi máy chủ khởi động lại. Đừng nhập
-        thông tin thật.
+        <strong class="text-ink">GALS đang trong giai đoạn thử nghiệm.</strong>
+        Tài khoản của bạn là riêng và bài bạn viết được lưu lại. Số liệu trong các tình
+        huống là giả định — và bạn vẫn đừng nhập thông tin thật của người khác vào bài.
         <a class="text-trunk underline hover:text-ink whitespace-nowrap"
-           href="https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md"
-           target="_blank" rel="noopener">Tuyên bố pháp lý và dữ liệu</a>
+           href="/chinh-sach-rieng-tu">Chính sách riêng tư</a>
       </p>
 
       <div class="mt-4 flex flex-wrap gap-x-6 gap-y-1 justify-between text-xs text-ink-faint">
-        <p>GALS · bản mẫu trình diễn cho học sinh và giáo viên Việt Nam.</p>
+        <p>GALS · dành cho học sinh và giáo viên THPT Việt Nam.</p>
         {% if not gemini_enabled() %}
         <p>Đang chạy ở chế độ demo ngoại tuyến — phần trò chuyện dùng kịch bản dựng sẵn.</p>
         {% endif %}

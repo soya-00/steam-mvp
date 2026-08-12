@@ -59,3 +59,10 @@ def terms(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         request, "phap_ly/dieu_khoan.html", {"user": None, "page": "phap_ly"}
     )
+
+
+@router.get("/chinh-sach-cookie", response_class=HTMLResponse)
+def cookies(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request, "phap_ly/cookie.html", {"user": None, "page": "phap_ly"}
+    )

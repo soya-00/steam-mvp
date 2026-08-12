@@ -12,7 +12,35 @@ from app.models import Consent, User, YeuCauXoa
 from app.seed import SEED_EMAILS
 from tests.conftest import login_independent, login_student, login_teacher
 
-TRANG_PHAP_LY = ["/chinh-sach-rieng-tu", "/dieu-khoan"]
+TRANG_PHAP_LY = ["/chinh-sach-rieng-tu", "/dieu-khoan", "/chinh-sach-cookie"]
+GOC = Path(__file__).resolve().parent.parent
+
+
+def test_the_cookie_policy_names_every_cookie_the_code_actually_sets(client):
+    """Bài quan trọng nhất của cả nhóm này.
+
+    Thêm một cookie mà quên khai là chuyện xảy ra âm thầm — không ai thấy gì
+    hỏng. Ở đây đi lấy tên cookie thẳng từ mã nguồn rồi đối chiếu với trang.
+    """
+    ten_cookie: set[str] = set()
+    for path in (GOC / "app").rglob("*.py"):
+        ten_cookie.update(
+            re.findall(r'^[A-Z_]*COOKIE\s*=\s*"([^"]+)"', path.read_text(encoding="utf-8"), re.M)
+        )
+
+    assert len(ten_cookie) >= 4, f"Chỉ tìm thấy {ten_cookie} — biểu thức dò đã hỏng?"
+
+    page = client.get("/chinh-sach-cookie").text
+    thieu = sorted(t for t in ten_cookie if t not in page)
+    assert thieu == [], f"Trang cookie chưa khai: {thieu}"
+
+
+def test_the_cookie_policy_declares_the_browser_storage_too(client):
+    """localStorage không phải cookie, nhưng người đọc không quan tâm sự khác
+    biệt đó — họ muốn biết cái gì nằm lại trong máy mình."""
+    page = client.get("/chinh-sach-cookie").text
+    assert "gals-hien-thi" in page
+    assert "localStorage" in page
 
 
 def test_the_two_documents_have_pages_of_their_own(client):
@@ -31,10 +59,46 @@ def test_both_documents_are_linked_from_every_page(client):
             assert muc in page, f"{url} thiếu {muc}"
 
 
-def test_the_privacy_page_names_who_runs_gals(client):
-    """PDPL cần một đầu mối có tên để gửi yêu cầu về dữ liệu cá nhân."""
+def test_all_three_documents_carry_the_controller_contact(client):
+    """PDPL cần một đầu mối có tên để gửi yêu cầu. Khối danh tính nằm một chỗ
+    và được nhúng vào cả ba, nên không văn bản nào lặng lẽ mất nó."""
+    for url in TRANG_PHAP_LY:
+        page = client.get(url).text
+        assert "info@gals.com.vn" in page, url
+    for url in ["/chinh-sach-rieng-tu", "/dieu-khoan"]:
+        page = client.get(url).text
+        assert "Người phụ trách" in page, url
+        assert "Đơn vị bảo trợ" in page, url
+
+
+def test_the_documents_do_not_still_read_as_placeholders(client):
+    """Bỏ cờ 'Bản nháp' rồi thì chỉ còn được thiếu đúng mấy chỗ điền tên."""
+    for url in TRANG_PHAP_LY:
+        page = client.get(url).text
+        assert "Bản nháp" not in page, url
+
+
+def test_the_privacy_policy_states_the_retention_position_plainly(client):
+    """Chưa có hạn lưu trữ là điểm yếu thật. Nói ra, chứ không lờ đi."""
     page = client.get("/chinh-sach-rieng-tu").text
-    assert "Ai đứng sau GALS" in page
+    assert "cho tới khi tài khoản bị xoá" in page
+
+
+def test_the_privacy_policy_says_what_happens_when_a_school_leaves(client):
+    """Câu hỏi đầu tiên một hiệu phó sẽ hỏi."""
+    page = client.get("/chinh-sach-rieng-tu").text
+    assert "vẫn thuộc về học sinh" in page
+
+
+def test_the_terms_say_gals_is_not_a_counselling_service(client):
+    page = client.get("/dieu-khoan").text
+    assert "111" in page
+    assert "hỗ trợ tâm lý" in page
+
+
+def test_the_terms_promise_no_training_on_student_writing(client):
+    page = client.get("/dieu-khoan").text
+    assert "huấn luyện mô hình AI" in page
 
 
 def test_the_privacy_page_names_the_same_ai_vendor_as_legal_md(client):
@@ -70,10 +134,19 @@ def test_the_docs_admit_it_when_the_code_calls_a_different_vendor():
         assert "Gemini" not in legal, "Đã bỏ Gemini khỏi mã thì bỏ khỏi LEGAL.md luôn."
 
 
-def test_the_privacy_page_lists_exactly_what_the_browser_stores(client):
+def test_the_privacy_page_hands_cookies_off_to_the_cookie_policy(client):
+    """Chi tiết từng cookie nằm ở một trang. Chép sang hai chỗ là hai chỗ để
+    lệch nhau."""
     page = client.get("/chinh-sach-rieng-tu").text
-    for thu in ["Cookie đăng nhập", "chống giả mạo", "Cài đặt hiển thị"]:
+    assert "/chinh-sach-cookie" in page
+
+
+def test_the_privacy_page_lists_what_is_stored_about_a_person(client):
+    page = client.get("/chinh-sach-rieng-tu").text
+    for thu in ["Tài khoản", "Nhật ký", "Bằng chứng đồng ý"]:
         assert thu in page, thu
+    # Không lưu IP là một cam kết, nên phải nói ra chứ không chỉ làm thầm.
+    assert "không lưu địa chỉ IP" in page.lower() or "không lưu địa chỉ ip" in page.lower()
 
 
 def test_the_notice_bar_makes_no_promise_it_cannot_keep(client):

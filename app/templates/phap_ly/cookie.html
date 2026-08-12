@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Chính sách cookie — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto prose-doc">
+
+  <h1 class="text-3xl text-ink">Chính sách cookie</h1>
+  <p class="mt-2 text-sm text-ink-faint">
+    Phiên bản {{ phien_ban_rieng_tu }} · áp dụng cho www.gals.com.vn
+  </p>
+
+  <p class="mt-5 text-ink-soft">
+    Văn bản này ngắn, và đó là điều đáng mừng: GALS chỉ dùng <strong>cookie thiết yếu</strong>.
+    Không có công cụ đo lường, không có quảng cáo, không có mã của bên thứ ba nào — kể cả thư
+    viện giao diện cũng được tải từ máy chủ của chính GALS chứ không gọi ra ngoài.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">Cookie là gì</h2>
+  <p class="mt-2 text-ink-soft">
+    Là một mẩu văn bản nhỏ trang web nhờ trình duyệt giữ hộ, rồi gửi lại ở lần truy cập sau.
+    Nhờ nó mà bạn không phải nhập lại mật khẩu ở từng trang.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">Đầy đủ những gì GALS lưu</h2>
+  <div class="mt-3 overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-hairline text-left">
+          <th class="py-2 pr-3 font-semibold text-ink">Tên</th>
+          <th class="py-2 pr-3 font-semibold text-ink">Để làm gì</th>
+          <th class="py-2 font-semibold text-ink">Sống bao lâu</th>
+        </tr>
+      </thead>
+      <tbody class="text-ink-soft">
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top"><code>gals_session</code></td>
+          <td class="py-2 pr-3 align-top">Giữ bạn ở trạng thái đã đăng nhập. Chỉ chứa mã số
+            tài khoản, đã ký để không sửa được — không chứa mật khẩu.</td>
+          <td class="py-2 align-top">7 ngày</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top"><code>gals_csrf</code></td>
+          <td class="py-2 pr-3 align-top">Chặn trang web khác thay bạn gửi biểu mẫu lên GALS.</td>
+          <td class="py-2 align-top">7 ngày</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top"><code>gals_boi_canh</code></td>
+          <td class="py-2 pr-3 align-top">Nhớ bạn đang làm ở lớp nào, hay ở phần việc cá nhân.</td>
+          <td class="py-2 align-top">30 ngày</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top"><code>gals_bs</code></td>
+          <td class="py-2 pr-3 align-top">Giữ mạch cuộc trò chuyện với trợ lý AI để bạn quay
+            lại đúng chỗ đang dở.</td>
+          <td class="py-2 align-top">6 giờ</td>
+        </tr>
+        <tr>
+          <td class="py-2 pr-3 align-top"><code>gals-hien-thi</code><br>
+            <span class="text-xs text-ink-faint">(localStorage, không phải cookie)</span></td>
+          <td class="py-2 pr-3 align-top">Nền sáng hay tối, mức tương phản, giảm chuyển động,
+            và việc bạn đã tắt thanh thông báo này. <strong>Không gửi về máy chủ</strong> —
+            nằm hẳn trong máy bạn.</td>
+          <td class="py-2 align-top">Tới khi bạn xoá dữ liệu trình duyệt</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-3 text-ink-soft">
+    Bốn cookie đầu đều được đánh dấu <code>SameSite=Lax</code>, và <code>Secure</code> khi
+    trang chạy qua HTTPS. Ba trong bốn cái được đánh dấu <code>HttpOnly</code>, nghĩa là mã
+    JavaScript không đọc được chúng; riêng <code>gals_csrf</code> thì không, vì bản thân nó
+    không phải bí mật cần giấu.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">Vì sao không có nút "Đồng ý / Từ chối"</h2>
+  <p class="mt-2 text-ink-soft">
+    Vì ở đây không có gì để từ chối. Cả năm mục trên đều là <strong>thiết yếu hoặc chức
+    năng</strong>: bỏ chúng đi thì bạn không đăng nhập được, biểu mẫu không gửi được, hoặc
+    trang quên mất bạn đã chọn nền tối.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Một nút "Từ chối" không tắt được thứ gì sẽ chỉ là lời hứa suông. Thay vào đó GALS hiện
+    một thanh thông báo <strong>một lần duy nhất</strong>, nói rõ có gì, và bạn bấm
+    <em>Đã hiểu</em> để nó đi.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    <strong>Ngày nào GALS thêm một thứ không thiết yếu</strong> — công cụ thống kê, video
+    nhúng, hay bất kỳ mã nào của bên thứ ba — thanh đó sẽ mọc ra các công tắc thật cho từng
+    nhóm, và văn bản này được cập nhật trước khi thứ ấy chạy.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">Tự xoá cookie</h2>
+  <p class="mt-2 text-ink-soft">
+    Trình duyệt nào cũng cho xoá cookie của một trang trong phần cài đặt. Xoá xong bạn sẽ bị
+    đăng xuất và mất cài đặt hiển thị, nhưng tài khoản và bài viết thì không sao cả.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">Liên hệ</h2>
+  <p class="mt-2 text-ink-soft">
+    Thắc mắc về văn bản này: <strong>info@gals.com.vn</strong>. Xem thêm
+    <a href="/chinh-sach-rieng-tu" class="font-medium text-teal hover:underline">Chính sách riêng tư</a>.
+  </p>
+
+</div>
+{% endblock %}

@@ -54,17 +54,21 @@ def test_unknown_page_renders_404(client):
     assert client.get("/khong-ton-tai").status_code == 404
 
 
-def test_teacher_dashboard_carries_the_prototype_disclaimer(client):
+def test_teacher_dashboard_says_what_is_true_now(client):
     login_teacher(client)
     page = client.get("/giao-vien").text
     for phrase in [
-        "bản mẫu",
-        "không được lưu lại",
+        "đang trong giai đoạn thử nghiệm",
+        "chưa có sao lưu",
+        "chỉ đọc được phần học sinh nộp",
         "đừng để học sinh nhập thông tin thật",
         "không phải công cụ hỗ trợ tâm lý",
-        "LEGAL.md",
     ]:
         assert phrase.lower() in page.lower(), phrase
+
+    # Tài khoản đã là thật, dữ liệu đã ở lại. Hai câu cũ giờ là nói sai.
+    for gone in ["không được lưu lại", "xoá sạch"]:
+        assert gone.lower() not in page.lower(), gone
 
 
 def test_legal_notice_exists_and_is_linked_everywhere(client):
@@ -131,17 +135,36 @@ def test_about_page_still_reaches_the_legal_notice(client):
     assert "Nguyên tắc chúng tôi giữ" in page
 
 
-def test_every_public_page_footer_carries_the_prototype_warning(client):
+# Những câu chỉ đúng khi cả ứng dụng còn dùng chung ba tài khoản. Bây giờ mỗi
+# người một tài khoản và dữ liệu ở lại, nên chúng là nói sai — nguy hiểm hơn cả
+# im lặng, vì người đọc sẽ tin.
+LOI_HUA_CU = [
+    "ai cũng đọc được bài của người khác",
+    "ba tài khoản dùng chung",
+    "bị xoá mỗi lần máy chủ khởi động lại",
+    "không được lưu lại",
+]
+
+
+def test_every_public_page_footer_tells_the_truth_about_accounts(client):
     from pathlib import Path
 
     disclaimer = Path("DISCLAIMER.md").read_text(encoding="utf-8")
-    for heading in ["Chưa có tài khoản riêng cho từng người", "Không bảo đảm"]:
+    for heading in ["Mỗi người một tài khoản riêng", "Không bảo đảm"]:
         assert heading in disclaimer, heading
     assert "111" in disclaimer
-    assert "LEGAL.md" in disclaimer
 
     for url in MARKETING:
         page = client.get(url).text
-        assert "Đây là bản mẫu trình diễn" in page, url
-        assert "ai cũng đọc được bài của người khác" in page, url
-        assert "DISCLAIMER.md" in page, url
+        assert "đang trong giai đoạn thử nghiệm" in page.lower(), url
+        assert "/chinh-sach-rieng-tu" in page, url
+
+
+def test_no_page_still_carries_a_claim_from_the_shared_account_days(client):
+    """Bài canh cho cả hai chiều: bỏ demo đi thì phải bỏ luôn lời cảnh báo về demo."""
+    login_teacher(client)
+    trang = MARKETING + ["/giao-vien", "/tai-khoan"]
+    for url in trang:
+        page = client.get(url).text.lower()
+        for cau in LOI_HUA_CU:
+            assert cau not in page, f"{url} còn câu cũ: {cau}"

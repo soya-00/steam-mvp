@@ -2,84 +2,181 @@
 {% block title %}Chính sách riêng tư — GALS{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
+<div class="max-w-2xl mx-auto prose-doc">
 
   <h1 class="text-3xl text-ink">Chính sách riêng tư</h1>
-  <p class="mt-2 text-sm text-ink-faint">Phiên bản {{ phien_ban_rieng_tu }}</p>
+  <p class="mt-2 text-sm text-ink-faint">
+    Phiên bản {{ phien_ban_rieng_tu }} · áp dụng cho www.gals.com.vn
+  </p>
 
-  <div class="tile p-4 mt-5 bg-amber-50 border-amber-100" role="note">
-    <p class="text-sm text-amber-900">
-      <strong>Bản nháp.</strong> Phần nội dung dưới đây là khung để điền, chưa phải văn bản
-      hoàn chỉnh. Đừng dựa vào nó cho tới khi mục này biến mất.
-    </p>
+  <p class="mt-5 text-ink-soft">
+    Văn bản này nói thật về những gì GALS lưu, gửi đi đâu, ai đọc được, và bạn
+    làm gì được với dữ liệu của mình. Chỗ nào chúng mình chưa làm được thì cũng
+    ghi rõ là chưa làm được.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">1. Ai chịu trách nhiệm</h2>
+  {% include "partials/danh_tinh.html" %}
+  <p class="mt-3 text-ink-soft">
+    Với học sinh tham gia <strong>qua lớp của thầy cô</strong>, nhà trường là
+    <strong>bên kiểm soát dữ liệu</strong> và GALS là <strong>bên xử lý</strong> theo thoả
+    thuận hợp tác. Nhà trường quyết định việc thu thập; chúng mình chỉ chạy phần kỹ thuật.
+    Với người <strong>tự đăng ký</strong>, GALS là bên kiểm soát.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">2. Chúng mình lưu những gì</h2>
+  <div class="mt-3 overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-hairline text-left">
+          <th class="py-2 pr-3 font-semibold text-ink">Nhóm dữ liệu</th>
+          <th class="py-2 pr-3 font-semibold text-ink">Cụ thể là gì</th>
+          <th class="py-2 font-semibold text-ink">Vì sao cần</th>
+        </tr>
+      </thead>
+      <tbody class="text-ink-soft">
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top">Tài khoản</td>
+          <td class="py-2 pr-3 align-top">Tên hiển thị, email, mật khẩu đã băm, ảnh đại diện, tuổi tự khai</td>
+          <td class="py-2 align-top">Để bạn đăng nhập lại được và thầy cô biết ai là ai trong lớp</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top">Bài làm trong tình huống</td>
+          <td class="py-2 pr-3 align-top">Câu trả lời bạn viết, sản phẩm cuối, phần bạn nộp</td>
+          <td class="py-2 align-top">Là nội dung chính của việc học; thầy cô lớp bạn đọc được phần này</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top">Nhật ký và ý tưởng tự do</td>
+          <td class="py-2 pr-3 align-top">Phần bạn viết cho riêng mình, chưa nộp</td>
+          <td class="py-2 align-top">Của riêng bạn. Không ai đọc trừ khi bạn nộp hoặc chia sẻ</td>
+        </tr>
+        <tr class="border-b border-hairline">
+          <td class="py-2 pr-3 align-top">Lớp học</td>
+          <td class="py-2 pr-3 align-top">Bạn thuộc lớp nào, thầy cô giao gì, nhận xét của thầy cô</td>
+          <td class="py-2 align-top">Để lớp chạy được</td>
+        </tr>
+        <tr>
+          <td class="py-2 pr-3 align-top">Bằng chứng đồng ý</td>
+          <td class="py-2 pr-3 align-top">Bạn đã đồng ý với bản nào của văn bản nào, vào lúc nào</td>
+          <td class="py-2 align-top">Luật đòi hỏi chứng minh được là đã có đồng ý</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <p class="mt-3 text-ink-soft">
+    <strong>Chúng mình không lưu địa chỉ IP của bạn</strong>, không có công cụ đo lường,
+    không có quảng cáo, và không bán dữ liệu cho ai.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Mật khẩu được băm bằng Argon2id. Kể cả người trong nhóm cũng không đọc lại được mật
+    khẩu của bạn — nếu quên thì phải đặt lại chứ không ai tra ra được.
+  </p>
 
-  <section class="prose-doc mt-8">
+  <h2 class="text-xl text-ink mt-9">3. Đừng nhập thông tin thật của người khác</h2>
+  <p class="mt-2 text-ink-soft">
+    Các tình huống trong GALS là giả định. Khi viết, bạn đừng nhập tên thật, số điện thoại,
+    địa chỉ hay chuyện riêng của bạn bè, người thân hay ai khác. Có bộ lọc chặn một phần,
+    nhưng bộ lọc không thay được sự cẩn thận của bạn.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Ai đứng sau GALS</h2>
-    {% include "partials/danh_tinh.html" %}
+  <h2 class="text-xl text-ink mt-9">4. Ai đọc được bài của bạn</h2>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li><strong>Bạn</strong> — toàn bộ, lúc nào cũng được.</li>
+    <li><strong>Thầy cô lớp bạn</strong> — chỉ khi bạn đã vào lớp bằng mã lớp, và chỉ phần
+      bạn nộp. Rời lớp thì thầy cô không đọc được nữa.</li>
+    <li><strong>Người có đường dẫn chia sẻ</strong> — chỉ những mục bạn tự bấm chia sẻ.
+      Đường dẫn khó đoán nhưng ai có nó cũng xem được, kể cả người không đăng nhập.
+      Bạn tắt chia sẻ lúc nào cũng được.</li>
+    <li><strong>Nhóm vận hành GALS</strong> — chỉ khi cần sửa lỗi kỹ thuật, và chỉ đúng
+      phần liên quan.</li>
+  </ul>
+  <p class="mt-3 text-ink-soft">
+    <strong>Không có bảng xếp hạng, không có điểm số, không có so sánh giữa các bạn.</strong>
+    Học sinh trong cùng một lớp không đọc được bài của nhau.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Chúng mình giữ những gì</h2>
-    <p class="mt-2 text-ink-soft">
-      Tài khoản gồm tên hiển thị, email và ảnh đại diện bạn chọn. Phần bạn viết trong tình
-      huống nằm trong nhật ký của riêng bạn. Nếu bạn vào lớp bằng mã lớp thì giáo viên của
-      lớp đó đọc được phần bạn nộp.
-    </p>
+  <h2 class="text-xl text-ink mt-9">5. Dữ liệu có ra khỏi Việt Nam không</h2>
+  <p class="mt-2 text-ink-soft">
+    Có, một phần. Khi bạn dùng trợ lý AI, <strong>câu hỏi hiện tại và câu trả lời hiện tại
+    của bạn</strong> được gửi tới <strong>OpenAI</strong>, nhà cung cấp đặt tại Hoa Kỳ, để
+    sinh câu hỏi gợi mở tiếp theo. Chỉ hai thứ đó — không gửi cả cuốn nhật ký, không gửi
+    tên, không gửi email.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Đây là <strong>chuyển dữ liệu cá nhân ra nước ngoài</strong> theo Nghị định 356/2025.
+    Khi máy chủ không có khoá API, GALS chạy hoàn toàn ngoại tuyến bằng kịch bản dựng sẵn
+    và <strong>không gửi gì đi đâu cả</strong>.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    <em>[Cần điền: tình trạng hồ sơ đánh giá tác động chuyển dữ liệu ra nước ngoài.]</em>
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Trình duyệt của bạn lưu gì</h2>
-    <p class="mt-2 text-ink-soft">Ba thứ, và không có thứ nào để theo dõi bạn:</p>
-    <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
-      <li><strong>Cookie đăng nhập</strong> — để bạn không phải nhập lại mật khẩu mỗi trang. Sống 7 ngày.</li>
-      <li><strong>Cookie chống giả mạo biểu mẫu</strong> — để trang khác không thay bạn gửi biểu mẫu.</li>
-      <li><strong>Cài đặt hiển thị</strong> — nền sáng/tối, cỡ tương phản. Nằm trong trình duyệt, không gửi về máy chủ.</li>
-    </ul>
-    <p class="mt-2 text-ink-soft">
-      Không có công cụ đo lường, không có quảng cáo, không có mã của bên thứ ba. Vì thế
-      cũng không có gì để bạn tắt đi.
-    </p>
+  <h2 class="text-xl text-ink mt-9">6. Cookie</h2>
+  <p class="mt-2 text-ink-soft">
+    GALS chỉ dùng cookie thiết yếu — không có cookie theo dõi hay quảng cáo. Chi tiết từng
+    cookie nằm ở <a href="/chinh-sach-cookie" class="font-medium text-teal hover:underline">Chính
+    sách cookie</a>.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Dữ liệu có ra khỏi Việt Nam không</h2>
-    <p class="mt-2 text-ink-soft">
-      Có, một phần. Khi bật trợ lý AI, câu hỏi hiện tại và câu trả lời hiện tại của bạn được
-      gửi tới <strong>OpenAI</strong>, một nhà cung cấp đặt tại Hoa Kỳ, để sinh câu hỏi gợi mở
-      tiếp theo. Chỉ hai thứ đó — không gửi cả cuốn nhật ký. Không có khoá API thì ứng dụng
-      chạy hoàn toàn ngoại tuyến bằng kịch bản dựng sẵn và không gửi gì đi đâu cả.
-    </p>
-    <p class="mt-2 text-ink-soft">
-      <em>[Cần điền: cơ sở pháp lý cho việc chuyển dữ liệu ra nước ngoài và hồ sơ đánh giá
-      tác động theo Nghị định 356/2025.]</em>
-    </p>
-    <p class="mt-2 text-xs text-ink-faint">
-      Trang này phải khớp với LEGAL.md về tên nhà cung cấp. Đổi nhà cung cấp thì sửa cả hai
-      cùng lúc — có bài kiểm thử canh chuyện đó.
-    </p>
+  <h2 class="text-xl text-ink mt-9">7. Giữ trong bao lâu</h2>
+  <p class="mt-2 text-ink-soft">
+    Hiện tại GALS <strong>giữ dữ liệu cho tới khi tài khoản bị xoá</strong>. Chưa có cơ chế
+    tự động xoá tài khoản lâu không dùng.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Nói thẳng: đây là điểm yếu nhất của văn bản này, và chúng mình biết. Khi có đủ người
+    dùng thật để biết một khoảng thời gian hợp lý là bao lâu, chúng mình sẽ đặt hạn lưu trữ
+    và báo trước khi áp dụng.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Trường học và giáo viên</h2>
-    <p class="mt-2 text-ink-soft">
-      Với học sinh tham gia qua lớp, <strong>nhà trường là bên kiểm soát dữ liệu</strong>,
-      GALS là bên xử lý theo hợp đồng.
-    </p>
+  <h2 class="text-xl text-ink mt-9">8. Quyền của bạn</h2>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li><strong>Xem và tải về</strong> — nút tải dữ liệu trong trang tài khoản, ra tệp đọc được.</li>
+    <li><strong>Sửa</strong> — đổi tên hiển thị và ảnh đại diện bất cứ lúc nào.</li>
+    <li><strong>Xoá</strong> — gửi yêu cầu trong trang tài khoản. Bạn không tự bấm xoá được,
+      để tránh xoá nhầm thứ không dựng lại được; chúng mình xoá vĩnh viễn rồi báo lại. Đổi ý
+      thì huỷ yêu cầu được.</li>
+    <li><strong>Rút lại đồng ý</strong> — rời lớp thì thầy cô không còn đọc được bài của bạn.</li>
+    <li><strong>Khiếu nại</strong> — gửi về info@gals.com.vn. Nếu không hài lòng với cách
+      chúng mình xử lý, bạn có quyền khiếu nại lên cơ quan quản lý nhà nước có thẩm quyền.</li>
+  </ul>
+  <p class="mt-3 text-ink-soft">
+    Một điều xoá không với tới được: nếu thầy cô đã tải bản tổng hợp của lớp về máy trước
+    đó, bản ấy đã rời khỏi hệ thống từ lúc bấm tải và chúng mình không thu hồi được.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Quyền của bạn</h2>
-    <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
-      <li><strong>Xem và tải về</strong> — nút tải dữ liệu trong trang tài khoản.</li>
-      <li><strong>Sửa</strong> — đổi tên hiển thị và ảnh đại diện bất cứ lúc nào.</li>
-      <li><strong>Xoá</strong> — gửi yêu cầu trong trang tài khoản; chúng mình xoá và báo lại.</li>
-      <li><strong>Rút lại đồng ý</strong> — rời lớp thì giáo viên không đọc được nữa.</li>
-    </ul>
+  <h2 class="text-xl text-ink mt-9">9. Người dưới 16 tuổi</h2>
+  <p class="mt-2 text-ink-soft">
+    Theo Luật Trẻ em 2016, người dưới 16 tuổi là trẻ em. GALS <strong>không cho tự đăng
+    ký</strong> ở tuổi đó — con đường duy nhất là qua lớp của thầy cô, nơi nhà trường đứng ra
+    xin phép gia đình.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Tuổi là do bạn tự khai và <strong>chúng mình không có cách nào kiểm chứng</strong>. Đó là
+    một câu hỏi để chỉ đường, không phải một biện pháp xác minh. Vì thế GALS áp dụng mức bảo
+    vệ dành cho trẻ em <strong>cho mọi tài khoản</strong>, bất kể khai bao nhiêu tuổi.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Người dưới 16 tuổi</h2>
-    <p class="mt-2 text-ink-soft">
-      Không tự đăng ký được; tham gia qua lớp của thầy cô, nơi nhà trường đứng ra xin phép
-      gia đình. Tuổi bạn tự khai và chúng mình không kiểm chứng được — vì thế mọi tài khoản
-      đều được bảo vệ ở mức dành cho trẻ em, bất kể khai bao nhiêu.
-    </p>
+  <h2 class="text-xl text-ink mt-9">10. Khi hợp tác với nhà trường kết thúc</h2>
+  <p class="mt-2 text-ink-soft">
+    Lớp được đóng lại và thầy cô không còn quyền đọc. <strong>Bài viết và hồ sơ của từng học
+    sinh vẫn thuộc về học sinh đó</strong> và ở lại trong tài khoản của các em. Phần các em
+    viết chưa bao giờ là tài sản của nhà trường để lấy đi.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Liên hệ</h2>
-    <p class="mt-2 text-ink-soft">
-      <em>[Cần điền: địa chỉ email nhận yêu cầu về dữ liệu cá nhân.]</em>
-    </p>
+  <h2 class="text-xl text-ink mt-9">11. GALS không phải công cụ hỗ trợ tâm lý</h2>
+  <p class="mt-2 text-ink-soft">
+    Trợ lý AI không phải chuyên gia tư vấn, và GALS <strong>không báo cho ai cả</strong> khi
+    bạn viết điều gì đáng lo — không báo thầy cô, không báo phụ huynh, không báo nhà trường.
+    Nếu bạn hoặc ai đó đang cần giúp đỡ khẩn cấp, gọi <strong>Tổng đài quốc gia bảo vệ trẻ em
+    111</strong> (miễn phí, 24/7).
+  </p>
 
-  </section>
+  <h2 class="text-xl text-ink mt-9">12. Khi văn bản này thay đổi</h2>
+  <p class="mt-2 text-ink-soft">
+    Mỗi bản có một số phiên bản ghi ở đầu trang. Khi có thay đổi đáng kể, chúng mình sẽ hỏi
+    lại bạn ở lần đăng nhập kế tiếp chứ không mặc định là bạn đã đồng ý.
+  </p>
+
 </div>
 {% endblock %}

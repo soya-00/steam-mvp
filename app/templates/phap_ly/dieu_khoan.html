@@ -2,63 +2,136 @@
 {% block title %}Điều khoản sử dụng — GALS{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto">
+<div class="max-w-2xl mx-auto prose-doc">
 
   <h1 class="text-3xl text-ink">Điều khoản sử dụng</h1>
-  <p class="mt-2 text-sm text-ink-faint">Phiên bản {{ phien_ban_dieu_khoan }}</p>
+  <p class="mt-2 text-sm text-ink-faint">
+    Phiên bản {{ phien_ban_dieu_khoan }} · áp dụng cho www.gals.com.vn
+  </p>
 
-  <div class="tile p-4 mt-5 bg-amber-50 border-amber-100" role="note">
-    <p class="text-sm text-amber-900">
-      <strong>Bản nháp.</strong> Phần nội dung dưới đây là khung để điền, chưa phải văn bản
-      hoàn chỉnh. Đừng dựa vào nó cho tới khi mục này biến mất.
-    </p>
-  </div>
+  <p class="mt-5 text-ink-soft">
+    Dùng GALS nghĩa là bạn đồng ý với những điều dưới đây. Chúng mình cố viết ngắn và bằng
+    tiếng Việt bình thường, để bạn đọc hết được thật chứ không phải bấm đồng ý cho xong.
+  </p>
 
-  <section class="prose-doc mt-8">
+  <h2 class="text-xl text-ink mt-9">1. Ai cung cấp dịch vụ này</h2>
+  {% include "partials/danh_tinh.html" %}
 
-    <h2 class="text-xl text-ink mt-8">Ai đứng sau GALS</h2>
-    {% include "partials/danh_tinh.html" %}
+  <h2 class="text-xl text-ink mt-9">2. GALS là gì</h2>
+  <p class="mt-2 text-ink-soft">
+    GALS là nơi học sinh THPT nhập vai và tự xử lý một tình huống có thật của nghề, để hiểu
+    nghề đó bằng cách làm thử chứ không phải đọc mô tả.
+  </p>
+  <p class="mt-2 text-ink-soft"><strong>GALS không phải:</strong></p>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li>Nơi chấm điểm. Không có điểm, không có xếp hạng, không có so sánh giữa các bạn,
+      không có đáp án mẫu.</li>
+    <li>Nơi cấp chứng chỉ. Hồ sơ bạn tạo ra là bằng chứng về cách bạn suy nghĩ, không phải
+      văn bằng.</li>
+    <li>Công cụ tư vấn hướng nghiệp chính thức. Đừng chọn ngành chỉ vì một tình huống ở đây.</li>
+    <li><strong>Công cụ hỗ trợ tâm lý.</strong> Trợ lý AI không phải chuyên gia. Nếu bạn hoặc
+      ai đó đang cần giúp đỡ khẩn cấp, gọi <strong>Tổng đài quốc gia bảo vệ trẻ em 111</strong>
+      — miễn phí, 24/7.</li>
+  </ul>
 
-    <h2 class="text-xl text-ink mt-8">GALS là gì và không là gì</h2>
-    <p class="mt-2 text-ink-soft">
-      GALS là chỗ tập tư duy thiết kế qua các tình huống nghề nghiệp. Không chấm điểm,
-      không xếp hạng, không cấp chứng chỉ, và <strong>không phải công cụ hỗ trợ tâm lý</strong>.
-      Nếu bạn đang cần giúp đỡ khẩn cấp, gọi Tổng đài quốc gia bảo vệ trẻ em <strong>111</strong>.
-    </p>
+  <h2 class="text-xl text-ink mt-9">3. Tài khoản học sinh</h2>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li>Từ <strong>16 tuổi</strong> trở lên mới tự đăng ký được.</li>
+    <li>Dưới 16 tuổi thì tham gia qua lớp của thầy cô, nơi nhà trường đứng ra xin phép gia đình.</li>
+    <li>Mỗi người một tài khoản. Đừng dùng tài khoản của người khác và đừng cho ai mượn
+      mật khẩu của mình.</li>
+    <li>Bạn chịu trách nhiệm giữ mật khẩu của mình. Nghi bị lộ thì đặt lại ngay — đặt lại
+      xong là mọi thiết bị đang đăng nhập đều bị đăng xuất.</li>
+  </ul>
 
-    <h2 class="text-xl text-ink mt-8">Tài khoản</h2>
-    <p class="mt-2 text-ink-soft">
-      Từ 16 tuổi trở lên mới tự đăng ký được. Dưới tuổi đó thì tham gia qua lớp của thầy cô.
-      Tài khoản giáo viên chỉ cấp qua trường đã hợp tác — mã giáo viên là của trường, không
-      được chuyển cho người ngoài.
-    </p>
+  <h2 class="text-xl text-ink mt-9">4. Tài khoản giáo viên</h2>
+  <p class="mt-2 text-ink-soft">
+    Tài khoản giáo viên đọc được nhật ký học sinh, nên nó không tự đăng ký được. Chỉ trường
+    đã ký hợp tác với GALS mới có mã dành cho giáo viên.
+  </p>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li><strong>Mã giáo viên là của nhà trường, không phải của cá nhân.</strong> Đừng chuyển
+      cho ai ngoài giáo viên của trường mình.</li>
+    <li>Mã chỉ dùng được trong <strong>ba ngày</strong> kể từ lúc cấp. Hết hạn thì nhà trường
+      liên hệ lại để lấy mã mới.</li>
+    <li>Chúng mình có thể tạm khoá một tài khoản giáo viên nếu có dấu hiệu mã bị dùng ngoài
+      dự kiến. Lớp và bài của học sinh vẫn còn nguyên khi đó.</li>
+    <li>Giáo viên chỉ được dùng dữ liệu học sinh cho việc dạy học, và không được đăng lại
+      bài của học sinh ra ngoài nếu chưa hỏi.</li>
+  </ul>
 
-    <h2 class="text-xl text-ink mt-8">Bạn viết gì thì thuộc về bạn</h2>
-    <p class="mt-2 text-ink-soft">
-      Phần bạn viết là của bạn. GALS chỉ lưu và hiển thị lại cho bạn, và cho giáo viên lớp
-      bạn nếu bạn đã vào lớp.
-      <em>[Cần điền: phạm vi cấp phép sử dụng nội dung, nếu có.]</em>
-    </p>
+  <h2 class="text-xl text-ink mt-9">5. Bạn viết gì thì thuộc về bạn</h2>
+  <p class="mt-2 text-ink-soft">
+    Mọi thứ bạn viết trong GALS <strong>vẫn là của bạn</strong>. Chúng mình không nhận quyền
+    sở hữu, không đem bài của bạn đi bán, không dùng để quảng cáo, và
+    <strong>không dùng để huấn luyện mô hình AI</strong>.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Bạn chỉ cho phép GALS lưu và hiển thị lại phần bạn viết — cho chính bạn, cho thầy cô lớp
+    bạn nếu bạn đã vào lớp, và cho người có đường dẫn nếu bạn tự bấm chia sẻ. Xoá tài khoản
+    thì quyền đó chấm dứt.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Trợ lý AI</h2>
-    <p class="mt-2 text-ink-soft">
-      Trợ lý đặt câu hỏi gợi mở, không đưa đáp án và không đánh giá bạn. Nó có thể trả lời
-      sai — đừng coi là lời khuyên nghề nghiệp chính thức.
-    </p>
+  <h2 class="text-xl text-ink mt-9">6. Trợ lý AI</h2>
+  <p class="mt-2 text-ink-soft">
+    Trợ lý đặt câu hỏi gợi mở để bạn tự nghĩ tiếp. Nó <strong>không đưa đáp án</strong> và
+    <strong>không đánh giá bạn</strong>.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Nó cũng có thể trả lời sai hoặc lạc đề — đây là hạn chế thật của công nghệ này, không
+    phải lỗi hiếm gặp. Đừng coi câu trả lời của nó là thông tin nghề nghiệp chính xác. Gặp
+    câu trả lời không phù hợp thì bấm báo cáo giúp chúng mình.
+  </p>
 
-    <h2 class="text-xl text-ink mt-8">Những việc không được làm</h2>
-    <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
-      <li>Nhập thông tin cá nhân của người khác.</li>
-      <li>Dùng tài khoản của người khác, hoặc chia sẻ mật khẩu.</li>
-      <li>Cố lấy dữ liệu của người dùng khác.</li>
-    </ul>
+  <h2 class="text-xl text-ink mt-9">7. Những việc không được làm</h2>
+  <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+    <li>Nhập thông tin cá nhân của người khác — tên thật, số điện thoại, địa chỉ, chuyện riêng.</li>
+    <li>Dùng tài khoản của người khác, hoặc tạo tài khoản bằng thông tin giả của người có thật.</li>
+    <li>Cố truy cập dữ liệu của người dùng khác, hoặc dò mã lớp và mã giáo viên.</li>
+    <li>Đăng nội dung xúc phạm, quấy rối, hoặc trái pháp luật Việt Nam.</li>
+    <li>Dùng công cụ tự động để gửi hàng loạt yêu cầu tới máy chủ.</li>
+  </ul>
 
-    <h2 class="text-xl text-ink mt-8">Ngừng dịch vụ</h2>
-    <p class="mt-2 text-ink-soft">
-      <em>[Cần điền: điều kiện khoá tài khoản, thông báo trước khi ngừng dịch vụ, và
-      cách lấy lại dữ liệu.]</em>
-    </p>
+  <h2 class="text-xl text-ink mt-9">8. Khi chúng mình phải khoá tài khoản</h2>
+  <p class="mt-2 text-ink-soft">
+    Nếu một tài khoản vi phạm mục 7, chúng mình có thể tạm khoá. Trừ trường hợp khẩn cấp,
+    chúng mình sẽ báo lý do qua email và bạn có quyền trả lời. Bài viết của bạn không bị xoá
+    khi tạm khoá, và bạn vẫn tải dữ liệu của mình về được.
+  </p>
 
-  </section>
+  <h2 class="text-xl text-ink mt-9">9. Dịch vụ có thể gián đoạn</h2>
+  <p class="mt-2 text-ink-soft">
+    GALS là một dự án của học sinh, chạy trên hạ tầng miễn phí hoặc chi phí thấp. Có thể có
+    lúc chậm, lỗi, hoặc tạm ngừng. Chúng mình cố gắng hết sức nhưng
+    <strong>không cam kết dịch vụ chạy liên tục</strong>.
+  </p>
+  <p class="mt-2 text-ink-soft">
+    Nếu phải dừng hẳn, chúng mình sẽ báo trước <strong>ít nhất 30 ngày</strong> qua email và
+    trên trang chủ, để bạn kịp tải dữ liệu của mình về.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">10. Dữ liệu cá nhân</h2>
+  <p class="mt-2 text-ink-soft">
+    Xem <a href="/chinh-sach-rieng-tu" class="font-medium text-teal hover:underline">Chính sách
+    riêng tư</a> và <a href="/chinh-sach-cookie" class="font-medium text-teal hover:underline">Chính
+    sách cookie</a>. Hai văn bản đó là một phần của điều khoản này.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">11. Luật áp dụng</h2>
+  <p class="mt-2 text-ink-soft">
+    Điều khoản này theo pháp luật Việt Nam. Có tranh chấp thì hai bên cùng bàn để giải quyết
+    trước; không xong thì đưa ra toà án có thẩm quyền tại Việt Nam.
+  </p>
+
+  <h2 class="text-xl text-ink mt-9">12. Khi văn bản này thay đổi</h2>
+  <p class="mt-2 text-ink-soft">
+    Mỗi bản có số phiên bản ghi ở đầu trang. Khi có thay đổi đáng kể, chúng mình hỏi lại bạn
+    ở lần đăng nhập kế tiếp. Không đồng ý thì bạn dừng dùng GALS và yêu cầu xoá tài khoản.
+  </p>
+
+  <p class="mt-9 text-sm text-ink-faint">
+    Câu hỏi về điều khoản: <strong>info@gals.com.vn</strong>
+  </p>
+
 </div>
 {% endblock %}
