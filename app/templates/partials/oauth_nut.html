@@ -1,0 +1,22 @@
+{# Nút đăng nhập bằng tài khoản có sẵn.
+
+   Nhà cung cấp nào chưa cấu hình biến môi trường thì không xuất hiện ở đây,
+   giống cách gemini_enabled() làm — thà không có nút còn hơn có nút bấm vào
+   thì lỗi. #}
+{% if oauth %}
+<div class="mt-5">
+  <div class="flex items-center gap-3" aria-hidden="true">
+    <span class="h-px flex-1 bg-hairline"></span>
+    <span class="text-xs text-ink-faint">hoặc</span>
+    <span class="h-px flex-1 bg-hairline"></span>
+  </div>
+  <div class="mt-4 grid gap-2">
+    {% for nha in oauth %}
+    <a href="/dang-nhap/{{ nha.key }}"
+       class="btn btn-ghost w-full justify-center">
+      Tiếp tục với {{ nha.ten }}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

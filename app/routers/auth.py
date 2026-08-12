@@ -20,6 +20,10 @@ from app.accounts import (
     parse_age,
 )
 from app.auth import clear_session, get_current_user, set_session
+from app.oauth import bat as oauth_bat
+from app.oauth import dang_bat as oauth_dang_bat
+from app.oauth import doc_userinfo, noi_tai_khoan
+from app.oauth import khach as oauth_khach
 from app.db import get_db
 from app.models import Class, ClassMembership, User
 from app.scenarios import all_scenarios
@@ -92,7 +96,9 @@ def landing(request: Request, user: User | None = Depends(get_current_user)):
 @router.get("/dang-nhap", response_class=HTMLResponse)
 def login_form(request: Request, loi: str = ""):
     return templates.TemplateResponse(
-        request, "auth/login.html", {"user": None, "loi": message_for(loi)}
+        request,
+        "auth/login.html",
+        {"user": None, "loi": message_for(loi), "oauth": oauth_dang_bat()},
     )
 
 
@@ -139,7 +145,13 @@ def signup_form(request: Request, loi: str = "", ma_lop: str = ""):
     return templates.TemplateResponse(
         request,
         "auth/signup.html",
-        {"user": None, "loi": message_for(loi), "ma_lop": ma_lop, "tuoi_toi_thieu": MIN_AGE},
+        {
+            "user": None,
+            "loi": message_for(loi),
+            "ma_lop": ma_lop,
+            "tuoi_toi_thieu": MIN_AGE,
+            "oauth": oauth_dang_bat(),
+        },
     )
 
 
@@ -209,6 +221,38 @@ def signup_submit(
         _join_class(db, user, code)
 
     return _signed_in(request, user, "/chon-avatar")
+
+
+@router.get("/dang-nhap/{provider}")
+async def oauth_start(provider: str, request: Request):
+    if not oauth_bat(provider):
+        return RedirectResponse("/dang-nhap", status_code=303)
+    khach_oauth = oauth_khach()
+    redirect_uri = str(request.url_for("oauth_callback", provider=provider))
+    return await getattr(khach_oauth, provider).authorize_redirect(request, redirect_uri)
+
+
+@router.get("/dang-nhap/{provider}/callback", name="oauth_callback")
+async def oauth_finish(provider: str, request: Request, db: Session = Depends(get_db)):
+    if not oauth_bat(provider):
+        return RedirectResponse("/dang-nhap", status_code=303)
+
+    from authlib.integrations.starlette_client import OAuthError
+
+    try:
+        token = await getattr(oauth_khach(), provider).authorize_access_token(request)
+    except OAuthError:
+        # Người dùng bấm huỷ, hoặc state không khớp. Không có gì để nói thêm.
+        return RedirectResponse("/dang-nhap?loi=sai_thong_tin", status_code=303)
+
+    info = doc_userinfo(token.get("userinfo") or {})
+    if info is None:
+        return RedirectResponse("/dang-nhap?loi=sai_thong_tin", status_code=303)
+
+    # Tài khoản bị đình chỉ vẫn đăng nhập được; chặn nằm ở cửa /giao-vien, để
+    # người dùng đọc được lý do thay vì bị đá ra không lời giải thích.
+    user = noi_tai_khoan(db, provider, info)
+    return _signed_in(request, user, _home_for(user))
 
 
 @router.get("/dang-ky/giao-vien", response_class=HTMLResponse)

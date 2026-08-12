@@ -6,8 +6,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import STATIC_DIR, gemini_enabled
+from app.config import SECRET_KEY
 from app.csrf import CSRFMiddleware
 from app.routers import auth as auth_router
 from app.routers import chat as chat_router
@@ -40,6 +42,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="GALS", lifespan=lifespan, docs_url=None, redoc_url=None)
 
+# Authlib giữ tham số state của OAuth trong phiên của Starlette. Phiên này
+# chỉ dùng cho vòng chuyển hướng đó — việc đăng nhập vẫn nằm ở cookie riêng
+# trong app/auth.py.
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, same_site="lax", https_only=False)
 app.add_middleware(CSRFMiddleware)
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")

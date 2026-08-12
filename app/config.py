@@ -16,6 +16,16 @@ DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'gals.db'}")
 SECRET_KEY = os.getenv("SECRET_KEY", "gals-demo-secret-doi-khi-deploy")
 SESSION_COOKIE = "gals_session"
 
+# Đăng nhập bằng tài khoản có sẵn. Không có biến thì không hiện nút — không
+# bao giờ có khoá nào nằm trong kho mã.
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+MICROSOFT_CLIENT_ID = os.getenv("MICROSOFT_CLIENT_ID", "").strip()
+MICROSOFT_CLIENT_SECRET = os.getenv("MICROSOFT_CLIENT_SECRET", "").strip()
+# "common" cho phép cả tài khoản trường lẫn tài khoản cá nhân; đặt mã tenant
+# nếu chỉ muốn nhận một tổ chức.
+MICROSOFT_TENANT = os.getenv("MICROSOFT_TENANT", "common").strip() or "common"
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "").strip()
 
