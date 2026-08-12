@@ -32,17 +32,28 @@ def menu_context(request: Request) -> dict:
     if uid is None:
         return {}
 
+    from app import boi_canh
     from app.db import SessionLocal
     from app.models import Class, User
 
     with SessionLocal() as db:
         viewer = db.get(User, uid)
-        if viewer is None or not viewer.can_teach:
+        if viewer is None:
             return {}
-        classes = (
-            db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
-        )
-        return {"menu_classes": [{"id": c.id, "name": c.name} for c in classes]}
+
+        ctx: dict = {}
+        # Chỉ hiện điều khiển đổi bối cảnh khi có nhiều hơn một lựa chọn —
+        # người chưa vào lớp nào thì nút này chẳng đưa đi đâu.
+        lua_chon = boi_canh.lua_chon(db, viewer)
+        if len(lua_chon) > 1:
+            ctx["boi_canh_hien_tai"] = boi_canh.doc(request, db, viewer)
+
+        if viewer.can_teach:
+            classes = (
+                db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
+            )
+            ctx["menu_classes"] = [{"id": c.id, "name": c.name} for c in classes]
+        return ctx
 
 
 templates = Jinja2Templates(

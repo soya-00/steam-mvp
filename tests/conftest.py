@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -69,6 +71,22 @@ def _login(c: TestClient, key: str) -> None:
     )
     assert r.status_code == 303, r.status_code
     assert "loi=" not in r.headers.get("location", ""), r.headers.get("location")
+    _chon_khong_gian(c)
+
+
+def _chon_khong_gian(c: TestClient) -> None:
+    """Chọn bối cảnh đầu tiên, giống người dùng thật vừa đăng nhập.
+
+    Bảng điều khiển hỏi "hôm nay bạn làm ở đâu" trước khi mở, nên nếu không
+    chọn thì mọi bài kiểm thử sẽ nhận trang hỏi thay vì trang cần xem. Lựa chọn
+    đầu tiên là lớp của người đó, tức đúng phạm vi mà các bài vẫn giả định.
+    """
+    page = c.get("/chon-khong-gian")
+    if page.status_code != 200:
+        return
+    khoa = re.findall(r'name="khoa" value="([^"]+)"', page.text)
+    if khoa:
+        c.post("/chon-khong-gian", data={"khoa": khoa[0]}, follow_redirects=False)
 
 
 def login_student(c: TestClient) -> None:

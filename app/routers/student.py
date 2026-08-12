@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from itsdangerous import BadSignature, URLSafeSerializer
 from sqlalchemy.orm import Session
 
+from app import boi_canh
 from app.auth import get_current_user, session_key
 from app.gemini import guided_reply, synthesis
 from app.moderation import OK as SCREEN_OK
@@ -56,6 +57,19 @@ def _guard(user: User | None):
         return RedirectResponse("/dang-nhap", status_code=303)
     if user.is_teacher:
         return RedirectResponse("/giao-vien", status_code=303)
+    return None
+
+
+def _guard_hub(request: Request, db: Session, user: User | None):
+    """Như _guard, nhưng còn hỏi bối cảnh nếu người này chưa chọn.
+
+    Chỉ hỏi ở bảng điều khiển. Hỏi ở mọi trang thì một em vào thẳng đường dẫn
+    một tình huống sẽ bị chặn lại bằng câu hỏi không liên quan.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+    if boi_canh.can_hoi(request, db, user):
+        return RedirectResponse("/chon-khong-gian", status_code=303)
     return None
 
 
@@ -239,8 +253,10 @@ def hub(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard_hub(request, db, user)) is not None:
         return redirect
+
+    bc = boi_canh.doc(request, db, user)
 
     entries = (
         db.query(JournalEntry)
@@ -251,7 +267,14 @@ def hub(
     portfolio = db.query(PortfolioEntry).filter(PortfolioEntry.student_id == user.id).all()
     badges = db.query(Badge).filter(Badge.student_id == user.id).all()
     memberships = db.query(ClassMembership).filter(ClassMembership.student_id == user.id).all()
-    class_ids = [m.class_id for m in memberships]
+    # "Việc cá nhân" nghĩa là không lớp nào — thông báo và bài giao của lớp
+    # biến mất khỏi trang, chứ không chỉ bị đẩy xuống dưới.
+    if bc.la_ca_nhan:
+        class_ids = []
+    elif bc.class_id is not None:
+        class_ids = [bc.class_id]
+    else:
+        class_ids = [m.class_id for m in memberships]
 
     feedback = (
         db.query(Feedback)
@@ -330,6 +353,8 @@ def hub(
             "shared_count": sum(1 for p in portfolio if p.shared),
             "badges": badges,
             "classes": [m.klass for m in memberships],
+            "boi_canh": bc,
+            "boi_canh_lua_chon": boi_canh.lua_chon(db, user),
             "feedback": feedback,
             "notifications": notifications,
             "scenarios": all_scenarios(),

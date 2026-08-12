@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Chọn không gian — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+  <h1 class="text-2xl text-ink">Hôm nay bạn làm ở đâu?</h1>
+  <p class="mt-2 text-sm text-ink-soft">
+    {% if user.is_teacher %}
+    Chọn một lớp để chỉ thấy việc của lớp đó, hoặc xem tất cả. Đổi lúc nào cũng được.
+    {% else %}
+    Chọn lớp để thấy việc thầy cô giao, hoặc chọn việc cá nhân để chỉ thấy phần bạn tự làm.
+    Đổi lúc nào cũng được ở đầu trang.
+    {% endif %}
+  </p>
+
+  <form method="post" action="/chon-khong-gian" class="mt-6 grid gap-3">
+    {% include "partials/csrf.html" %}
+    {% for bc in lua_chon %}
+    <button type="submit" name="khoa" value="{{ bc.khoa }}"
+            class="tile p-4 text-left hover:border-trunk transition
+                   {{ 'border-trunk bg-trunk-50' if bc.khoa == dang_chon.khoa else '' }}">
+      <span class="block font-semibold text-ink">{{ bc.ten }}</span>
+      <span class="block mt-0.5 text-sm text-ink-soft">
+        {% if bc.la_ca_nhan %}
+          Chỉ những tình huống bạn tự bắt đầu. Không ai trong lớp thấy phần này.
+        {% elif bc.khoa == 'tat-ca' %}
+          Gộp mọi lớp bạn đang dạy.
+        {% else %}
+          Việc được giao và thông báo của lớp này.
+        {% endif %}
+      </span>
+    </button>
+    {% endfor %}
+  </form>
+</div>
+{% endblock %}

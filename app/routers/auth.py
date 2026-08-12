@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
-from app import throttle
+from app import boi_canh, throttle
 from app.accounts import (
     MIN_AGE,
     check_password,
@@ -226,6 +226,46 @@ def signup_submit(
         _join_class(db, user, code)
 
     return _signed_in(request, user, "/chon-avatar")
+
+
+@router.get("/chon-khong-gian", response_class=HTMLResponse)
+def context_form(
+    request: Request,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if user is None:
+        return RedirectResponse("/dang-nhap", status_code=303)
+    return templates.TemplateResponse(
+        request,
+        "auth/chon_khong_gian.html",
+        {
+            "user": user,
+            "focus": True,
+            "lua_chon": boi_canh.lua_chon(db, user),
+            "dang_chon": boi_canh.doc(request, db, user),
+        },
+    )
+
+
+@router.post("/chon-khong-gian")
+def context_submit(
+    request: Request,
+    khoa: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if user is None:
+        return RedirectResponse("/dang-nhap", status_code=303)
+
+    chon = next((bc for bc in boi_canh.lua_chon(db, user) if bc.khoa == khoa), None)
+    if chon is None:
+        # Khoá lạ, hoặc lớp không còn thuộc về mình. Hỏi lại chứ không đoán.
+        return RedirectResponse("/chon-khong-gian", status_code=303)
+
+    response = RedirectResponse(_home_for(user), status_code=303)
+    boi_canh.ghi(request, response, chon)
+    return response
 
 
 @router.get("/quen-mat-khau", response_class=HTMLResponse)

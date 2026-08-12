@@ -90,7 +90,15 @@
       <span class="wordmark">GALS</span>
     </a>
 
-    <div class="ml-auto flex items-center">
+    <div class="ml-auto flex items-center gap-3">
+      {% if boi_canh_hien_tai %}
+      <a href="/chon-khong-gian"
+         class="chip bg-sunken text-ink-soft hover:text-ink border border-hairline max-w-[10rem] truncate"
+         title="Đổi không gian làm việc">
+        <span class="sr-only">Không gian hiện tại:</span>{{ boi_canh_hien_tai.ten }}
+      </a>
+      {% endif %}
+
       <div class="min-w-0 hidden sm:block text-right">
         <p class="text-sm font-semibold text-ink leading-tight truncate">{{ user.name }}</p>
         <span class="chip {{ 'bg-trunk-50 text-trunk-700' if user.is_teacher else 'bg-amber-50 text-amber-900' }} mt-0.5">
