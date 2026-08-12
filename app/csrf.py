@@ -99,6 +99,41 @@ def _over_https(request) -> bool:
     return over_https(request)
 
 
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Vài header rẻ tiền mà chặn được cả một lớp tấn công.
+
+    CSP ở đây gần như không tốn gì vì mọi tài nguyên đều tự chứa: HTMX được
+    tải về nằm trong static/, không có CDN, không có phông chữ ngoài. Chỉ
+    'unsafe-inline' cho script và style là phải giữ, vì trang còn một đoạn
+    script chặn trong <head> để tránh nháy trắng khi dùng nền tối.
+    """
+
+    CSP = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:; "
+        "connect-src 'self'; "
+        "frame-ancestors 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'"
+    )
+
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        response.headers.setdefault("Content-Security-Policy", self.CSP)
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        if _over_https(request):
+            # Chỉ gửi khi đã chạy HTTPS. Gửi trên HTTP ở máy cá nhân sẽ khoá
+            # cứng localhost sang https trong trình duyệt của chính mình.
+            response.headers.setdefault(
+                "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+            )
+        return response
+
+
 def csrf_context(request) -> dict:
     """Đưa vé vào mọi khung nhìn, để bản mẫu không phải tự đi lấy."""
     return {"csrf_token": getattr(request.state, "csrf", "")}

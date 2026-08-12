@@ -16,6 +16,11 @@ DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'gals.db'}")
 SECRET_KEY = os.getenv("SECRET_KEY", "gals-demo-secret-doi-khi-deploy")
 SESSION_COOKIE = "gals_session"
 
+# Phiên bản của hai văn bản pháp lý. Đổi số ở đây thì lần đăng nhập sau sẽ hỏi
+# lại — bảng `consents` vì thế ghi được người dùng đã đồng ý với đúng bản nào.
+PHIEN_BAN_RIENG_TU = "2026-08"
+PHIEN_BAN_DIEU_KHOAN = "2026-08"
+
 # Đăng nhập bằng tài khoản có sẵn. Không có biến thì không hiện nút — không
 # bao giờ có khoá nào nằm trong kho mã.
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()

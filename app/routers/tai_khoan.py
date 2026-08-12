@@ -23,6 +23,7 @@ from app.models import (
     JournalEntry,
     PortfolioEntry,
     User,
+    YeuCauXoa,
 )
 from app.moderation import OK as SCREEN_OK
 from app.moderation import REPLIES as SCREEN_REPLIES
@@ -164,8 +165,55 @@ def account_page(
             "roster": roster,
             "loi": loi,
             "da_luu": da_luu,
+            "yeu_cau_xoa": (
+                db.query(YeuCauXoa)
+                .filter(YeuCauXoa.user_id == user.id, YeuCauXoa.xu_ly_luc.is_(None))
+                .first()
+            ),
         },
     )
+
+
+@router.post("/tai-khoan/yeu-cau-xoa")
+def request_deletion(
+    ly_do: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Xin xoá tài khoản.
+
+    Học sinh không tự bấm xoá được — quyết định có chủ ý, để tránh xoá nhầm
+    một thứ không dựng lại được. Nhưng quyền được xoá thì không mất đi vì thế,
+    nên đường đi là một yêu cầu, và việc xoá thật do dòng lệnh thực hiện.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    dang_cho = (
+        db.query(YeuCauXoa)
+        .filter(YeuCauXoa.user_id == user.id, YeuCauXoa.xu_ly_luc.is_(None))
+        .first()
+    )
+    if dang_cho is None:
+        db.add(YeuCauXoa(user_id=user.id, ly_do=(ly_do or "").strip()[:500]))
+        db.commit()
+    return RedirectResponse("/tai-khoan?da_luu=xin_xoa#rieng-tu", status_code=303)
+
+
+@router.post("/tai-khoan/huy-yeu-cau-xoa")
+def cancel_deletion(
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Đổi ý thì tự huỷ được, không phải gửi thư cho ai."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    db.query(YeuCauXoa).filter(
+        YeuCauXoa.user_id == user.id, YeuCauXoa.xu_ly_luc.is_(None)
+    ).delete(synchronize_session=False)
+    db.commit()
+    return RedirectResponse("/tai-khoan?da_luu=huy_xoa#rieng-tu", status_code=303)
 
 
 @router.post("/tai-khoan/ten")

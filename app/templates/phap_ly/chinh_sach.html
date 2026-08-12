@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Chính sách riêng tư — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+
+  <h1 class="text-3xl text-ink">Chính sách riêng tư</h1>
+  <p class="mt-2 text-sm text-ink-faint">Phiên bản {{ phien_ban_rieng_tu }}</p>
+
+  <div class="tile p-4 mt-5 bg-amber-50 border-amber-100" role="note">
+    <p class="text-sm text-amber-900">
+      <strong>Bản nháp.</strong> Phần nội dung dưới đây là khung để điền, chưa phải văn bản
+      hoàn chỉnh. Đừng dựa vào nó cho tới khi mục này biến mất.
+    </p>
+  </div>
+
+  <section class="prose-doc mt-8">
+
+    <h2 class="text-xl text-ink mt-8">Ai đứng sau GALS</h2>
+    {% include "partials/danh_tinh.html" %}
+
+    <h2 class="text-xl text-ink mt-8">Chúng mình giữ những gì</h2>
+    <p class="mt-2 text-ink-soft">
+      Tài khoản gồm tên hiển thị, email và ảnh đại diện bạn chọn. Phần bạn viết trong tình
+      huống nằm trong nhật ký của riêng bạn. Nếu bạn vào lớp bằng mã lớp thì giáo viên của
+      lớp đó đọc được phần bạn nộp.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Trình duyệt của bạn lưu gì</h2>
+    <p class="mt-2 text-ink-soft">Ba thứ, và không có thứ nào để theo dõi bạn:</p>
+    <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+      <li><strong>Cookie đăng nhập</strong> — để bạn không phải nhập lại mật khẩu mỗi trang. Sống 7 ngày.</li>
+      <li><strong>Cookie chống giả mạo biểu mẫu</strong> — để trang khác không thay bạn gửi biểu mẫu.</li>
+      <li><strong>Cài đặt hiển thị</strong> — nền sáng/tối, cỡ tương phản. Nằm trong trình duyệt, không gửi về máy chủ.</li>
+    </ul>
+    <p class="mt-2 text-ink-soft">
+      Không có công cụ đo lường, không có quảng cáo, không có mã của bên thứ ba. Vì thế
+      cũng không có gì để bạn tắt đi.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Dữ liệu có ra khỏi Việt Nam không</h2>
+    <p class="mt-2 text-ink-soft">
+      Có, một phần. Khi bật trợ lý AI, câu hỏi hiện tại và câu trả lời hiện tại của bạn được
+      gửi tới <strong>Google</strong> (Gemini API) để sinh câu hỏi gợi mở tiếp theo. Chỉ hai
+      thứ đó — không gửi cả cuốn nhật ký. Không có khoá API thì ứng dụng chạy hoàn toàn
+      ngoại tuyến bằng kịch bản dựng sẵn và không gửi gì đi đâu cả.
+    </p>
+    <p class="mt-2 text-ink-soft">
+      <em>[Cần điền: cơ sở pháp lý cho việc chuyển dữ liệu ra nước ngoài và hồ sơ đánh giá
+      tác động theo Nghị định 356/2025.]</em>
+    </p>
+    <p class="mt-2 text-xs text-ink-faint">
+      Trang này phải khớp với LEGAL.md về tên nhà cung cấp. Đổi nhà cung cấp thì sửa cả hai
+      cùng lúc — có bài kiểm thử canh chuyện đó.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Trường học và giáo viên</h2>
+    <p class="mt-2 text-ink-soft">
+      Với học sinh tham gia qua lớp, <strong>nhà trường là bên kiểm soát dữ liệu</strong>,
+      GALS là bên xử lý theo hợp đồng.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Quyền của bạn</h2>
+    <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+      <li><strong>Xem và tải về</strong> — nút tải dữ liệu trong trang tài khoản.</li>
+      <li><strong>Sửa</strong> — đổi tên hiển thị và ảnh đại diện bất cứ lúc nào.</li>
+      <li><strong>Xoá</strong> — gửi yêu cầu trong trang tài khoản; chúng mình xoá và báo lại.</li>
+      <li><strong>Rút lại đồng ý</strong> — rời lớp thì giáo viên không đọc được nữa.</li>
+    </ul>
+
+    <h2 class="text-xl text-ink mt-8">Người dưới 16 tuổi</h2>
+    <p class="mt-2 text-ink-soft">
+      Không tự đăng ký được; tham gia qua lớp của thầy cô, nơi nhà trường đứng ra xin phép
+      gia đình. Tuổi bạn tự khai và chúng mình không kiểm chứng được — vì thế mọi tài khoản
+      đều được bảo vệ ở mức dành cho trẻ em, bất kể khai bao nhiêu.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Liên hệ</h2>
+    <p class="mt-2 text-ink-soft">
+      <em>[Cần điền: địa chỉ email nhận yêu cầu về dữ liệu cá nhân.]</em>
+    </p>
+
+  </section>
+</div>
+{% endblock %}

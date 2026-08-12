@@ -209,3 +209,27 @@
     start();
   }
 })();
+
+// Thông báo về lưu trữ: hiện một lần, rồi thôi. Ghi cùng khoá với cài đặt
+// hiển thị nên không sinh thêm cookie nào — mà thêm cookie để báo về cookie
+// thì thật buồn cười.
+(function () {
+  var thanh = document.getElementById("thong-bao-luu-tru");
+  var nut = document.getElementById("hieu-luu-tru");
+  if (!thanh || !nut) return;
+
+  var KEY = "gals-hien-thi";
+  function doc() {
+    try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { return {}; }
+  }
+  var prefs = doc();
+  if (prefs.hieu_luu_tru) return;
+
+  thanh.hidden = false;
+  nut.addEventListener("click", function () {
+    thanh.hidden = true;
+    var p = doc();
+    p.hieu_luu_tru = true;
+    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {}
+  });
+})();

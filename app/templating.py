@@ -6,6 +6,8 @@ from itsdangerous import BadSignature, URLSafeSerializer
 
 from app.config import (
     FIELD_KEY_BY_NAME,
+    PHIEN_BAN_DIEU_KHOAN,
+    PHIEN_BAN_RIENG_TU,
     PROJECT_CATEGORIES,
     STEAM_FIELDS,
     TEMPLATES_DIR,
@@ -162,4 +164,6 @@ templates.env.globals.update(
     beat_classes=BEAT_CLASSES,
     gemini_enabled=gemini_enabled,
     scenario_of_id=get_scenario,
+    phien_ban_rieng_tu=PHIEN_BAN_RIENG_TU,
+    phien_ban_dieu_khoan=PHIEN_BAN_DIEU_KHOAN,
 )

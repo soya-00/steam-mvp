@@ -28,7 +28,8 @@ from app.oauth import dang_bat as oauth_dang_bat
 from app.oauth import doc_userinfo, noi_tai_khoan
 from app.oauth import khach as oauth_khach
 from app.db import get_db
-from app.models import Class, ClassMembership, User
+from app.config import PHIEN_BAN_DIEU_KHOAN, PHIEN_BAN_RIENG_TU
+from app.models import Class, ClassMembership, Consent, User
 from app.scenarios import all_scenarios
 from app.schools import truong_dang_nhan, truong_theo_ma
 from app.security import hash_password, needs_rehash, verify_password
@@ -65,6 +66,22 @@ def _home_for(user: User) -> str:
 
 def _client_ip(request: Request) -> str:
     return request.client.host if request.client else "khong-ro"
+
+
+def _ghi_dong_y(db: Session, user: User) -> None:
+    """Lưu bằng chứng đã đồng ý, kèm phiên bản văn bản.
+
+    PDPL đòi hỏi chứng minh được đã có đồng ý, mà một ô tích không để lại dấu
+    vết thì không chứng minh được gì. Không lưu địa chỉ máy: bản thân nó cũng
+    là dữ liệu cá nhân, và cặp phiên bản + thời điểm đã đủ.
+    """
+    db.add_all(
+        [
+            Consent(user_id=user.id, loai="rieng_tu", phien_ban=PHIEN_BAN_RIENG_TU),
+            Consent(user_id=user.id, loai="dieu_khoan", phien_ban=PHIEN_BAN_DIEU_KHOAN),
+        ]
+    )
+    db.commit()
 
 
 def _join_class(db: Session, user: User, ma_lop: str) -> bool:
@@ -182,6 +199,7 @@ def signup_submit(
     mat_khau: str = Form(""),
     tuoi: str = Form(""),
     ma_lop: str = Form(""),
+    dong_y: str = Form(""),
     db: Session = Depends(get_db),
 ):
     code = (ma_lop or "").strip().upper()
@@ -221,7 +239,11 @@ def signup_submit(
     if (problem := check_password(mat_khau)) is not None:
         return back(problem)
 
+    if not dong_y:
+        return back("chua_dong_y")
+
     user = create_user(db, name=name, email=address, password=mat_khau)
+    _ghi_dong_y(db, user)
     if code:
         _join_class(db, user, code)
 
@@ -388,6 +410,7 @@ def teacher_signup_submit(
     ma_truong: str = Form(""),
     email: str = Form(""),
     mat_khau: str = Form(""),
+    dong_y: str = Form(""),
     db: Session = Depends(get_db),
 ):
     def back(loi: str) -> RedirectResponse:
@@ -422,6 +445,9 @@ def teacher_signup_submit(
     if (problem := check_password(mat_khau)) is not None:
         return back(problem)
 
+    if not dong_y:
+        return back("chua_dong_y")
+
     throttle.clear(key)
     user = create_user(
         db,
@@ -431,6 +457,7 @@ def teacher_signup_submit(
         role="teacher",
         school_id=truong.id,
     )
+    _ghi_dong_y(db, user)
     return _signed_in(request, user, "/giao-vien")
 
 

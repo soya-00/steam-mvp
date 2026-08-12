@@ -86,6 +86,7 @@ def test_the_form_body_survives_the_ticket_check(client_tho):
             "email": "chau@example.com",
             "mat_khau": "chuoi-dai-du-8",
             "tuoi": "17",
+            "dong_y": "1",
         },
         follow_redirects=False,
     )

@@ -24,6 +24,7 @@ def _dang_ky(client, **ghi_de):
         "mat_khau": MAT_KHAU,
         "tuoi": "17",
         "ma_lop": "",
+        "dong_y": "1",
     }
     data.update(ghi_de)
     return client.post("/dang-ky", data=data, follow_redirects=False)

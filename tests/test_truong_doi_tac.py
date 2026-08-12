@@ -40,6 +40,7 @@ def _dang_ky_gv(client, **ghi_de):
             "ma_truong": t.ma_giao_vien or "",
             "email": "nam@truong.edu.vn",
             "mat_khau": MAT_KHAU,
+            "dong_y": "1",
         }
     finally:
         db.close()

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Điều khoản sử dụng — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+
+  <h1 class="text-3xl text-ink">Điều khoản sử dụng</h1>
+  <p class="mt-2 text-sm text-ink-faint">Phiên bản {{ phien_ban_dieu_khoan }}</p>
+
+  <div class="tile p-4 mt-5 bg-amber-50 border-amber-100" role="note">
+    <p class="text-sm text-amber-900">
+      <strong>Bản nháp.</strong> Phần nội dung dưới đây là khung để điền, chưa phải văn bản
+      hoàn chỉnh. Đừng dựa vào nó cho tới khi mục này biến mất.
+    </p>
+  </div>
+
+  <section class="prose-doc mt-8">
+
+    <h2 class="text-xl text-ink mt-8">Ai đứng sau GALS</h2>
+    {% include "partials/danh_tinh.html" %}
+
+    <h2 class="text-xl text-ink mt-8">GALS là gì và không là gì</h2>
+    <p class="mt-2 text-ink-soft">
+      GALS là chỗ tập tư duy thiết kế qua các tình huống nghề nghiệp. Không chấm điểm,
+      không xếp hạng, không cấp chứng chỉ, và <strong>không phải công cụ hỗ trợ tâm lý</strong>.
+      Nếu bạn đang cần giúp đỡ khẩn cấp, gọi Tổng đài quốc gia bảo vệ trẻ em <strong>111</strong>.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Tài khoản</h2>
+    <p class="mt-2 text-ink-soft">
+      Từ 16 tuổi trở lên mới tự đăng ký được. Dưới tuổi đó thì tham gia qua lớp của thầy cô.
+      Tài khoản giáo viên chỉ cấp qua trường đã hợp tác — mã giáo viên là của trường, không
+      được chuyển cho người ngoài.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Bạn viết gì thì thuộc về bạn</h2>
+    <p class="mt-2 text-ink-soft">
+      Phần bạn viết là của bạn. GALS chỉ lưu và hiển thị lại cho bạn, và cho giáo viên lớp
+      bạn nếu bạn đã vào lớp.
+      <em>[Cần điền: phạm vi cấp phép sử dụng nội dung, nếu có.]</em>
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Trợ lý AI</h2>
+    <p class="mt-2 text-ink-soft">
+      Trợ lý đặt câu hỏi gợi mở, không đưa đáp án và không đánh giá bạn. Nó có thể trả lời
+      sai — đừng coi là lời khuyên nghề nghiệp chính thức.
+    </p>
+
+    <h2 class="text-xl text-ink mt-8">Những việc không được làm</h2>
+    <ul class="mt-2 grid gap-2 text-ink-soft list-disc list-inside">
+      <li>Nhập thông tin cá nhân của người khác.</li>
+      <li>Dùng tài khoản của người khác, hoặc chia sẻ mật khẩu.</li>
+      <li>Cố lấy dữ liệu của người dùng khác.</li>
+    </ul>
+
+    <h2 class="text-xl text-ink mt-8">Ngừng dịch vụ</h2>
+    <p class="mt-2 text-ink-soft">
+      <em>[Cần điền: điều kiện khoá tài khoản, thông báo trước khi ngừng dịch vụ, và
+      cách lấy lại dữ liệu.]</em>
+    </p>
+
+  </section>
+</div>
+{% endblock %}

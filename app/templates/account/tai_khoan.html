@@ -153,6 +153,38 @@
     </div>
 
     <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Xoá tài khoản</h3>
+      {% if yeu_cau_xoa %}
+      <p class="mt-2 text-sm text-ink-soft">
+        Bạn đã gửi yêu cầu xoá ngày {{ yeu_cau_xoa.tao_luc.strftime('%d/%m/%Y') }}.
+        Chúng mình sẽ xoá và báo lại cho bạn.
+      </p>
+      <form method="post" action="/tai-khoan/huy-yeu-cau-xoa" class="mt-3">
+        {% include "partials/csrf.html" %}
+        <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
+          Tôi đổi ý, huỷ yêu cầu
+        </button>
+      </form>
+      {% else %}
+      <p class="mt-2 text-sm text-ink-soft">
+        Bạn không tự bấm xoá được — để tránh xoá nhầm một thứ không dựng lại được. Gửi yêu
+        cầu ở đây thì chúng mình xoá vĩnh viễn tài khoản, nhật ký và hồ sơ của bạn, rồi báo lại.
+      </p>
+      <p class="mt-2 text-xs text-ink-faint">
+        Một điều xoá không với tới: nếu giáo viên đã tải bản tổng hợp của lớp về máy, bản đó
+        đã rời khỏi hệ thống từ lúc bấm tải.
+      </p>
+      <form method="post" action="/tai-khoan/yeu-cau-xoa" class="mt-3 grid gap-2 max-w-md">
+        {% include "partials/csrf.html" %}
+        <label for="ly_do" class="text-sm text-ink-soft">Lý do (không bắt buộc)</label>
+        <input type="text" id="ly_do" name="ly_do" maxlength="500"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <button type="submit" class="btn btn-ghost justify-self-start">Gửi yêu cầu xoá</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Mục đang chia sẻ công khai</h3>
       <p class="mt-1 text-sm text-ink-soft">
         Mục được chia sẻ nằm sau một đường dẫn công khai: ai có link cũng xem được.

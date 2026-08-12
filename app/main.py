@@ -10,7 +10,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import STATIC_DIR, gemini_enabled
 from app.config import SECRET_KEY
-from app.csrf import CSRFMiddleware
+from app.csrf import CSRFMiddleware, SecurityHeadersMiddleware
 from app.routers import auth as auth_router
 from app.routers import chat as chat_router
 from app.routers import marketing as marketing_router
@@ -47,6 +47,7 @@ app = FastAPI(title="GALS", lifespan=lifespan, docs_url=None, redoc_url=None)
 # trong app/auth.py.
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, same_site="lax", https_only=False)
 app.add_middleware(CSRFMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
