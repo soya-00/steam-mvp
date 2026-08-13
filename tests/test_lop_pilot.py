@@ -10,7 +10,7 @@ from __future__ import annotations
 from app.db import SessionLocal
 from app.lop import ma_lop_moi
 from app.models import Class, ClassMembership, User
-from app.seed import SEED_EMAILS, SEED_PASSWORD
+from tests.du_lieu_mau import SEED_EMAILS, SEED_PASSWORD
 from tests.conftest import login_independent, login_student, login_teacher
 
 MOI = "mat-khau-moi-1"

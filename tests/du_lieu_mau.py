@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import os
-
 import json
 import logging
 from datetime import datetime, timedelta
@@ -28,7 +26,15 @@ from app.schools import MA_SONG_NGAY
 
 log = logging.getLogger("gals.seed")
 
-# Ba nhân vật mẫu, chỉ để chạy thử ở máy cá nhân và trong kiểm thử.
+# Đây là GIÀN GIÁO KIỂM THỬ, không phải mã ứng dụng.
+#
+# Trước kia file này nằm ở app/seed.py và vòng đời FastAPI gọi nó lúc khởi
+# động, nên một cơ sở dữ liệu trống tự mọc ra sáu tài khoản có mật khẩu nằm
+# công khai trong mã nguồn. Giờ ứng dụng không gieo gì cả: dữ liệu chỉ xuất
+# hiện khi có người tạo ra nó. Những nhân vật dưới đây tồn tại để hơn bốn trăm
+# bài kiểm thử có ai đó để đăng nhập, và không đường nào từ app/ gọi tới đây.
+
+# Ba nhân vật mẫu, chỉ dùng trong kiểm thử.
 SEED_EMAILS = {
     "giao_vien": "co.mai@gals.demo",
     "hoc_sinh_co_lop": "linh@gals.demo",
@@ -474,41 +480,6 @@ def reset_and_seed() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        _seed(db)
-    finally:
-        db.close()
-
-
-def seed_if_empty() -> None:
-    """Tạo bảng nếu chưa có, và chỉ gieo dữ liệu mẫu khi chưa có người dùng nào.
-
-    Đây là điểm khác biệt giữa bản mẫu và bản dùng thật: trước đây mỗi lần khởi
-    động lại là `drop_all()`, nên tài khoản thật và bài học sinh viết đều bay
-    sạch. Từ giờ khởi động lại không đụng vào dữ liệu đã có.
-
-    Đặt `GALS_RESET_DB=1` nếu thật sự muốn xoá và gieo lại — hữu ích khi chạy
-    tại máy, nguy hiểm ở nơi có dữ liệu thật.
-    """
-    if os.getenv("GALS_RESET_DB", "").strip() == "1":
-        log.warning("GALS_RESET_DB=1 — xoá toàn bộ dữ liệu và gieo lại từ đầu.")
-        reset_and_seed()
-        return
-
-    if is_sqlite:
-        # Ở máy cá nhân thì dựng bảng ngay cho tiện. Trên Postgres thì không:
-        # create_all() tạo được bảng còn thiếu nhưng **không** thêm được cột
-        # vào bảng đã có, nên nó sẽ im lặng bỏ qua mọi thay đổi lược đồ về sau.
-        # Nơi triển khai chạy `alembic upgrade head` trước khi mở cổng.
-        Base.metadata.create_all(bind=engine)
-
-    db = SessionLocal()
-    try:
-        if db.query(User).first() is not None:
-            log.info(
-                "Cơ sở dữ liệu đã có sẵn %d người dùng — không gieo lại.",
-                db.query(User).count(),
-            )
-            return
         _seed(db)
     finally:
         db.close()

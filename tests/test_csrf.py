@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 from app.csrf import CSRF_COOKIE
-from app.seed import SEED_EMAILS, SEED_PASSWORD
+from tests.du_lieu_mau import SEED_EMAILS, SEED_PASSWORD
 
 TEMPLATES = Path("app/templates")
 

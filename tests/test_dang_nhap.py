@@ -10,7 +10,7 @@ from __future__ import annotations
 from app import throttle
 from app.db import SessionLocal
 from app.models import Class, ClassMembership, User
-from app.seed import SEED_EMAILS, SEED_PASSWORD
+from tests.du_lieu_mau import SEED_EMAILS, SEED_PASSWORD
 from app.security import hash_password
 from tests.conftest import login_student
 
@@ -269,7 +269,7 @@ def test_the_seed_password_cannot_reach_a_real_database(monkeypatch):
     Postgres phải là mã, không phải trí nhớ của người deploy."""
     import pytest
 
-    import app.seed as seed
+    import tests.du_lieu_mau as seed
 
     monkeypatch.setattr(seed, "is_sqlite", False)
     with pytest.raises(RuntimeError, match="SQLite"):

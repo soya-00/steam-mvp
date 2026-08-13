@@ -12,7 +12,7 @@ import pytest
 from app import oauth
 from app.db import SessionLocal
 from app.models import User
-from app.seed import SEED_EMAILS
+from tests.du_lieu_mau import SEED_EMAILS
 
 
 @pytest.fixture()

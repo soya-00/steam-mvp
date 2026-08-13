@@ -81,7 +81,7 @@ def test_no_secret_is_written_into_the_deploy_file():
 def test_create_all_never_runs_against_a_real_database(monkeypatch):
     """Trên Postgres, dựng bảng là việc của Alembic. Nếu create_all() vẫn chạy
     ở đó thì mọi cột thêm sau này sẽ bị bỏ qua mà không ai biết."""
-    import app.seed as seed
+    import tests.du_lieu_mau as seed
 
     da_goi = []
     monkeypatch.setattr(seed, "is_sqlite", False)

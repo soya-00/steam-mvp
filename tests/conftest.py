@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from app import throttle
 from app.csrf import CSRF_COOKIE, FORM_FIELD
 from app.main import app
-from app.seed import SEED_EMAILS, SEED_PASSWORD, reset_and_seed
+from tests.du_lieu_mau import SEED_EMAILS, SEED_PASSWORD, reset_and_seed
 
 
 def _mang_ve_csrf(c: TestClient) -> None:

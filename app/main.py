@@ -20,7 +20,6 @@ from app.routers import phan_hoi as phan_hoi_router
 from app.routers import student as student_router
 from app.routers import tai_khoan as tai_khoan_router
 from app.routers import teacher as teacher_router
-from app.seed import seed_if_empty
 from app.templating import templates
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(message)s")
@@ -29,7 +28,18 @@ log = logging.getLogger("gals")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    seed_if_empty()
+    """Khởi động **không ghi một hàng nào** vào cơ sở dữ liệu.
+
+    Trước đây chỗ này gieo dữ liệu mẫu khi thấy cơ sở dữ liệu trống, tức là lần
+    khởi động đầu tiên tự mọc ra sáu tài khoản, hai lớp và một trường. Tiện lúc
+    trình diễn,
+    nhưng nó có nghĩa là ứng dụng tự quyết định dữ liệu nào tồn tại — kể cả tài
+    khoản có mật khẩu nằm công khai trong mã nguồn.
+
+    Giờ thì dữ liệu chỉ xuất hiện khi có người tạo ra nó: học sinh đăng ký, giáo
+    viên đăng ký bằng mã trường, hoặc người vận hành gõ `python -m app.quan_tri`.
+    Cơ sở dữ liệu mới là cơ sở dữ liệu trống, và nó ở nguyên như vậy.
+    """
     if gemini_enabled():
         from app.gemini import resolve_model
 

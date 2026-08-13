@@ -156,6 +156,55 @@ def test_a_backup_from_a_different_format_version_is_refused(tmp_path):
     assert "phiên bản" in r.stdout
 
 
+# ------------------------------------------- ứng dụng không tự gieo dữ liệu nào
+
+def test_starting_up_writes_nothing_to_an_empty_database(tmp_path):
+    """Cơ sở dữ liệu mới phải ở nguyên là cơ sở dữ liệu trống.
+
+    Trước đây vòng đời FastAPI gọi `seed_if_empty()`, nên lần khởi động đầu tiên
+    tự tạo sáu tài khoản — trong đó có một tài khoản giáo viên, với mật khẩu nằm
+    công khai trong mã nguồn.
+    """
+    dich = tmp_path / "trong.db"
+    moi_truong = {"DATABASE_URL": f"sqlite:///{dich}"}
+    assert _chay(["-m", "alembic", "upgrade", "head"], moi_truong).returncode == 0
+
+    khoi_dong = (
+        "from fastapi.testclient import TestClient;"
+        "from app.main import app;"
+        "import app.models as m;"
+        "from app.db import SessionLocal;"
+        "c = TestClient(app);"
+        "c.__enter__();"
+        "print(c.get('/').status_code);"
+        "db = SessionLocal();"
+        "print(db.query(m.User).count(), db.query(m.Class).count(),"
+        " db.query(m.School).count(), db.query(m.JournalEntry).count())"
+    )
+    r = _chay(["-c", khoi_dong], moi_truong)
+    assert r.returncode == 0, r.stderr
+    trang_chu, dem = r.stdout.strip().splitlines()
+    assert trang_chu == "200"
+    assert dem == "0 0 0 0", f"khởi động đã tạo ra dữ liệu: {dem}"
+
+
+def test_no_demo_account_can_be_reached_from_the_application():
+    """Nhân vật mẫu là giàn giáo kiểm thử. Nếu app/ với tới được chúng thì một
+    ngày nào đó chúng sẽ có mặt trên máy chủ thật."""
+    for tep in (GOC / "app").rglob("*.py"):
+        nguon = tep.read_text(encoding="utf-8")
+        assert "du_lieu_mau" not in nguon, tep
+        assert "@gals.demo" not in nguon, tep
+        assert "mat-khau-mau" not in nguon, tep
+
+
+def test_the_application_no_longer_has_a_seeding_entry_point():
+    tep = GOC / "app" / "seed.py"
+    assert not tep.exists(), "app/seed.py đã chuyển sang tests/du_lieu_mau.py"
+    for nguon in (GOC / "app").rglob("*.py"):
+        assert "seed_if_empty" not in nguon.read_text(encoding="utf-8"), nguon
+
+
 # --------------------------------------------------- quản trị vẫn không có route
 
 def test_the_backup_commands_added_no_web_route():

@@ -9,7 +9,7 @@ from pathlib import Path
 from app.csrf import CSRF_COOKIE
 from app.db import SessionLocal
 from app.models import Consent, User, YeuCauXoa
-from app.seed import SEED_EMAILS
+from tests.du_lieu_mau import SEED_EMAILS
 from tests.conftest import login_independent, login_student, login_teacher
 
 TRANG_PHAP_LY = ["/chinh-sach-rieng-tu", "/dieu-khoan", "/chinh-sach-cookie"]

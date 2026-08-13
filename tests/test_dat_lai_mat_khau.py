@@ -13,7 +13,7 @@ import pytest
 from app import dat_lai as mod
 from app.db import SessionLocal
 from app.models import PasswordReset, User
-from app.seed import SEED_EMAILS, SEED_PASSWORD
+from tests.du_lieu_mau import SEED_EMAILS, SEED_PASSWORD
 from tests.conftest import login_student
 
 MOI = "mat-khau-moi-1"

@@ -77,7 +77,7 @@ Cách viết xem [Hướng dẫn kỹ thuật](KY-THUAT.md#thêm-kịch-huống-
 
 ### Mở rộng quy mô
 
-1. **Postgres + chỉ gieo khi trống** — dữ liệu phải sống qua deploy. Vẫn là việc số một của cả dự án.
+1. **Postgres** — dữ liệu phải sống qua deploy. Vẫn là việc số một của cả dự án. (Gieo dữ liệu đã bỏ hẳn: ứng dụng không tự tạo tài khoản nào.)
 2. **Quy trình soạn kịch huống** — lệnh kiểm tra `scenarios.json` + khuôn Markdown → JSON, để giáo viên và người viết nội dung soạn được kịch huống mà không phải gõ tay JSON lồng nhiều lớp. Nội dung là nút thắt tăng trưởng thật của sản phẩm.
 3. **Hạn mức chat theo người dùng, lưu trong DB** — hiện đếm trong bộ nhớ theo cookie: đúng cho demo, nhưng mất khi restart và không gắn với người. (Rò rỉ bộ nhớ của bộ đếm đã được chặn bằng trần 2.000 khoá.)
 4. **Nhiều giáo viên một lớp**, chuyển lớp giữa giáo viên.
@@ -112,9 +112,9 @@ Cách viết xem [Hướng dẫn kỹ thuật](KY-THUAT.md#thêm-kịch-huống-
 > có Alembic, không có mật khẩu. Những điều đó **không còn đúng**; phần dưới đã
 > viết lại theo mã hiện tại.
 
-- **Dữ liệu ở lại.** Vòng đời FastAPI gọi `seed_if_empty()`, chỉ gieo khi cơ sở
-  dữ liệu trống, và từ chối gieo tài khoản mẫu khi `DATABASE_URL` không phải
-  SQLite. Muốn xoá sạch có chủ đích thì đặt `GALS_RESET_DB=1`.
+- **Dữ liệu ở lại, và ứng dụng không tự tạo ra dữ liệu nào.** Khởi động không
+  ghi một hàng nào; cơ sở dữ liệu mới là cơ sở dữ liệu trống. Nhân vật mẫu nằm
+  ở `tests/du_lieu_mau.py` và không đường nào từ `app/` với tới được.
 - **Alembic đã có.** `render.yaml` chạy `alembic upgrade head` trước khi mở cổng.
   Mỗi lần đổi mô hình phải kèm một revision; `tests/` có bài đối chiếu lược đồ
   với chuỗi di trú, nên quên revision là hỏng bộ kiểm thử.
@@ -171,6 +171,34 @@ Xem [LEGAL.md](../LEGAL.md) cho bối cảnh đầy đủ.
 
 Phần này ghi những thứ chỉ hỏng sau khi đã triển khai, và những giới hạn đã biết
 mà cố ý chưa sửa. Ghi ra để lần sau không phải suy lại từ đầu.
+
+### Ứng dụng không gieo dữ liệu
+
+Khởi động **không ghi một hàng nào**. Cơ sở dữ liệu mới là cơ sở dữ liệu trống,
+và nó ở nguyên như vậy cho tới khi có người tạo ra dữ liệu. Không còn tài khoản
+mẫu nào trong `app/` — những nhân vật `@gals.demo` đã chuyển hẳn sang
+`tests/du_lieu_mau.py`, là giàn giáo kiểm thử, và `tests/test_van_hanh.py` chặn
+mọi đường từ `app/` gọi ngược lại.
+
+Dựng một bản chạy thật, từ trống hoàn toàn:
+
+```
+alembic upgrade head                                  # dựng lược đồ
+python -m app.quan_tri truong-them "THPT Nguyễn Trãi" --tinh "Hà Nội"
+python -m app.quan_tri ma "THPT Nguyễn Trãi"          # in mã giáo viên, sống 3 ngày
+```
+
+Đưa mã đó cho giáo viên; họ tự đăng ký ở `/dang-ky/giao-vien`, tự tạo lớp, và
+đọc mã lớp cho học sinh. Không có bước nào ứng dụng tự quyết định thay bạn.
+
+Xem những gì đang có, và dọn:
+
+```
+python -m app.quan_tri truong-liet-ke
+python -m app.quan_tri ma-ai "THPT Nguyễn Trãi"   # ai đã lập tài khoản bằng mã hiện tại
+python -m app.quan_tri xoa-cho                    # yêu cầu xoá đang chờ
+python -m app.quan_tri xoa <email> --chac-chan
+```
 
 ### Chốt chặn `DATABASE_URL`
 

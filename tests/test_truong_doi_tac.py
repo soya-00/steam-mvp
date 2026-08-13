@@ -13,7 +13,7 @@ from app import throttle
 from app.db import SessionLocal
 from app.models import Class, School, User
 from app.schools import cap_ma_moi, ma_con_han, sinh_ma
-from app.seed import SEED_EMAILS, SEED_PASSWORD
+from tests.du_lieu_mau import SEED_EMAILS, SEED_PASSWORD
 
 MAT_KHAU = "chuoi-dai-du-8"
 
