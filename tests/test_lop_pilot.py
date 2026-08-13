@@ -308,6 +308,45 @@ def test_a_teacher_can_remove_a_student_who_joined_the_wrong_class(client):
     assert "Nguyễn Khánh Linh" not in client.get(f"/giao-vien/lop/{lop_id}").text
 
 
+def test_the_remove_confirmation_says_the_student_can_come_back(client):
+    """Gỡ không phải là chặn. Thầy cô bấm nút này thường tưởng mình vừa đóng
+    một cánh cửa, nên chỗ xác nhận phải nói thẳng và chỉ sang chỗ đổi mã."""
+    login_teacher(client)
+    page = client.get(f"/giao-vien/lop/{_lop().id}").text
+    assert "mã lớp vẫn nhận em ấy" in page
+    assert 'href="#quan-ly"' in page
+
+
+def test_a_removed_student_really_can_rejoin_with_the_same_code(client):
+    """Nếu bài này hỏng thì lời nhắn ở trên thành lời nói dối."""
+    lop_id = _lop().id
+    uid = _user(SEED_EMAILS["hoc_sinh_co_lop"]).id
+
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/go/{uid}", data={})
+    assert not _o_trong_lop(SEED_EMAILS["hoc_sinh_co_lop"], lop_id)
+
+    client.get("/dang-xuat")
+    login_student(client)
+    client.post("/tai-khoan/vao-lop", data={"ma": "GALS-11A2"})
+    assert _o_trong_lop(SEED_EMAILS["hoc_sinh_co_lop"], lop_id)
+
+
+def test_rotating_the_code_is_what_actually_keeps_a_removed_student_out(client):
+    lop_id = _lop().id
+    uid = _user(SEED_EMAILS["hoc_sinh_co_lop"]).id
+
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/go/{uid}", data={})
+    client.post(f"/giao-vien/lop/{lop_id}/doi-ma", data={})
+
+    client.get("/dang-xuat")
+    login_student(client)
+    r = client.post("/tai-khoan/vao-lop", data={"ma": "GALS-11A2"}, follow_redirects=False)
+    assert "loi=ma_lop_sai" in r.headers["location"]
+    assert not _o_trong_lop(SEED_EMAILS["hoc_sinh_co_lop"], lop_id)
+
+
 def test_removing_a_student_keeps_everything_the_student_wrote(client):
     from app.models import JournalEntry
 

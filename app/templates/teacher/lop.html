@@ -61,9 +61,18 @@
             class="mt-2 text-right">
         {% include "partials/csrf.html" %}
         <p class="text-xs text-ink-soft max-w-xs">
-          Gỡ {{ s.student.name }} khỏi lớp. Bài viết và hồ sơ của em vẫn còn nguyên, và em
-          vào lại được bằng mã lớp.
+          Gỡ {{ s.student.name }} khỏi lớp. Bài viết và hồ sơ của em vẫn còn nguyên.
         </p>
+        {% if not klass.da_dong %}
+        {# Gỡ không phải là chặn: mã lớp vẫn nhận em ấy vào lại. Nói thẳng ở đây,
+           vì thầy cô bấm nút này thường đang nghĩ mình vừa đóng một cánh cửa. #}
+        <p class="text-xs text-ink-soft max-w-xs mt-1">
+          Gỡ không chặn được em vào lại: <strong class="text-ink">mã lớp vẫn nhận em ấy</strong>.
+          Nếu bạn muốn em không vào lại được thì
+          <a href="#quan-ly" class="text-trunk font-semibold hover:underline">đổi mã lớp</a>
+          rồi chỉ đọc mã mới cho những em còn lại.
+        </p>
+        {% endif %}
         <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
           Gỡ khỏi lớp
         </button>
