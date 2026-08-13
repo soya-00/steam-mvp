@@ -62,6 +62,18 @@ GEMINI_MODEL_PREFERENCE = (
     "gemini-2.5-flash",
 )
 
+# Đợt thử nghiệm chỉ dành cho người từ 16 tuổi.
+#
+# Đăng ký trực tiếp vốn đã yêu cầu 16+, nhưng dưới 16 mà **có mã lớp hợp lệ**
+# thì vẫn vào được, với lập luận rằng nhà trường đã xin phép gia đình. Trong đợt
+# thử nghiệm này thì lập luận đó không dùng được: chưa có đường đồng ý của người
+# giám hộ nào được dựng, chưa có đường nào được thử. Bật cờ này là đóng hẳn lối
+# đó lại thay vì tin rằng nó ổn — và cả câu hỏi về đồng ý của người giám hộ rời
+# khỏi phạm vi rủi ro của đợt thử nghiệm, đổi lấy đúng một câu `if`.
+#
+# Tắt cờ (đặt "0") thì hành vi cũ trở lại nguyên vẹn.
+PILOT_16_PLUS = os.getenv("PILOT_16_PLUS", "1").strip() != "0"
+
 MAX_MESSAGES_PER_SESSION = 30
 MAX_CALLS_PER_HOUR = int(os.getenv("MAX_CALLS_PER_HOUR", "400"))
 

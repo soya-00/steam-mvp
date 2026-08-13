@@ -93,22 +93,51 @@ def test_the_error_redirect_carries_a_code_not_a_sentence(client):
     assert len(location) < 80
 
 
-def test_under_sixteen_without_a_class_code_gets_the_school_route(client):
+def test_under_sixteen_is_turned_away_during_the_pilot(client):
+    """Cờ PILOT_16_PLUS bật sẵn: đợt này 16+ và không có ngoại lệ."""
     r = _dang_ky(client, tuoi="14")
-    assert r.headers["location"] == "/dang-ky/can-ma-lop"
+    assert r.headers["location"] == "/dang-ky/chua-du-tuoi"
     assert _user("chau@example.com") is None
 
-    page = client.get("/dang-ky/can-ma-lop").text
-    assert "mã lớp" in page.lower()
+    page = client.get("/dang-ky/chua-du-tuoi").text
     # Trang phải nói rõ vì sao, chứ không chỉ chặn.
-    assert "nhà trường" in page
+    assert "16 tuổi" in page
+    assert "xin phép gia đình" in page
 
 
-def test_under_sixteen_with_a_real_class_code_is_allowed_through(client):
-    """Qua lớp thì nhà trường là bên đứng ra xin phép gia đình, nên đường này mở."""
+def test_a_class_code_does_not_open_the_door_during_the_pilot(client):
+    """Đây chính là lỗ mà cờ này bịt: lối cũ dựa vào việc nhà trường đã xin phép
+    gia đình, mà đợt này không có đường đồng ý nào được dựng hay được thử."""
+    r = _dang_ky(client, tuoi="14", ma_lop="GALS-11A2")
+    assert r.headers["location"] == "/dang-ky/chua-du-tuoi"
+    assert _user("chau@example.com") is None
+
+
+def test_the_pilot_page_does_not_send_anyone_to_fetch_a_useless_code(client):
+    """Bảo một em đi xin mã lớp trong khi mã lớp không dùng được là để em chạy
+    một vòng vô ích."""
+    page = client.get("/dang-ky/chua-du-tuoi").text
+    assert "mã lớp cũng không mở cửa được" in page
+
+
+def test_turning_the_flag_off_restores_the_class_code_route(client, monkeypatch):
+    """Cờ phải tháo được, không thì nó là một quyết định vĩnh viễn nấp dưới dạng
+    một biến môi trường."""
+    import app.routers.auth as auth_router
+
+    monkeypatch.setattr(auth_router, "PILOT_16_PLUS", False)
     r = _dang_ky(client, tuoi="14", ma_lop="GALS-11A2")
     assert r.headers["location"] == "/chon-avatar"
     assert _user("chau@example.com") is not None
+
+
+def test_with_the_flag_off_under_sixteen_still_needs_a_class_code(client, monkeypatch):
+    import app.routers.auth as auth_router
+
+    monkeypatch.setattr(auth_router, "PILOT_16_PLUS", False)
+    r = _dang_ky(client, tuoi="14")
+    assert r.headers["location"] == "/dang-ky/can-ma-lop"
+    assert _user("chau@example.com") is None
 
 
 def test_a_class_code_that_matches_nothing_is_refused(client):

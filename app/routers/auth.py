@@ -28,7 +28,7 @@ from app.oauth import dang_bat as oauth_dang_bat
 from app.oauth import doc_userinfo, noi_tai_khoan
 from app.oauth import khach as oauth_khach
 from app.db import get_db
-from app.config import PHIEN_BAN_DIEU_KHOAN, PHIEN_BAN_RIENG_TU
+from app.config import PHIEN_BAN_DIEU_KHOAN, PHIEN_BAN_RIENG_TU, PILOT_16_PLUS
 from app.models import Class, ClassMembership, Consent, User
 from app.scenarios import all_scenarios
 from app.schools import truong_dang_nhan, truong_theo_ma
@@ -172,6 +172,7 @@ def signup_form(request: Request, loi: str = "", ma_lop: str = ""):
             "loi": message_for(loi),
             "ma_lop": ma_lop,
             "tuoi_toi_thieu": MIN_AGE,
+            "pilot_16_plus": PILOT_16_PLUS,
             "oauth": oauth_dang_bat(),
         },
     )
@@ -187,6 +188,22 @@ def need_class_code(request: Request):
     return templates.TemplateResponse(
         request,
         "auth/can_ma_lop.html",
+        {"user": None, "tuoi_toi_thieu": MIN_AGE},
+    )
+
+
+@router.get("/dang-ky/chua-du-tuoi", response_class=HTMLResponse)
+def pilot_age_limited(request: Request):
+    """Đợt thử nghiệm 16+: dưới 16 thì mã lớp cũng không mở được cửa.
+
+    Trang riêng chứ không dùng lại trang "cần mã lớp", vì hai câu trả lời khác
+    hẳn nhau. Trang kia bảo *đi xin mã lớp đi*; trang này phải nói thật rằng lúc
+    này chưa có đường nào, kể cả có mã lớp — bảo một em đi xin thứ không dùng
+    được là để em chạy một vòng vô ích.
+    """
+    return templates.TemplateResponse(
+        request,
+        "auth/chua_du_tuoi.html",
         {"user": None, "tuoi_toi_thieu": MIN_AGE},
     )
 
@@ -221,10 +238,15 @@ def signup_submit(
     has_class = bool(code) and (
         db.query(Class.id).filter(Class.class_code == code).first() is not None
     )
-    if age < MIN_AGE and not has_class:
+    if age < MIN_AGE and (PILOT_16_PLUS or not has_class):
         # Tuổi tự khai không phải là xác minh — đây là chỉ dẫn đường đi, và cả
         # giao diện lẫn LEGAL.md đều nói đúng như vậy.
-        return RedirectResponse("/dang-ky/can-ma-lop", status_code=303)
+        #
+        # Trong đợt thử nghiệm 16+, mã lớp không mở được cánh cửa này nữa: lối
+        # cũ dựa vào việc nhà trường đã xin phép gia đình, mà đợt này không có
+        # đường đồng ý nào của người giám hộ được dựng hay được thử.
+        dich = "/dang-ky/chua-du-tuoi" if PILOT_16_PLUS else "/dang-ky/can-ma-lop"
+        return RedirectResponse(dich, status_code=303)
     if code and not has_class:
         return back("ma_lop_sai")
 
