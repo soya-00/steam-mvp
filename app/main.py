@@ -4,7 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -58,6 +58,12 @@ app.include_router(chat_router.router)
 app.include_router(marketing_router.router)
 app.include_router(phan_hoi_router.router)
 app.include_router(tai_khoan_router.router)
+
+
+@app.get("/robots.txt", include_in_schema=False)
+async def robots() -> FileResponse:
+    """Máy quét tìm /robots.txt ở gốc, không tìm trong /static."""
+    return FileResponse(STATIC_DIR / "robots.txt", media_type="text/plain")
 
 
 @app.exception_handler(404)

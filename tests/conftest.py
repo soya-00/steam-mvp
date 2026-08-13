@@ -33,16 +33,23 @@ def _mang_ve_csrf(c: TestClient) -> None:
     c.post = post
 
 
-@pytest.fixture()
-def client():
-    # Khởi động ứng dụng chỉ gieo dữ liệu khi bảng còn trống, nên nếu để nguyên
-    # thì mỗi bài kiểm thử lại thừa hưởng dữ liệu của bài trước. Ở đây xoá sạch
-    # rồi gieo lại để từng bài chạy trên một cơ sở dữ liệu giống hệt nhau.
+@pytest.fixture(autouse=True)
+def _co_so_du_lieu_sach():
+    """Xoá sạch rồi gieo lại, đúng một lần cho mỗi bài kiểm thử.
+
+    Phải là fixture riêng chứ không nằm trong `client`: bài nào dùng cả
+    `client` lẫn `client_tho` sẽ gieo lại hai lần, và lần thứ hai xoá mất
+    những gì bài vừa dựng. Kiểu hỏng đó biểu hiện ra rất xa chỗ gây ra nó.
+    """
     reset_and_seed()
     # Bộ đếm số lần thử hỏng nằm trong bộ nhớ tiến trình, nên nó sống lâu hơn
     # cả cơ sở dữ liệu: không xoá thì bài nào thử sai mật khẩu sẽ làm bài sau
     # bị khoá.
     throttle.reset_all()
+
+
+@pytest.fixture()
+def client():
     with TestClient(app) as c:
         _mang_ve_csrf(c)
         yield c
@@ -50,9 +57,8 @@ def client():
 
 @pytest.fixture()
 def client_tho():
-    """Client không tự đính vé — dùng để kiểm chính lớp CSRF."""
-    reset_and_seed()
-    throttle.reset_all()
+    """Client không tự đính vé — dùng để kiểm chính lớp CSRF, và để đóng vai
+    một thiết bị thứ hai giữ cookie cũ."""
     with TestClient(app) as c:
         yield c
 

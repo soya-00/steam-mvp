@@ -127,6 +127,64 @@
   </section>
 
   {% if not user.is_teacher %}
+  {% if not user.is_teacher %}
+  <section id="lop-cua-toi" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Lớp của tôi</h2>
+
+    <div class="tile p-5 mt-3">
+      {% if classes %}
+      <ul class="grid gap-3">
+        {% for k in classes %}
+        <li class="flex flex-wrap items-center gap-3">
+          <span class="flex-1 min-w-0">
+            <span class="block text-sm font-semibold text-ink truncate">{{ k.name }}</span>
+            <span class="block text-xs text-ink-soft">
+              Giáo viên: {{ k.teacher.name }}{% if k.da_dong %} · đã kết thúc{% endif %}
+            </span>
+          </span>
+          <form method="post" action="/tai-khoan/roi-lop/{{ k.id }}">
+            {% include "partials/csrf.html" %}
+            <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
+              Rời lớp
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mt-3 text-xs text-ink-faint">
+        Rời lớp có hiệu lực ngay, không cần thầy cô duyệt. Bài viết, hồ sơ và huy hiệu của
+        bạn vẫn còn nguyên — chỉ là thầy cô không đọc được nữa.
+      </p>
+      {% else %}
+      <p class="text-sm text-ink-soft">Bạn chưa ở lớp nào.</p>
+      {% endif %}
+
+      <a href="/tai-khoan/vao-lop" class="btn btn-ghost mt-4">Vào lớp bằng mã</a>
+    </div>
+  </section>
+  {% endif %}
+
+  <section id="bao-mat" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Bảo mật</h2>
+
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Đổi mật khẩu</h3>
+      <p class="mt-1 text-sm text-ink-soft">
+        Đổi xong, mọi thiết bị khác đang đăng nhập tài khoản này sẽ bị đăng xuất.
+      </p>
+      <form method="post" action="/tai-khoan/mat-khau" class="mt-3 grid gap-2 max-w-sm">
+        {% include "partials/csrf.html" %}
+        <label for="mat_khau_cu" class="text-sm text-ink-soft">Mật khẩu hiện tại</label>
+        <input type="password" id="mat_khau_cu" name="mat_khau_cu" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <label for="mat_khau_moi" class="text-sm text-ink-soft mt-1">Mật khẩu mới</label>
+        <input type="password" id="mat_khau_moi" name="mat_khau_moi" required minlength="8"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <button type="submit" class="btn btn-primary justify-self-start mt-2">Đổi mật khẩu</button>
+      </form>
+    </div>
+  </section>
+
   <section id="rieng-tu" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Quyền riêng tư</h2>
 
@@ -142,8 +200,9 @@
         {% endfor %}
       </ul>
       <p class="mt-3 text-xs text-ink-faint">
-        Giáo viên của lớp bạn đã vào đọc được nhật ký tư duy của bạn. Rời lớp thì
-        thầy cô không còn đọc được nữa.
+        Thầy cô đọc được phần bạn đã nộp trong lớp đó. Phần bạn viết mà chưa nộp thì không.
+        Muốn dừng, bạn rời lớp ở mục <a href="#lop-cua-toi" class="text-teal hover:underline">Lớp của tôi</a>
+        bên dưới — có hiệu lực ngay.
       </p>
       {% else %}
       <p class="mt-2 text-sm text-ink-soft">

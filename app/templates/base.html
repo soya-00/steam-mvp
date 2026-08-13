@@ -6,6 +6,8 @@
   <title>{% block title %}GALS{% endblock %}</title>
   <meta name="description" content="GALS — nơi học sinh THPT tập tư duy thiết kế qua những tình huống nghề nghiệp có thật.">
   <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+  {# Trang nào có nội dung của người dùng thì tự khai noindex ở đây. #}
+  {% block robots %}{% endblock %}
   <script>
     // Dán cài đặt hiển thị lên <html> trước khi trang vẽ lần đầu, nếu không
     // người dùng để nền tối sẽ thấy một nháy trắng mỗi lần tải trang.

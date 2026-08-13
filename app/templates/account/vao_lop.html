@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Vào lớp — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+
+  <h1 class="text-2xl text-ink">Vào lớp bằng mã</h1>
+
+  {% include "partials/loi.html" %}
+
+  {% if lop and da_o_trong %}
+  <div class="tile p-5 mt-5">
+    <p class="text-sm text-ink">Bạn đã ở trong lớp <strong>{{ lop.name }}</strong> rồi.</p>
+    <a href="/tai-khoan#lop-cua-toi" class="btn btn-ghost mt-4">Quay lại tài khoản</a>
+  </div>
+
+  {% elif lop %}
+  {# Đây là màn hình xác nhận, không phải nút bấm cái xong. Vào lớp là thao tác
+     duy nhất làm thay đổi chuyện ai đọc được bài của bạn, nên phải nói rõ
+     trước khi bạn đồng ý. #}
+  <div class="card p-6 mt-5">
+    <p class="text-sm text-ink-soft">Bạn sắp vào lớp</p>
+    <p class="mt-1 text-xl font-semibold text-ink">{{ lop.name }}</p>
+    <p class="mt-1 text-sm text-ink-soft">Giáo viên: {{ lop.teacher.name }}</p>
+
+    <div class="tile p-4 mt-5 bg-amber-50 border-amber-100">
+      <p class="text-sm font-semibold text-amber-900">Vào lớp nghĩa là gì</p>
+      <ul class="mt-2 grid gap-1.5 text-sm text-amber-900/90 list-disc list-inside">
+        <li><strong>{{ lop.teacher.name }} sẽ đọc được phần bạn nộp</strong> trong lớp này.</li>
+        <li>Nhật ký bạn viết mà chưa nộp thì thầy cô <strong>không đọc được</strong>.</li>
+        <li>Các bạn cùng lớp không đọc được bài của bạn.</li>
+        <li>Bạn <strong>rời lớp lúc nào cũng được</strong>, và rời xong thì thầy cô không
+          đọc được nữa.</li>
+      </ul>
+    </div>
+
+    <form method="post" action="/tai-khoan/vao-lop" class="mt-5 flex flex-wrap gap-3">
+      {% include "partials/csrf.html" %}
+      <input type="hidden" name="ma" value="{{ lop.class_code }}">
+      <button type="submit" class="btn btn-primary">Đồng ý, vào lớp</button>
+      <a href="/tai-khoan" class="btn btn-ghost">Thôi, quay lại</a>
+    </form>
+  </div>
+
+  {% else %}
+  <div class="card p-6 mt-5">
+    <p class="text-sm text-ink-soft">
+      Nhập mã lớp thầy cô đưa cho bạn. Sau khi nhập, bạn sẽ được xem trước lớp đó là lớp nào
+      trước khi quyết định.
+    </p>
+    <form method="get" action="/tai-khoan/vao-lop" class="mt-4 flex flex-wrap gap-2">
+      <label for="ma" class="sr-only">Mã lớp</label>
+      <input type="text" id="ma" name="ma" value="{{ ma }}" required
+             placeholder="Ví dụ: GALS-11A2"
+             class="flex-1 min-w-[12rem] rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint uppercase">
+      <button type="submit" class="btn btn-primary">Tìm lớp</button>
+    </form>
+    <p class="mt-3 text-xs text-ink-faint">
+      Lớp đã kết thúc thì mã không dùng được nữa. Hỏi lại thầy cô nếu mã không nhận.
+    </p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

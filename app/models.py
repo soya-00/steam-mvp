@@ -96,6 +96,11 @@ class Class(Base):
         ForeignKey("schools.id"), nullable=True, index=True
     )
 
+    # Lớp đã đóng: không nhận thêm ai, mã hết tác dụng, bài cũ vẫn đọc được.
+    # Không có cột "đã xoá" — trong đợt thử nghiệm không nên có nút nào huỷ
+    # được dữ liệu thật.
+    dong_luc: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
     teacher: Mapped["User"] = relationship()
     memberships: Mapped[list["ClassMembership"]] = relationship(
         back_populates="klass", cascade="all, delete-orphan"
@@ -107,6 +112,10 @@ class Class(Base):
     @property
     def students(self) -> list["User"]:
         return [m.student for m in self.memberships]
+
+    @property
+    def da_dong(self) -> bool:
+        return self.dong_luc is not None
 
 
 class ClassMembership(Base):

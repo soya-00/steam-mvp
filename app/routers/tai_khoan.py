@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from sqlalchemy.orm import Session, selectinload
 
 from app import progress as progress_of
-from app.auth import get_current_user
+from app.auth import get_current_user, set_session
 from app.db import get_db
 from app.models import (
     Assignment,
@@ -25,11 +25,14 @@ from app.models import (
     User,
     YeuCauXoa,
 )
+from app.accounts import check_password, message_for
+from app.lop import da_o_trong, lop_theo_ma, roi_lop, vao_lop
 from app.moderation import OK as SCREEN_OK
 from app.moderation import REPLIES as SCREEN_REPLIES
 from app.moderation import screen
 from app.routers.auth import AVATARS, AVATAR_EMOJI
 from app.scenarios import get_scenario
+from app.security import hash_password, verify_password
 from app.templating import templates
 
 router = APIRouter()
@@ -172,6 +175,110 @@ def account_page(
             ),
         },
     )
+
+
+@router.post("/tai-khoan/mat-khau")
+def change_password(
+    request: Request,
+    mat_khau_cu: str = Form(""),
+    mat_khau_moi: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Đổi mật khẩu khi đang đăng nhập.
+
+    Bắt nhập mật khẩu hiện tại: nếu không, ai mượn được máy đang mở sẵn cũng
+    chiếm được tài khoản vĩnh viễn chỉ bằng vài cú bấm.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    if not verify_password(mat_khau_cu, user.password_hash):
+        return RedirectResponse("/tai-khoan?loi=mat_khau_cu_sai#bao-mat", status_code=303)
+    if (problem := check_password(mat_khau_moi)) is not None:
+        return RedirectResponse(f"/tai-khoan?loi={problem}#bao-mat", status_code=303)
+
+    user.password_hash = hash_password(mat_khau_moi)
+    # Dấu thời gian này nằm trong cookie phiên, nên đổi nó là mọi thiết bị khác
+    # bị đăng xuất — kể cả thiết bị của người đang chiếm tài khoản.
+    user.password_changed_at = datetime.now()
+    db.commit()
+
+    # Cấp cookie mới cho chính người vừa đổi, nếu không thì họ tự đá mình ra.
+    response = RedirectResponse("/tai-khoan?da_luu=mat_khau#bao-mat", status_code=303)
+    set_session(request, response, user.id, user)
+    return response
+
+
+@router.get("/tai-khoan/vao-lop", response_class=HTMLResponse)
+def join_class_form(
+    request: Request,
+    ma: str = "",
+    loi: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Màn hình xác nhận trước khi vào lớp.
+
+    Đây là thao tác duy nhất làm thay đổi chuyện ai đọc được bài của một người
+    trẻ, nên nó là GET rồi mới POST — không phải một nút bấm cái xong.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    lop = lop_theo_ma(db, ma) if ma else None
+    return templates.TemplateResponse(
+        request,
+        "account/vao_lop.html",
+        {
+            "user": user,
+            "focus": True,
+            "back_href": "/tai-khoan",
+            "back_label": "Tài khoản",
+            "ma": (ma or "").strip().upper(),
+            "lop": lop,
+            "da_o_trong": bool(lop) and da_o_trong(db, user, lop.id),
+            "loi": message_for(loi),
+        },
+    )
+
+
+@router.post("/tai-khoan/vao-lop")
+def join_class_submit(
+    ma: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+    if user.is_teacher:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    lop = lop_theo_ma(db, ma)
+    if lop is None:
+        code = (ma or "").strip().upper()
+        return RedirectResponse(f"/tai-khoan/vao-lop?ma={code}&loi=ma_lop_sai", status_code=303)
+
+    vao_lop(db, user, lop)
+    return RedirectResponse("/tai-khoan?da_luu=vao_lop#lop-cua-toi", status_code=303)
+
+
+@router.post("/tai-khoan/roi-lop/{class_id}")
+def leave_class(
+    class_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Rời lớp, có hiệu lực ngay.
+
+    Chính sách riêng tư nói đây là cách rút lại đồng ý cho giáo viên đọc bài.
+    Bắt chờ ai đó duyệt thì nó không còn là quyền nữa.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    roi_lop(db, user, class_id)
+    return RedirectResponse("/tai-khoan?da_luu=roi_lop#lop-cua-toi", status_code=303)
 
 
 @router.post("/tai-khoan/yeu-cau-xoa")
