@@ -146,6 +146,7 @@ def _seed(db: Session) -> None:
 
     linh_entry = JournalEntry(
         student_id=linh.id,
+        class_id=lop_11a2.id,
         scenario_id=first.id,
         source="guided",
         title=f"Nhật ký — {first.title}",
@@ -162,6 +163,7 @@ def _seed(db: Session) -> None:
     )
     bao_entry = JournalEntry(
         student_id=classmates[0].id,
+        class_id=lop_11a2.id,
         scenario_id=first.id,
         source="guided",
         title=f"Nhật ký — {first.title}",
@@ -174,6 +176,7 @@ def _seed(db: Session) -> None:
     )
     minhanh_entry = JournalEntry(
         student_id=classmates[1].id,
+        class_id=lop_11a2.id,
         scenario_id=first.id,
         source="freeform",
         title="Ý tưởng tự do — hộp báo triệu chứng ẩn danh",

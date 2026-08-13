@@ -159,6 +159,18 @@ class JournalEntry(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     student_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+
+    # Bài này viết trong lớp nào. NULL = việc cá nhân, và khi đó không giáo viên
+    # nào đọc được.
+    #
+    # Trước đây cột này không tồn tại, nên trang học sinh bên giáo viên nạp mọi
+    # bài của em đó — kể cả bài viết trong lớp của giáo viên khác, kể cả bài em
+    # tự làm một mình. Lấy theo không gian làm việc em đang chọn lúc viết, đúng
+    # thứ mà trang "chọn không gian" hỏi.
+    class_id: Mapped[int | None] = mapped_column(
+        ForeignKey("classes.id"), nullable=True, index=True
+    )
+
     scenario_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
     source: Mapped[str] = mapped_column(String(20))
     title: Mapped[str] = mapped_column(String(240), default="")

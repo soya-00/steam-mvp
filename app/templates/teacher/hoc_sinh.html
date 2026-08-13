@@ -12,7 +12,7 @@
   <div>
     <h1 class="text-2xl md:text-3xl text-ink">{{ student.name }}</h1>
     <p class="text-sm text-ink-soft">
-      {{ summary.entry_count }} bài nhật ký · {{ summary.submitted }} dự án đã nộp ·
+      {{ summary.entry_count }} bài đã nộp ·
       {{ badges|length }} huy hiệu
     </p>
   </div>
@@ -21,9 +21,14 @@
 <div class="lg:grid lg:grid-cols-[1fr_20rem] lg:gap-8 mt-8">
 
   <div class="min-w-0">
-    <h2 class="microlabel">Nhật ký tư duy</h2>
+    <h2 class="microlabel">Bài em đã nộp trong lớp này</h2>
     <p class="mt-1 text-sm text-ink-soft">
       Ghi lại trong lúc em làm. Đây là quá trình suy nghĩ, không phải bài nộp để chấm.
+    </p>
+    <p class="mt-1 text-sm text-ink-soft">
+      Chỉ hiện bài em <strong class="text-ink">đã nộp trong lớp của bạn</strong>. Phần em
+      viết mà chưa nộp, và bài em làm ở lớp khác hay tự làm một mình, thì bạn không đọc
+      được — đúng như GALS hứa với em lúc em vào lớp.
     </p>
 
     <div class="mt-3 grid gap-2">

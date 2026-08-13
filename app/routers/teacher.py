@@ -102,11 +102,29 @@ def _tom_tat(student: User, entries: list[JournalEntry], badge_count: int) -> di
     }
 
 
-def _student_summary(db: Session, student: User) -> dict:
+def _doc_duoc(class_id: int):
+    """Điều kiện lọc những bài một giáo viên được đọc.
+
+    Hai vế, và thiếu vế nào cũng thành một lời hứa bị phá:
+
+    * **Đã nộp.** Màn hình xác nhận vào lớp nói thẳng với học sinh rằng phần em
+      viết mà chưa nộp thì thầy cô không đọc được. Trước đây câu đó sai — trang
+      học sinh nạp mọi bài, kể cả bản nháp đang viết dở.
+    * **Đúng lớp này.** `JournalEntry` trước đây không có cột lớp, nên một giáo
+      viên đọc được cả bài em viết trong lớp của giáo viên khác và bài em tự làm
+      một mình.
+    """
+    return (
+        JournalEntry.class_id == class_id,
+        JournalEntry.submitted.is_(True),
+    )
+
+
+def _student_summary(db: Session, student: User, class_id: int) -> dict:
     """Tóm tắt cho đúng một em. Dùng ở trang chi tiết học sinh, nơi chỉ có một."""
     entries = (
         db.query(JournalEntry)
-        .filter(JournalEntry.student_id == student.id)
+        .filter(JournalEntry.student_id == student.id, *_doc_duoc(class_id))
         .order_by(JournalEntry.created_at.desc())
         .all()
     )
@@ -114,7 +132,7 @@ def _student_summary(db: Session, student: User) -> dict:
     return _tom_tat(student, entries, badges)
 
 
-def _summaries_for(db: Session, students: list[User]) -> list[dict]:
+def _summaries_for(db: Session, students: list[User], class_id: int) -> list[dict]:
     """Tóm tắt cho cả lớp trong hai câu truy vấn, không phải hai câu mỗi em.
 
     Bản cũ gọi `_student_summary` trong vòng lặp, tức 2N câu. Ở lớp 30 em không
@@ -129,7 +147,7 @@ def _summaries_for(db: Session, students: list[User]) -> list[dict]:
     entries_by_student: dict[int, list[JournalEntry]] = {}
     for entry in (
         db.query(JournalEntry)
-        .filter(JournalEntry.student_id.in_(ids))
+        .filter(JournalEntry.student_id.in_(ids), *_doc_duoc(class_id))
         .order_by(JournalEntry.created_at.desc())
         .all()
     ):
@@ -165,8 +183,12 @@ def teacher_home(
     for klass in classes:
         students = klass.students
         ids = [s.id for s in students]
+        # Cùng bộ lọc như trang lớp: đếm luôn bản nháp hay bài của lớp khác thì
+        # con số trên thẻ không khớp với danh sách bên trong.
         entry_count = (
-            db.query(JournalEntry).filter(JournalEntry.student_id.in_(ids)).count()
+            db.query(JournalEntry)
+            .filter(JournalEntry.student_id.in_(ids), *_doc_duoc(klass.id))
+            .count()
             if ids
             else 0
         )
@@ -227,7 +249,7 @@ def class_detail(
     if klass is None:
         return RedirectResponse("/giao-vien", status_code=303)
 
-    summaries = _summaries_for(db, klass.students)
+    summaries = _summaries_for(db, klass.students, klass.id)
     summaries.sort(key=lambda s: s["student"].name)
 
     return templates.TemplateResponse(
@@ -423,7 +445,7 @@ def student_detail(
         return RedirectResponse("/giao-vien", status_code=303)
 
     student = db.get(User, student_id)
-    summary = _student_summary(db, student)
+    summary = _student_summary(db, student, membership.class_id)
     portfolio = (
         db.query(PortfolioEntry)
         .filter(PortfolioEntry.student_id == student_id)

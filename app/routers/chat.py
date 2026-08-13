@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from itsdangerous import URLSafeSerializer
 from sqlalchemy.orm import Session
 
+from app import boi_canh
 from app.auth import get_current_user, session_key
 from app.config import SECRET_KEY
 from app.db import get_db
@@ -130,6 +131,7 @@ def keep_idea(
 
     entry = JournalEntry(
         student_id=user.id,
+        class_id=boi_canh.doc(request, db, user).class_id,
         source="freeform",
         title=idea[:200],
         content=idea,

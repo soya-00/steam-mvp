@@ -139,7 +139,13 @@ def _advance(scenario: Scenario, gs: GuidedSession) -> None:
         gs.finished = True
 
 
-def _sync_journal(db: Session, gs: GuidedSession, scenario: Scenario, user: User) -> JournalEntry:
+def _sync_journal(
+    db: Session,
+    gs: GuidedSession,
+    scenario: Scenario,
+    user: User,
+    class_id: int | None = None,
+) -> JournalEntry:
     entry = (
         db.query(JournalEntry)
         .filter(
@@ -155,6 +161,7 @@ def _sync_journal(db: Session, gs: GuidedSession, scenario: Scenario, user: User
     if entry is None:
         entry = JournalEntry(
             student_id=user.id,
+            class_id=class_id,
             scenario_id=scenario.id,
             source="guided",
             title=f"Nhật ký — {scenario.title}",
@@ -619,7 +626,7 @@ def workspace_step(
     _advance(scenario, gs)
     _skip_context(scenario, gs, entries)
     _save_transcript(gs, entries)
-    _sync_journal(db, gs, scenario, user)
+    _sync_journal(db, gs, scenario, user, boi_canh.doc(request, db, user).class_id)
 
     if gs.finished:
         award_badge(db, user.id, "hoan_thanh_4_cap_do")
@@ -719,6 +726,7 @@ def submit_form(
 
 @router.post("/du-an/{scenario_id}/nop")
 def submit_project(
+    request: Request,
     scenario_id: str,
     mo_ta: str = Form(""),
     anh: str = Form(""),
@@ -746,6 +754,7 @@ def submit_project(
     if entry is None:
         entry = JournalEntry(
             student_id=user.id,
+            class_id=boi_canh.doc(request, db, user).class_id,
             scenario_id=scenario_id,
             source="guided",
             title=f"Nhật ký — {scenario.title}",
