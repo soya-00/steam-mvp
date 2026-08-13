@@ -160,7 +160,10 @@ def test_teacher_csv_opens_correctly_in_a_spreadsheet(client):
         assert rows and rows[0], name
 
     header = list(csv.reader(io.StringIO(archive.read("nhat-ky.csv").decode("utf-8-sig"))))[0]
-    assert header[0] == "Mã lớp"
+    # Tên lớp, không phải mã lớp: mã đổi được khi bị lộ, mà tệp đã tải về thì
+    # không thu lại được.
+    assert header[0] == "Lớp"
+    assert "Mã lớp" not in header
     assert "Mã học sinh" in header
 
 

@@ -610,6 +610,26 @@ def test_export_codes_carry_no_trace_of_the_class_code(client):
         db.close()
 
 
+def test_the_download_names_the_class_and_never_carries_the_live_code(client):
+    """Mã lớp là thứ đổi được khi bị lộ, mà một tệp đã tải về thì không thu lại
+    được. Nên bản tải về gọi lớp bằng tên, không bằng mã."""
+    import io
+    import zipfile
+
+    login_teacher(client)
+    goi = client.get("/tai-khoan/du-lieu").content
+    with zipfile.ZipFile(io.BytesIO(goi)) as z:
+        chu = "\n".join(z.read(n).decode("utf-8-sig") for n in z.namelist())
+
+    assert "11A2 — Chuyên đề STEAM" in chu
+    db = SessionLocal()
+    try:
+        for lop in db.query(Class).all():
+            assert lop.class_code not in chu, lop.class_code
+    finally:
+        db.close()
+
+
 def test_the_class_page_offers_the_controls_it_describes(client):
     login_teacher(client)
     page = client.get(f"/giao-vien/lop/{_lop().id}").text

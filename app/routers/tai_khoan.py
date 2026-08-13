@@ -44,9 +44,17 @@ HUONG_DAN = """GALS — dữ liệu lớp của bạn
 Ba tệp trong thư mục này chỉ chứa THÔNG TIN VỀ bài làm, không chứa bài viết
 của học sinh. Muốn đọc bài của một em, mở trang của em đó trong ứng dụng.
 
-Học sinh được ghi bằng mã ẩn danh dạng MÃ-LỚP-SỐ. Bảng đối chiếu mã với tên
-chỉ hiện trên màn hình trong mục Tải dữ liệu, không nằm trong thư mục này.
-Nếu bạn cần bảng đó, hãy tự chép lại và giữ ở nơi an toàn.
+Lớp được ghi bằng TÊN LỚP, đúng tên bạn đặt trong ứng dụng. Mã lớp mà học
+sinh gõ để vào lớp cố ý KHÔNG nằm trong thư mục này: mã đó đổi được khi bị
+lộ, và một tệp đã tải về thì không thu lại được.
+
+Học sinh được ghi bằng mã ẩn danh dạng HS####-SỐ. Tiền tố "HS####" là của
+riêng lớp và không bao giờ đổi, kể cả khi bạn cấp mã lớp mới — nên bản tải
+tháng trước vẫn đối chiếu được với bản tải hôm nay.
+
+Bảng đối chiếu mã với tên chỉ hiện trên màn hình trong mục Tải dữ liệu, không
+nằm trong thư mục này. Nếu bạn cần bảng đó, hãy tự chép lại và giữ ở nơi an
+toàn.
 
 nhat-ky.csv   mỗi dòng là một bài của một em: đi tới cấp độ nào, viết bao
               nhiêu câu, hoạt động lần cuối khi nào
@@ -525,7 +533,7 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 entry = entry_by_scenario.get(gs.scenario_id)
                 journal_rows.append(
                     [
-                        klass.class_code,
+                        klass.name,
                         code,
                         # Tên tình huống, KHÔNG phải entry.title: tiêu đề của
                         # một ghi chép tự do chính là chữ học sinh viết ra.
@@ -551,7 +559,7 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 scenario = get_scenario(target.scenario_id) if target else None
                 feedback_rows.append(
                     [
-                        klass.class_code,
+                        klass.name,
                         code,
                         scenario.title if scenario else "Nhắn chung",
                         note.content,
@@ -568,7 +576,6 @@ def _teacher_zip(db: Session, user: User) -> bytes:
             scenario = get_scenario(assignment.scenario_id) if assignment.scenario_id else None
             assignment_rows.append(
                 [
-                    klass.class_code,
                     klass.name,
                     scenario.title if scenario else "",
                     assignment.field or (scenario.field if scenario else ""),
@@ -584,7 +591,7 @@ def _teacher_zip(db: Session, user: User) -> bytes:
             "nhat-ky.csv",
             _csv_bytes(
                 [
-                    "Mã lớp", "Mã học sinh", "Tình huống", "Lĩnh vực", "Vai",
+                    "Lớp", "Mã học sinh", "Tình huống", "Lĩnh vực", "Vai",
                     "Kiểu", "Cấp độ đã xong", "Đã đi hết", "Số câu trả lời",
                     "Số từ đã viết", "Bắt đầu", "Hoạt động lần cuối",
                     "Đã nộp", "Có ảnh", "Có video", "Đang chia sẻ công khai",
@@ -595,14 +602,14 @@ def _teacher_zip(db: Session, user: User) -> bytes:
         archive.writestr(
             "phan-hoi.csv",
             _csv_bytes(
-                ["Mã lớp", "Mã học sinh", "Gắn với tình huống", "Nội dung nhận xét", "Gửi lúc"],
+                ["Lớp", "Mã học sinh", "Gắn với tình huống", "Nội dung nhận xét", "Gửi lúc"],
                 feedback_rows,
             ),
         )
         archive.writestr(
             "nhiem-vu.csv",
             _csv_bytes(
-                ["Mã lớp", "Tên lớp", "Tình huống", "Lĩnh vực", "Hình thức", "Ghi chú", "Giao lúc"],
+                ["Lớp", "Tình huống", "Lĩnh vực", "Hình thức", "Ghi chú", "Giao lúc"],
                 assignment_rows,
             ),
         )
