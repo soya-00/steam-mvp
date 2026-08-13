@@ -8,7 +8,9 @@ services:
     # Chạy di trú trước khi mở cổng. create_all() không thêm được cột vào
     # bảng đã có dữ liệu, nên alembic là đường duy nhất sau lần triển khai đầu.
     startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /
+    # Trỏ vào /suc-khoe chứ không phải "/": trang chủ vẽ được kể cả khi cơ sở
+    # dữ liệu chết, nên nó báo xanh cho một bản triển khai đã hỏng.
+    healthCheckPath: /suc-khoe
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.15"

@@ -11,7 +11,26 @@ DATA_DIR = BASE_DIR / "data"
 STATIC_DIR = BASE_DIR / "static"
 TEMPLATES_DIR = BASE_DIR / "app" / "templates"
 
-DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'gals.db'}")
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+
+# Trên máy chủ đã triển khai, thiếu DATABASE_URL là hỏng chết người mà lại
+# trông như bình thường: ứng dụng rơi về SQLite trên ổ đĩa tạm, khởi động ngon
+# lành, kiểm tra sức khoẻ báo xanh, và mọi tài khoản biến mất ở lần triển khai
+# kế tiếp. Không ai thấy gì cho tới khi một thầy cô đăng nhập không được.
+#
+# Render đặt sẵn RENDER=true trong mọi dịch vụ, nên chỗ này phân biệt được
+# "đang chạy thật" với "đang chạy trên máy của mình" mà không cần thêm biến.
+_TREN_MAY_CHU = bool(os.getenv("RENDER") or os.getenv("GALS_YEU_CAU_DATABASE_URL"))
+
+if not DATABASE_URL:
+    if _TREN_MAY_CHU:
+        raise RuntimeError(
+            "Thiếu DATABASE_URL. Từ chối khởi động: nếu rơi về SQLite trên ổ "
+            "đĩa tạm thì toàn bộ tài khoản và bài viết sẽ mất ở lần triển khai "
+            "sau, mà không có dấu hiệu gì. Nối cơ sở dữ liệu vào dịch vụ này "
+            "rồi triển khai lại."
+        )
+    DATABASE_URL = f"sqlite:///{BASE_DIR / 'gals.db'}"
 
 SECRET_KEY = os.getenv("SECRET_KEY", "gals-demo-secret-doi-khi-deploy")
 SESSION_COOKIE = "gals_session"

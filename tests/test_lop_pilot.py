@@ -286,7 +286,7 @@ def _lop_khac() -> Class:
                   status="hoat_dong")
         db.add(gv)
         db.flush()
-        lop = Class(teacher_id=gv.id, class_code="GALS-KHAC", roster_prefix="GALS-KHAC",
+        lop = Class(teacher_id=gv.id, class_code="GALS-KHAC", roster_prefix="HSZZ99",
                     name="Lớp của người khác")
         db.add(lop)
         db.commit()
@@ -564,7 +564,9 @@ def test_a_teacher_cannot_close_someone_elses_class(client):
         db.close()
 
 
-def test_a_new_class_freezes_its_export_prefix_at_the_first_code(client):
+def test_a_new_class_gets_an_export_prefix_unrelated_to_its_code(client):
+    """Hai định danh, hai yêu cầu ngược nhau: mã lớp phải đổi được, mã ẩn danh
+    phải đứng yên. Buộc vào nhau thì một trong hai chắc chắn thua."""
     login_teacher(client)
     client.post("/giao-vien/lop/tao", data={"ten_lop": "12C1 — thử nghiệm"})
 
@@ -572,9 +574,38 @@ def test_a_new_class_freezes_its_export_prefix_at_the_first_code(client):
     try:
         lop = db.query(Class).filter(Class.name == "12C1 — thử nghiệm").first()
         assert lop is not None
-        assert lop.roster_prefix == lop.class_code
+        assert lop.roster_prefix
+        assert lop.roster_prefix != lop.class_code
+        assert lop.class_code not in lop.roster_prefix
+        assert lop.roster_prefix not in lop.class_code
         # Nhà trường là bên kiểm soát dữ liệu, nên lớp phải nhớ trường của mình.
         assert lop.school_id is not None
+    finally:
+        db.close()
+
+
+def test_no_class_anywhere_derives_its_export_prefix_from_its_code():
+    """Mã lớp luôn bắt đầu bằng "GALS-", tiền tố hồ sơ luôn bắt đầu bằng "HS",
+    nên hai không gian tên này không thể chạm nhau."""
+    db = SessionLocal()
+    try:
+        for lop in db.query(Class).all():
+            assert lop.roster_prefix.startswith("HS"), lop.roster_prefix
+            assert not lop.roster_prefix.startswith("GALS-")
+            assert lop.class_code not in lop.roster_prefix
+    finally:
+        db.close()
+
+
+def test_export_codes_carry_no_trace_of_the_class_code(client):
+    from app.routers.tai_khoan import student_codes
+
+    db = SessionLocal()
+    try:
+        lop = db.get(Class, _lop().id)
+        for ma in student_codes(db, lop).values():
+            assert lop.class_code not in ma
+            assert ma.startswith("HS")
     finally:
         db.close()
 

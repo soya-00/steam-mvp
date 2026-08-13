@@ -14,15 +14,22 @@ và ở quy mô vài trường thì đây là cách trung thực nhất.
     python -m app.quan_tri dat-lai co.mai@truong.edu.vn
     python -m app.quan_tri xoa-cho    # xem các yêu cầu xoá đang chờ
     python -m app.quan_tri xoa hocsinh@example.com
+    python -m app.quan_tri sao-luu sao-luu-2026-08-13.json
+    python -m app.quan_tri phuc-hoi sao-luu-2026-08-13.json --chac-chan
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+from datetime import date, datetime
+from pathlib import Path
+
+from sqlalchemy import inspect
 
 from app.dat_lai import tao_ve
-from app.db import SessionLocal
+from app.db import Base, SessionLocal, engine
 from app.models import (
     Feedback,
     PortfolioEntry,
@@ -175,6 +182,129 @@ def xoa(db, args) -> int:
     return 0
 
 
+PHIEN_BAN_SAO_LUU = 1
+
+
+def _json_an_toan(value):
+    if isinstance(value, datetime):
+        return {"__kieu__": "datetime", "gia_tri": value.isoformat()}
+    if isinstance(value, date):
+        return {"__kieu__": "date", "gia_tri": value.isoformat()}
+    if isinstance(value, bytes):
+        raise TypeError("Không sao lưu được cột nhị phân — chưa bảng nào có.")
+    return value
+
+
+def _doc_lai(value):
+    if isinstance(value, dict) and "__kieu__" in value:
+        if value["__kieu__"] == "datetime":
+            return datetime.fromisoformat(value["gia_tri"])
+        return date.fromisoformat(value["gia_tri"])
+    return value
+
+
+def _thu_tu_bang() -> list:
+    """Bảng cha trước bảng con, để phục hồi không vướng khoá ngoại."""
+    return Base.metadata.sorted_tables
+
+
+def sao_luu(db, args) -> int:
+    """Đổ toàn bộ cơ sở dữ liệu ra một tệp JSON.
+
+    Đây là tuyến thứ hai nằm dưới bản sao lưu tự động của nhà cung cấp, không
+    phải để thay thế nó. Giá trị thật của nó là làm cho việc *diễn tập phục
+    hồi* trở nên khả thi: đổ ra, nạp vào một cơ sở dữ liệu trống, đếm lại số
+    hàng — không phải đụng vào bản chạy thật lần nào. Một bản sao lưu chưa
+    thử phục hồi thì chưa phải bản sao lưu.
+
+    Tệp này chứa **toàn bộ dữ liệu cá nhân**, kể cả nhật ký của học sinh và mã
+    băm mật khẩu. Nó phải được giữ như chính cơ sở dữ liệu: không đưa lên kho
+    mã, không gửi qua ứng dụng nhắn tin, và xoá khi không cần nữa.
+    """
+    duong_dan = Path(args.tep)
+    if duong_dan.exists() and not args.ghi_de:
+        print(f"'{duong_dan}' đã tồn tại. Thêm --ghi-de nếu đúng ý bạn.")
+        return 1
+
+    du_lieu: dict[str, list[dict]] = {}
+    for bang in _thu_tu_bang():
+        rows = db.execute(bang.select()).mappings().all()
+        du_lieu[bang.name] = [
+            {k: _json_an_toan(v) for k, v in row.items()} for row in rows
+        ]
+
+    goi = {
+        "phien_ban": PHIEN_BAN_SAO_LUU,
+        "tao_luc": datetime.now().isoformat(),
+        "bang": du_lieu,
+    }
+    duong_dan.write_text(json.dumps(goi, ensure_ascii=False), encoding="utf-8")
+
+    tong = sum(len(v) for v in du_lieu.values())
+    print(f"Đã ghi {tong} hàng trong {len(du_lieu)} bảng vào '{duong_dan}'.")
+    print("Tệp này chứa dữ liệu cá nhân. Giữ như giữ cơ sở dữ liệu.")
+    return 0
+
+
+def phuc_hoi(db, args) -> int:
+    """Nạp một tệp sao lưu vào cơ sở dữ liệu đang trỏ tới.
+
+    Xoá sạch rồi nạp lại, nên nó chỉ dùng cho hai việc: diễn tập vào một cơ sở
+    dữ liệu trống, và cứu hộ thật sau khi đã mất dữ liệu. Cố ý bắt gõ thêm
+    --chac-chan, và cố ý nói rõ đang ghi đè lên đâu trước khi làm gì.
+    """
+    duong_dan = Path(args.tep)
+    if not duong_dan.exists():
+        print(f"Không tìm thấy '{duong_dan}'.")
+        return 1
+
+    goi = json.loads(duong_dan.read_text(encoding="utf-8"))
+    if goi.get("phien_ban") != PHIEN_BAN_SAO_LUU:
+        print(f"Tệp sao lưu phiên bản {goi.get('phien_ban')}, mã này đọc "
+              f"phiên bản {PHIEN_BAN_SAO_LUU}.")
+        return 1
+
+    from app.config import DATABASE_URL
+
+    co_san = set(inspect(engine).get_table_names())
+    dang_co = sum(
+        len(db.execute(bang.select()).fetchall())
+        for bang in _thu_tu_bang()
+        if bang.name in co_san
+    )
+    if not args.chac_chan:
+        print(f"Sẽ XOÁ SẠCH {dang_co} hàng đang có tại:")
+        print(f"  {DATABASE_URL}")
+        print(f"rồi nạp lại từ '{duong_dan}'.")
+        print("Thêm --chac-chan nếu đúng ý bạn.")
+        return 1
+
+    Base.metadata.create_all(bind=engine)
+
+    # Xoá theo thứ tự ngược: con trước, cha sau.
+    for bang in reversed(_thu_tu_bang()):
+        db.execute(bang.delete())
+
+    tong = 0
+    for bang in _thu_tu_bang():
+        rows = goi["bang"].get(bang.name, [])
+        if not rows:
+            continue
+        # Chỉ nạp những cột lược đồ hiện tại còn có: tệp sao lưu cũ hơn một lần
+        # di trú thì thiếu cột mới, và cột bỏ đi thì thừa. Cả hai nên bỏ qua
+        # lặng lẽ chứ không nên làm hỏng cả lần phục hồi.
+        cot = set(bang.columns.keys())
+        db.execute(
+            bang.insert(),
+            [{k: _doc_lai(v) for k, v in row.items() if k in cot} for row in rows],
+        )
+        tong += len(rows)
+
+    db.commit()
+    print(f"Đã nạp {tong} hàng từ '{duong_dan}'.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m app.quan_tri")
     sub = parser.add_subparsers(dest="lenh", required=True)
@@ -216,6 +346,16 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("email")
     p.add_argument("--chac-chan", action="store_true", dest="chac_chan")
     p.set_defaults(func=xoa)
+
+    p = sub.add_parser("sao-luu", help="Đổ cả cơ sở dữ liệu ra một tệp JSON")
+    p.add_argument("tep")
+    p.add_argument("--ghi-de", action="store_true", dest="ghi_de")
+    p.set_defaults(func=sao_luu)
+
+    p = sub.add_parser("phuc-hoi", help="Nạp lại từ tệp sao lưu (XOÁ SẠCH trước)")
+    p.add_argument("tep")
+    p.add_argument("--chac-chan", action="store_true", dest="chac_chan")
+    p.set_defaults(func=phuc_hoi)
 
     args = parser.parse_args(argv)
     db = SessionLocal()

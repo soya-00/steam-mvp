@@ -90,11 +90,13 @@ class Class(Base):
     class_code: Mapped[str] = mapped_column(String(20), unique=True)
     name: Mapped[str] = mapped_column(String(160))
 
-    # Tiền tố của mã ẩn danh trong bản tải về, đóng băng lúc tạo lớp.
-    # `class_code` đổi được (khi mã bị lộ), còn cái này thì không: HUONG-DAN.txt
-    # hứa cùng một em thì lần xuất nào cũng ra cùng một mã, nên nếu mã ẩn danh
-    # bám theo mã lớp thì đổi mã một lần là đổi tên toàn bộ học sinh trong mọi
-    # bản đã tải về trước đó.
+    # Tiền tố của mã ẩn danh trong bản tải về ("HS7K2M" → "HS7K2M-01").
+    #
+    # Sinh độc lập với `class_code` và không bao giờ đổi. Hai cột này có hai yêu
+    # cầu ngược nhau: mã lớp phải đổi được khi bị lộ, còn mã ẩn danh phải đứng
+    # yên vì HUONG-DAN.txt hứa cùng một em thì lần xuất nào cũng ra cùng một mã.
+    # Buộc chúng vào nhau thì đổi mã một lần là đổi tên toàn bộ học sinh trong
+    # mọi bản thầy cô đã tải về trước đó, mà không có gì báo.
     roster_prefix: Mapped[str] = mapped_column(String(20), default="", server_default="")
 
     # Lưu thẳng chứ không suy ra từ giáo viên: theo LEGAL.md nhà trường là bên

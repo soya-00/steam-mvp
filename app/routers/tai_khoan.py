@@ -80,9 +80,10 @@ def student_codes(db: Session, klass: Class) -> dict[int, str]:
     """Mã ẩn danh, đánh số theo thứ tự vào lớp nên chỉ thêm vào cuối — cùng một
     em thì lần xuất nào cũng ra cùng một mã.
 
-    Tiền tố lấy ở `roster_prefix` chứ không lấy ở `class_code`: mã lớp đổi được
-    khi bị lộ, và nếu mã ẩn danh bám theo nó thì một lần đổi mã sẽ đổi tên toàn
-    bộ học sinh so với bản thầy cô đã tải về tuần trước.
+    Tiền tố lấy ở `roster_prefix`, một chuỗi sinh riêng và không liên quan gì
+    tới `class_code`: mã lớp đổi được khi bị lộ, và nếu mã ẩn danh bám theo nó
+    thì một lần đổi mã sẽ đổi tên toàn bộ học sinh so với bản thầy cô đã tải về
+    tuần trước.
     """
     memberships = (
         db.query(ClassMembership)
@@ -90,7 +91,9 @@ def student_codes(db: Session, klass: Class) -> dict[int, str]:
         .order_by(ClassMembership.id)
         .all()
     )
-    prefix = klass.roster_prefix or klass.class_code
+    # Dự phòng cũng phải là chuỗi không dính tới mã lớp, không thì cửa sau lại
+    # dựng đúng cái quan hệ vừa gỡ bỏ.
+    prefix = klass.roster_prefix or f"HS{klass.id:04d}"
     return {
         m.student_id: f"{prefix}-{index:02d}"
         for index, m in enumerate(memberships, start=1)

@@ -108,9 +108,21 @@ Cách viết xem [Hướng dẫn kỹ thuật](KY-THUAT.md#thêm-kịch-huống-
 
 ### Hiện tại đang là gì
 
-- **`reset_and_seed()` chạy trong vòng đời FastAPI và gọi `Base.metadata.drop_all()`** (`app/seed.py`). Mỗi lần khởi động lại là **xoá sạch**. Gói miễn phí của Render còn cho dịch vụ ngủ khi vắng người, nên bài của học sinh thường không sống qua một đêm. Đúng cho bản trình diễn — mỗi người vào đều thấy ứng dụng sạch và đầy đủ nội dung — nhưng không dùng thật được.
-- **SQLite nằm trên đĩa tạm.** Mỗi lần deploy cũng xoá.
-- **Một tiến trình uvicorn, không có `--workers`.** Và **hiện chưa thêm worker được**: mỗi worker sẽ chạy lại vòng đời rồi xoá bảng ngay dưới chân các worker khác. Chặn đường mở rộng ngang không phải là framework, mà là cách gieo dữ liệu.
+> Mục này từng mô tả bản demo — xoá sạch cơ sở dữ liệu mỗi lần khởi động, không
+> có Alembic, không có mật khẩu. Những điều đó **không còn đúng**; phần dưới đã
+> viết lại theo mã hiện tại.
+
+- **Dữ liệu ở lại.** Vòng đời FastAPI gọi `seed_if_empty()`, chỉ gieo khi cơ sở
+  dữ liệu trống, và từ chối gieo tài khoản mẫu khi `DATABASE_URL` không phải
+  SQLite. Muốn xoá sạch có chủ đích thì đặt `GALS_RESET_DB=1`.
+- **Alembic đã có.** `render.yaml` chạy `alembic upgrade head` trước khi mở cổng.
+  Mỗi lần đổi mô hình phải kèm một revision; `tests/` có bài đối chiếu lược đồ
+  với chuỗi di trú, nên quên revision là hỏng bộ kiểm thử.
+- **SQLite chỉ còn dùng cho máy cá nhân và kiểm thử.** Bản triển khai dùng
+  Postgres, và `app/config.py` từ chối khởi động nếu thiếu `DATABASE_URL`.
+- **Vẫn một tiến trình uvicorn, không có `--workers`.** Nhưng lý do đã đổi: gieo
+  dữ liệu không còn cản trở, chỗ cản bây giờ là bộ đếm chống thử mật khẩu nằm
+  trong bộ nhớ (xem mục [Vận hành](#vận-hành)).
 - **Lời gọi Gemini là đồng bộ nằm trong endpoint bất đồng bộ**, nên một lượt AI khoá luôn event loop. Với một tiến trình, số lượt AI chạy thật sự song song xấp xỉ bằng một.
 - **Hạn mức chat đếm trong bộ nhớ tiến trình theo cookie**: mất khi khởi động lại, không gắn với người, không chia sẻ giữa các worker.
 - **`render.yaml` không chạy `npm run build:css`**; `static/css/app.css` được commit sẵn. Chạy được, nhưng bước build CSS là thủ công và có thể lệch khỏi `input.css`.
@@ -121,19 +133,24 @@ SQLite gánh một lớp (~40 học sinh) thoải mái, và mọi trang đều r
 
 ### Thứ tự bắt buộc khi chuyển sang dùng thật
 
-1. **PostgreSQL + chỉ gieo khi trống.** Một thay đổi mở khoá cùng lúc *lưu được dữ liệu* và *chạy nhiều worker*. `app/db.py` đã rẽ nhánh sẵn theo tiền tố `DATABASE_URL`.
-2. **Alembic** khi lược đồ ổn định — `create_all` không sửa được bảng đang có dữ liệu.
+1. ~~**PostgreSQL + chỉ gieo khi trống.**~~ Mã đã xong; còn lại là **dựng cơ sở
+   dữ liệu thật trên Render và triển khai một lần** — chưa chạy lần nào với
+   Postgres, nên đây vẫn là việc số một.
+2. ~~**Alembic**~~ — đã có, và `render.yaml` chạy `alembic upgrade head` trước khi mở cổng.
 3. **Đưa lời gọi Gemini sang threadpool** để một lượt AI chậm không khoá cả tiến trình.
-4. **Hạn mức chat thành cột trong DB**, không phải dict trong bộ nhớ.
+4. **Hạn mức chat thành cột trong DB**, không phải dict trong bộ nhớ. Cùng gốc
+   với bộ đếm chống thử mật khẩu ở mục [Vận hành](#vận-hành), và cùng một mốc
+   phải sửa: ngày thêm worker thứ hai.
 5. **`npm run build:css` vào build command của Render.**
-6. **Đăng nhập thật** trước khi có dữ liệu thật. Cookie có chữ ký, không mật khẩu — ổn cho bản mẫu, không ổn từ giây phút một em viết nhật ký thật.
+6. ~~**Đăng nhập thật**~~ — đã có: mật khẩu băm bằng Argon2id, CSRF, chống thử
+   sai, đặt lại mật khẩu.
 
 ### Ngoài hạ tầng
 
 - **Đơn vị thuê bao.** Mô hình hiện là `Lớp → giáo viên`, **chưa có `Trường`**. Cần trường học là đơn vị, nhiều giáo viên một trường, và bàn giao khi nhân sự đổi. Rẻ khi chưa có dữ liệu, đắt khi đã có.
 - **Trần chi phí theo trường, và xuống cấp êm thay vì báo lỗi.** Chế độ ngoại tuyến (`_offline_guided`, `_offline_freeform`) **đã dạy trọn một buổi với chi phí AI bằng không** — nên coi đó là một mức sản phẩm có chủ đích, không phải phương án chữa cháy không ai nhắc tới.
 - **Nút thắt tăng trưởng là soạn nội dung**, không phải máy chủ. Năm kịch huống viết tay, mỗi kịch huống bốn cấp độ — thêm máy chủ không thêm được kịch huống.
-- **Vận hành chưa có gì:** sao lưu và diễn tập phục hồi, theo dõi lỗi, giám sát uptime, môi trường staging, quy trình quay lui khi deploy hỏng. Một đợt thử nghiệm có bài thật mà không có sao lưu là kiểu hỏng kết thúc luôn dự án.
+- **Vận hành:** xem mục [Vận hành](#vận-hành) bên dưới. Sao lưu, diễn tập phục hồi và trang sức khoẻ đã có; môi trường staging và quy trình quay lui thì chưa.
 
 ### Việc kỹ thuật phát sinh từ rà soát pháp lý
 
@@ -147,3 +164,87 @@ Xem [LEGAL.md](../LEGAL.md) cho bối cảnh đầy đủ.
 - [x] **Nút báo cáo câu trả lời không phù hợp** của trợ lý AI, kèm nút gửi góp ý.
 - [ ] **Đưa góp ý ra một nơi sống được.** Hiện góp ý nằm trong bảng `reports` (mất khi khởi động lại) và trong nhật ký máy chủ (đọc được nhưng chỉ trong thời gian lưu log). Cần một trong hai: cơ sở dữ liệu lâu dài, hoặc đẩy ra webhook / email / issue trên GitHub. Đây là phần còn thiếu thật sự của tính năng này.
 - [ ] **Màn hình đọc báo cáo** cho người vận hành — hiện chưa có chỗ nào xem được, kể cả khi dữ liệu còn.
+
+---
+
+## Vận hành
+
+Phần này ghi những thứ chỉ hỏng sau khi đã triển khai, và những giới hạn đã biết
+mà cố ý chưa sửa. Ghi ra để lần sau không phải suy lại từ đầu.
+
+### Chốt chặn `DATABASE_URL`
+
+`app/config.py` **từ chối khởi động** nếu biến `RENDER` có mặt mà `DATABASE_URL`
+thì không. Không có chốt này, thiếu biến sẽ rơi về SQLite trên ổ đĩa tạm: ứng
+dụng khởi động bình thường, trang sức khoẻ báo xanh, và toàn bộ tài khoản biến
+mất ở lần triển khai kế tiếp — không có dấu hiệu nào cho tới khi một thầy cô
+đăng nhập không được. Trên máy cá nhân thì vẫn rơi về SQLite như cũ.
+
+Ép chốt này chạy ở nơi khác bằng `GALS_YEU_CAU_DATABASE_URL=1`.
+
+### Trang sức khoẻ
+
+`GET /suc-khoe` chạy một câu truy vấn thật rồi mới trả `{"trang_thai": "ok"}`;
+không truy vấn được thì trả 503. `render.yaml` trỏ `healthCheckPath` vào đây chứ
+không vào `/`, vì trang chủ vẽ được kể cả khi cơ sở dữ liệu đã chết.
+
+Trang này không cần đăng nhập, không chạm dữ liệu của ai, và cố ý không kể gì về
+bên trong — một trang sức khoẻ liệt kê phiên bản thư viện là một trang do thám
+miễn phí.
+
+- [ ] **Nối một máy dò bên ngoài** (UptimeRobot hoặc tương đương, gói miễn phí)
+      vào `https://<tên miền>/suc-khoe`, 5 phút một lần, báo về email dự án.
+      Đây là việc cấu hình, không phải việc code, và chưa làm.
+
+### Sao lưu và diễn tập phục hồi
+
+```
+python -m app.quan_tri sao-luu  sao-luu-2026-08-13.json
+python -m app.quan_tri phuc-hoi sao-luu-2026-08-13.json --chac-chan
+```
+
+Đây là **tuyến thứ hai** nằm dưới bản sao lưu tự động hằng ngày của gói Postgres
+trả phí, không phải để thay thế nó. Giá trị thật của nó là làm cho việc diễn tập
+phục hồi trở nên khả thi mà không đụng vào bản chạy thật.
+
+**Tệp sao lưu chứa toàn bộ dữ liệu cá nhân**, kể cả nhật ký học sinh và mã băm
+mật khẩu. Giữ nó như giữ chính cơ sở dữ liệu: không đưa lên kho mã, không gửi
+qua ứng dụng nhắn tin, xoá khi không cần nữa.
+
+**Diễn tập đã chạy — 13/08/2026.** Đổ dữ liệu mẫu (30 hàng, 15 bảng) ra tệp, nạp
+vào một cơ sở dữ liệu SQLite trống đã chạy `alembic upgrade head`, rồi đếm lại:
+số hàng từng bảng khớp tuyệt đối, và soi tay thì mã băm Argon2, nội dung nhật ký
+và mốc thời gian tới từng micro giây đều nguyên vẹn.
+`tests/test_van_hanh.py` chạy lại đúng vòng đó trong mỗi lần kiểm thử, nên nó
+không thể mục đi trong im lặng.
+
+- [ ] **Diễn tập lại trên Postgres thật** sau khi triển khai. Vòng vừa rồi là
+      SQLite → SQLite; kiểu dữ liệu của Postgres có thể khác ở chỗ không ngờ.
+
+### Giới hạn đã biết: bộ đếm chống thử mật khẩu nằm trong bộ nhớ
+
+`app/throttle.py` đếm trong bộ nhớ tiến trình. Hệ quả: chạy **nhiều hơn một
+worker web** thì hạn mức thực tế nhân lên theo số worker, và khởi động lại là
+xoá sạch bộ đếm.
+
+Chấp nhận được khi còn chạy một tiến trình, tức là suốt đợt thử nghiệm. **Mốc
+phải sửa: ngày thêm worker thứ hai** — lúc đó bộ đếm phải chuyển vào Postgres,
+không có ngoại lệ, vì nó là hàng rào duy nhất trước việc dò mã giáo viên.
+
+### Cố ý không dùng dịch vụ theo dõi lỗi của bên thứ ba
+
+Không có Sentry hay tương đương, và đây là quyết định chứ không phải thiếu sót.
+Một vết lỗi (traceback) có thể mang theo nguyên văn nhật ký của học sinh, nên
+gắn dịch vụ đó vào là biến nó thành một bên xử lý dữ liệu không được kê khai —
+đúng thứ mà Chính sách quyền riêng tư nói là không có. Thay vào đó ghi log có
+cấu trúc vào luồng log của nhà cung cấp: bất tiện hơn, và nhất quán với việc
+không có mã của bên thứ ba ở bất cứ đâu khác.
+
+Ngày nào muốn đổi ý thì phải cập nhật Mục V của Chính sách quyền riêng tư trước,
+không phải sau.
+
+### Chưa có
+
+- [ ] Môi trường staging.
+- [ ] Quy trình quay lui khi một lần triển khai hỏng.
+- [ ] Cảnh báo khi tỉ lệ lỗi tăng — hiện chỉ có "còn sống hay không".

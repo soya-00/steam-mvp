@@ -117,13 +117,40 @@ def ma_lop_moi(db: Session) -> str:
     raise RuntimeError("Không sinh được mã lớp mới sau nhiều lần thử.")
 
 
+# Bảng chữ riêng cho tiền tố hồ sơ: bỏ O/0, I/1, S/5 vì mã này bị đọc và chép
+# tay khi thầy cô đối chiếu bản tải về với bảng tên trên màn hình.
+_BANG_HO_SO = "ABCDEFGHJKLMNPQRTUVWXYZ23456789"
+
+
+def ma_ho_so_moi(db: Session) -> str:
+    """Tiền tố của mã ẩn danh trong bản tải về.
+
+    Sinh độc lập, **không dính dáng gì tới mã lớp**. Hai chuỗi này có hai yêu
+    cầu ngược nhau: mã lớp phải đổi được (khi bị lộ), còn mã ẩn danh phải không
+    bao giờ đổi (bản tải tháng trước phải đối chiếu được với bản tải hôm nay).
+    Buộc chúng vào nhau thì một trong hai yêu cầu chắc chắn thua.
+
+    Dạng "HS…" nên nó cũng không thể trùng mã lớp, vốn luôn bắt đầu bằng
+    "GALS-".
+    """
+    for do_dai in (4, 5, 6):
+        for _ in range(50):
+            ma = "HS" + "".join(random.choice(_BANG_HO_SO) for _ in range(do_dai))
+            if db.query(Class.id).filter(Class.roster_prefix == ma).first() is None:
+                return ma
+    raise RuntimeError("Không sinh được tiền tố hồ sơ mới sau nhiều lần thử.")
+
+
 def tao_lop(db: Session, giao_vien: User, ten: str) -> Class:
-    """Lớp mới. `roster_prefix` đóng băng ở mã đầu tiên và không đổi nữa."""
-    ma = ma_lop_moi(db)
+    """Lớp mới.
+
+    Hai định danh, sinh riêng: `class_code` để học sinh gõ vào (đổi được), và
+    `roster_prefix` để đặt tên mã ẩn danh trong bản tải về (không bao giờ đổi).
+    """
     lop = Class(
         teacher_id=giao_vien.id,
-        class_code=ma,
-        roster_prefix=ma,
+        class_code=ma_lop_moi(db),
+        roster_prefix=ma_ho_so_moi(db),
         name=ten,
         school_id=giao_vien.school_id,
     )

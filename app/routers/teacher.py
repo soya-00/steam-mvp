@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload
 
 from app import progress as progress_of
@@ -50,9 +51,12 @@ def _guard(user: User | None, request: Request | None = None):
 
 
 def _class_or_none(db: Session, class_id: int, teacher: User) -> Class | None:
+    """Nạp sẵn học sinh: trang lớp đọc `klass.students` ngay, và để lười thì
+    mỗi em là một câu truy vấn nữa."""
     return (
         db.query(Class)
         .filter(Class.id == class_id, Class.teacher_id == teacher.id)
+        .options(selectinload(Class.memberships).selectinload(ClassMembership.student))
         .first()
     )
 
@@ -87,21 +91,63 @@ def _ten_lop_hop_le(raw: str) -> tuple[str | None, str | None]:
     return clean_name(raw)
 
 
+def _tom_tat(student: User, entries: list[JournalEntry], badge_count: int) -> dict:
+    return {
+        "student": student,
+        "entries": entries,
+        "entry_count": len(entries),
+        "submitted": sum(1 for e in entries if e.submitted),
+        "badge_count": badge_count,
+        "last_active": entries[0].created_at if entries else None,
+    }
+
+
 def _student_summary(db: Session, student: User) -> dict:
+    """Tóm tắt cho đúng một em. Dùng ở trang chi tiết học sinh, nơi chỉ có một."""
     entries = (
         db.query(JournalEntry)
         .filter(JournalEntry.student_id == student.id)
         .order_by(JournalEntry.created_at.desc())
         .all()
     )
-    return {
-        "student": student,
-        "entries": entries,
-        "entry_count": len(entries),
-        "submitted": sum(1 for e in entries if e.submitted),
-        "badge_count": db.query(Badge).filter(Badge.student_id == student.id).count(),
-        "last_active": entries[0].created_at if entries else None,
-    }
+    badges = db.query(Badge).filter(Badge.student_id == student.id).count()
+    return _tom_tat(student, entries, badges)
+
+
+def _summaries_for(db: Session, students: list[User]) -> list[dict]:
+    """Tóm tắt cho cả lớp trong hai câu truy vấn, không phải hai câu mỗi em.
+
+    Bản cũ gọi `_student_summary` trong vòng lặp, tức 2N câu. Ở lớp 30 em không
+    ai để ý; ở một trường 300 em thì trang không mở nổi. `tests/test_tien_do.py`
+    giữ trần cho trang này.
+    """
+    if not students:
+        return []
+
+    ids = [s.id for s in students]
+
+    entries_by_student: dict[int, list[JournalEntry]] = {}
+    for entry in (
+        db.query(JournalEntry)
+        .filter(JournalEntry.student_id.in_(ids))
+        .order_by(JournalEntry.created_at.desc())
+        .all()
+    ):
+        entries_by_student.setdefault(entry.student_id, []).append(entry)
+
+    badges_by_student: dict[int, int] = {}
+    for student_id, so_luong in (
+        db.query(Badge.student_id, func.count(Badge.id))
+        .filter(Badge.student_id.in_(ids))
+        .group_by(Badge.student_id)
+        .all()
+    ):
+        badges_by_student[student_id] = so_luong
+
+    return [
+        _tom_tat(s, entries_by_student.get(s.id, []), badges_by_student.get(s.id, 0))
+        for s in students
+    ]
 
 
 @router.get("", response_class=HTMLResponse)
@@ -181,7 +227,7 @@ def class_detail(
     if klass is None:
         return RedirectResponse("/giao-vien", status_code=303)
 
-    summaries = [_student_summary(db, s) for s in klass.students]
+    summaries = _summaries_for(db, klass.students)
     summaries.sort(key=lambda s: s["student"].name)
 
     return templates.TemplateResponse(
