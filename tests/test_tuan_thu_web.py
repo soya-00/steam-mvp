@@ -78,6 +78,63 @@ def test_the_documents_do_not_still_read_as_placeholders(client):
         assert "Bản nháp" not in page, url
 
 
+def test_every_in_page_link_lands_on_a_real_section(client):
+    """Đánh số lại mười ba mục bằng tay chính là chỗ sinh ra liên kết chết, và
+    không bài nào khác bắt được."""
+    for url in TRANG_PHAP_LY:
+        page = client.get(url).text
+        neo = set(re.findall(r'href="#([^"]+)"', page))
+        co_that = set(re.findall(r'id="([^"]+)"', page))
+        assert neo <= co_that, f"{url}: liên kết trỏ vào chỗ không có — {sorted(neo - co_that)}"
+
+
+def test_the_section_numbers_run_in_order(client):
+    """Chèn một mục vào giữa mà quên đẩy các mục sau xuống thì mục lục và thân
+    văn bản nói hai chuyện khác nhau."""
+    page = client.get("/chinh-sach-rieng-tu").text
+    la_ma = re.findall(r'<h2 id="[a-z]+"[^>]*>\s*([IVX]+)\.', page)
+    bang = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7,
+            "VIII": 8, "IX": 9, "X": 10, "XI": 11, "XII": 12, "XIII": 13}
+    assert [bang[x] for x in la_ma] == list(range(1, len(la_ma) + 1)), la_ma
+
+
+def test_the_policy_says_who_inside_gals_can_read_student_writing(client):
+    """Câu hỏi đầu tiên một hiệu phó hỏi. Bản trước đã đánh rơi câu trả lời."""
+    page = client.get("/chinh-sach-rieng-tu").text
+    assert "Giới hạn truy cập nội bộ" in page
+    assert "không có giao diện quản trị trên web" in page.lower()
+    assert "không có đường dẫn HTTP nào" in page
+
+
+def test_the_no_admin_interface_claim_is_actually_true():
+    """Câu mạnh nhất trong Mục VI là một sự thật kiến trúc, nên nó phải đúng.
+    Thêm một route quản trị mà quên sửa chính sách là bài này đỏ."""
+    goc = Path(__file__).resolve().parent.parent
+    quan_tri = (goc / "app" / "quan_tri.py").read_text(encoding="utf-8")
+    assert "@router" not in quan_tri and "APIRouter" not in quan_tri
+
+    # Chỉ soi lệnh import thật, không soi lời chú thích nhắc tới công cụ.
+    nap = re.compile(r"^\s*(from\s+app\.quan_tri|import\s+app\.quan_tri)", re.M)
+    for path in (goc / "app").rglob("*.py"):
+        if path.name == "quan_tri.py":
+            continue
+        assert not nap.search(path.read_text(encoding="utf-8")), (
+            f"{path} nạp công cụ quản trị vào ứng dụng web"
+        )
+
+
+def test_the_policy_commits_to_reporting_an_incident(client):
+    page = client.get("/chinh-sach-rieng-tu").text
+    assert "tấn công mạng" in page
+    assert "cơ quan nhà nước có thẩm quyền" in page
+
+
+def test_the_policy_states_the_technical_measures_the_code_implements(client):
+    page = client.get("/chinh-sach-rieng-tu").text
+    for bien_phap in ["Argon2id", "HTTPS", "HttpOnly", "SameSite=Lax", "Secure"]:
+        assert bien_phap in page, bien_phap
+
+
 def test_the_privacy_policy_states_the_retention_position_plainly(client):
     """Chưa có hạn lưu trữ là điểm yếu thật. Nói ra, chứ không lờ đi."""
     page = client.get("/chinh-sach-rieng-tu").text
