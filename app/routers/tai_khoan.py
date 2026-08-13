@@ -62,6 +62,32 @@ phan-hoi.csv  nhận xét do chính bạn viết, đầy đủ nội dung
 nhiem-vu.csv  các nhiệm vụ bạn đã giao
 """
 
+HUONG_DAN_CO_TEN = """GALS — dữ liệu lớp của bạn (BẢN CÓ TÊN HỌC SINH)
+
+*** Thư mục này có tên học sinh. Hãy giữ nó như giữ sổ điểm giấy. ***
+
+Bạn đã chọn bản có tên, nên cột "Tên học sinh" nằm ngay cạnh mã ẩn danh. Điều
+đó có nghĩa là tệp này tự nó chỉ ra em nào viết gì — không cần bảng đối chiếu
+nào nữa.
+
+Vì thế: đừng gửi qua ứng dụng nhắn tin, đừng để trong thư mục dùng chung, và
+xoá khi không cần nữa. Một tệp đã tải về thì GALS không thu lại được, và nó
+vẫn còn kể cả sau khi tài khoản của học sinh đã bị xoá.
+
+Cần bản không có tên thì tải lại ở mục Tải dữ liệu — đó là nút mặc định.
+
+Ba tệp này chỉ chứa THÔNG TIN VỀ bài làm, không chứa bài viết của học sinh.
+Muốn đọc bài của một em, mở trang của em đó trong ứng dụng.
+
+Lớp được ghi bằng TÊN LỚP. Mã lớp mà học sinh gõ để vào lớp cố ý KHÔNG nằm
+trong thư mục này: mã đó đổi được khi bị lộ.
+
+nhat-ky.csv   mỗi dòng là một bài của một em: đi tới cấp độ nào, viết bao
+              nhiêu câu, hoạt động lần cuối khi nào
+phan-hoi.csv  nhận xét do chính bạn viết, đầy đủ nội dung
+nhiem-vu.csv  các nhiệm vụ bạn đã giao
+"""
+
 
 def _guard(user: User | None):
     if user is None:
@@ -464,7 +490,18 @@ def _student_payload(db: Session, user: User) -> dict:
     }
 
 
-def _teacher_zip(db: Session, user: User) -> bytes:
+def _teacher_zip(db: Session, user: User, co_ten: bool = False) -> bytes:
+    """Bản tải về của giáo viên.
+
+    Mặc định học sinh chỉ có mã ẩn danh. `co_ten=True` thêm một cột tên, dành
+    cho thầy cô thật sự cần đối chiếu ngoài màn hình.
+
+    Lý do có hai bản thay vì chọn hẳn một: bảng đối chiếu mã ↔ tên vẫn nằm ngay
+    trên trang tải, nên bản ẩn danh chưa bao giờ là một hàng rào — nó chỉ là ma
+    sát. Mà ma sát thì người ta đi vòng: thầy cô cần tên sẽ tự chép bảng đó vào
+    bảng tính của mình, và bản chép tay đó không ai quản. Thà đưa ra một bản có
+    tên, nói rõ nó chứa gì, và để bản ẩn danh làm mặc định.
+    """
     classes = _classes_of(db, user)
 
     journal_rows: list[list] = []
@@ -519,7 +556,12 @@ def _teacher_zip(db: Session, user: User) -> bytes:
 
         for membership in klass.memberships:
             student = membership.student
-            code = codes.get(student.id, "")
+            # Cột định danh: một ô ở bản ẩn danh, hai ô ở bản có tên. Dựng một
+            # lần ở đây rồi rải vào cả hai bảng, để không có đường nào lỡ thêm
+            # tên vào bản này mà quên bản kia.
+            dinh_danh = [codes.get(student.id, "")]
+            if co_ten:
+                dinh_danh.append(student.name)
 
             sessions = sessions_by_student.get(student.id, [])
             entry_by_scenario = entries_by_student.get(student.id, {})
@@ -534,7 +576,7 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 journal_rows.append(
                     [
                         klass.name,
-                        code,
+                        *dinh_danh,
                         # Tên tình huống, KHÔNG phải entry.title: tiêu đề của
                         # một ghi chép tự do chính là chữ học sinh viết ra.
                         scenario.title,
@@ -560,7 +602,7 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 feedback_rows.append(
                     [
                         klass.name,
-                        code,
+                        *dinh_danh,
                         scenario.title if scenario else "Nhắn chung",
                         note.content,
                         _stamp(note.created_at),
@@ -585,13 +627,16 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 ]
             )
 
+    # Đúng những cột mà `dinh_danh` vừa dựng, không lệch được.
+    cot_dinh_danh = ["Mã học sinh"] + (["Tên học sinh"] if co_ten else [])
+
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr(
             "nhat-ky.csv",
             _csv_bytes(
                 [
-                    "Lớp", "Mã học sinh", "Tình huống", "Lĩnh vực", "Vai",
+                    "Lớp", *cot_dinh_danh, "Tình huống", "Lĩnh vực", "Vai",
                     "Kiểu", "Cấp độ đã xong", "Đã đi hết", "Số câu trả lời",
                     "Số từ đã viết", "Bắt đầu", "Hoạt động lần cuối",
                     "Đã nộp", "Có ảnh", "Có video", "Đang chia sẻ công khai",
@@ -602,7 +647,8 @@ def _teacher_zip(db: Session, user: User) -> bytes:
         archive.writestr(
             "phan-hoi.csv",
             _csv_bytes(
-                ["Lớp", "Mã học sinh", "Gắn với tình huống", "Nội dung nhận xét", "Gửi lúc"],
+                ["Lớp", *cot_dinh_danh, "Gắn với tình huống",
+                 "Nội dung nhận xét", "Gửi lúc"],
                 feedback_rows,
             ),
         )
@@ -613,28 +659,38 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 assignment_rows,
             ),
         )
-        archive.writestr("HUONG-DAN.txt", HUONG_DAN.encode("utf-8"))
+        archive.writestr(
+            "HUONG-DAN.txt",
+            (HUONG_DAN_CO_TEN if co_ten else HUONG_DAN).encode("utf-8"),
+        )
 
     return buffer.getvalue()
 
 
 @router.get("/tai-khoan/du-lieu")
 def export_data(
+    co_ten: str = "",
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Tải dữ liệu. `?co_ten=1` là bản có tên học sinh, chỉ dành cho giáo viên.
+
+    Học sinh tải bản của chính mình nên tham số này không chạm tới nhánh đó —
+    bản của em vốn đã có tên em.
+    """
     if (redirect := _guard(user)) is not None:
         return redirect
 
     today = datetime.now().strftime("%Y-%m-%d")
 
     if user.can_teach:
+        # Tên trong tệp khác nhau, để hai bản không lẫn vào nhau trong thư mục
+        # Tải về của thầy cô — nhìn tên tệp là biết bản nào có tên học sinh.
+        ten_tep = f"gals-lop-co-ten-{today}.zip" if co_ten else f"gals-lop-{today}.zip"
         return Response(
-            content=_teacher_zip(db, user),
+            content=_teacher_zip(db, user, co_ten=bool(co_ten)),
             media_type="application/zip",
-            headers={
-                "Content-Disposition": f'attachment; filename="gals-lop-{today}.zip"'
-            },
+            headers={"Content-Disposition": f'attachment; filename="{ten_tep}"'},
         )
 
     payload = json.dumps(_student_payload(db, user), ensure_ascii=False, indent=2)

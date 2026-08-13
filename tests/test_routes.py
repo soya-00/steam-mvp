@@ -61,7 +61,7 @@ def test_teacher_dashboard_says_what_is_true_now(client):
         "đang trong giai đoạn thử nghiệm",
         "chưa có sao lưu",
         "chỉ đọc được phần học sinh nộp",
-        "đừng để học sinh nhập thông tin thật",
+        "số điện thoại, địa chỉ nhà hay email cá nhân",
         "không phải công cụ hỗ trợ tâm lý",
     ]:
         assert phrase.lower() in page.lower(), phrase
@@ -69,6 +69,10 @@ def test_teacher_dashboard_says_what_is_true_now(client):
     # Tài khoản đã là thật, dữ liệu đã ở lại. Hai câu cũ giờ là nói sai.
     for gone in ["không được lưu lại", "xoá sạch"]:
         assert gone.lower() not in page.lower(), gone
+
+    # Học sinh đăng ký bằng tên của chính mình. Câu cũ bảo thầy cô cho các em
+    # dùng biệt danh, và nó mâu thuẫn với chính ô "Tên của bạn" lúc đăng ký.
+    assert "đừng để học sinh nhập thông tin thật" not in page.lower()
 
 
 def test_legal_notice_exists_and_is_linked_everywhere(client):

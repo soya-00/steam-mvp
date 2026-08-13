@@ -201,11 +201,52 @@ def test_student_codes_are_stable_and_append_only(client):
 
 
 def test_the_code_to_name_table_never_leaves_the_screen(client):
+    """Bản mặc định — nút thầy cô bấm khi không nghĩ ngợi gì."""
     login_teacher(client)
     assert STUDENT_NAME in client.get("/tai-khoan").text
 
     _, joined = _zip_text(client.get("/tai-khoan/du-lieu").content)
     assert STUDENT_NAME not in joined
+
+
+def test_a_teacher_who_asks_for_names_gets_them(client):
+    """Bảng đối chiếu mã ↔ tên vốn nằm ngay trên trang tải, nên bản ẩn danh
+    chưa bao giờ là hàng rào — chỉ là ma sát. Ma sát thì người ta đi vòng bằng
+    cách tự chép bảng vào bảng tính, và bản chép tay đó không ai quản."""
+    login_teacher(client)
+    _, joined = _zip_text(client.get("/tai-khoan/du-lieu?co_ten=1").content)
+    assert STUDENT_NAME in joined
+    assert "Tên học sinh" in joined
+
+
+def test_the_named_download_says_what_it_is_carrying(client):
+    login_teacher(client)
+    archive, _ = _zip_text(client.get("/tai-khoan/du-lieu?co_ten=1").content)
+    huong_dan = archive.read("HUONG-DAN.txt").decode("utf-8")
+    assert "BẢN CÓ TÊN HỌC SINH" in huong_dan
+    assert "sổ điểm giấy" in huong_dan
+
+
+def test_both_downloads_keep_their_headers_lined_up_with_their_rows(client):
+    """Cột định danh là một ô ở bản này và hai ô ở bản kia. Lệch một ô là mọi
+    con số trong bảng tính tụt sang sai cột, mà trông vẫn như bảng bình thường."""
+    login_teacher(client)
+    for duong_dan in ("/tai-khoan/du-lieu", "/tai-khoan/du-lieu?co_ten=1"):
+        archive, _ = _zip_text(client.get(duong_dan).content)
+        for ten_tep in ("nhat-ky.csv", "phan-hoi.csv", "nhiem-vu.csv"):
+            rows = list(
+                csv.reader(io.StringIO(archive.read(ten_tep).decode("utf-8-sig")))
+            )
+            header, *data = rows
+            for dong in data:
+                assert len(dong) == len(header), f"{duong_dan} {ten_tep}"
+
+
+def test_the_named_download_is_teacher_only(client):
+    """Học sinh thêm ?co_ten=1 thì vẫn chỉ nhận bản của chính mình."""
+    login_student(client)
+    r = client.get("/tai-khoan/du-lieu?co_ten=1")
+    assert r.headers["content-type"].startswith("application/json")
 
 
 def test_teacher_menu_pages_are_teacher_only(client):

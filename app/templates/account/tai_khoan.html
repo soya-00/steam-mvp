@@ -298,14 +298,45 @@
       <a href="/tai-khoan/du-lieu" class="btn btn-primary mt-4">
         {{ 'Tải dữ liệu lớp' if user.is_teacher else 'Tải dữ liệu của tôi' }}
       </a>
+
+      {% if user.is_teacher %}
+      <p class="mt-3 text-xs text-ink-faint">
+        Bản mặc định ghi học sinh bằng mã ẩn danh. Đối chiếu mã với tên ở bảng bên dưới.
+      </p>
+
+      {# Bản có tên nằm sau một lần bấm, và nói rõ nó chứa gì trước khi tải.
+         Không giấu đi: bảng đối chiếu mã ↔ tên vốn đã ở ngay dưới đây, nên thầy
+         cô cần tên sẽ tự chép vào bảng tính của mình — và bản chép tay đó thì
+         không ai quản. Thà đưa ra một bản có tên, dán nhãn đàng hoàng. #}
+      <details class="disclose mt-3">
+        <summary class="cursor-pointer text-sm font-medium text-ink-soft hover:text-ink">
+          Cần bản có tên học sinh?
+        </summary>
+        <div class="mt-2.5 tile p-4 bg-amber-50 border-amber-100">
+          <p class="text-sm text-amber-900">
+            Bản này thêm một cột <strong>Tên học sinh</strong> cạnh mã ẩn danh, nên tệp
+            tự nó chỉ ra em nào viết gì — không cần bảng đối chiếu nữa.
+          </p>
+          <p class="mt-2 text-sm text-amber-900/90">
+            Hãy giữ nó như giữ sổ điểm giấy: đừng gửi qua ứng dụng nhắn tin, đừng để
+            trong thư mục dùng chung, và xoá khi không cần nữa. Tệp đã tải về thì GALS
+            không thu lại được, kể cả sau khi tài khoản của em đã bị xoá.
+          </p>
+          <a href="/tai-khoan/du-lieu?co_ten=1" class="btn btn-ghost mt-3">
+            Tải bản có tên học sinh
+          </a>
+        </div>
+      </details>
+      {% endif %}
     </div>
 
     {% if user.is_teacher and roster %}
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Bảng đối chiếu mã học sinh</h3>
       <p class="mt-1 text-sm text-ink-soft">
-        Trong tệp tải về, học sinh được ghi bằng mã ẩn danh. Bảng đối chiếu này
-        <strong class="text-ink">chỉ hiện ở đây</strong> và không nằm trong tệp.
+        Trong <strong class="text-ink">bản tải mặc định</strong>, học sinh chỉ có mã ẩn danh,
+        và bảng đối chiếu này không nằm trong tệp. Bản có tên học sinh thì đã có sẵn cột tên,
+        không cần đối chiếu nữa.
       </p>
       {% for group in roster %}
       <details class="disclose mt-4">
