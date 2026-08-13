@@ -276,6 +276,311 @@ def test_generated_class_codes_are_always_checked_for_collisions():
         db.close()
 
 
+# ------------------------------------------------ giáo viên tự quản lý được lớp
+
+def _lop_khac() -> Class:
+    """Lớp của một giáo viên khác — dựng riêng để thử chuyện chéo lớp."""
+    db = SessionLocal()
+    try:
+        gv = User(name="Thầy Khác", email="khac@gals.demo", role="teacher",
+                  status="hoat_dong")
+        db.add(gv)
+        db.flush()
+        lop = Class(teacher_id=gv.id, class_code="GALS-KHAC", roster_prefix="GALS-KHAC",
+                    name="Lớp của người khác")
+        db.add(lop)
+        db.commit()
+        db.refresh(lop)
+        return lop
+    finally:
+        db.close()
+
+
+def test_a_teacher_can_remove_a_student_who_joined_the_wrong_class(client):
+    lop_id = _lop().id
+    uid = _user(SEED_EMAILS["hoc_sinh_co_lop"]).id
+    assert _o_trong_lop(SEED_EMAILS["hoc_sinh_co_lop"], lop_id)
+
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/go/{uid}", data={})
+
+    assert not _o_trong_lop(SEED_EMAILS["hoc_sinh_co_lop"], lop_id)
+    assert "Nguyễn Khánh Linh" not in client.get(f"/giao-vien/lop/{lop_id}").text
+
+
+def test_removing_a_student_keeps_everything_the_student_wrote(client):
+    from app.models import JournalEntry
+
+    lop_id = _lop().id
+    uid = _user(SEED_EMAILS["hoc_sinh_co_lop"]).id
+
+    db = SessionLocal()
+    try:
+        truoc = db.query(JournalEntry).filter(JournalEntry.student_id == uid).count()
+    finally:
+        db.close()
+
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/go/{uid}", data={})
+
+    db = SessionLocal()
+    try:
+        assert db.query(JournalEntry).filter(JournalEntry.student_id == uid).count() == truoc
+        assert truoc > 0
+        assert db.get(User, uid) is not None
+    finally:
+        db.close()
+
+
+def test_a_teacher_cannot_remove_a_student_from_someone_elses_class(client):
+    lop_khac = _lop_khac()
+    uid = _user(SEED_EMAILS["hoc_sinh_co_lop"]).id
+    db = SessionLocal()
+    try:
+        db.add(ClassMembership(student_id=uid, class_id=lop_khac.id))
+        db.commit()
+    finally:
+        db.close()
+
+    login_teacher(client)
+    r = client.post(f"/giao-vien/lop/{lop_khac.id}/go/{uid}", data={},
+                    follow_redirects=False)
+    assert r.status_code == 303
+    assert r.headers["location"] == "/giao-vien"
+    assert _o_trong_lop(SEED_EMAILS["hoc_sinh_co_lop"], lop_khac.id)
+
+
+def test_rotating_the_code_kills_the_old_one_and_keeps_the_roster(client):
+    """Mã bị chụp màn hình là lý do có nút này."""
+    lop_id = _lop().id
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/doi-ma", data={})
+
+    db = SessionLocal()
+    try:
+        lop = db.get(Class, lop_id)
+        assert lop.class_code != "GALS-11A2"
+        assert lop.class_code.startswith("GALS-")
+        # Đổi mã không đuổi ai ra khỏi lớp.
+        assert db.query(ClassMembership).filter(
+            ClassMembership.class_id == lop_id
+        ).count() > 0
+    finally:
+        db.close()
+
+    # Mã cũ không vào được nữa.
+    client.get("/dang-xuat")
+    login_independent(client)
+    r = client.post("/tai-khoan/vao-lop", data={"ma": "GALS-11A2"}, follow_redirects=False)
+    assert "loi=ma_lop_sai" in r.headers["location"]
+
+
+def test_rotating_the_code_does_not_rename_anyone_in_the_export(client):
+    """HUONG-DAN.txt hứa cùng một em thì lần xuất nào cũng ra cùng một mã ẩn
+    danh. Nếu mã ẩn danh bám theo mã lớp thì đổi mã một lần là đổi tên toàn bộ
+    học sinh so với bản thầy cô đã tải tuần trước."""
+    from app.routers.tai_khoan import student_codes
+
+    lop_id = _lop().id
+    db = SessionLocal()
+    try:
+        truoc = student_codes(db, db.get(Class, lop_id))
+    finally:
+        db.close()
+
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/doi-ma", data={})
+
+    db = SessionLocal()
+    try:
+        sau = student_codes(db, db.get(Class, lop_id))
+    finally:
+        db.close()
+    assert sau == truoc and truoc
+
+
+def test_a_teacher_cannot_rotate_someone_elses_code(client):
+    lop_khac = _lop_khac()
+    login_teacher(client)
+    r = client.post(f"/giao-vien/lop/{lop_khac.id}/doi-ma", data={},
+                    follow_redirects=False)
+    assert r.headers["location"] == "/giao-vien"
+
+    db = SessionLocal()
+    try:
+        assert db.get(Class, lop_khac.id).class_code == "GALS-KHAC"
+    finally:
+        db.close()
+
+
+def test_a_teacher_can_rename_a_class(client):
+    lop_id = _lop().id
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/sua", data={"ten_lop": "11A2 — học kỳ hai"})
+
+    db = SessionLocal()
+    try:
+        assert db.get(Class, lop_id).name == "11A2 — học kỳ hai"
+    finally:
+        db.close()
+
+
+def test_a_class_name_goes_through_the_same_filter_as_a_persons_name(client):
+    """Tên lớp hiện trên màn hình học sinh, nên không thể là chỗ trống."""
+    lop_id = _lop().id
+    login_teacher(client)
+    r = client.post(f"/giao-vien/lop/{lop_id}/sua", data={"ten_lop": "   "},
+                    follow_redirects=False)
+    assert "loi=ten_trong" in r.headers["location"]
+
+    db = SessionLocal()
+    try:
+        assert db.get(Class, lop_id).name == "11A2 — Chuyên đề STEAM"
+    finally:
+        db.close()
+
+
+def test_closing_a_class_stops_the_code_but_keeps_the_work_readable(client):
+    lop_id = _lop().id
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/dong", data={})
+
+    # Vẫn mở đọc được, và nói rõ là đã kết thúc.
+    trang = client.get(f"/giao-vien/lop/{lop_id}")
+    assert trang.status_code == 200
+    assert "Đã kết thúc" in trang.text
+    assert "Nguyễn Khánh Linh" in trang.text
+
+    # Nhưng rời khỏi danh sách lớp đang dạy, và nằm sau một lần bấm.
+    nha = client.get("/giao-vien").text
+    assert "Lớp đã kết thúc (1)" in nha
+
+    # Và mã không nhận thêm ai.
+    client.get("/dang-xuat")
+    login_independent(client)
+    r = client.post("/tai-khoan/vao-lop", data={"ma": "GALS-11A2"}, follow_redirects=False)
+    assert "loi=ma_lop_sai" in r.headers["location"]
+
+
+def test_a_closed_class_takes_no_new_assignments(client):
+    from app.models import Assignment
+
+    lop_id = _lop().id
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/dong", data={})
+
+    db = SessionLocal()
+    try:
+        truoc = db.query(Assignment).filter(Assignment.class_id == lop_id).count()
+    finally:
+        db.close()
+
+    r = client.post(
+        f"/giao-vien/lop/{lop_id}/giao",
+        data={"muc_tieu": "linh-vuc:khoa_hoc", "hinh_thuc": "online"},
+        follow_redirects=False,
+    )
+    assert "loi=lop_da_dong" in r.headers["location"]
+
+    db = SessionLocal()
+    try:
+        assert db.query(Assignment).filter(Assignment.class_id == lop_id).count() == truoc
+    finally:
+        db.close()
+
+
+def test_a_closed_class_drops_out_of_the_code_sheet_and_the_context_picker(client):
+    lop_id = _lop().id
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/dong", data={})
+
+    assert "GALS-11A2" not in client.get("/giao-vien/ma-lop").text
+    assert "11A2 — Chuyên đề STEAM" not in client.get("/chon-khong-gian").text
+
+
+def test_reopening_a_class_puts_it_back(client):
+    lop_id = _lop().id
+    login_teacher(client)
+    client.post(f"/giao-vien/lop/{lop_id}/dong", data={})
+    client.post(f"/giao-vien/lop/{lop_id}/mo-lai", data={})
+
+    assert "Lớp đã kết thúc" not in client.get("/giao-vien").text
+
+    client.get("/dang-xuat")
+    login_independent(client)
+    client.post("/tai-khoan/vao-lop", data={"ma": "GALS-11A2"})
+    assert _o_trong_lop(SEED_EMAILS["hoc_sinh_doc_lap"], lop_id)
+
+
+def test_a_teacher_cannot_close_someone_elses_class(client):
+    lop_khac = _lop_khac()
+    login_teacher(client)
+    r = client.post(f"/giao-vien/lop/{lop_khac.id}/dong", data={}, follow_redirects=False)
+    assert r.headers["location"] == "/giao-vien"
+
+    db = SessionLocal()
+    try:
+        assert not db.get(Class, lop_khac.id).da_dong
+    finally:
+        db.close()
+
+
+def test_a_new_class_freezes_its_export_prefix_at_the_first_code(client):
+    login_teacher(client)
+    client.post("/giao-vien/lop/tao", data={"ten_lop": "12C1 — thử nghiệm"})
+
+    db = SessionLocal()
+    try:
+        lop = db.query(Class).filter(Class.name == "12C1 — thử nghiệm").first()
+        assert lop is not None
+        assert lop.roster_prefix == lop.class_code
+        # Nhà trường là bên kiểm soát dữ liệu, nên lớp phải nhớ trường của mình.
+        assert lop.school_id is not None
+    finally:
+        db.close()
+
+
+def test_the_class_page_offers_the_controls_it_describes(client):
+    login_teacher(client)
+    page = client.get(f"/giao-vien/lop/{_lop().id}").text
+    assert "/doi-ma" in page
+    assert "/dong" in page
+    assert "/sua" in page
+    assert "/go/" in page
+    # Không có nút xoá lớp: trong đợt thử nghiệm không nên có nút nào huỷ được
+    # dữ liệu thật.
+    assert "/xoa" not in page
+
+
+# ------------------------------------------- giáo viên cũng đổi được mật khẩu
+
+def test_a_teacher_can_change_their_own_password(client):
+    """Điều khoản 2.4 bảo mọi người đổi mật khẩu khi nghi bị lộ, không chỉ học
+    sinh. Trang tài khoản từng giấu hẳn mục này khỏi giáo viên."""
+    login_teacher(client)
+    page = client.get("/tai-khoan").text
+    assert "/tai-khoan/mat-khau" in page
+
+    client.post(
+        "/tai-khoan/mat-khau",
+        data={"mat_khau_cu": SEED_PASSWORD, "mat_khau_moi": MOI},
+    )
+    client.get("/dang-xuat")
+    r = client.post(
+        "/dang-nhap",
+        data={"email": SEED_EMAILS["giao_vien"], "mat_khau": MOI},
+        follow_redirects=False,
+    )
+    assert "loi=" not in r.headers["location"]
+
+
+def test_the_account_page_never_shows_a_raw_error_code(client):
+    login_student(client)
+    page = client.get("/tai-khoan?loi=mat_khau_cu_sai").text
+    assert "mat_khau_cu_sai" not in page
+    assert "Mật khẩu hiện tại chưa đúng." in page
+
+
 # ------------------------------------------------------------- máy quét, noindex
 
 def test_a_shared_portfolio_asks_search_engines_to_stay_out(client):

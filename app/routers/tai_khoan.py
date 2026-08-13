@@ -78,15 +78,21 @@ def _classes_of(db: Session, user: User) -> list[Class]:
 
 def student_codes(db: Session, klass: Class) -> dict[int, str]:
     """Mã ẩn danh, đánh số theo thứ tự vào lớp nên chỉ thêm vào cuối — cùng một
-    em thì lần xuất nào cũng ra cùng một mã."""
+    em thì lần xuất nào cũng ra cùng một mã.
+
+    Tiền tố lấy ở `roster_prefix` chứ không lấy ở `class_code`: mã lớp đổi được
+    khi bị lộ, và nếu mã ẩn danh bám theo nó thì một lần đổi mã sẽ đổi tên toàn
+    bộ học sinh so với bản thầy cô đã tải về tuần trước.
+    """
     memberships = (
         db.query(ClassMembership)
         .filter(ClassMembership.class_id == klass.id)
         .order_by(ClassMembership.id)
         .all()
     )
+    prefix = klass.roster_prefix or klass.class_code
     return {
-        m.student_id: f"{klass.class_code}-{index:02d}"
+        m.student_id: f"{prefix}-{index:02d}"
         for index, m in enumerate(memberships, start=1)
     }
 
@@ -166,7 +172,9 @@ def account_page(
             "readers": readers,
             "items": shared_items,
             "roster": roster,
-            "loi": loi,
+            # Đường dẫn mang về mã ngắn ("mat_khau_cu_sai"), còn vài chỗ cũ đưa
+            # thẳng câu tiếng Việt. Tra được thì tra, không thì hiện nguyên văn.
+            "loi": message_for(loi) or loi,
             "da_luu": da_luu,
             "yeu_cau_xoa": (
                 db.query(YeuCauXoa)

@@ -127,7 +127,6 @@
   </section>
 
   {% if not user.is_teacher %}
-  {% if not user.is_teacher %}
   <section id="lop-cua-toi" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Lớp của tôi</h2>
 
@@ -188,6 +187,7 @@
   <section id="rieng-tu" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Quyền riêng tư</h2>
 
+    {% if not user.is_teacher %}
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Ai đọc được bài của bạn</h3>
       {% if readers %}
@@ -210,6 +210,7 @@
       </p>
       {% endif %}
     </div>
+    {% endif %}
 
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Xoá tài khoản</h3>
@@ -243,6 +244,7 @@
       {% endif %}
     </div>
 
+    {% if not user.is_teacher %}
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Mục đang chia sẻ công khai</h3>
       <p class="mt-1 text-sm text-ink-soft">
@@ -272,8 +274,8 @@
         Quản lý ở trang chia sẻ <span aria-hidden="true">→</span>
       </a>
     </div>
+    {% endif %}
   </section>
-  {% endif %}
 
   <section id="du-lieu" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Dữ liệu của bạn</h2>

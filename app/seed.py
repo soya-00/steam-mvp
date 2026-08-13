@@ -105,8 +105,10 @@ def _seed(db: Session) -> None:
     db.flush()
 
     lop_11a2 = Class(teacher_id=teacher.id, class_code="GALS-11A2",
+                     roster_prefix="GALS-11A2",
                      name="11A2 — Chuyên đề STEAM", school_id=truong.id)
     lop_10b1 = Class(teacher_id=teacher.id, class_code="GALS-10B1",
+                     roster_prefix="GALS-10B1",
                      name="10B1 — Hướng nghiệp sớm", school_id=truong.id)
     db.add_all([lop_11a2, lop_10b1])
     db.flush()

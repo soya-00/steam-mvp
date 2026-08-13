@@ -40,6 +40,7 @@ LOI = {
     "truong_sai": "Bạn chọn trường giúp mình nhé.",
     "chua_dong_y": "Bạn cần đồng ý với hai văn bản trước khi tạo tài khoản.",
     "mat_khau_cu_sai": "Mật khẩu hiện tại chưa đúng.",
+    "lop_da_dong": "Lớp này đã kết thúc nên không giao thêm nhiệm vụ được. Mở lại lớp trước đã nhé.",
     "ve_hong": "Liên kết này đã hết hạn hoặc đã dùng rồi. Bạn xin liên kết mới nhé.",
 }
 

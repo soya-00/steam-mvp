@@ -45,7 +45,14 @@ def lop_cua_hoc_sinh(db: Session, user: User) -> list[Class]:
 
 
 def lop_cua_giao_vien(db: Session, user: User) -> list[Class]:
-    return db.query(Class).filter(Class.teacher_id == user.id).order_by(Class.name).all()
+    # Lớp đã đóng không nằm trong danh sách chọn: nó vẫn mở đọc được từ trang
+    # lớp, nhưng chọn nó làm không gian làm việc hôm nay thì không còn nghĩa gì.
+    return (
+        db.query(Class)
+        .filter(Class.teacher_id == user.id, Class.dong_luc.is_(None))
+        .order_by(Class.name)
+        .all()
+    )
 
 
 def lua_chon(db: Session, user: User) -> list[BoiCanh]:

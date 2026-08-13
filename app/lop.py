@@ -117,6 +117,27 @@ def ma_lop_moi(db: Session) -> str:
     raise RuntimeError("Không sinh được mã lớp mới sau nhiều lần thử.")
 
 
+def tao_lop(db: Session, giao_vien: User, ten: str) -> Class:
+    """Lớp mới. `roster_prefix` đóng băng ở mã đầu tiên và không đổi nữa."""
+    ma = ma_lop_moi(db)
+    lop = Class(
+        teacher_id=giao_vien.id,
+        class_code=ma,
+        roster_prefix=ma,
+        name=ten,
+        school_id=giao_vien.school_id,
+    )
+    db.add(lop)
+    db.commit()
+    db.refresh(lop)
+    return lop
+
+
+def doi_ten(db: Session, lop: Class, ten: str) -> None:
+    lop.name = ten
+    db.commit()
+
+
 def doi_ma(db: Session, lop: Class) -> str:
     """Cấp mã mới cho lớp. Mã cũ hết tác dụng ngay.
 
