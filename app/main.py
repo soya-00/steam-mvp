@@ -104,3 +104,18 @@ async def robots() -> FileResponse:
 @app.exception_handler(404)
 async def not_found(request: Request, exc) -> HTMLResponse:
     return templates.TemplateResponse(request, "404.html", status_code=404)
+
+
+@app.exception_handler(500)
+async def server_error(request: Request, exc) -> HTMLResponse:
+    """Trang lỗi máy chủ.
+
+    Không có trang này thì mọi lỗi chưa bắt được rơi ra thành một dòng chữ trần
+    của Starlette, không có kiểu dáng và không nói người dùng nên làm gì — đứng
+    trước cả lớp thì nó trông như cả trang web đã sập.
+
+    Vết lỗi đi vào log của máy chủ, không đi ra màn hình: một traceback có thể
+    mang theo nguyên văn nhật ký của học sinh.
+    """
+    log.exception("Lỗi chưa bắt được tại %s", request.url.path)
+    return templates.TemplateResponse(request, "500.html", status_code=500)

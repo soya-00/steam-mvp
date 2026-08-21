@@ -46,6 +46,22 @@
     </div>
   </form>
 
+  {# Bỏ khỏi hồ sơ nằm ngoài biểu mẫu bên trên: lồng form trong form thì trình
+     duyệt bỏ qua cái bên trong. #}
+  <details class="mt-3">
+    <summary class="cursor-pointer text-sm text-ink-faint hover:text-ink">Bỏ khỏi hồ sơ</summary>
+    <form method="post" action="/ho-so/{{ item.id }}/xoa" class="mt-2">
+      {% include "partials/csrf.html" %}
+      <p class="text-xs text-ink-soft max-w-md">
+        Chỉ bỏ mục này khỏi hồ sơ trưng bày. <strong class="text-ink">Bài viết của bạn
+        vẫn còn nguyên</strong> ở trang tình huống, kể cả phần trò chuyện.
+      </p>
+      <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+        Bỏ khỏi hồ sơ
+      </button>
+    </form>
+  </details>
+
   {% if je.video_url or je.image_url %}
   <div class="mt-3 flex flex-wrap gap-3 text-sm">
     {% if je.image_url %}<a href="{{ je.image_url }}" class="font-semibold text-trunk hover:underline" target="_blank" rel="noopener">Ảnh</a>{% endif %}

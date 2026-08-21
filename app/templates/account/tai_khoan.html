@@ -167,6 +167,24 @@
     <h2 class="microlabel">Bảo mật</h2>
 
     <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Địa chỉ thư</h3>
+      <p class="mt-1 text-sm text-ink-soft">
+        Đang dùng <strong class="text-ink">{{ user.email }}</strong>. Đây cũng là địa chỉ
+        nhận liên kết đặt lại mật khẩu, nên nếu bạn gõ nhầm lúc đăng ký thì sửa ở đây.
+      </p>
+      <form method="post" action="/tai-khoan/email" class="mt-3 grid gap-2 max-w-sm">
+        {% include "partials/csrf.html" %}
+        <label for="email_moi" class="text-sm text-ink-soft">Địa chỉ mới</label>
+        <input type="email" id="email_moi" name="email_moi" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <label for="mk_email" class="text-sm text-ink-soft mt-1">Mật khẩu hiện tại</label>
+        <input type="password" id="mk_email" name="mat_khau" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <button type="submit" class="btn btn-ghost justify-self-start mt-2">Đổi địa chỉ thư</button>
+      </form>
+    </div>
+
+    <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Đổi mật khẩu</h3>
       <p class="mt-1 text-sm text-ink-soft">
         Đổi xong, mọi thiết bị khác đang đăng nhập tài khoản này sẽ bị đăng xuất.

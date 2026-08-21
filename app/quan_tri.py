@@ -12,6 +12,7 @@ và ở quy mô vài trường thì đây là cách trung thực nhất.
     python -m app.quan_tri khoa co.mai@truong.edu.vn
     python -m app.quan_tri mo-khoa co.mai@truong.edu.vn
     python -m app.quan_tri dat-lai co.mai@truong.edu.vn
+    python -m app.quan_tri doi-email cu@example.com moi@example.com
     python -m app.quan_tri xoa-cho    # xem các yêu cầu xoá đang chờ
     python -m app.quan_tri xoa hocsinh@example.com
     python -m app.quan_tri sao-luu sao-luu-2026-08-13.json
@@ -126,6 +127,30 @@ def dat_lai(db, args) -> int:
     token = tao_ve(db, user)
     print(f"Liên kết cho {user.email} (sống 30 phút):")
     print(f"  {args.goc.rstrip('/')}/dat-lai-mat-khau?token={token}")
+    return 0
+
+
+def doi_email(db, args) -> int:
+    """Đổi địa chỉ thư của một tài khoản.
+
+    Đường cứu hộ cho người gõ nhầm email lúc đăng ký và không đăng nhập được để
+    tự sửa — họ đang gõ địa chỉ họ *tưởng* mình đã dùng, nên cả đăng nhập lẫn
+    đặt lại mật khẩu đều không tới được.
+    """
+    user = _nguoi(db, args.email_cu)
+    if user is None:
+        print(f"Không tìm thấy tài khoản '{args.email_cu}'.")
+        return 1
+
+    moi = args.email_moi.strip().lower()
+    if _nguoi(db, moi) is not None:
+        print(f"Địa chỉ '{moi}' đã có tài khoản khác dùng.")
+        return 1
+
+    cu = user.email
+    user.email = moi
+    db.commit()
+    print(f"{cu} → {moi}")
     return 0
 
 
@@ -338,6 +363,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("email")
     p.add_argument("--goc", default="http://localhost:8000", help="Gốc địa chỉ trang")
     p.set_defaults(func=dat_lai)
+
+    p = sub.add_parser("doi-email", help="Đổi địa chỉ thư của một tài khoản")
+    p.add_argument("email_cu")
+    p.add_argument("email_moi")
+    p.set_defaults(func=doi_email)
 
     p = sub.add_parser("xoa-cho", help="Các yêu cầu xoá đang chờ")
     p.set_defaults(func=xoa_cho)

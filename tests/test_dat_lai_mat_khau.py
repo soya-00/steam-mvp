@@ -77,7 +77,7 @@ def test_the_ticket_sets_a_new_password(client, khong_gui_thu):
 
     r = client.post(
         "/dat-lai-mat-khau",
-        data={"token": token, "mat_khau": MOI},
+        data={"token": token, "mat_khau": MOI, "mat_khau_lai": MOI},
         follow_redirects=False,
     )
     assert r.status_code == 303
@@ -95,7 +95,8 @@ def test_the_old_password_stops_working(client, khong_gui_thu):
     _xin_ve(client)
     client.post(
         "/dat-lai-mat-khau",
-        data={"token": _ve_gan_nhat(khong_gui_thu), "mat_khau": MOI},
+        data={"token": _ve_gan_nhat(khong_gui_thu), "mat_khau": MOI,
+              "mat_khau_lai": MOI},
         follow_redirects=False,
     )
     client.get("/dang-xuat")
@@ -110,9 +111,10 @@ def test_the_old_password_stops_working(client, khong_gui_thu):
 def test_a_ticket_works_only_once(client, khong_gui_thu):
     _xin_ve(client)
     token = _ve_gan_nhat(khong_gui_thu)
-    client.post("/dat-lai-mat-khau", data={"token": token, "mat_khau": MOI},
+    client.post("/dat-lai-mat-khau", data={"token": token, "mat_khau": MOI, "mat_khau_lai": MOI},
                 follow_redirects=False)
-    lai = client.post("/dat-lai-mat-khau", data={"token": token, "mat_khau": "mat-khau-khac"},
+    lai = client.post("/dat-lai-mat-khau", data={"token": token, "mat_khau": "mat-khau-khac",
+                            "mat_khau_lai": "mat-khau-khac"},
                       follow_redirects=False)
     assert "loi=ve_hong" in lai.headers["location"]
 
@@ -128,7 +130,7 @@ def test_an_expired_ticket_is_refused(client, khong_gui_thu):
     finally:
         db.close()
 
-    r = client.post("/dat-lai-mat-khau", data={"token": token, "mat_khau": MOI},
+    r = client.post("/dat-lai-mat-khau", data={"token": token, "mat_khau": MOI, "mat_khau_lai": MOI},
                     follow_redirects=False)
     assert "loi=ve_hong" in r.headers["location"]
 
@@ -136,7 +138,7 @@ def test_an_expired_ticket_is_refused(client, khong_gui_thu):
 def test_a_forged_ticket_is_refused(client):
     r = client.post(
         "/dat-lai-mat-khau",
-        data={"token": "vé-tự-chế", "mat_khau": MOI},
+        data={"token": "vé-tự-chế", "mat_khau": MOI, "mat_khau_lai": MOI},
         follow_redirects=False,
     )
     assert "loi=ve_hong" in r.headers["location"]
@@ -147,7 +149,7 @@ def test_asking_twice_kills_the_first_ticket(client, khong_gui_thu):
     dau = _ve_gan_nhat(khong_gui_thu)
     _xin_ve(client)
 
-    r = client.post("/dat-lai-mat-khau", data={"token": dau, "mat_khau": MOI},
+    r = client.post("/dat-lai-mat-khau", data={"token": dau, "mat_khau": MOI, "mat_khau_lai": MOI},
                     follow_redirects=False)
     assert "loi=ve_hong" in r.headers["location"]
 
@@ -156,7 +158,8 @@ def test_a_weak_new_password_is_refused(client, khong_gui_thu):
     _xin_ve(client)
     r = client.post(
         "/dat-lai-mat-khau",
-        data={"token": _ve_gan_nhat(khong_gui_thu), "mat_khau": "ngan"},
+        data={"token": _ve_gan_nhat(khong_gui_thu), "mat_khau": "ngan",
+              "mat_khau_lai": "ngan"},
         follow_redirects=False,
     )
     assert "loi=mat_khau_ngan" in r.headers["location"]
@@ -235,7 +238,8 @@ def test_an_oauth_account_may_set_a_password_this_way(client, khong_gui_thu):
     _xin_ve(client, SEED_EMAILS["hoc_sinh_doc_lap"])
     r = client.post(
         "/dat-lai-mat-khau",
-        data={"token": _ve_gan_nhat(khong_gui_thu), "mat_khau": MOI},
+        data={"token": _ve_gan_nhat(khong_gui_thu), "mat_khau": MOI,
+              "mat_khau_lai": MOI},
         follow_redirects=False,
     )
     assert r.status_code == 303

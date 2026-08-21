@@ -71,6 +71,28 @@
     </div>
   </section>
 
+  {% if entry and entry.submitted %}
+  {# Nộp là thao tác mở bài của mình cho thầy cô đọc, nên nó phải có đường lùi. #}
+  <div class="tile p-5 mt-5">
+    <p class="text-sm text-ink">
+      Bạn đã nộp bài này, nên thầy cô lớp đó đọc được.
+    </p>
+    <details class="mt-2">
+      <summary class="cursor-pointer text-sm text-ink-faint hover:text-ink">Rút bài về</summary>
+      <form method="post" action="/du-an/{{ scenario.id }}/rut" class="mt-2">
+        {% include "partials/csrf.html" %}
+        <p class="text-xs text-ink-soft max-w-md">
+          Rút về thì thầy cô không đọc được nữa, còn bài vẫn ở đây cho bạn đọc và sửa tiếp.
+          Nhận xét thầy cô đã viết thì vẫn còn — đó là lời của thầy cô, và bạn vẫn nên đọc được.
+        </p>
+        <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+          Rút bài về
+        </button>
+      </form>
+    </details>
+  </div>
+  {% endif %}
+
   <p class="mt-4 text-sm text-ink-soft">
     Không có giới hạn thời gian. Đóng tab lúc nào cũng được — nhật ký tự lưu lại những gì bạn đã viết.
   </p>

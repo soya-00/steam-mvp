@@ -85,6 +85,7 @@ def test_the_form_body_survives_the_ticket_check(client_tho):
             "ten": "Ngô Bảo Châu",
             "email": "chau@example.com",
             "mat_khau": "chuoi-dai-du-8",
+            "mat_khau_lai": "chuoi-dai-du-8",
             "tuoi": "17",
             "dong_y": "1",
         },

@@ -115,11 +115,55 @@
       Chọn một tình huống cụ thể bên dưới để lấy bản in.
     </p>
     {% endif %}
+
+    <details class="mt-3">
+      <summary class="cursor-pointer text-sm text-ink-faint hover:text-ink">Gỡ nhiệm vụ</summary>
+      <form method="post" action="/giao-vien/lop/{{ klass.id }}/nhiem-vu/{{ a.id }}/go" class="mt-2">
+        {% include "partials/csrf.html" %}
+        <p class="text-xs text-ink-soft max-w-md">
+          Nhiệm vụ biến khỏi bảng của các em. <strong class="text-ink">Không xoá gì cả</strong>:
+          bài các em đã làm vẫn nguyên, bản tải về vẫn ghi nhiệm vụ này, và bạn khôi phục lại
+          được bất cứ lúc nào.
+        </p>
+        <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+          Gỡ khỏi lớp
+        </button>
+      </form>
+    </details>
   </div>
   {% else %}
   <div class="tile p-5"><p class="text-sm text-ink-soft">Chưa giao nhiệm vụ nào.</p></div>
   {% endfor %}
 </div>
+
+{% if da_go %}
+<details class="mt-3 max-w-xl">
+  <summary class="cursor-pointer text-sm font-semibold text-ink-soft hover:text-ink">
+    Nhiệm vụ đã gỡ ({{ da_go | length }})
+  </summary>
+  <div class="mt-3 grid gap-2">
+    {% for a in da_go %}
+    {% set sc = scenario_of.get(a.id) %}
+    <div class="tile p-4 flex flex-wrap items-center gap-3">
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-ink truncate">
+          {% if sc %}{{ sc.title }}{% elif a.field %}Cả lĩnh vực {{ a.field }}{% else %}Nhiệm vụ{% endif %}
+        </p>
+        <p class="text-xs text-ink-faint">
+          Giao {{ a.created_at.strftime('%d/%m/%Y') }} · gỡ {{ a.archived_at.strftime('%d/%m/%Y') }}
+        </p>
+      </div>
+      {% if not klass.da_dong %}
+      <form method="post" action="/giao-vien/lop/{{ klass.id }}/nhiem-vu/{{ a.id }}/khoi-phuc">
+        {% include "partials/csrf.html" %}
+        <button type="submit" class="btn btn-ghost text-sm py-1.5 px-3">Khôi phục</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</details>
+{% endif %}
 
 {% if not klass.da_dong %}
 <section class="mt-8 max-w-xl">

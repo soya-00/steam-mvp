@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import func
@@ -197,7 +199,7 @@ def teacher_home(
                 "klass": klass,
                 "student_count": len(students),
                 "entry_count": entry_count,
-                "assignment_count": len(klass.assignments),
+                "assignment_count": sum(1 for a in klass.assignments if not a.da_go),
             }
         )
 
@@ -262,7 +264,14 @@ def class_detail(
             "summaries": summaries,
             "loi": message_for(loi),
             "assignments": sorted(
-                klass.assignments, key=lambda a: a.created_at, reverse=True
+                (a for a in klass.assignments if not a.da_go),
+                key=lambda a: a.created_at,
+                reverse=True,
+            ),
+            "da_go": sorted(
+                (a for a in klass.assignments if a.da_go),
+                key=lambda a: a.archived_at,
+                reverse=True,
             ),
             "scenarios": all_scenarios(),
             "scenario_of": {a.id: get_scenario(a.scenario_id) for a in klass.assignments},
@@ -312,6 +321,72 @@ def assign_work(
         )
     )
     db.commit()
+    return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
+
+
+def _assignment_or_none(db: Session, assignment_id: int, klass: Class) -> Assignment | None:
+    return (
+        db.query(Assignment)
+        .filter(Assignment.id == assignment_id, Assignment.class_id == klass.id)
+        .first()
+    )
+
+
+@router.post("/lop/{class_id}/nhiem-vu/{assignment_id}/go")
+def unassign(
+    request: Request,
+    class_id: int,
+    assignment_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Gỡ một nhiệm vụ đã giao.
+
+    Giao nhiệm vụ là một cú bấm và trước đây không có đường lùi: chọn nhầm tình
+    huống trong ô thả xuống là nó nằm lại trên trang lớp và trên bảng của mọi em
+    mãi mãi.
+
+    Gỡ chứ không xoá. Nhiệm vụ biến khỏi màn hình hai bên nhưng hàng vẫn còn,
+    nên bản tải về vẫn trả lời được "hồi tháng trước cô giao gì", và bài các em
+    đã làm thì không đụng tới — bài đó là của các em, không phải của nhiệm vụ.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    nhiem_vu = _assignment_or_none(db, assignment_id, klass)
+    if nhiem_vu is not None and nhiem_vu.archived_at is None:
+        nhiem_vu.archived_at = datetime.now()
+        db.commit()
+    return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
+
+
+@router.post("/lop/{class_id}/nhiem-vu/{assignment_id}/khoi-phuc")
+def reassign(
+    request: Request,
+    class_id: int,
+    assignment_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+    if klass.da_dong:
+        return RedirectResponse(
+            f"/giao-vien/lop/{class_id}?loi=lop_da_dong", status_code=303
+        )
+
+    nhiem_vu = _assignment_or_none(db, assignment_id, klass)
+    if nhiem_vu is not None:
+        nhiem_vu.archived_at = None
+        db.commit()
     return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
 
 
@@ -512,6 +587,68 @@ def leave_feedback(
             content=content,
         )
     )
+    db.commit()
+    return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
+
+
+def _note_or_none(db: Session, feedback_id: int, teacher: User) -> Feedback | None:
+    """Chỉ lời nhắn do chính giáo viên này viết. Sửa lời của đồng nghiệp thì
+    còn tệ hơn là không sửa được gì."""
+    return (
+        db.query(Feedback)
+        .filter(Feedback.id == feedback_id, Feedback.teacher_id == teacher.id)
+        .first()
+    )
+
+
+@router.post("/nhan-xet/{feedback_id}/sua")
+def edit_feedback(
+    request: Request,
+    feedback_id: int,
+    noi_dung: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Sửa một lời nhắn đã gửi.
+
+    Có đánh dấu, cố ý. Học sinh có thể đã đọc bản cũ rồi, nên im lặng viết lại
+    lời một người lớn đã nói với một đứa trẻ mới là điều phải tránh — chứ không
+    phải việc sửa. Sửa thì bình thường: gõ nhầm, nhắn nhầm em, hoặc viết lúc
+    đang bực.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    note = _note_or_none(db, feedback_id, user)
+    if note is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    content = noi_dung.strip()
+    if content and content != note.content:
+        note.content = content
+        note.updated_at = datetime.now()
+        db.commit()
+    return RedirectResponse(f"/giao-vien/hoc-sinh/{note.student_id}", status_code=303)
+
+
+@router.post("/nhan-xet/{feedback_id}/xoa")
+def delete_feedback(
+    request: Request,
+    feedback_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Thu lại một lời nhắn. Xoá thật, không cắm cờ — đây là lời của chính giáo
+    viên, không phải bài của học sinh."""
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    note = _note_or_none(db, feedback_id, user)
+    if note is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    student_id = note.student_id
+    db.delete(note)
     db.commit()
     return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
 
@@ -845,6 +982,36 @@ def notifications_view(
             "class_of": {c.id: c for c in classes},
         },
     )
+
+
+@router.post("/thong-bao/{notification_id}/xoa")
+def delete_notification(
+    request: Request,
+    notification_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Thu lại một thông báo đã gửi cho lớp.
+
+    Chỉ thông báo gắn với lớp của chính giáo viên này. Thông báo toàn hệ thống
+    (class_id và student_id đều rỗng) là của người vận hành, không phải của
+    giáo viên, nên bộ lọc dưới đây không chạm tới.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    ids = _my_class_ids(db, user)
+    tb = (
+        db.query(Notification)
+        .filter(Notification.id == notification_id, Notification.class_id.in_(ids))
+        .first()
+        if ids
+        else None
+    )
+    if tb is not None:
+        db.delete(tb)
+        db.commit()
+    return RedirectResponse("/giao-vien/thong-bao", status_code=303)
 
 
 @router.post("/thong-bao")

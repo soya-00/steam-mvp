@@ -25,7 +25,13 @@ from app.models import (
     User,
     YeuCauXoa,
 )
-from app.accounts import check_password, message_for
+from app.accounts import (
+    check_password,
+    email_looks_wrong,
+    email_taken,
+    message_for,
+    normalise_email,
+)
 from app.lop import da_o_trong, lop_theo_ma, roi_lop, vao_lop
 from app.moderation import OK as SCREEN_OK
 from app.moderation import REPLIES as SCREEN_REPLIES
@@ -253,6 +259,47 @@ def change_password(
     response = RedirectResponse("/tai-khoan?da_luu=mat_khau#bao-mat", status_code=303)
     set_session(request, response, user.id, user)
     return response
+
+
+@router.post("/tai-khoan/email")
+def change_email(
+    request: Request,
+    mat_khau: str = Form(""),
+    email_moi: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Đổi địa chỉ thư.
+
+    Không có chức năng này thì một người gõ nhầm email lúc đăng ký sẽ mất tài
+    khoản vĩnh viễn: đăng nhập bằng địa chỉ họ *tưởng* mình đã gõ thì sai, còn
+    liên kết đặt lại mật khẩu thì bay tới một hộp thư không phải của họ.
+
+    Bắt nhập mật khẩu hiện tại, đúng như lúc đổi mật khẩu — nếu không thì ai
+    mượn được máy đang mở sẵn cũng đổi được email rồi chiếm hẳn tài khoản qua
+    đường đặt lại mật khẩu.
+
+    CHƯA LÀM, ĐỢI DỊCH VỤ THƯ: gửi liên kết xác nhận tới địa chỉ MỚI và chỉ đổi
+    khi bấm vào đó. Lúc này chưa gửi thư được nên đổi có hiệu lực ngay; chỗ cần
+    chèn bước xác nhận là ngay trước `user.email = address` bên dưới.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    if not verify_password(mat_khau, user.password_hash):
+        return RedirectResponse("/tai-khoan?loi=mat_khau_cu_sai#bao-mat", status_code=303)
+
+    address = normalise_email(email_moi)
+    if email_looks_wrong(address):
+        return RedirectResponse("/tai-khoan?loi=email_hong#bao-mat", status_code=303)
+    if address == user.email:
+        return RedirectResponse("/tai-khoan?da_luu=email#bao-mat", status_code=303)
+    if email_taken(db, address):
+        return RedirectResponse("/tai-khoan?loi=email_trung#bao-mat", status_code=303)
+
+    user.email = address
+    db.commit()
+    return RedirectResponse("/tai-khoan?da_luu=email#bao-mat", status_code=303)
 
 
 @router.get("/tai-khoan/vao-lop", response_class=HTMLResponse)
@@ -624,6 +671,9 @@ def _teacher_zip(db: Session, user: User, co_ten: bool = False) -> bytes:
                     "làm ở lớp" if assignment.mode == "offline" else "làm online",
                     assignment.note,
                     _stamp(assignment.created_at),
+                    # Nhiệm vụ đã gỡ vẫn nằm trong bản tải về, có dán nhãn: gỡ
+                    # là để nó biến khỏi màn hình, không phải để xoá lịch sử.
+                    f"đã gỡ {_stamp(assignment.archived_at)}" if assignment.da_go else "",
                 ]
             )
 
@@ -655,7 +705,8 @@ def _teacher_zip(db: Session, user: User, co_ten: bool = False) -> bytes:
         archive.writestr(
             "nhiem-vu.csv",
             _csv_bytes(
-                ["Lớp", "Tình huống", "Lĩnh vực", "Hình thức", "Ghi chú", "Giao lúc"],
+                ["Lớp", "Tình huống", "Lĩnh vực", "Hình thức", "Ghi chú", "Giao lúc",
+                 "Trạng thái"],
                 assignment_rows,
             ),
         )

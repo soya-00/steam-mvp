@@ -95,7 +95,32 @@
       {% for n in notes %}
       <div class="tile p-4 bg-trunk-50 border-trunk-100">
         <p class="text-sm text-ink">{{ n.content }}</p>
-        <p class="mt-2 text-xs text-ink-faint">{{ n.created_at.strftime('%d/%m/%Y') }}</p>
+        <p class="mt-2 text-xs text-ink-faint">
+          {{ n.created_at.strftime('%d/%m/%Y') }}
+          {% if n.updated_at %}· đã sửa {{ n.updated_at.strftime('%d/%m/%Y') }}{% endif %}
+        </p>
+
+        <details class="mt-2">
+          <summary class="cursor-pointer text-xs text-ink-faint hover:text-ink">Sửa hoặc thu lại</summary>
+          <form method="post" action="/giao-vien/nhan-xet/{{ n.id }}/sua" class="mt-2">
+            {% include "partials/csrf.html" %}
+            <label for="sua-{{ n.id }}" class="sr-only">Sửa lời nhắn</label>
+            <textarea id="sua-{{ n.id }}" name="noi_dung" rows="3" required
+                      class="w-full rounded-lg border border-field-line bg-paper-raised px-3 py-2 text-sm text-ink">{{ n.content }}</textarea>
+            <p class="mt-1 text-xs text-ink-faint">
+              Em có thể đã đọc bản cũ rồi, nên chỗ em nhìn sẽ hiện thêm chữ <em>đã sửa</em>.
+            </p>
+            <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+              Lưu lời nhắn
+            </button>
+          </form>
+          <form method="post" action="/giao-vien/nhan-xet/{{ n.id }}/xoa" class="mt-2">
+            {% include "partials/csrf.html" %}
+            <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
+              Thu lại lời nhắn này
+            </button>
+          </form>
+        </details>
       </div>
       {% else %}
       <div class="tile p-4"><p class="text-sm text-ink-soft">Chưa gửi lời nhắn nào.</p></div>

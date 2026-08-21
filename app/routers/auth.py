@@ -214,6 +214,7 @@ def signup_submit(
     ten: str = Form(""),
     email: str = Form(""),
     mat_khau: str = Form(""),
+    mat_khau_lai: str = Form(""),
     tuoi: str = Form(""),
     ma_lop: str = Form(""),
     dong_y: str = Form(""),
@@ -260,6 +261,10 @@ def signup_submit(
 
     if (problem := check_password(mat_khau)) is not None:
         return back(problem)
+    # Hỏi hai lần: gõ nhầm một chữ ở đây là khoá cửa ngay, và đường cứu hộ
+    # (đặt lại mật khẩu) lại đi qua chính địa chỉ email vừa gõ ở trên.
+    if mat_khau_lai != mat_khau:
+        return back("mat_khau_lech")
 
     if not dong_y:
         return back("chua_dong_y")
@@ -367,6 +372,7 @@ def reset_submit(
     request: Request,
     token: str = Form(""),
     mat_khau: str = Form(""),
+    mat_khau_lai: str = Form(""),
     db: Session = Depends(get_db),
 ):
     ve = doc_ve(db, token)
@@ -375,6 +381,10 @@ def reset_submit(
     if (problem := check_password(mat_khau)) is not None:
         return RedirectResponse(
             f"/dat-lai-mat-khau?token={token}&loi={problem}", status_code=303
+        )
+    if mat_khau_lai != mat_khau:
+        return RedirectResponse(
+            f"/dat-lai-mat-khau?token={token}&loi=mat_khau_lech", status_code=303
         )
 
     user = dat_lai(db, ve, mat_khau)
@@ -432,6 +442,7 @@ def teacher_signup_submit(
     ma_truong: str = Form(""),
     email: str = Form(""),
     mat_khau: str = Form(""),
+    mat_khau_lai: str = Form(""),
     dong_y: str = Form(""),
     db: Session = Depends(get_db),
 ):
@@ -466,6 +477,8 @@ def teacher_signup_submit(
         return back("email_trung")
     if (problem := check_password(mat_khau)) is not None:
         return back(problem)
+    if mat_khau_lai != mat_khau:
+        return back("mat_khau_lech")
 
     if not dong_y:
         return back("chua_dong_y")

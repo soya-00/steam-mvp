@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Có lỗi ở phía chúng mình — GALS{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto text-center">
+  <p class="text-5xl" aria-hidden="true">🛠️</p>
+  <h1 class="mt-4 text-2xl text-ink">Chỗ này hỏng, và lỗi là ở phía chúng mình</h1>
+  <p class="mt-3 text-base text-ink-soft">
+    Không phải bạn làm sai gì cả. Máy chủ gặp lỗi khi dựng trang này.
+  </p>
+
+  <div class="tile p-5 mt-6 text-left">
+    <p class="text-sm font-semibold text-ink">Bạn thử làm gì bây giờ</p>
+    <ul class="mt-2 grid gap-1.5 text-sm text-ink-soft list-disc list-inside">
+      <li>Tải lại trang — nhiều lỗi chỉ xảy ra một lần rồi thôi.</li>
+      <li>
+        <strong class="text-ink">Bài bạn vừa viết vẫn còn.</strong> Ô trả lời tự lưu nháp,
+        nên quay lại đúng chỗ đang dở là thấy lại chữ của mình.
+      </li>
+      <li>Vẫn hỏng thì báo cho chúng mình ở ô góp ý cuối trang, kèm việc bạn đang làm lúc đó.</li>
+    </ul>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-3 justify-center">
+    <a href="/trang-ca-nhan" class="btn btn-primary">Về bảng của tôi</a>
+    <a href="/" class="btn btn-ghost">Về trang chủ</a>
+  </div>
+</div>
+{% endblock %}

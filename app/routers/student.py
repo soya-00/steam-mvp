@@ -322,7 +322,11 @@ def hub(
     resume = None
     open_sessions = [g for g in sessions if not g.finished]
     if open_sessions:
-        latest = max(open_sessions, key=lambda g: g.created_at)
+        # Theo lần ghi gần nhất, không phải lần mở đầu tiên. Sắp theo
+        # `created_at` thì một em hôm qua mở tình huống A, hôm nay quay lại làm
+        # tiếp tình huống B, sẽ được thẻ này chỉ về A — đúng cái chỗ em không
+        # đang làm.
+        latest = max(open_sessions, key=lambda g: g.updated_at or g.created_at)
         scenario = get_scenario(latest.scenario_id)
         stage = scenario.stage_at(latest.stage_index) if scenario else None
         if scenario and stage:
@@ -340,7 +344,9 @@ def hub(
 
     assignments = (
         db.query(Assignment)
-        .filter(Assignment.class_id.in_(class_ids))
+        # Nhiệm vụ đã gỡ biến khỏi bảng của học sinh ngay: em không nên còn
+        # thấy một việc mà thầy cô đã rút lại.
+        .filter(Assignment.class_id.in_(class_ids), Assignment.archived_at.is_(None))
         .order_by(Assignment.created_at.desc())
         .limit(3)
         .all()
@@ -457,6 +463,15 @@ def scenario_intro(
         .first()
     )
 
+    entry = (
+        db.query(JournalEntry)
+        .filter(
+            JournalEntry.student_id == user.id,
+            JournalEntry.scenario_id == scenario_id,
+        )
+        .first()
+    )
+
     return templates.TemplateResponse(
         request,
         "student/du_an_nhap_vai.html",
@@ -468,6 +483,7 @@ def scenario_intro(
             "back_label": "Dự án học tập",
             "scenario": scenario,
             "gs": gs,
+            "entry": entry,
         },
     )
 
@@ -933,6 +949,67 @@ def toggle_share(
         "student/partials/portfolio_item.html",
         {"user": user, "item": item, "saved": False},
     )
+
+
+@router.post("/ho-so/{entry_id}/xoa")
+def remove_portfolio_item(
+    entry_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Bỏ một mục khỏi hồ sơ trưng bày.
+
+    Chỉ bỏ khỏi hồ sơ, **không xoá bài viết**: nhật ký và cả đoạn hội thoại vẫn
+    nằm nguyên ở trang của em. Hồ sơ là chỗ em chọn để trưng ra, nên dọn nó phải
+    dễ; còn phá huỷ cả một mạch suy nghĩ thì không được nấp sau một cú bấm mà
+    trong GALS không có nút hoàn tác nào.
+
+    Muốn xoá hẳn mọi thứ thì đó là quyền được xoá tài khoản, ở trang Tài khoản.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    item = (
+        db.query(PortfolioEntry)
+        .filter(PortfolioEntry.id == entry_id, PortfolioEntry.student_id == user.id)
+        .first()
+    )
+    if item is not None:
+        db.delete(item)
+        db.commit()
+    return RedirectResponse("/ho-so", status_code=303)
+
+
+@router.post("/du-an/{scenario_id}/rut")
+def withdraw_submission(
+    scenario_id: str,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Rút bài đã nộp về lại.
+
+    Nộp là thao tác mở cho thầy cô đọc bài của mình, nên nó phải có đường lùi.
+    Rút xong thì bài quay lại chỗ cũ: em vẫn đọc và sửa được, chỉ là thầy cô
+    không còn thấy nữa.
+
+    Nhận xét thầy cô đã viết thì vẫn còn — đó là lời của họ, không phải của em,
+    và em vẫn cần đọc được.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    entry = (
+        db.query(JournalEntry)
+        .filter(
+            JournalEntry.student_id == user.id,
+            JournalEntry.scenario_id == scenario_id,
+        )
+        .first()
+    )
+    if entry is not None and entry.submitted:
+        entry.submitted = False
+        db.commit()
+    return RedirectResponse(f"/du-an/{scenario_id}", status_code=303)
 
 
 @router.get("/ho-so/chia-se", response_class=HTMLResponse)

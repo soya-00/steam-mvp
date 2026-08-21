@@ -22,6 +22,7 @@ def _dang_ky(client, **ghi_de):
         "ten": "Ngô Bảo Châu",
         "email": "chau@example.com",
         "mat_khau": MAT_KHAU,
+        "mat_khau_lai": MAT_KHAU,
         "tuoi": "17",
         "ma_lop": "",
         "dong_y": "1",

@@ -26,6 +26,20 @@
         </div>
         <p class="mt-2 font-medium text-sm text-ink">{{ n.title }}</p>
         {% if n.content %}<p class="mt-1 text-sm text-ink-soft">{{ n.content }}</p>{% endif %}
+
+        <details class="mt-2">
+          <summary class="cursor-pointer text-xs text-ink-faint hover:text-ink">Thu lại</summary>
+          <form method="post" action="/giao-vien/thong-bao/{{ n.id }}/xoa" class="mt-2">
+            {% include "partials/csrf.html" %}
+            <p class="text-xs text-ink-soft max-w-md">
+              Thông báo biến khỏi bảng của các em. Em nào đã đọc rồi thì vẫn nhớ nội dung —
+              thu lại không lấy lại được điều đã nói.
+            </p>
+            <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+              Thu lại thông báo
+            </button>
+          </form>
+        </details>
       </div>
       {% else %}
       <div class="tile p-5"><p class="text-sm text-ink-soft">Bạn chưa gửi thông báo nào.</p></div>

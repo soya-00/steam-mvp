@@ -150,7 +150,15 @@ class Assignment(Base):
     note: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
+    # Đã gỡ khỏi lớp. Không xoá hàng: bản tải về vẫn ghi nhiệm vụ này, kèm dấu
+    # "đã gỡ", nên vẫn trả lời được câu "hồi tháng trước cô giao gì".
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
     klass: Mapped["Class"] = relationship(back_populates="assignments")
+
+    @property
+    def da_go(self) -> bool:
+        return self.archived_at is not None
 
 
 class JournalEntry(Base):
@@ -249,6 +257,12 @@ class Feedback(Base):
     content: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
 
+    # Chỉ có giá trị khi lời nhắn đã bị sửa sau khi gửi. Học sinh có thể đã đọc
+    # bản cũ rồi, nên chỗ nào hiện lời nhắn cũng phải hiện dấu "đã sửa" — im
+    # lặng viết lại lời một người lớn đã nói với một đứa trẻ mới là điều phải
+    # tránh, chứ không phải việc sửa.
+    updated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
     teacher: Mapped["User"] = relationship(foreign_keys=[teacher_id])
     student: Mapped["User"] = relationship(foreign_keys=[student_id])
     journal_entry: Mapped["JournalEntry | None"] = relationship(back_populates="feedback")
@@ -279,6 +293,14 @@ class GuidedSession(Base):
     synthesis: Mapped[str] = mapped_column(Text, default="")
     transcript: Mapped[str] = mapped_column(Text, default="[]")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_now)
+
+    # `onupdate` chạy trên cả ba đường ghi đang có, nên không route nào phải
+    # nhớ cập nhật. Trước đây "hoạt động lần cuối" đọc `created_at`, tức là
+    # thật ra nó báo hoạt động *đầu tiên* — sai âm thầm, và càng sai theo thời
+    # gian. Thẻ "học tiếp" cũng cần đúng cột này mới trỏ đúng chỗ.
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=_now, onupdate=_now
+    )
 
     student: Mapped["User"] = relationship()
 
