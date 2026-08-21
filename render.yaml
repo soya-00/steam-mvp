@@ -5,8 +5,12 @@ services:
     plan: free
     region: singapore
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /
+    # Chạy di trú trước khi mở cổng. create_all() không thêm được cột vào
+    # bảng đã có dữ liệu, nên alembic là đường duy nhất sau lần triển khai đầu.
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    # Trỏ vào /suc-khoe chứ không phải "/": trang chủ vẽ được kể cả khi cơ sở
+    # dữ liệu chết, nên nó báo xanh cho một bản triển khai đã hỏng.
+    healthCheckPath: /suc-khoe
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.15"
@@ -19,3 +23,37 @@ services:
 
       - key: SECRET_KEY
         generateValue: true
+
+      # Đợt thử nghiệm chỉ 16+. Đặt "0" để mở lại lối "dưới 16 nhưng có mã lớp"
+      # — chỉ làm khi đường đồng ý của người giám hộ đã dựng xong và thử xong.
+      - key: PILOT_16_PLUS
+        value: "1"
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gals-db
+          property: connectionString
+
+      # Đăng nhập bằng tài khoản có sẵn. Chưa đặt thì nút không hiện.
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: MICROSOFT_CLIENT_ID
+        sync: false
+      - key: MICROSOFT_CLIENT_SECRET
+        sync: false
+      - key: MICROSOFT_TENANT
+        sync: false
+
+      # Gửi thư đặt lại mật khẩu qua API HTTPS. Cổng SMTP đi ra bị chặn, nên
+      # smtplib sẽ treo chứ không báo lỗi.
+      - key: MAIL_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+databases:
+  - name: gals-db
+    plan: free
+    region: singapore

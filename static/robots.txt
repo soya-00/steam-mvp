@@ -1,0 +1,6 @@
+# Hồ sơ học sinh chia sẻ nằm dưới /p/. Đường dẫn khó đoán, nhưng khó đoán
+# không ngăn được máy quét — thêm cả thẻ noindex trên chính trang đó.
+User-agent: *
+Disallow: /p/
+Disallow: /tai-khoan
+Disallow: /giao-vien

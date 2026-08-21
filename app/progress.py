@@ -54,7 +54,15 @@ def word_count(gs: GuidedSession | None) -> int:
 
 
 def last_activity(gs: GuidedSession | None) -> datetime | None:
-    return gs.created_at if gs else None
+    """Hoạt động gần nhất, không phải hoạt động đầu tiên.
+
+    Chỗ cũ trả `created_at`, nên cột "hoạt động lần cuối" trên màn hình giáo
+    viên thật ra báo lúc em *mở* tình huống — sai âm thầm, và càng để lâu càng
+    sai. `updated_at` có `onupdate` nên nó tự đúng ở mọi đường ghi.
+    """
+    if gs is None:
+        return None
+    return gs.updated_at or gs.created_at
 
 
 def status(gs: GuidedSession | None) -> str:

@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from app.auth import DEMO_ACCOUNTS
-from app.db import Base, SessionLocal, engine
+from app.db import Base, SessionLocal, engine, is_sqlite
+from app.security import hash_password
 from app.models import (
     GuidedSession,
     Assignment,
@@ -18,46 +18,107 @@ from app.models import (
     JournalEntry,
     Notification,
     PortfolioEntry,
+    School,
     User,
 )
 from app.scenarios import all_scenarios
+from app.schools import MA_SONG_NGAY
 
 log = logging.getLogger("gals.seed")
 
+# Đây là GIÀN GIÁO KIỂM THỬ, không phải mã ứng dụng.
+#
+# Trước kia file này nằm ở app/seed.py và vòng đời FastAPI gọi nó lúc khởi
+# động, nên một cơ sở dữ liệu trống tự mọc ra sáu tài khoản có mật khẩu nằm
+# công khai trong mã nguồn. Giờ ứng dụng không gieo gì cả: dữ liệu chỉ xuất
+# hiện khi có người tạo ra nó. Những nhân vật dưới đây tồn tại để hơn bốn trăm
+# bài kiểm thử có ai đó để đăng nhập, và không đường nào từ app/ gọi tới đây.
+
+# Ba nhân vật mẫu, chỉ dùng trong kiểm thử.
+SEED_EMAILS = {
+    "giao_vien": "co.mai@gals.demo",
+    "hoc_sinh_co_lop": "linh@gals.demo",
+    "hoc_sinh_doc_lap": "trang@gals.demo",
+}
+
+# Mật khẩu này công khai trong mã nguồn, nên nó tuyệt đối không được tồn tại ở
+# nơi có dữ liệu thật. `_refuse_people_on_a_real_database()` bên dưới là thứ
+# bảo đảm điều đó, chứ không phải trí nhớ của người deploy.
+SEED_PASSWORD = "mat-khau-mau-1234"
+
+
+def _refuse_people_on_a_real_database() -> None:
+    if not is_sqlite:
+        raise RuntimeError(
+            "Từ chối gieo tài khoản mẫu: DATABASE_URL không phải SQLite. "
+            "Mật khẩu mẫu nằm sẵn trong mã nguồn nên không được đặt lên "
+            "cơ sở dữ liệu thật."
+        )
+
 
 def _seed(db: Session) -> None:
+    _refuse_people_on_a_real_database()
     scenarios = all_scenarios()
     by_field = {s.field: s for s in scenarios}
     first = scenarios[0]
 
+    # Băm một lần rồi dùng lại: Argon2 cố tình tốn thời gian, băm sáu lần làm
+    # mỗi bài kiểm thử chậm thêm thấy rõ mà chẳng được gì.
+    bam = hash_password(SEED_PASSWORD)
+
+    truong = School(
+        ten="THPT Nguyễn Trãi",
+        tinh_thanh="Hà Nội",
+        ma_giao_vien="MAUGIAOVIEN",
+        ma_het_han=datetime.now() + timedelta(days=MA_SONG_NGAY),
+        lien_he_ten="Thầy Hùng",
+        lien_he_email="hop.tac@thpt-nguyentrai.demo",
+    )
+    db.add(truong)
+    db.flush()
+
     teacher = User(
         name="Cô Mai",
-        email=DEMO_ACCOUNTS["giao_vien"],
+        email=SEED_EMAILS["giao_vien"],
         role="teacher",
         avatar_id="avatar-6",
+        password_hash=bam,
+        school_id=truong.id,
     )
     linh = User(
         name="Nguyễn Khánh Linh",
-        email=DEMO_ACCOUNTS["hoc_sinh_co_lop"],
+        email=SEED_EMAILS["hoc_sinh_co_lop"],
         role="student",
         avatar_id="avatar-2",
+        password_hash=bam,
     )
     trang = User(
         name="Phạm Thuỳ Trang",
-        email=DEMO_ACCOUNTS["hoc_sinh_doc_lap"],
+        email=SEED_EMAILS["hoc_sinh_doc_lap"],
         role="student",
         avatar_id="avatar-4",
+        password_hash=bam,
     )
     classmates = [
-        User(name="Trần Gia Bảo", email="bao@gals.demo", role="student", avatar_id="avatar-1"),
-        User(name="Lê Minh Anh", email="minhanh@gals.demo", role="student", avatar_id="avatar-3"),
-        User(name="Đỗ Hải Yến", email="haiyen@gals.demo", role="student", avatar_id="avatar-5"),
+        User(name="Trần Gia Bảo", email="bao@gals.demo", role="student",
+             avatar_id="avatar-1", password_hash=bam),
+        User(name="Lê Minh Anh", email="minhanh@gals.demo", role="student",
+             avatar_id="avatar-3", password_hash=bam),
+        User(name="Đỗ Hải Yến", email="haiyen@gals.demo", role="student",
+             avatar_id="avatar-5", password_hash=bam),
     ]
     db.add_all([teacher, linh, trang, *classmates])
     db.flush()
 
-    lop_11a2 = Class(teacher_id=teacher.id, class_code="GALS-11A2", name="11A2 — Chuyên đề STEAM")
-    lop_10b1 = Class(teacher_id=teacher.id, class_code="GALS-10B1", name="10B1 — Hướng nghiệp sớm")
+    # Tiền tố hồ sơ đặt sẵn và cố ý không giống mã lớp — mẫu gieo phải trông
+    # đúng như dữ liệu thật, không thì đọc mẫu sẽ hiểu nhầm là hai thứ này liên
+    # quan tới nhau.
+    lop_11a2 = Class(teacher_id=teacher.id, class_code="GALS-11A2",
+                     roster_prefix="HSK7Q2",
+                     name="11A2 — Chuyên đề STEAM", school_id=truong.id)
+    lop_10b1 = Class(teacher_id=teacher.id, class_code="GALS-10B1",
+                     roster_prefix="HSM4TB",
+                     name="10B1 — Hướng nghiệp sớm", school_id=truong.id)
     db.add_all([lop_11a2, lop_10b1])
     db.flush()
 
@@ -91,6 +152,7 @@ def _seed(db: Session) -> None:
 
     linh_entry = JournalEntry(
         student_id=linh.id,
+        class_id=lop_11a2.id,
         scenario_id=first.id,
         source="guided",
         title=f"Nhật ký — {first.title}",
@@ -107,6 +169,7 @@ def _seed(db: Session) -> None:
     )
     bao_entry = JournalEntry(
         student_id=classmates[0].id,
+        class_id=lop_11a2.id,
         scenario_id=first.id,
         source="guided",
         title=f"Nhật ký — {first.title}",
@@ -119,6 +182,7 @@ def _seed(db: Session) -> None:
     )
     minhanh_entry = JournalEntry(
         student_id=classmates[1].id,
+        class_id=lop_11a2.id,
         scenario_id=first.id,
         source="freeform",
         title="Ý tưởng tự do — hộp báo triệu chứng ẩn danh",
@@ -411,6 +475,7 @@ def _seed(db: Session) -> None:
 
 
 def reset_and_seed() -> None:
+    """Xoá sạch rồi gieo lại. Chỉ dùng cho kiểm thử và cho môi trường dev."""
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()

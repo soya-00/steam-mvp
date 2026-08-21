@@ -11,8 +11,11 @@
 
     {% for heading, links in [
       ('Khám phá', [('/kham-pha', 'Tất cả tình huống'), ('/linh-vuc', 'Năm lĩnh vực STEAM'), ('/#bon-cap-do', 'Bốn cấp độ tư duy')]),
-      ('Tài khoản', [('/dang-ky', 'Đăng ký miễn phí'), ('/dang-nhap', 'Đăng nhập'), ('/demo/giao_vien', 'Dành cho giáo viên')]),
-      ('Về dự án', [('/ve-chung-toi', 'Về chúng tôi'), ('https://github.com/soya-00/steam-mvp/blob/main/DISCLAIMER.md', 'Tuyên bố miễn trừ'), ('https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md', 'Pháp lý và dữ liệu'), ('https://github.com/soya-00/steam-mvp', 'Mã nguồn')])
+      ('Tài khoản', [('/dang-ky', 'Đăng ký miễn phí'), ('/dang-nhap', 'Đăng nhập'), ('/dang-ky/giao-vien', 'Dành cho giáo viên')]),
+      ('Về dự án', [('/ve-chung-toi', 'Về chúng tôi'),
+  ('/chinh-sach-rieng-tu', 'Chính sách riêng tư'),
+  ('/dieu-khoan', 'Điều khoản sử dụng'),
+  ('/chinh-sach-cookie', 'Chính sách cookie'), ('https://github.com/soya-00/steam-mvp/blob/main/DISCLAIMER.md', 'Tuyên bố miễn trừ'), ('https://github.com/soya-00/steam-mvp/blob/main/LEGAL.md', 'Pháp lý và dữ liệu'), ('https://github.com/soya-00/steam-mvp', 'Mã nguồn')])
     ] %}
     <div>
       <p class="text-xs uppercase tracking-wider font-semibold text-ink-faint">{{ heading }}</p>
@@ -31,18 +34,17 @@
   <div class="py-5 border-t border-hairline">
     <div role="note" class="max-w-3xl">
       <p class="text-sm text-ink-soft">
-        <strong class="text-ink">Đây là bản mẫu trình diễn.</strong>
-        Cả ứng dụng hiện chỉ có ba tài khoản dùng chung nên
-        <strong class="text-ink">ai cũng đọc được bài của người khác</strong>, và dữ liệu bị
-        xoá mỗi lần máy chủ khởi động lại. Đừng nhập thông tin thật.
-        <a href="https://github.com/soya-00/steam-mvp/blob/main/DISCLAIMER.md"
-           target="_blank" rel="noopener"
-           class="text-trunk underline hover:text-ink whitespace-nowrap">Đọc tuyên bố miễn trừ</a>
+        <strong class="text-ink">GALS đang trong giai đoạn thử nghiệm.</strong>
+        Mỗi người một tài khoản riêng, bài viết được lưu lại, và
+        <strong class="text-ink">chỉ thầy cô lớp bạn mới đọc được phần bạn nộp</strong>.
+        Số liệu trong các tình huống là giả định.
+        <a href="/chinh-sach-rieng-tu"
+           class="text-trunk underline hover:text-ink whitespace-nowrap">Chính sách riêng tư</a>
       </p>
     </div>
 
     <div class="mt-5 flex flex-wrap gap-3 justify-between text-xs text-ink-faint">
-      <p>GALS · bản mẫu trình diễn cho học sinh và giáo viên Việt Nam.</p>
+      <p>GALS · dành cho học sinh và giáo viên THPT Việt Nam.</p>
       <p>Số liệu trong các tình huống là dữ liệu giả định.</p>
     </div>
   </div>

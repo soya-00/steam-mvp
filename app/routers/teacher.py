@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-import random
-import string
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session, selectinload
 
 from app import progress as progress_of
+from app.accounts import clean_name, message_for
 from app.auth import get_current_user
 from app.config import FIELD_NAME_BY_KEY, STEAM_FIELDS
 from app.db import get_db
@@ -23,102 +24,215 @@ from app.models import (
     PortfolioEntry,
     User,
 )
+from app.lop import doi_ma, doi_ten, dong_lop, go_khoi_lop, mo_lai_lop, tao_lop
 from app.scenarios import all_scenarios, get_scenario
 from app.templating import templates
 
 router = APIRouter(prefix="/giao-vien")
 
 
-def _guard(user: User | None):
+def _guard(user: User | None, request: Request | None = None):
+    """Cửa duy nhất dẫn vào toàn bộ /giao-vien.
+
+    Tài khoản bị đình chỉ nhận một trang 403 chứ không phải chuyển hướng: bên
+    học sinh đá giáo viên sang /giao-vien, nên chuyển hướng ngược lại
+    /trang-ca-nhan sẽ thành vòng lặp vô tận.
+    """
     if user is None:
         return RedirectResponse("/dang-nhap", status_code=303)
     if not user.is_teacher:
         return RedirectResponse("/trang-ca-nhan", status_code=303)
+    if not user.can_teach:
+        return templates.TemplateResponse(
+            request,
+            "teacher/tam_khoa.html",
+            {"user": user, "focus": True},
+            status_code=403,
+        )
     return None
 
 
-def _new_class_code(db: Session) -> str:
-    alphabet = string.ascii_uppercase + string.digits
-    for _ in range(50):
-        code = "GALS-" + "".join(random.choice(alphabet) for _ in range(4))
-        if not db.query(Class).filter(Class.class_code == code).first():
-            return code
-    return "GALS-" + "".join(random.choice(alphabet) for _ in range(6))
-
-
 def _class_or_none(db: Session, class_id: int, teacher: User) -> Class | None:
+    """Nạp sẵn học sinh: trang lớp đọc `klass.students` ngay, và để lười thì
+    mỗi em là một câu truy vấn nữa."""
     return (
         db.query(Class)
         .filter(Class.id == class_id, Class.teacher_id == teacher.id)
+        .options(selectinload(Class.memberships).selectinload(ClassMembership.student))
         .first()
     )
 
 
-def _student_summary(db: Session, student: User) -> dict:
-    entries = (
-        db.query(JournalEntry)
-        .filter(JournalEntry.student_id == student.id)
-        .order_by(JournalEntry.created_at.desc())
-        .all()
+def _my_class_ids(db: Session, teacher: User) -> list[int]:
+    """Số hiệu các lớp của chính giáo viên này.
+
+    Bốn chỗ trong file này từng viết lại cùng một câu truy vấn để trả lời "em
+    này có phải học sinh của tôi không". Một bản sao viết sai là một giáo viên
+    đọc được bài của lớp người khác, nên câu đó chỉ nên tồn tại một lần.
+    """
+    return [row[0] for row in db.query(Class.id).filter(Class.teacher_id == teacher.id).all()]
+
+
+def _taught_student(db: Session, teacher: User, student_id: int) -> ClassMembership | None:
+    ids = _my_class_ids(db, teacher)
+    if not ids:
+        return None
+    return (
+        db.query(ClassMembership)
+        .filter(
+            ClassMembership.student_id == student_id,
+            ClassMembership.class_id.in_(ids),
+        )
+        .first()
     )
+
+
+def _ten_lop_hop_le(raw: str) -> tuple[str | None, str | None]:
+    """Tên lớp hiện trên màn hình học sinh, nên đi qua đúng bộ lọc như tên
+    người. Trả về (tên, mã lỗi) — một trong hai luôn là None."""
+    return clean_name(raw)
+
+
+def _tom_tat(student: User, entries: list[JournalEntry], badge_count: int) -> dict:
     return {
         "student": student,
         "entries": entries,
         "entry_count": len(entries),
         "submitted": sum(1 for e in entries if e.submitted),
-        "badge_count": db.query(Badge).filter(Badge.student_id == student.id).count(),
+        "badge_count": badge_count,
         "last_active": entries[0].created_at if entries else None,
     }
+
+
+def _doc_duoc(class_id: int):
+    """Điều kiện lọc những bài một giáo viên được đọc.
+
+    Hai vế, và thiếu vế nào cũng thành một lời hứa bị phá:
+
+    * **Đã nộp.** Màn hình xác nhận vào lớp nói thẳng với học sinh rằng phần em
+      viết mà chưa nộp thì thầy cô không đọc được. Trước đây câu đó sai — trang
+      học sinh nạp mọi bài, kể cả bản nháp đang viết dở.
+    * **Đúng lớp này.** `JournalEntry` trước đây không có cột lớp, nên một giáo
+      viên đọc được cả bài em viết trong lớp của giáo viên khác và bài em tự làm
+      một mình.
+    """
+    return (
+        JournalEntry.class_id == class_id,
+        JournalEntry.submitted.is_(True),
+    )
+
+
+def _student_summary(db: Session, student: User, class_id: int) -> dict:
+    """Tóm tắt cho đúng một em. Dùng ở trang chi tiết học sinh, nơi chỉ có một."""
+    entries = (
+        db.query(JournalEntry)
+        .filter(JournalEntry.student_id == student.id, *_doc_duoc(class_id))
+        .order_by(JournalEntry.created_at.desc())
+        .all()
+    )
+    badges = db.query(Badge).filter(Badge.student_id == student.id).count()
+    return _tom_tat(student, entries, badges)
+
+
+def _summaries_for(db: Session, students: list[User], class_id: int) -> list[dict]:
+    """Tóm tắt cho cả lớp trong hai câu truy vấn, không phải hai câu mỗi em.
+
+    Bản cũ gọi `_student_summary` trong vòng lặp, tức 2N câu. Ở lớp 30 em không
+    ai để ý; ở một trường 300 em thì trang không mở nổi. `tests/test_tien_do.py`
+    giữ trần cho trang này.
+    """
+    if not students:
+        return []
+
+    ids = [s.id for s in students]
+
+    entries_by_student: dict[int, list[JournalEntry]] = {}
+    for entry in (
+        db.query(JournalEntry)
+        .filter(JournalEntry.student_id.in_(ids), *_doc_duoc(class_id))
+        .order_by(JournalEntry.created_at.desc())
+        .all()
+    ):
+        entries_by_student.setdefault(entry.student_id, []).append(entry)
+
+    badges_by_student: dict[int, int] = {}
+    for student_id, so_luong in (
+        db.query(Badge.student_id, func.count(Badge.id))
+        .filter(Badge.student_id.in_(ids))
+        .group_by(Badge.student_id)
+        .all()
+    ):
+        badges_by_student[student_id] = so_luong
+
+    return [
+        _tom_tat(s, entries_by_student.get(s.id, []), badges_by_student.get(s.id, 0))
+        for s in students
+    ]
 
 
 @router.get("", response_class=HTMLResponse)
 def teacher_home(
     request: Request,
+    loi: str = "",
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
-    classes = db.query(Class).filter(Class.teacher_id == user.id).all()
-    rows = []
+    classes = _my_classes(db, user, gom_da_dong=True)
+    rows, da_dong = [], []
     for klass in classes:
         students = klass.students
         ids = [s.id for s in students]
+        # Cùng bộ lọc như trang lớp: đếm luôn bản nháp hay bài của lớp khác thì
+        # con số trên thẻ không khớp với danh sách bên trong.
         entry_count = (
-            db.query(JournalEntry).filter(JournalEntry.student_id.in_(ids)).count()
+            db.query(JournalEntry)
+            .filter(JournalEntry.student_id.in_(ids), *_doc_duoc(klass.id))
+            .count()
             if ids
             else 0
         )
-        rows.append(
+        (da_dong if klass.da_dong else rows).append(
             {
                 "klass": klass,
                 "student_count": len(students),
                 "entry_count": entry_count,
-                "assignment_count": len(klass.assignments),
+                "assignment_count": sum(1 for a in klass.assignments if not a.da_go),
             }
         )
 
     return templates.TemplateResponse(
         request,
         "teacher/home.html",
-        {"user": user, "branch": "lop", "rows": rows},
+        {
+            "user": user,
+            "branch": "lop",
+            "rows": rows,
+            "da_dong": da_dong,
+            "loi": message_for(loi),
+        },
     )
 
 
 @router.post("/lop/tao")
 def create_class(
+    request: Request,
     ten_lop: str = Form(""),
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
-    name = ten_lop.strip() or "Lớp chưa đặt tên"
-    klass = Class(teacher_id=user.id, class_code=_new_class_code(db), name=name)
-    db.add(klass)
-    db.commit()
+    name, problem = _ten_lop_hop_le(ten_lop)
+    if problem == "ten_trong":
+        name, problem = "Lớp chưa đặt tên", None
+    if problem:
+        return RedirectResponse(f"/giao-vien?loi={problem}#tao-lop", status_code=303)
+
+    klass = tao_lop(db, user, name)
     return RedirectResponse(f"/giao-vien/lop/{klass.id}", status_code=303)
 
 
@@ -126,17 +240,18 @@ def create_class(
 def class_detail(
     request: Request,
     class_id: int,
+    loi: str = "",
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     klass = _class_or_none(db, class_id, user)
     if klass is None:
         return RedirectResponse("/giao-vien", status_code=303)
 
-    summaries = [_student_summary(db, s) for s in klass.students]
+    summaries = _summaries_for(db, klass.students, klass.id)
     summaries.sort(key=lambda s: s["student"].name)
 
     return templates.TemplateResponse(
@@ -147,8 +262,16 @@ def class_detail(
             "branch": "lop",
             "klass": klass,
             "summaries": summaries,
+            "loi": message_for(loi),
             "assignments": sorted(
-                klass.assignments, key=lambda a: a.created_at, reverse=True
+                (a for a in klass.assignments if not a.da_go),
+                key=lambda a: a.created_at,
+                reverse=True,
+            ),
+            "da_go": sorted(
+                (a for a in klass.assignments if a.da_go),
+                key=lambda a: a.archived_at,
+                reverse=True,
             ),
             "scenarios": all_scenarios(),
             "scenario_of": {a.id: get_scenario(a.scenario_id) for a in klass.assignments},
@@ -158,6 +281,7 @@ def class_detail(
 
 @router.post("/lop/{class_id}/giao")
 def assign_work(
+    request: Request,
     class_id: int,
     muc_tieu: str = Form(""),
     hinh_thuc: str = Form("online"),
@@ -165,12 +289,16 @@ def assign_work(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     klass = _class_or_none(db, class_id, user)
     if klass is None:
         return RedirectResponse("/giao-vien", status_code=303)
+    if klass.da_dong:
+        # Đóng lớp là ngừng nhận việc mới, không phải ẩn lớp đi. Nhiệm vụ cũ
+        # vẫn đọc được; chỉ không giao thêm được nữa.
+        return RedirectResponse(f"/giao-vien/lop/{class_id}?loi=lop_da_dong", status_code=303)
 
     scenario_id = field = None
     if muc_tieu.startswith("kich-huong:"):
@@ -196,6 +324,187 @@ def assign_work(
     return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
 
 
+def _assignment_or_none(db: Session, assignment_id: int, klass: Class) -> Assignment | None:
+    return (
+        db.query(Assignment)
+        .filter(Assignment.id == assignment_id, Assignment.class_id == klass.id)
+        .first()
+    )
+
+
+@router.post("/lop/{class_id}/nhiem-vu/{assignment_id}/go")
+def unassign(
+    request: Request,
+    class_id: int,
+    assignment_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Gỡ một nhiệm vụ đã giao.
+
+    Giao nhiệm vụ là một cú bấm và trước đây không có đường lùi: chọn nhầm tình
+    huống trong ô thả xuống là nó nằm lại trên trang lớp và trên bảng của mọi em
+    mãi mãi.
+
+    Gỡ chứ không xoá. Nhiệm vụ biến khỏi màn hình hai bên nhưng hàng vẫn còn,
+    nên bản tải về vẫn trả lời được "hồi tháng trước cô giao gì", và bài các em
+    đã làm thì không đụng tới — bài đó là của các em, không phải của nhiệm vụ.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    nhiem_vu = _assignment_or_none(db, assignment_id, klass)
+    if nhiem_vu is not None and nhiem_vu.archived_at is None:
+        nhiem_vu.archived_at = datetime.now()
+        db.commit()
+    return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
+
+
+@router.post("/lop/{class_id}/nhiem-vu/{assignment_id}/khoi-phuc")
+def reassign(
+    request: Request,
+    class_id: int,
+    assignment_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+    if klass.da_dong:
+        return RedirectResponse(
+            f"/giao-vien/lop/{class_id}?loi=lop_da_dong", status_code=303
+        )
+
+    nhiem_vu = _assignment_or_none(db, assignment_id, klass)
+    if nhiem_vu is not None:
+        nhiem_vu.archived_at = None
+        db.commit()
+    return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
+
+
+@router.post("/lop/{class_id}/sua")
+def rename_class(
+    request: Request,
+    class_id: int,
+    ten_lop: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    name, problem = _ten_lop_hop_le(ten_lop)
+    if problem:
+        return RedirectResponse(
+            f"/giao-vien/lop/{class_id}?loi={problem}#quan-ly", status_code=303
+        )
+
+    doi_ten(db, klass, name)
+    return RedirectResponse(f"/giao-vien/lop/{class_id}#quan-ly", status_code=303)
+
+
+@router.post("/lop/{class_id}/doi-ma")
+def rotate_class_code(
+    request: Request,
+    class_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Cấp mã mới khi mã cũ bị chụp màn hình hoặc chuyền ra ngoài.
+
+    Không đụng tới danh sách lớp: những em đã vào vẫn ở trong lớp, và mã ẩn
+    danh trong bản tải về cũng không đổi — nó bám vào `roster_prefix`, đóng
+    băng từ lúc tạo lớp.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    doi_ma(db, klass)
+    return RedirectResponse(f"/giao-vien/lop/{class_id}#quan-ly", status_code=303)
+
+
+@router.post("/lop/{class_id}/dong")
+def close_class(
+    request: Request,
+    class_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Kết thúc lớp: không nhận thêm ai, mã hết tác dụng, bài cũ vẫn đọc được.
+
+    Cố ý không có xoá lớp. Trong một đợt thử nghiệm không nên có nút nào huỷ
+    được dữ liệu thật, và đóng lớp thì mở lại được bằng đúng một lần bấm.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    dong_lop(db, klass)
+    return RedirectResponse(f"/giao-vien/lop/{class_id}#quan-ly", status_code=303)
+
+
+@router.post("/lop/{class_id}/mo-lai")
+def reopen_class(
+    request: Request,
+    class_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    mo_lai_lop(db, klass)
+    return RedirectResponse(f"/giao-vien/lop/{class_id}#quan-ly", status_code=303)
+
+
+@router.post("/lop/{class_id}/go/{student_id}")
+def remove_student(
+    request: Request,
+    class_id: int,
+    student_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Gỡ một em khỏi lớp — vào nhầm lớp là chuyện xảy ra hằng tuần.
+
+    Chỉ xoá tư cách thành viên. Bài viết, hồ sơ và huy hiệu của em vẫn nguyên,
+    và em vào lại được bằng mã lớp, nên đây không phải một thao tác huỷ dữ
+    liệu.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    klass = _class_or_none(db, class_id, user)
+    if klass is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    go_khoi_lop(db, class_id, student_id)
+    return RedirectResponse(f"/giao-vien/lop/{class_id}", status_code=303)
+
+
 @router.get("/hoc-sinh/{student_id}", response_class=HTMLResponse)
 def student_detail(
     request: Request,
@@ -203,25 +512,15 @@ def student_detail(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
-    my_class_ids = [c.id for c in db.query(Class).filter(Class.teacher_id == user.id).all()]
-    membership = (
-        db.query(ClassMembership)
-        .filter(
-            ClassMembership.student_id == student_id,
-            ClassMembership.class_id.in_(my_class_ids),
-        )
-        .first()
-        if my_class_ids
-        else None
-    )
+    membership = _taught_student(db, user, student_id)
     if membership is None:
         return RedirectResponse("/giao-vien", status_code=303)
 
     student = db.get(User, student_id)
-    summary = _student_summary(db, student)
+    summary = _student_summary(db, student, membership.class_id)
     portfolio = (
         db.query(PortfolioEntry)
         .filter(PortfolioEntry.student_id == student_id)
@@ -257,31 +556,21 @@ def student_detail(
 
 @router.post("/hoc-sinh/{student_id}/nhan-xet")
 def leave_feedback(
+    request: Request,
     student_id: int,
     noi_dung: str = Form(""),
     journal_entry_id: str = Form(""),
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     content = noi_dung.strip()
     if not content:
         return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
 
-    my_class_ids = [c.id for c in db.query(Class).filter(Class.teacher_id == user.id).all()]
-    allowed = (
-        db.query(ClassMembership)
-        .filter(
-            ClassMembership.student_id == student_id,
-            ClassMembership.class_id.in_(my_class_ids),
-        )
-        .first()
-        if my_class_ids
-        else None
-    )
-    if allowed is None:
+    if _taught_student(db, user, student_id) is None:
         return RedirectResponse("/giao-vien", status_code=303)
 
     entry_id = None
@@ -302,13 +591,75 @@ def leave_feedback(
     return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
 
 
+def _note_or_none(db: Session, feedback_id: int, teacher: User) -> Feedback | None:
+    """Chỉ lời nhắn do chính giáo viên này viết. Sửa lời của đồng nghiệp thì
+    còn tệ hơn là không sửa được gì."""
+    return (
+        db.query(Feedback)
+        .filter(Feedback.id == feedback_id, Feedback.teacher_id == teacher.id)
+        .first()
+    )
+
+
+@router.post("/nhan-xet/{feedback_id}/sua")
+def edit_feedback(
+    request: Request,
+    feedback_id: int,
+    noi_dung: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Sửa một lời nhắn đã gửi.
+
+    Có đánh dấu, cố ý. Học sinh có thể đã đọc bản cũ rồi, nên im lặng viết lại
+    lời một người lớn đã nói với một đứa trẻ mới là điều phải tránh — chứ không
+    phải việc sửa. Sửa thì bình thường: gõ nhầm, nhắn nhầm em, hoặc viết lúc
+    đang bực.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    note = _note_or_none(db, feedback_id, user)
+    if note is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    content = noi_dung.strip()
+    if content and content != note.content:
+        note.content = content
+        note.updated_at = datetime.now()
+        db.commit()
+    return RedirectResponse(f"/giao-vien/hoc-sinh/{note.student_id}", status_code=303)
+
+
+@router.post("/nhan-xet/{feedback_id}/xoa")
+def delete_feedback(
+    request: Request,
+    feedback_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Thu lại một lời nhắn. Xoá thật, không cắm cờ — đây là lời của chính giáo
+    viên, không phải bài của học sinh."""
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    note = _note_or_none(db, feedback_id, user)
+    if note is None:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    student_id = note.student_id
+    db.delete(note)
+    db.commit()
+    return RedirectResponse(f"/giao-vien/hoc-sinh/{student_id}", status_code=303)
+
+
 @router.get("/huong-dan", response_class=HTMLResponse)
 def teacher_guide(
     request: Request,
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
     return templates.TemplateResponse(
         request,
@@ -323,10 +674,12 @@ def class_codes(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
-    classes = db.query(Class).filter(Class.teacher_id == user.id).order_by(Class.name).all()
+    # Lớp đã đóng không lên bảng mã: mã của nó không nhận thêm ai, nên đọc nó
+    # cho học sinh chỉ tạo ra một lần thử vào lớp thất bại.
+    classes = _my_classes(db, user)
     return templates.TemplateResponse(
         request,
         "teacher/ma_lop.html",
@@ -338,13 +691,19 @@ def class_codes(
     )
 
 
-def _my_classes(db: Session, teacher: User) -> list[Class]:
+def _my_classes(db: Session, teacher: User, gom_da_dong: bool = False) -> list[Class]:
     """Nạp sẵn danh sách học sinh: nếu để lười, mỗi em là một câu truy vấn và
-    một trường 200 em sẽ ngốn hàng trăm câu cho mỗi lần mở trang."""
+    một trường 200 em sẽ ngốn hàng trăm câu cho mỗi lần mở trang.
+
+    Mặc định bỏ qua lớp đã đóng. Đóng lớp là xếp lại chứ không phải xoá, nên
+    lớp cũ vẫn mở đọc được — chỉ là nó không còn chen vào danh sách lớp đang
+    dạy, bảng mã lớp hay bộ lọc tiến độ nữa.
+    """
+    q = db.query(Class).filter(Class.teacher_id == teacher.id)
+    if not gom_da_dong:
+        q = q.filter(Class.dong_luc.is_(None))
     return (
-        db.query(Class)
-        .filter(Class.teacher_id == teacher.id)
-        .options(selectinload(Class.memberships).selectinload(ClassMembership.student))
+        q.options(selectinload(Class.memberships).selectinload(ClassMembership.student))
         .order_by(Class.name)
         .all()
     )
@@ -386,7 +745,7 @@ def progress_fields(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     classes, selected, all_classes = _scope(db, user, lop)
@@ -440,7 +799,7 @@ def progress_field(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     field_name = FIELD_NAME_BY_KEY.get(field_key)
@@ -505,7 +864,7 @@ def progress_scenario(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     scenario = get_scenario(scenario_id)
@@ -555,7 +914,7 @@ def materials_index(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
     return templates.TemplateResponse(
         request,
@@ -571,7 +930,7 @@ def printable_materials(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     scenario = get_scenario(scenario_id)
@@ -591,7 +950,7 @@ def notifications_view(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     classes = db.query(Class).filter(Class.teacher_id == user.id).all()
@@ -625,8 +984,39 @@ def notifications_view(
     )
 
 
+@router.post("/thong-bao/{notification_id}/xoa")
+def delete_notification(
+    request: Request,
+    notification_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Thu lại một thông báo đã gửi cho lớp.
+
+    Chỉ thông báo gắn với lớp của chính giáo viên này. Thông báo toàn hệ thống
+    (class_id và student_id đều rỗng) là của người vận hành, không phải của
+    giáo viên, nên bộ lọc dưới đây không chạm tới.
+    """
+    if (redirect := _guard(user, request)) is not None:
+        return redirect
+
+    ids = _my_class_ids(db, user)
+    tb = (
+        db.query(Notification)
+        .filter(Notification.id == notification_id, Notification.class_id.in_(ids))
+        .first()
+        if ids
+        else None
+    )
+    if tb is not None:
+        db.delete(tb)
+        db.commit()
+    return RedirectResponse("/giao-vien/thong-bao", status_code=303)
+
+
 @router.post("/thong-bao")
 def send_notification(
+    request: Request,
     lop: str = Form(""),
     loai: str = Form("workshop"),
     tieu_de: str = Form(""),
@@ -634,7 +1024,7 @@ def send_notification(
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    if (redirect := _guard(user)) is not None:
+    if (redirect := _guard(user, request)) is not None:
         return redirect
 
     title = tieu_de.strip()

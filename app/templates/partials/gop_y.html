@@ -8,6 +8,7 @@
     </p>
     <form class="mt-2 grid gap-2 max-w-md"
           hx-post="/phan-hoi/gop-y" hx-target="#gop-y-{{ slot }}" hx-swap="innerHTML">
+      {% include "partials/csrf.html" %}
       <label for="gop-y-noi-dung-{{ slot }}" class="sr-only">Nội dung góp ý</label>
       <textarea id="gop-y-noi-dung-{{ slot }}" name="noi_dung" rows="3" required maxlength="2000"
                 placeholder="Chỗ nào khó dùng, chỗ nào bạn thấy sai? Viết thoải mái."

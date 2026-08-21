@@ -24,6 +24,7 @@
 
     <div class="tile p-5 mt-3">
       <form method="post" action="/tai-khoan/ten" class="flex flex-wrap items-end gap-3">
+        {% include "partials/csrf.html" %}
         <div class="flex-1 min-w-[14rem]">
           <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên hiển thị</label>
           <input type="text" id="ten" name="ten" required maxlength="60" value="{{ user.name }}"
@@ -38,6 +39,7 @@
 
     <div class="tile p-5 mt-3">
       <form method="post" action="/tai-khoan/avatar">
+        {% include "partials/csrf.html" %}
         <fieldset>
           <legend class="text-sm font-medium text-ink mb-3">Avatar</legend>
           <div class="grid grid-cols-4 sm:grid-cols-8 gap-2.5">
@@ -125,9 +127,85 @@
   </section>
 
   {% if not user.is_teacher %}
+  <section id="lop-cua-toi" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Lớp của tôi</h2>
+
+    <div class="tile p-5 mt-3">
+      {% if classes %}
+      <ul class="grid gap-3">
+        {% for k in classes %}
+        <li class="flex flex-wrap items-center gap-3">
+          <span class="flex-1 min-w-0">
+            <span class="block text-sm font-semibold text-ink truncate">{{ k.name }}</span>
+            <span class="block text-xs text-ink-soft">
+              Giáo viên: {{ k.teacher.name }}{% if k.da_dong %} · đã kết thúc{% endif %}
+            </span>
+          </span>
+          <form method="post" action="/tai-khoan/roi-lop/{{ k.id }}">
+            {% include "partials/csrf.html" %}
+            <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
+              Rời lớp
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mt-3 text-xs text-ink-faint">
+        Rời lớp có hiệu lực ngay, không cần thầy cô duyệt. Bài viết, hồ sơ và huy hiệu của
+        bạn vẫn còn nguyên — chỉ là thầy cô không đọc được nữa.
+      </p>
+      {% else %}
+      <p class="text-sm text-ink-soft">Bạn chưa ở lớp nào.</p>
+      {% endif %}
+
+      <a href="/tai-khoan/vao-lop" class="btn btn-ghost mt-4">Vào lớp bằng mã</a>
+    </div>
+  </section>
+  {% endif %}
+
+  <section id="bao-mat" class="mt-9 scroll-mt-20">
+    <h2 class="microlabel">Bảo mật</h2>
+
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Địa chỉ thư</h3>
+      <p class="mt-1 text-sm text-ink-soft">
+        Đang dùng <strong class="text-ink">{{ user.email }}</strong>. Đây cũng là địa chỉ
+        nhận liên kết đặt lại mật khẩu, nên nếu bạn gõ nhầm lúc đăng ký thì sửa ở đây.
+      </p>
+      <form method="post" action="/tai-khoan/email" class="mt-3 grid gap-2 max-w-sm">
+        {% include "partials/csrf.html" %}
+        <label for="email_moi" class="text-sm text-ink-soft">Địa chỉ mới</label>
+        <input type="email" id="email_moi" name="email_moi" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <label for="mk_email" class="text-sm text-ink-soft mt-1">Mật khẩu hiện tại</label>
+        <input type="password" id="mk_email" name="mat_khau" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <button type="submit" class="btn btn-ghost justify-self-start mt-2">Đổi địa chỉ thư</button>
+      </form>
+    </div>
+
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Đổi mật khẩu</h3>
+      <p class="mt-1 text-sm text-ink-soft">
+        Đổi xong, mọi thiết bị khác đang đăng nhập tài khoản này sẽ bị đăng xuất.
+      </p>
+      <form method="post" action="/tai-khoan/mat-khau" class="mt-3 grid gap-2 max-w-sm">
+        {% include "partials/csrf.html" %}
+        <label for="mat_khau_cu" class="text-sm text-ink-soft">Mật khẩu hiện tại</label>
+        <input type="password" id="mat_khau_cu" name="mat_khau_cu" required
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <label for="mat_khau_moi" class="text-sm text-ink-soft mt-1">Mật khẩu mới</label>
+        <input type="password" id="mat_khau_moi" name="mat_khau_moi" required minlength="8"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <button type="submit" class="btn btn-primary justify-self-start mt-2">Đổi mật khẩu</button>
+      </form>
+    </div>
+  </section>
+
   <section id="rieng-tu" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Quyền riêng tư</h2>
 
+    {% if not user.is_teacher %}
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Ai đọc được bài của bạn</h3>
       {% if readers %}
@@ -140,8 +218,9 @@
         {% endfor %}
       </ul>
       <p class="mt-3 text-xs text-ink-faint">
-        Giáo viên của lớp bạn đã vào đọc được nhật ký tư duy của bạn. Rời lớp thì
-        thầy cô không còn đọc được nữa.
+        Thầy cô đọc được phần bạn đã nộp trong lớp đó. Phần bạn viết mà chưa nộp thì không.
+        Muốn dừng, bạn rời lớp ở mục <a href="#lop-cua-toi" class="text-teal hover:underline">Lớp của tôi</a>
+        bên dưới — có hiệu lực ngay.
       </p>
       {% else %}
       <p class="mt-2 text-sm text-ink-soft">
@@ -149,7 +228,41 @@
       </p>
       {% endif %}
     </div>
+    {% endif %}
 
+    <div class="tile p-5 mt-3">
+      <h3 class="text-sm font-semibold text-ink">Xoá tài khoản</h3>
+      {% if yeu_cau_xoa %}
+      <p class="mt-2 text-sm text-ink-soft">
+        Bạn đã gửi yêu cầu xoá ngày {{ yeu_cau_xoa.tao_luc.strftime('%d/%m/%Y') }}.
+        Chúng mình sẽ xoá và báo lại cho bạn.
+      </p>
+      <form method="post" action="/tai-khoan/huy-yeu-cau-xoa" class="mt-3">
+        {% include "partials/csrf.html" %}
+        <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
+          Tôi đổi ý, huỷ yêu cầu
+        </button>
+      </form>
+      {% else %}
+      <p class="mt-2 text-sm text-ink-soft">
+        Bạn không tự bấm xoá được — để tránh xoá nhầm một thứ không dựng lại được. Gửi yêu
+        cầu ở đây thì chúng mình xoá vĩnh viễn tài khoản, nhật ký và hồ sơ của bạn, rồi báo lại.
+      </p>
+      <p class="mt-2 text-xs text-ink-faint">
+        Một điều xoá không với tới: nếu giáo viên đã tải bản tổng hợp của lớp về máy, bản đó
+        đã rời khỏi hệ thống từ lúc bấm tải.
+      </p>
+      <form method="post" action="/tai-khoan/yeu-cau-xoa" class="mt-3 grid gap-2 max-w-md">
+        {% include "partials/csrf.html" %}
+        <label for="ly_do" class="text-sm text-ink-soft">Lý do (không bắt buộc)</label>
+        <input type="text" id="ly_do" name="ly_do" maxlength="500"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+        <button type="submit" class="btn btn-ghost justify-self-start">Gửi yêu cầu xoá</button>
+      </form>
+      {% endif %}
+    </div>
+
+    {% if not user.is_teacher %}
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Mục đang chia sẻ công khai</h3>
       <p class="mt-1 text-sm text-ink-soft">
@@ -164,6 +277,7 @@
             {{ item.journal_entry.title or 'Chưa đặt tên' }}
           </span>
           <form method="post" action="/ho-so/{{ item.id }}/chia-se">
+            {% include "partials/csrf.html" %}
             <button type="submit" class="text-sm font-semibold text-trunk hover:underline">
               Ngừng chia sẻ
             </button>
@@ -178,8 +292,8 @@
         Quản lý ở trang chia sẻ <span aria-hidden="true">→</span>
       </a>
     </div>
+    {% endif %}
   </section>
-  {% endif %}
 
   <section id="du-lieu" class="mt-9 scroll-mt-20">
     <h2 class="microlabel">Dữ liệu của bạn</h2>
@@ -202,14 +316,45 @@
       <a href="/tai-khoan/du-lieu" class="btn btn-primary mt-4">
         {{ 'Tải dữ liệu lớp' if user.is_teacher else 'Tải dữ liệu của tôi' }}
       </a>
+
+      {% if user.is_teacher %}
+      <p class="mt-3 text-xs text-ink-faint">
+        Bản mặc định ghi học sinh bằng mã ẩn danh. Đối chiếu mã với tên ở bảng bên dưới.
+      </p>
+
+      {# Bản có tên nằm sau một lần bấm, và nói rõ nó chứa gì trước khi tải.
+         Không giấu đi: bảng đối chiếu mã ↔ tên vốn đã ở ngay dưới đây, nên thầy
+         cô cần tên sẽ tự chép vào bảng tính của mình — và bản chép tay đó thì
+         không ai quản. Thà đưa ra một bản có tên, dán nhãn đàng hoàng. #}
+      <details class="disclose mt-3">
+        <summary class="cursor-pointer text-sm font-medium text-ink-soft hover:text-ink">
+          Cần bản có tên học sinh?
+        </summary>
+        <div class="mt-2.5 tile p-4 bg-amber-50 border-amber-100">
+          <p class="text-sm text-amber-900">
+            Bản này thêm một cột <strong>Tên học sinh</strong> cạnh mã ẩn danh, nên tệp
+            tự nó chỉ ra em nào viết gì — không cần bảng đối chiếu nữa.
+          </p>
+          <p class="mt-2 text-sm text-amber-900/90">
+            Hãy giữ nó như giữ sổ điểm giấy: đừng gửi qua ứng dụng nhắn tin, đừng để
+            trong thư mục dùng chung, và xoá khi không cần nữa. Tệp đã tải về thì GALS
+            không thu lại được, kể cả sau khi tài khoản của em đã bị xoá.
+          </p>
+          <a href="/tai-khoan/du-lieu?co_ten=1" class="btn btn-ghost mt-3">
+            Tải bản có tên học sinh
+          </a>
+        </div>
+      </details>
+      {% endif %}
     </div>
 
     {% if user.is_teacher and roster %}
     <div class="tile p-5 mt-3">
       <h3 class="text-sm font-semibold text-ink">Bảng đối chiếu mã học sinh</h3>
       <p class="mt-1 text-sm text-ink-soft">
-        Trong tệp tải về, học sinh được ghi bằng mã ẩn danh. Bảng đối chiếu này
-        <strong class="text-ink">chỉ hiện ở đây</strong> và không nằm trong tệp.
+        Trong <strong class="text-ink">bản tải mặc định</strong>, học sinh chỉ có mã ẩn danh,
+        và bảng đối chiếu này không nằm trong tệp. Bản có tên học sinh thì đã có sẵn cột tên,
+        không cần đối chiếu nữa.
       </p>
       {% for group in roster %}
       <details class="disclose mt-4">

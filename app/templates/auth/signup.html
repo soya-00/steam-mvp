@@ -12,11 +12,30 @@
       Không cần biết mình thích gì trước. Cứ thử một tình huống rồi tính tiếp.
     </p>
 
+    {% include "partials/loi.html" %}
+
     <form method="post" action="/dang-ky" class="mt-5 space-y-4">
+      {% include "partials/csrf.html" %}
       <div>
         <label for="ten" class="block text-sm font-medium text-ink mb-1">Tên của bạn</label>
-        <input type="text" id="ten" name="ten" required
+        <input type="text" id="ten" name="ten" required maxlength="60"
                class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+      </div>
+      <div>
+        <label for="tuoi" class="block text-sm font-medium text-ink mb-1">Bạn bao nhiêu tuổi?</label>
+        <input type="number" id="tuoi" name="tuoi" required min="5" max="100" inputmode="numeric"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+        <p class="mt-1.5 text-xs text-ink-soft">
+          {% if pilot_16_plus %}
+          Đợt thử nghiệm này chỉ mở cho các bạn từ {{ tuoi_toi_thieu }} tuổi, vì đường xin phép
+          gia đình cho người nhỏ hơn thì chúng mình chưa dựng xong.
+          {% else %}
+          Dưới {{ tuoi_toi_thieu }} tuổi thì tham gia qua lớp của thầy cô, vì lúc đó nhà trường
+          là bên đứng ra xin phép gia đình.
+          {% endif %}
+          Chúng mình không có cách nào kiểm chứng tuổi bạn điền — đây là câu hỏi để chỉ đường,
+          không phải để xác minh.
+        </p>
       </div>
       <div>
         <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
@@ -29,18 +48,39 @@
                class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
       </div>
       <div>
+        <label for="mat_khau_lai" class="block text-sm font-medium text-ink mb-1">Nhập lại mật khẩu</label>
+        <input type="password" id="mat_khau_lai" name="mat_khau_lai" required minlength="8"
+               class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint">
+        <p class="mt-1.5 text-xs text-ink-soft">
+          Gõ nhầm một chữ là không đăng nhập được, nên mình hỏi hai lần.
+        </p>
+      </div>
+      <div>
         <label for="ma_lop" class="block text-sm font-medium text-ink mb-1">
           Mã lớp <span class="font-normal text-ink-faint">— không bắt buộc</span>
         </label>
         <input type="text" id="ma_lop" name="ma_lop" placeholder="Ví dụ: GALS-11A2"
                class="w-full rounded-lg border border-field-line bg-sunken px-3 py-2.5 text-ink placeholder:text-ink-faint uppercase">
         <p class="mt-1.5 text-xs text-ink-soft">
-          Có mã lớp thì giáo viên sẽ thấy nhật ký của bạn. Bỏ trống thì không ai xem được —
-          bạn vẫn dùng đầy đủ mọi tính năng.
+          Có mã lớp thì giáo viên lớp đó đọc được <strong class="text-ink">phần bạn nộp</strong>
+          trong lớp. Phần bạn viết mà chưa nộp thì không ai đọc được. Bỏ trống cũng không sao —
+          bạn vẫn dùng đầy đủ mọi tính năng, và vào lớp lúc nào cũng được.
         </p>
+      </div>
+      <div class="flex items-start gap-2.5">
+        <input type="checkbox" id="dong_y" name="dong_y" value="1" required
+               class="mt-1 w-4 h-4 shrink-0 accent-trunk">
+        <label for="dong_y" class="text-sm text-ink-soft">
+          Mình đã đọc và đồng ý với
+          <a href="/chinh-sach-rieng-tu" target="_blank" class="font-medium text-teal hover:underline">Chính sách riêng tư</a>
+          và
+          <a href="/dieu-khoan" target="_blank" class="font-medium text-teal hover:underline">Điều khoản sử dụng</a>.
+        </label>
       </div>
       <button type="submit" class="btn btn-primary w-full">Tiếp tục</button>
     </form>
+
+    {% include "partials/oauth_nut.html" %}
 
     <p class="mt-4 text-sm text-ink-soft">
       Đã có tài khoản?
@@ -48,7 +88,6 @@
     </p>
   </div>
 
-  {% include "partials/demo_nhanh.html" %}
 
 </div>
 {% endblock %}

@@ -6,6 +6,9 @@ from itsdangerous import BadSignature, URLSafeSerializer
 
 from app.config import (
     FIELD_KEY_BY_NAME,
+    NGAY_HIEU_LUC,
+    PHIEN_BAN_DIEU_KHOAN,
+    PHIEN_BAN_RIENG_TU,
     PROJECT_CATEGORIES,
     STEAM_FIELDS,
     TEMPLATES_DIR,
@@ -13,6 +16,7 @@ from app.config import (
     SESSION_COOKIE,
     gemini_enabled,
 )
+from app.csrf import csrf_context
 from app.scenarios import get_scenario
 
 _session = URLSafeSerializer(SECRET_KEY, salt="gals-session")
@@ -31,22 +35,33 @@ def menu_context(request: Request) -> dict:
     if uid is None:
         return {}
 
+    from app import boi_canh
     from app.db import SessionLocal
     from app.models import Class, User
 
     with SessionLocal() as db:
         viewer = db.get(User, uid)
-        if viewer is None or not viewer.is_teacher:
+        if viewer is None:
             return {}
-        classes = (
-            db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
-        )
-        return {"menu_classes": [{"id": c.id, "name": c.name} for c in classes]}
+
+        ctx: dict = {}
+        # Chỉ hiện điều khiển đổi bối cảnh khi có nhiều hơn một lựa chọn —
+        # người chưa vào lớp nào thì nút này chẳng đưa đi đâu.
+        lua_chon = boi_canh.lua_chon(db, viewer)
+        if len(lua_chon) > 1:
+            ctx["boi_canh_hien_tai"] = boi_canh.doc(request, db, viewer)
+
+        if viewer.can_teach:
+            classes = (
+                db.query(Class).filter(Class.teacher_id == viewer.id).order_by(Class.name).all()
+            )
+            ctx["menu_classes"] = [{"id": c.id, "name": c.name} for c in classes]
+        return ctx
 
 
 templates = Jinja2Templates(
     directory=str(TEMPLATES_DIR),
-    context_processors=[menu_context],
+    context_processors=[menu_context, csrf_context],
 )
 
 BADGE_LABELS = {
@@ -150,4 +165,7 @@ templates.env.globals.update(
     beat_classes=BEAT_CLASSES,
     gemini_enabled=gemini_enabled,
     scenario_of_id=get_scenario,
+    phien_ban_rieng_tu=PHIEN_BAN_RIENG_TU,
+    phien_ban_dieu_khoan=PHIEN_BAN_DIEU_KHOAN,
+    ngay_hieu_luc=NGAY_HIEU_LUC,
 )

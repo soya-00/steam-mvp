@@ -45,3 +45,24 @@ def about(request: Request) -> HTMLResponse:
         "marketing/ve_chung_toi.html",
         {"user": None, "page": "ve_chung_toi"},
     )
+
+
+@router.get("/chinh-sach-rieng-tu", response_class=HTMLResponse)
+def privacy(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request, "phap_ly/chinh_sach.html", {"user": None, "page": "phap_ly"}
+    )
+
+
+@router.get("/dieu-khoan", response_class=HTMLResponse)
+def terms(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request, "phap_ly/dieu_khoan.html", {"user": None, "page": "phap_ly"}
+    )
+
+
+@router.get("/chinh-sach-cookie", response_class=HTMLResponse)
+def cookies(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request, "phap_ly/cookie.html", {"user": None, "page": "phap_ly"}
+    )

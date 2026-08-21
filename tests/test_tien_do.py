@@ -122,7 +122,8 @@ def test_pages_do_not_query_once_per_student(client):
     login_teacher(client)
     with SessionLocal() as db:
         teacher = db.query(User).filter(User.email == "co.mai@gals.demo").first()
-        klass = Class(teacher_id=teacher.id, class_code="GALS-BIG", name="Lớp đông")
+        klass = Class(teacher_id=teacher.id, class_code="GALS-BIG",
+                      roster_prefix="HSBIG9", name="Lớp đông")
         db.add(klass)
         db.flush()
         for i in range(60):
@@ -142,6 +143,7 @@ def test_pages_do_not_query_once_per_student(client):
                 )
             )
         db.commit()
+        class_id = klass.id
 
     counter = {"n": 0}
 
@@ -154,6 +156,9 @@ def test_pages_do_not_query_once_per_student(client):
             ("/giao-vien/tien-do", 40),
             ("/giao-vien/tien-do/khoa_hoc/dich-te-truong-noi-tru", 40),
             ("/tai-khoan/du-lieu", 60),
+            # Trang lớp từng chạy hai câu truy vấn cho mỗi em, cộng một câu nữa
+            # để nạp chính em đó — khoảng 3N.
+            (f"/giao-vien/lop/{class_id}", 40),
         ]:
             counter["n"] = 0
             assert client.get(url).status_code == 200, url

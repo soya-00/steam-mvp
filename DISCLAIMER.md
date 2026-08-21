@@ -2,17 +2,17 @@
 
 **Đọc trang này trước khi cho bất kỳ học sinh có thật nào dùng GALS.**
 
-GALS là một **bản mẫu trình diễn**, không phải sản phẩm hoàn chỉnh. Bản đang chạy dùng để trình bày ý tưởng, không dùng để triển khai thật.
+GALS đã có tài khoản riêng cho từng người và dữ liệu được lưu lại thật, nhưng **chưa qua thử nghiệm với người dùng thật ở quy mô lớn**. Trang này nói rõ những gì đã chắc và những gì chưa.
 
 ---
 
 ## Bốn điều cần biết ngay
 
-**1. Chưa có tài khoản riêng cho từng người.**
-Cả ứng dụng chỉ có **ba tài khoản dùng chung**. Mọi đường đăng nhập — nút Demo nhanh, ô email và mật khẩu, cả luồng đăng ký — đều rơi vào một trong ba tài khoản đó. Nghĩa là **ai cũng đọc được bài của người khác**, và ai cũng sửa được hồ sơ của người khác.
+**1. Mỗi người một tài khoản riêng.**
+Đăng ký bằng email và mật khẩu; mật khẩu được băm bằng Argon2id. Học sinh không đọc được bài của nhau. Chỉ giáo viên của lớp bạn đã vào mới đọc được phần bạn nộp — và chỉ phần đó.
 
-**2. Dữ liệu không sống lâu.**
-Những gì bạn viết **có được ghi lên máy chủ**, nhưng toàn bộ bảng dữ liệu bị xoá mỗi lần máy chủ khởi động lại. Máy chủ miễn phí còn tự ngủ khi vắng người, nên bài viết thường không sống qua một đêm. **Không có sao lưu.**
+**2. Dữ liệu được lưu lại, nhưng chưa có sao lưu.**
+Bài bạn viết ở lại sau khi máy chủ khởi động lại. Điều còn thiếu là **sao lưu định kỳ**: nếu cơ sở dữ liệu hỏng, chưa có bản sao nào để khôi phục. Đừng để GALS là nơi duy nhất giữ một thứ bạn không muốn mất.
 
 **3. Số liệu trong các tình huống là giả định.**
 Không có trường học, học sinh hay đợt bệnh nào có thật trong đó. Cách làm nghề, thứ tự suy nghĩ và loại bằng chứng thì bám theo thực tế — nhưng con số thì không.
@@ -24,9 +24,9 @@ Nếu học sinh viết ra điều đáng lo, trợ lý sẽ dừng lại và h�
 
 ## Vì vậy
 
-- **Đừng nhập thông tin thật** — tên đầy đủ, tên trường, số điện thoại, email cá nhân. Dùng tên gọi hoặc biệt danh là đủ.
-- **Đừng dùng bản này để chạy thử với học sinh thật.**
-- Nếu bạn vẫn đang cho người khác dùng thử, **hãy nói rõ với họ** rằng mọi thứ họ viết ra người khác đều đọc được.
+- **Đừng nhập thông tin cá nhân của người khác** vào bài — tên đầy đủ, số điện thoại, chuyện riêng của bạn bè hay người thân.
+- **Chưa có sao lưu**, nên đừng để đây là nơi duy nhất giữ một thứ quan trọng.
+- Trường nào muốn triển khai thì liên hệ trước để ký thoả thuận: theo thiết kế hiện tại, **nhà trường là bên kiểm soát dữ liệu**.
 
 ---
 

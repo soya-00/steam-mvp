@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from sqlalchemy.orm import Session, selectinload
 
 from app import progress as progress_of
-from app.auth import get_current_user
+from app.auth import get_current_user, set_session
 from app.db import get_db
 from app.models import (
     Assignment,
@@ -23,12 +23,22 @@ from app.models import (
     JournalEntry,
     PortfolioEntry,
     User,
+    YeuCauXoa,
 )
+from app.accounts import (
+    check_password,
+    email_looks_wrong,
+    email_taken,
+    message_for,
+    normalise_email,
+)
+from app.lop import da_o_trong, lop_theo_ma, roi_lop, vao_lop
 from app.moderation import OK as SCREEN_OK
 from app.moderation import REPLIES as SCREEN_REPLIES
 from app.moderation import screen
 from app.routers.auth import AVATARS, AVATAR_EMOJI
 from app.scenarios import get_scenario
+from app.security import hash_password, verify_password
 from app.templating import templates
 
 router = APIRouter()
@@ -40,9 +50,43 @@ HUONG_DAN = """GALS — dữ liệu lớp của bạn
 Ba tệp trong thư mục này chỉ chứa THÔNG TIN VỀ bài làm, không chứa bài viết
 của học sinh. Muốn đọc bài của một em, mở trang của em đó trong ứng dụng.
 
-Học sinh được ghi bằng mã ẩn danh dạng MÃ-LỚP-SỐ. Bảng đối chiếu mã với tên
-chỉ hiện trên màn hình trong mục Tải dữ liệu, không nằm trong thư mục này.
-Nếu bạn cần bảng đó, hãy tự chép lại và giữ ở nơi an toàn.
+Lớp được ghi bằng TÊN LỚP, đúng tên bạn đặt trong ứng dụng. Mã lớp mà học
+sinh gõ để vào lớp cố ý KHÔNG nằm trong thư mục này: mã đó đổi được khi bị
+lộ, và một tệp đã tải về thì không thu lại được.
+
+Học sinh được ghi bằng mã ẩn danh dạng HS####-SỐ. Tiền tố "HS####" là của
+riêng lớp và không bao giờ đổi, kể cả khi bạn cấp mã lớp mới — nên bản tải
+tháng trước vẫn đối chiếu được với bản tải hôm nay.
+
+Bảng đối chiếu mã với tên chỉ hiện trên màn hình trong mục Tải dữ liệu, không
+nằm trong thư mục này. Nếu bạn cần bảng đó, hãy tự chép lại và giữ ở nơi an
+toàn.
+
+nhat-ky.csv   mỗi dòng là một bài của một em: đi tới cấp độ nào, viết bao
+              nhiêu câu, hoạt động lần cuối khi nào
+phan-hoi.csv  nhận xét do chính bạn viết, đầy đủ nội dung
+nhiem-vu.csv  các nhiệm vụ bạn đã giao
+"""
+
+HUONG_DAN_CO_TEN = """GALS — dữ liệu lớp của bạn (BẢN CÓ TÊN HỌC SINH)
+
+*** Thư mục này có tên học sinh. Hãy giữ nó như giữ sổ điểm giấy. ***
+
+Bạn đã chọn bản có tên, nên cột "Tên học sinh" nằm ngay cạnh mã ẩn danh. Điều
+đó có nghĩa là tệp này tự nó chỉ ra em nào viết gì — không cần bảng đối chiếu
+nào nữa.
+
+Vì thế: đừng gửi qua ứng dụng nhắn tin, đừng để trong thư mục dùng chung, và
+xoá khi không cần nữa. Một tệp đã tải về thì GALS không thu lại được, và nó
+vẫn còn kể cả sau khi tài khoản của học sinh đã bị xoá.
+
+Cần bản không có tên thì tải lại ở mục Tải dữ liệu — đó là nút mặc định.
+
+Ba tệp này chỉ chứa THÔNG TIN VỀ bài làm, không chứa bài viết của học sinh.
+Muốn đọc bài của một em, mở trang của em đó trong ứng dụng.
+
+Lớp được ghi bằng TÊN LỚP. Mã lớp mà học sinh gõ để vào lớp cố ý KHÔNG nằm
+trong thư mục này: mã đó đổi được khi bị lộ.
 
 nhat-ky.csv   mỗi dòng là một bài của một em: đi tới cấp độ nào, viết bao
               nhiêu câu, hoạt động lần cuối khi nào
@@ -58,7 +102,7 @@ def _guard(user: User | None):
 
 
 def _classes_of(db: Session, user: User) -> list[Class]:
-    if user.is_teacher:
+    if user.can_teach:
         return (
             db.query(Class)
             .filter(Class.teacher_id == user.id)
@@ -74,15 +118,24 @@ def _classes_of(db: Session, user: User) -> list[Class]:
 
 def student_codes(db: Session, klass: Class) -> dict[int, str]:
     """Mã ẩn danh, đánh số theo thứ tự vào lớp nên chỉ thêm vào cuối — cùng một
-    em thì lần xuất nào cũng ra cùng một mã."""
+    em thì lần xuất nào cũng ra cùng một mã.
+
+    Tiền tố lấy ở `roster_prefix`, một chuỗi sinh riêng và không liên quan gì
+    tới `class_code`: mã lớp đổi được khi bị lộ, và nếu mã ẩn danh bám theo nó
+    thì một lần đổi mã sẽ đổi tên toàn bộ học sinh so với bản thầy cô đã tải về
+    tuần trước.
+    """
     memberships = (
         db.query(ClassMembership)
         .filter(ClassMembership.class_id == klass.id)
         .order_by(ClassMembership.id)
         .all()
     )
+    # Dự phòng cũng phải là chuỗi không dính tới mã lớp, không thì cửa sau lại
+    # dựng đúng cái quan hệ vừa gỡ bỏ.
+    prefix = klass.roster_prefix or f"HS{klass.id:04d}"
     return {
-        m.student_id: f"{klass.class_code}-{index:02d}"
+        m.student_id: f"{prefix}-{index:02d}"
         for index, m in enumerate(memberships, start=1)
     }
 
@@ -162,10 +215,204 @@ def account_page(
             "readers": readers,
             "items": shared_items,
             "roster": roster,
-            "loi": loi,
+            # Đường dẫn mang về mã ngắn ("mat_khau_cu_sai"), còn vài chỗ cũ đưa
+            # thẳng câu tiếng Việt. Tra được thì tra, không thì hiện nguyên văn.
+            "loi": message_for(loi) or loi,
             "da_luu": da_luu,
+            "yeu_cau_xoa": (
+                db.query(YeuCauXoa)
+                .filter(YeuCauXoa.user_id == user.id, YeuCauXoa.xu_ly_luc.is_(None))
+                .first()
+            ),
         },
     )
+
+
+@router.post("/tai-khoan/mat-khau")
+def change_password(
+    request: Request,
+    mat_khau_cu: str = Form(""),
+    mat_khau_moi: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Đổi mật khẩu khi đang đăng nhập.
+
+    Bắt nhập mật khẩu hiện tại: nếu không, ai mượn được máy đang mở sẵn cũng
+    chiếm được tài khoản vĩnh viễn chỉ bằng vài cú bấm.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    if not verify_password(mat_khau_cu, user.password_hash):
+        return RedirectResponse("/tai-khoan?loi=mat_khau_cu_sai#bao-mat", status_code=303)
+    if (problem := check_password(mat_khau_moi)) is not None:
+        return RedirectResponse(f"/tai-khoan?loi={problem}#bao-mat", status_code=303)
+
+    user.password_hash = hash_password(mat_khau_moi)
+    # Dấu thời gian này nằm trong cookie phiên, nên đổi nó là mọi thiết bị khác
+    # bị đăng xuất — kể cả thiết bị của người đang chiếm tài khoản.
+    user.password_changed_at = datetime.now()
+    db.commit()
+
+    # Cấp cookie mới cho chính người vừa đổi, nếu không thì họ tự đá mình ra.
+    response = RedirectResponse("/tai-khoan?da_luu=mat_khau#bao-mat", status_code=303)
+    set_session(request, response, user.id, user)
+    return response
+
+
+@router.post("/tai-khoan/email")
+def change_email(
+    request: Request,
+    mat_khau: str = Form(""),
+    email_moi: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Đổi địa chỉ thư.
+
+    Không có chức năng này thì một người gõ nhầm email lúc đăng ký sẽ mất tài
+    khoản vĩnh viễn: đăng nhập bằng địa chỉ họ *tưởng* mình đã gõ thì sai, còn
+    liên kết đặt lại mật khẩu thì bay tới một hộp thư không phải của họ.
+
+    Bắt nhập mật khẩu hiện tại, đúng như lúc đổi mật khẩu — nếu không thì ai
+    mượn được máy đang mở sẵn cũng đổi được email rồi chiếm hẳn tài khoản qua
+    đường đặt lại mật khẩu.
+
+    CHƯA LÀM, ĐỢI DỊCH VỤ THƯ: gửi liên kết xác nhận tới địa chỉ MỚI và chỉ đổi
+    khi bấm vào đó. Lúc này chưa gửi thư được nên đổi có hiệu lực ngay; chỗ cần
+    chèn bước xác nhận là ngay trước `user.email = address` bên dưới.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    if not verify_password(mat_khau, user.password_hash):
+        return RedirectResponse("/tai-khoan?loi=mat_khau_cu_sai#bao-mat", status_code=303)
+
+    address = normalise_email(email_moi)
+    if email_looks_wrong(address):
+        return RedirectResponse("/tai-khoan?loi=email_hong#bao-mat", status_code=303)
+    if address == user.email:
+        return RedirectResponse("/tai-khoan?da_luu=email#bao-mat", status_code=303)
+    if email_taken(db, address):
+        return RedirectResponse("/tai-khoan?loi=email_trung#bao-mat", status_code=303)
+
+    user.email = address
+    db.commit()
+    return RedirectResponse("/tai-khoan?da_luu=email#bao-mat", status_code=303)
+
+
+@router.get("/tai-khoan/vao-lop", response_class=HTMLResponse)
+def join_class_form(
+    request: Request,
+    ma: str = "",
+    loi: str = "",
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Màn hình xác nhận trước khi vào lớp.
+
+    Đây là thao tác duy nhất làm thay đổi chuyện ai đọc được bài của một người
+    trẻ, nên nó là GET rồi mới POST — không phải một nút bấm cái xong.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    lop = lop_theo_ma(db, ma) if ma else None
+    return templates.TemplateResponse(
+        request,
+        "account/vao_lop.html",
+        {
+            "user": user,
+            "focus": True,
+            "back_href": "/tai-khoan",
+            "back_label": "Tài khoản",
+            "ma": (ma or "").strip().upper(),
+            "lop": lop,
+            "da_o_trong": bool(lop) and da_o_trong(db, user, lop.id),
+            "loi": message_for(loi),
+        },
+    )
+
+
+@router.post("/tai-khoan/vao-lop")
+def join_class_submit(
+    ma: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if (redirect := _guard(user)) is not None:
+        return redirect
+    if user.is_teacher:
+        return RedirectResponse("/giao-vien", status_code=303)
+
+    lop = lop_theo_ma(db, ma)
+    if lop is None:
+        code = (ma or "").strip().upper()
+        return RedirectResponse(f"/tai-khoan/vao-lop?ma={code}&loi=ma_lop_sai", status_code=303)
+
+    vao_lop(db, user, lop)
+    return RedirectResponse("/tai-khoan?da_luu=vao_lop#lop-cua-toi", status_code=303)
+
+
+@router.post("/tai-khoan/roi-lop/{class_id}")
+def leave_class(
+    class_id: int,
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Rời lớp, có hiệu lực ngay.
+
+    Chính sách riêng tư nói đây là cách rút lại đồng ý cho giáo viên đọc bài.
+    Bắt chờ ai đó duyệt thì nó không còn là quyền nữa.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    roi_lop(db, user, class_id)
+    return RedirectResponse("/tai-khoan?da_luu=roi_lop#lop-cua-toi", status_code=303)
+
+
+@router.post("/tai-khoan/yeu-cau-xoa")
+def request_deletion(
+    ly_do: str = Form(""),
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Xin xoá tài khoản.
+
+    Học sinh không tự bấm xoá được — quyết định có chủ ý, để tránh xoá nhầm
+    một thứ không dựng lại được. Nhưng quyền được xoá thì không mất đi vì thế,
+    nên đường đi là một yêu cầu, và việc xoá thật do dòng lệnh thực hiện.
+    """
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    dang_cho = (
+        db.query(YeuCauXoa)
+        .filter(YeuCauXoa.user_id == user.id, YeuCauXoa.xu_ly_luc.is_(None))
+        .first()
+    )
+    if dang_cho is None:
+        db.add(YeuCauXoa(user_id=user.id, ly_do=(ly_do or "").strip()[:500]))
+        db.commit()
+    return RedirectResponse("/tai-khoan?da_luu=xin_xoa#rieng-tu", status_code=303)
+
+
+@router.post("/tai-khoan/huy-yeu-cau-xoa")
+def cancel_deletion(
+    user: User | None = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Đổi ý thì tự huỷ được, không phải gửi thư cho ai."""
+    if (redirect := _guard(user)) is not None:
+        return redirect
+
+    db.query(YeuCauXoa).filter(
+        YeuCauXoa.user_id == user.id, YeuCauXoa.xu_ly_luc.is_(None)
+    ).delete(synchronize_session=False)
+    db.commit()
+    return RedirectResponse("/tai-khoan?da_luu=huy_xoa#rieng-tu", status_code=303)
 
 
 @router.post("/tai-khoan/ten")
@@ -290,7 +537,18 @@ def _student_payload(db: Session, user: User) -> dict:
     }
 
 
-def _teacher_zip(db: Session, user: User) -> bytes:
+def _teacher_zip(db: Session, user: User, co_ten: bool = False) -> bytes:
+    """Bản tải về của giáo viên.
+
+    Mặc định học sinh chỉ có mã ẩn danh. `co_ten=True` thêm một cột tên, dành
+    cho thầy cô thật sự cần đối chiếu ngoài màn hình.
+
+    Lý do có hai bản thay vì chọn hẳn một: bảng đối chiếu mã ↔ tên vẫn nằm ngay
+    trên trang tải, nên bản ẩn danh chưa bao giờ là một hàng rào — nó chỉ là ma
+    sát. Mà ma sát thì người ta đi vòng: thầy cô cần tên sẽ tự chép bảng đó vào
+    bảng tính của mình, và bản chép tay đó không ai quản. Thà đưa ra một bản có
+    tên, nói rõ nó chứa gì, và để bản ẩn danh làm mặc định.
+    """
     classes = _classes_of(db, user)
 
     journal_rows: list[list] = []
@@ -345,7 +603,12 @@ def _teacher_zip(db: Session, user: User) -> bytes:
 
         for membership in klass.memberships:
             student = membership.student
-            code = codes.get(student.id, "")
+            # Cột định danh: một ô ở bản ẩn danh, hai ô ở bản có tên. Dựng một
+            # lần ở đây rồi rải vào cả hai bảng, để không có đường nào lỡ thêm
+            # tên vào bản này mà quên bản kia.
+            dinh_danh = [codes.get(student.id, "")]
+            if co_ten:
+                dinh_danh.append(student.name)
 
             sessions = sessions_by_student.get(student.id, [])
             entry_by_scenario = entries_by_student.get(student.id, {})
@@ -359,8 +622,8 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 entry = entry_by_scenario.get(gs.scenario_id)
                 journal_rows.append(
                     [
-                        klass.class_code,
-                        code,
+                        klass.name,
+                        *dinh_danh,
                         # Tên tình huống, KHÔNG phải entry.title: tiêu đề của
                         # một ghi chép tự do chính là chữ học sinh viết ra.
                         scenario.title,
@@ -385,8 +648,8 @@ def _teacher_zip(db: Session, user: User) -> bytes:
                 scenario = get_scenario(target.scenario_id) if target else None
                 feedback_rows.append(
                     [
-                        klass.class_code,
-                        code,
+                        klass.name,
+                        *dinh_danh,
                         scenario.title if scenario else "Nhắn chung",
                         note.content,
                         _stamp(note.created_at),
@@ -402,15 +665,20 @@ def _teacher_zip(db: Session, user: User) -> bytes:
             scenario = get_scenario(assignment.scenario_id) if assignment.scenario_id else None
             assignment_rows.append(
                 [
-                    klass.class_code,
                     klass.name,
                     scenario.title if scenario else "",
                     assignment.field or (scenario.field if scenario else ""),
                     "làm ở lớp" if assignment.mode == "offline" else "làm online",
                     assignment.note,
                     _stamp(assignment.created_at),
+                    # Nhiệm vụ đã gỡ vẫn nằm trong bản tải về, có dán nhãn: gỡ
+                    # là để nó biến khỏi màn hình, không phải để xoá lịch sử.
+                    f"đã gỡ {_stamp(assignment.archived_at)}" if assignment.da_go else "",
                 ]
             )
+
+    # Đúng những cột mà `dinh_danh` vừa dựng, không lệch được.
+    cot_dinh_danh = ["Mã học sinh"] + (["Tên học sinh"] if co_ten else [])
 
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -418,7 +686,7 @@ def _teacher_zip(db: Session, user: User) -> bytes:
             "nhat-ky.csv",
             _csv_bytes(
                 [
-                    "Mã lớp", "Mã học sinh", "Tình huống", "Lĩnh vực", "Vai",
+                    "Lớp", *cot_dinh_danh, "Tình huống", "Lĩnh vực", "Vai",
                     "Kiểu", "Cấp độ đã xong", "Đã đi hết", "Số câu trả lời",
                     "Số từ đã viết", "Bắt đầu", "Hoạt động lần cuối",
                     "Đã nộp", "Có ảnh", "Có video", "Đang chia sẻ công khai",
@@ -429,39 +697,51 @@ def _teacher_zip(db: Session, user: User) -> bytes:
         archive.writestr(
             "phan-hoi.csv",
             _csv_bytes(
-                ["Mã lớp", "Mã học sinh", "Gắn với tình huống", "Nội dung nhận xét", "Gửi lúc"],
+                ["Lớp", *cot_dinh_danh, "Gắn với tình huống",
+                 "Nội dung nhận xét", "Gửi lúc"],
                 feedback_rows,
             ),
         )
         archive.writestr(
             "nhiem-vu.csv",
             _csv_bytes(
-                ["Mã lớp", "Tên lớp", "Tình huống", "Lĩnh vực", "Hình thức", "Ghi chú", "Giao lúc"],
+                ["Lớp", "Tình huống", "Lĩnh vực", "Hình thức", "Ghi chú", "Giao lúc",
+                 "Trạng thái"],
                 assignment_rows,
             ),
         )
-        archive.writestr("HUONG-DAN.txt", HUONG_DAN.encode("utf-8"))
+        archive.writestr(
+            "HUONG-DAN.txt",
+            (HUONG_DAN_CO_TEN if co_ten else HUONG_DAN).encode("utf-8"),
+        )
 
     return buffer.getvalue()
 
 
 @router.get("/tai-khoan/du-lieu")
 def export_data(
+    co_ten: str = "",
     user: User | None = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Tải dữ liệu. `?co_ten=1` là bản có tên học sinh, chỉ dành cho giáo viên.
+
+    Học sinh tải bản của chính mình nên tham số này không chạm tới nhánh đó —
+    bản của em vốn đã có tên em.
+    """
     if (redirect := _guard(user)) is not None:
         return redirect
 
     today = datetime.now().strftime("%Y-%m-%d")
 
-    if user.is_teacher:
+    if user.can_teach:
+        # Tên trong tệp khác nhau, để hai bản không lẫn vào nhau trong thư mục
+        # Tải về của thầy cô — nhìn tên tệp là biết bản nào có tên học sinh.
+        ten_tep = f"gals-lop-co-ten-{today}.zip" if co_ten else f"gals-lop-{today}.zip"
         return Response(
-            content=_teacher_zip(db, user),
+            content=_teacher_zip(db, user, co_ten=bool(co_ten)),
             media_type="application/zip",
-            headers={
-                "Content-Disposition": f'attachment; filename="gals-lop-{today}.zip"'
-            },
+            headers={"Content-Disposition": f'attachment; filename="{ten_tep}"'},
         )
 
     payload = json.dumps(_student_payload(db, user), ensure_ascii=False, indent=2)

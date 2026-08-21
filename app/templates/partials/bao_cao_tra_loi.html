@@ -7,6 +7,7 @@
           hx-post="/phan-hoi/bao-cao"
           hx-target="#bao-cao-{{ report_id }}"
           hx-swap="innerHTML">
+      {% include "partials/csrf.html" %}
       <input type="hidden" name="trich_dan" value="{{ reported_text }}">
 
       <label for="ly-do-{{ report_id }}" class="sr-only">Lý do báo cáo</label>

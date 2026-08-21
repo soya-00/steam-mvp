@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Hồ sơ của {{ owner.name }} — GALS{% endblock %}
 
+{# Hồ sơ công khai đứng sau một đường dẫn khó đoán, nhưng "khó đoán" không
+   ngăn được máy quét. Xin công cụ tìm kiếm bỏ qua, và chặn thêm ở
+   static/robots.txt. Cả hai đều là lời đề nghị chứ không phải hàng rào —
+   hàng rào thật là chính học sinh chọn chia sẻ hay không. #}
+{% block robots %}<meta name="robots" content="noindex, nofollow, noarchive">{% endblock %}
+
 {% block content %}
 <div class="max-w-2xl mx-auto">
 

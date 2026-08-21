@@ -6,31 +6,79 @@
 {% with crumbs = [("/giao-vien", "Lớp của tôi"), (None, klass.name)] %}{% include "partials/breadcrumb.html" %}{% endwith %}
 
 <div class="flex flex-wrap items-start justify-between gap-3">
-  <h1 class="text-2xl md:text-3xl text-ink">{{ klass.name }}</h1>
+  <div>
+    <h1 class="text-2xl md:text-3xl text-ink">{{ klass.name }}</h1>
+    {% if klass.da_dong %}
+    <p class="mt-1 chip bg-amber-50 text-amber-900">
+      Đã kết thúc {{ klass.dong_luc.strftime('%d/%m/%Y') }}
+    </p>
+    {% endif %}
+  </div>
+  {% if not klass.da_dong %}
   <div class="tile px-4 py-2.5">
     <p class="text-xs text-ink-soft">Mã lớp cho học sinh</p>
     <p class="font-mono font-semibold text-lg text-trunk">{{ klass.class_code }}</p>
   </div>
+  {% endif %}
 </div>
+
+{% include "partials/loi.html" %}
+
+{% if klass.da_dong %}
+<div class="tile p-5 mt-5 bg-amber-50 border-amber-100" role="note">
+  <p class="text-sm text-amber-900">
+    Lớp này đã kết thúc: mã lớp không nhận thêm ai và không giao được nhiệm vụ mới. Bài của
+    các em, nhận xét của bạn và bản tải về đều còn nguyên. Mở lại lớp ở
+    <a href="#quan-ly" class="underline font-semibold">Quản lý lớp</a> bên dưới.
+  </p>
+</div>
+{% endif %}
 
 <h2 class="mt-8 text-lg text-ink">Học sinh trong lớp</h2>
 <div class="mt-3 grid gap-2">
   {% for s in summaries %}
-  <a href="/giao-vien/hoc-sinh/{{ s.student.id }}"
-     class="tile p-4 hover:border-ink-faint transition flex flex-wrap items-center gap-4">
-    <span class="w-10 h-10 rounded-full bg-trunk-50 grid place-items-center text-xl shrink-0" aria-hidden="true">
-      {{ avatar_emoji.get(s.student.avatar_id, '🦊') }}
-    </span>
-    <div class="min-w-0 flex-1">
-      <p class="font-medium text-ink">{{ s.student.name }}</p>
-      <p class="text-sm text-ink-soft">
-        {{ s.entry_count }} bài nhật ký · {{ s.submitted }} dự án đã nộp · {{ s.badge_count }} huy hiệu
-      </p>
-    </div>
-    <span class="text-sm text-ink-faint">
-      {% if s.last_active %}Hoạt động {{ s.last_active.strftime('%d/%m') }}{% else %}Chưa bắt đầu{% endif %}
-    </span>
-  </a>
+  {# Không lồng biểu mẫu trong thẻ liên kết được, nên hàng học sinh là một khối
+     chứa hai thứ: liên kết mở trang của em, và nút gỡ khỏi lớp. #}
+  <div class="tile p-4 hover:border-ink-faint transition flex flex-wrap items-center gap-4">
+    <a href="/giao-vien/hoc-sinh/{{ s.student.id }}"
+       class="flex flex-wrap items-center gap-4 flex-1 min-w-0">
+      <span class="w-10 h-10 rounded-full bg-trunk-50 grid place-items-center text-xl shrink-0" aria-hidden="true">
+        {{ avatar_emoji.get(s.student.avatar_id, '🦊') }}
+      </span>
+      <span class="min-w-0 flex-1">
+        <span class="block font-medium text-ink">{{ s.student.name }}</span>
+        <span class="block text-sm text-ink-soft">
+          {{ s.entry_count }} bài đã nộp · {{ s.badge_count }} huy hiệu
+        </span>
+      </span>
+      <span class="text-sm text-ink-faint">
+        {% if s.last_active %}Hoạt động {{ s.last_active.strftime('%d/%m') }}{% else %}Chưa bắt đầu{% endif %}
+      </span>
+    </a>
+    <details class="shrink-0">
+      <summary class="cursor-pointer text-sm text-ink-faint hover:text-ink">Gỡ</summary>
+      <form method="post" action="/giao-vien/lop/{{ klass.id }}/go/{{ s.student.id }}"
+            class="mt-2 text-right">
+        {% include "partials/csrf.html" %}
+        <p class="text-xs text-ink-soft max-w-xs">
+          Gỡ {{ s.student.name }} khỏi lớp. Bài viết và hồ sơ của em vẫn còn nguyên.
+        </p>
+        {% if not klass.da_dong %}
+        {# Gỡ không phải là chặn: mã lớp vẫn nhận em ấy vào lại. Nói thẳng ở đây,
+           vì thầy cô bấm nút này thường đang nghĩ mình vừa đóng một cánh cửa. #}
+        <p class="text-xs text-ink-soft max-w-xs mt-1">
+          Gỡ không chặn được em vào lại: <strong class="text-ink">mã lớp vẫn nhận em ấy</strong>.
+          Nếu bạn muốn em không vào lại được thì
+          <a href="#quan-ly" class="text-trunk font-semibold hover:underline">đổi mã lớp</a>
+          rồi chỉ đọc mã mới cho những em còn lại.
+        </p>
+        {% endif %}
+        <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+          Gỡ khỏi lớp
+        </button>
+      </form>
+    </details>
+  </div>
   {% else %}
   <div class="tile p-5">
     <p class="text-sm text-ink-soft">
@@ -67,15 +115,61 @@
       Chọn một tình huống cụ thể bên dưới để lấy bản in.
     </p>
     {% endif %}
+
+    <details class="mt-3">
+      <summary class="cursor-pointer text-sm text-ink-faint hover:text-ink">Gỡ nhiệm vụ</summary>
+      <form method="post" action="/giao-vien/lop/{{ klass.id }}/nhiem-vu/{{ a.id }}/go" class="mt-2">
+        {% include "partials/csrf.html" %}
+        <p class="text-xs text-ink-soft max-w-md">
+          Nhiệm vụ biến khỏi bảng của các em. <strong class="text-ink">Không xoá gì cả</strong>:
+          bài các em đã làm vẫn nguyên, bản tải về vẫn ghi nhiệm vụ này, và bạn khôi phục lại
+          được bất cứ lúc nào.
+        </p>
+        <button type="submit" class="text-sm font-semibold text-trunk hover:underline mt-1">
+          Gỡ khỏi lớp
+        </button>
+      </form>
+    </details>
   </div>
   {% else %}
   <div class="tile p-5"><p class="text-sm text-ink-soft">Chưa giao nhiệm vụ nào.</p></div>
   {% endfor %}
 </div>
 
+{% if da_go %}
+<details class="mt-3 max-w-xl">
+  <summary class="cursor-pointer text-sm font-semibold text-ink-soft hover:text-ink">
+    Nhiệm vụ đã gỡ ({{ da_go | length }})
+  </summary>
+  <div class="mt-3 grid gap-2">
+    {% for a in da_go %}
+    {% set sc = scenario_of.get(a.id) %}
+    <div class="tile p-4 flex flex-wrap items-center gap-3">
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-ink truncate">
+          {% if sc %}{{ sc.title }}{% elif a.field %}Cả lĩnh vực {{ a.field }}{% else %}Nhiệm vụ{% endif %}
+        </p>
+        <p class="text-xs text-ink-faint">
+          Giao {{ a.created_at.strftime('%d/%m/%Y') }} · gỡ {{ a.archived_at.strftime('%d/%m/%Y') }}
+        </p>
+      </div>
+      {% if not klass.da_dong %}
+      <form method="post" action="/giao-vien/lop/{{ klass.id }}/nhiem-vu/{{ a.id }}/khoi-phuc">
+        {% include "partials/csrf.html" %}
+        <button type="submit" class="btn btn-ghost text-sm py-1.5 px-3">Khôi phục</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</details>
+{% endif %}
+
+{% if not klass.da_dong %}
 <section class="mt-8 max-w-xl">
   <h2 class="microlabel">Giao nhiệm vụ mới</h2>
   <form method="post" action="/giao-vien/lop/{{ klass.id }}/giao" class="mt-3 space-y-4">
+    {% include "partials/csrf.html" %}
 
     <div>
       <label for="muc_tieu" class="block text-sm font-medium text-ink mb-1">Giao gì</label>
@@ -126,6 +220,63 @@
 
     <button type="submit" class="btn btn-primary">Giao nhiệm vụ</button>
   </form>
+</section>
+{% endif %}
+
+<section id="quan-ly" class="mt-10 max-w-xl scroll-mt-20">
+  <h2 class="microlabel">Quản lý lớp</h2>
+
+  <div class="tile p-5 mt-3">
+    <h3 class="text-sm font-semibold text-ink">Đổi tên lớp</h3>
+    <form method="post" action="/giao-vien/lop/{{ klass.id }}/sua" class="mt-2 flex flex-wrap gap-2">
+      {% include "partials/csrf.html" %}
+      <label for="ten_lop" class="sr-only">Tên lớp</label>
+      <input type="text" id="ten_lop" name="ten_lop" required value="{{ klass.name }}"
+             class="flex-1 min-w-[14rem] rounded-lg border border-field-line bg-sunken px-3 py-2 text-sm text-ink">
+      <button type="submit" class="btn btn-ghost">Lưu tên</button>
+    </form>
+  </div>
+
+  <div class="tile p-5 mt-3">
+    <h3 class="text-sm font-semibold text-ink">Đổi mã lớp</h3>
+    <p class="mt-1 text-sm text-ink-soft">
+      Dùng khi mã bị chụp màn hình hoặc chuyền ra ngoài lớp. Mã cũ hết tác dụng ngay.
+      Các em đã vào lớp vẫn ở trong lớp, và bản tải về không đổi mã ẩn danh của em nào.
+    </p>
+    <p class="mt-2 font-mono text-sm text-ink">Mã hiện tại: <strong>{{ klass.class_code }}</strong></p>
+    <form method="post" action="/giao-vien/lop/{{ klass.id }}/doi-ma" class="mt-3">
+      {% include "partials/csrf.html" %}
+      <button type="submit" class="btn btn-ghost">Cấp mã mới</button>
+    </form>
+  </div>
+
+  <div class="tile p-5 mt-3">
+    {% if klass.da_dong %}
+    <h3 class="text-sm font-semibold text-ink">Mở lại lớp</h3>
+    <p class="mt-1 text-sm text-ink-soft">
+      Mở lại thì mã lớp nhận học sinh trở lại và bạn giao được nhiệm vụ mới.
+    </p>
+    <form method="post" action="/giao-vien/lop/{{ klass.id }}/mo-lai" class="mt-3">
+      {% include "partials/csrf.html" %}
+      <button type="submit" class="btn btn-ghost">Mở lại lớp</button>
+    </form>
+    {% else %}
+    <h3 class="text-sm font-semibold text-ink">Kết thúc lớp</h3>
+    <p class="mt-1 text-sm text-ink-soft">
+      Kết thúc lớp khi hết đợt học: mã lớp ngừng nhận học sinh, không giao thêm nhiệm vụ,
+      và lớp rời khỏi danh sách lớp đang dạy.
+    </p>
+    <p class="mt-2 text-sm text-ink-soft">
+      <strong class="text-ink">Không có gì bị xoá.</strong> Bài của các em, nhận xét của bạn
+      và bản tải về vẫn đọc được như cũ, và bạn mở lại lớp được bất cứ lúc nào. GALS không có
+      nút xoá lớp.
+    </p>
+    <form method="post" action="/giao-vien/lop/{{ klass.id }}/dong" class="mt-3">
+      {% include "partials/csrf.html" %}
+      <button type="submit" class="btn btn-ghost">Kết thúc lớp</button>
+    </form>
+    {% endif %}
+  </div>
 </section>
 
 <section class="mt-10 max-w-xl">
